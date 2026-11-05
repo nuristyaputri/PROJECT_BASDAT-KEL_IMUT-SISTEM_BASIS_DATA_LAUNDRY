@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pegawai - Bersihin Staff Portal</title>
+    <!-- Google Fonts Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+
+    <!-- MOBILE TOPBAR & TOGGLE -->
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-9 h-9 -rotate-3 rounded-xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px]">
+                <span class="w-[3px] h-3 bg-white rounded-full rotate-[27deg]"></span>
+                <span class="w-[2.5px] h-4 bg-white rounded-full rotate-[27deg]"></span>
+                <span class="w-[3px] h-2.5 bg-white rounded-full rotate-[27deg]"></span>
+            </div>
+            <div>
+                <div class="leading-none">
+                    <span class="text-lg font-bold text-blue-950 tracking-tight">Bersih</span><span
+                        class="text-lg font-bold text-blue-400">in</span>
+                </div>
+                <span class="block text-[8px] font-bold tracking-[2.2px] text-slate-400 uppercase mt-0.5">
+                    STAFF PORTAL
+                </span>
+            </div>
+        </div>
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- SIDEBAR OVERLAY FOR MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:static md:inset-auto md:z-10 px-5 pt-7 pb-5 shrink-0">
+
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <!-- Brand Logo -->
+            <div class="hidden md:flex items-center gap-2.5 pl-1.5 pb-7">
+                <div
+                    class="w-10 h-10 -rotate-3 rounded-xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px] shrink-0">
+                    <span class="w-[3px] h-3.5 bg-white rounded-full rotate-[27deg]"></span>
+                    <span class="w-[2.5px] h-5 bg-white rounded-full rotate-[27deg]"></span>
+                    <span class="w-[3px] h-3 bg-white rounded-full rotate-[27deg]"></span>
+                </div>
+                <div>
+                    <div class="leading-none">
+                        <span class="text-xl font-bold text-blue-950 tracking-tight">Bersih</span><span
+                            class="text-xl font-bold text-blue-400">in</span>
+                    </div>
+                    <span class="block text-[8px] font-bold tracking-[2.6px] text-slate-400 uppercase mt-1">
+                        STAFF PORTAL
+                    </span>
+                </div>
+            </div>
+
+            <!-- Shift Aktif Info Badge -->
+            <div class="p-2.5 bg-emerald-50 border border-slate-200 rounded-[10px] flex items-center gap-2 mb-6">
+                <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center shrink-0">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_0_4px_rgba(50,164,125,0.14)]"></span>
+                </div>
+                <div class="text-left leading-tight">
+                    <div class="text-[9px] font-bold text-teal-700">Shift Aktif</div>
+                    <div class="text-[8px] text-slate-500">08.00 – 16.00 WIB</div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-6">
+                <div>
+                    <span class="block px-2.5 text-[8px] font-bold text-slate-400 tracking-wider uppercase mb-2">
+                        OPERASIONAL
+                    </span>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="dashboard.html"
+                                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg text-xs font-normal transition">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="datapelanggan.html"
+                                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg text-xs font-normal transition">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <span>Data Pelanggan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="datapesanan.html"
+                                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg text-xs font-normal transition">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                <span>Data Pesanan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="statuspesanan.html"
+                                class="flex items-center justify-between px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg text-xs font-normal transition">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Kelola Status</span>
+                                </div>
+                                <span class="flex items-center justify-center px-1.5 min-w-4 h-4 bg-red-400 text-white rounded text-[8px] font-semibold">4</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="datatransaksi.html"
+                                class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg text-xs font-normal transition">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                </svg>
+                                <span>Data Transaksi</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <span class="block px-2.5 text-[8px] font-bold text-slate-400 tracking-wider uppercase mb-2">
+                        AKUN
+                    </span>
+                    <ul class="space-y-1">
+                        <li>
+                            <!-- ACTIVE: Profil Saya -->
+                            <a href="profil.html"
+                                class="relative flex items-center gap-3 px-3 py-2.5 bg-blue-50 text-cyan-700 font-semibold rounded-lg text-xs transition">
+                                <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                <span>Profil Saya</span>
+                                <span class="absolute -left-5 top-2 bottom-2 w-[3px] bg-blue-400 rounded-r"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <!-- User Profile Footer -->
+        <div class="pt-3.5 border-t border-slate-200 flex items-center justify-between gap-2 mt-auto">
+            <div class="flex items-center gap-2 overflow-hidden">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center text-cyan-600 font-bold text-xs shrink-0">
+                    DN
+                </div>
+                <div class="leading-tight truncate">
+                    <div class="text-[11px] font-bold text-slate-800 truncate">Dina Nurhaliza</div>
+                    <div class="text-[9px] text-slate-400 truncate">Kasir · Shift Pagi</div>
+                </div>
+            </div>
+            <a href="login.html" title="Keluar"
+                class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-50 rounded transition shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+        <!-- STICKY TOPBAR -->
+        <header
+            class="h-24 px-6 md:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-20 flex justify-between items-center">
+            <div>
+                <h1 class="text-slate-800 text-xl font-bold md:font-semibold">Profil Pegawai</h1>
+                <p class="text-slate-400 text-xs mt-0.5">Kelola informasi diri, jadwal kerja, dan keamanan akun</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Date Indicator -->
+                <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+                    <div class="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 border border-slate-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="leading-tight">
+                        <div class="text-[9px] text-gray-400">Senin</div>
+                        <div class="text-[11px] font-bold text-slate-700">20 Mei 2024</div>
+                    </div>
+                </div>
+
+                <!-- Notifications Button -->
+                <button
+                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition"
+                    aria-label="Notifikasi">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-400 border-2 border-white rounded-full"></span>
+                </button>
+
+                <!-- Avatar Pill -->
+                <a href="profil.html"
+                    class="w-9 h-9 rounded-lg bg-sky-100 flex items-center justify-center text-cyan-600 font-bold text-xs ring-2 ring-cyan-500/30">
+                    DN
+                </a>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <main class="w-full max-w-[1460px] px-6 md:px-9 py-6 md:py-8 space-y-6">
+
+            <!-- HERO PROFILE BANNER -->
+            <div class="relative bg-gradient-to-r from-cyan-900 via-cyan-800 to-cyan-600 rounded-2xl p-6 md:p-8 text-white shadow-[0_12px_30px_0_rgba(22,65,94,0.12)] overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <!-- Background Geometric Accents -->
+                <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full border border-white/10 bg-white/5 pointer-events-none"></div>
+                <div class="absolute right-32 -bottom-20 w-48 h-48 rounded-full border border-white/10 bg-white/5 pointer-events-none"></div>
+
+                <div class="relative z-10 flex items-center gap-4 md:gap-5">
+                    <!-- Big Avatar -->
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-sky-100 text-cyan-700 font-bold text-xl md:text-2xl flex items-center justify-center shadow-md shrink-0">
+                        DN
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2.5 mb-1">
+                            <h2 class="text-xl md:text-2xl font-bold tracking-tight">Dina Nurhaliza</h2>
+                            <span class="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-semibold tracking-wide uppercase text-sky-100 border border-white/20">
+                                ID: PGW-0017
+                            </span>
+                        </div>
+                        <p class="text-xs md:text-sm text-sky-100/90 font-medium">Kasir Utama · Shift Pagi (08.00 - 16.00 WIB)</p>
+                        <p class="text-[11px] text-sky-200/70 mt-1">Cabang Dago · Aktif sejak 15 Januari 2023</p>
+                    </div>
+                </div>
+
+                <!-- Action Button: Edit Profil -->
+                <div class="relative z-10 sm:self-center">
+                    <a href="editprofil.html"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-md rounded-xl text-xs font-semibold shadow-xs transition">
+                        <svg class="w-4 h-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        <span>Edit Profil</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- TWO COLUMN GRID SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- LEFT COLUMN: DATA DIRI PEGAWAI (2 COLS SPAN) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] overflow-hidden">
+                        
+                        <!-- Header -->
+                        <div class="p-5 md:p-6 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-slate-800 text-sm md:text-base font-bold">Data Diri Pegawai</h3>
+                                <p class="text-slate-400 text-xs mt-0.5">Informasi kepegawaian dan kontak aktif Anda</p>
+                            </div>
+                            <a href="editprofil.html"
+                                class="text-xs text-cyan-700 hover:text-cyan-800 font-semibold hover:underline flex items-center gap-1">
+                                <span>Perbarui</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+
+                        <!-- Fields Grid -->
+                        <div class="p-5 md:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+                            <!-- Field 1: Nama Lengkap -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Nama Lengkap</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                                    Dina Nurhaliza
+                                </div>
+                            </div>
+
+                            <!-- Field 2: ID Pegawai -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">ID Pegawai</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-between">
+                                    <span>PGW-0017</span>
+                                    <span class="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Aktif</span>
+                                </div>
+                            </div>
+
+                            <!-- Field 3: Nomor HP -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Nomor Handphone / WhatsApp</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-between">
+                                    <span>0812 9988 7766</span>
+                                    <button onclick="copyToClipboard('0812 9988 7766', 'Nomor HP')" title="Salin nomor" class="text-slate-400 hover:text-cyan-700">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Field 4: Email -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Alamat Email</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 flex items-center justify-between">
+                                    <span class="truncate">dina.nurhaliza@bersihin.id</span>
+                                    <button onclick="copyToClipboard('dina.nurhaliza@bersihin.id', 'Email')" title="Salin email" class="text-slate-400 hover:text-cyan-700 shrink-0 ml-2">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Field 5: Posisi / Jabatan -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Jabatan / Posisi</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                                    Kasir Utama
+                                </div>
+                            </div>
+
+                            <!-- Field 6: Jadwal Kerja -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Jadwal Shift Reguler</label>
+                                <div class="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">
+                                    Shift Pagi · 08.00–16.00 WIB
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer Note -->
+                        <div class="px-5 md:px-6 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-500">
+                            <svg class="w-4 h-4 text-cyan-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Untuk perubahan posisi atau penugasan cabang, hubungi manajer atau pemilik laundry.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: PENGATURAN AKUN & SHIFT WIDGET -->
+                <div class="space-y-6">
+
+                    <!-- PENGATURAN AKUN -->
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] overflow-hidden">
+                        <div class="p-5 border-b border-slate-100">
+                            <h3 class="text-slate-800 text-sm font-bold">Pengaturan Akun</h3>
+                            <p class="text-slate-400 text-xs mt-0.5">Keamanan dan preferensi akun Anda</p>
+                        </div>
+
+                        <div class="divide-y divide-slate-100">
+                            <!-- Ubah Password -->
+                            <a href="password.html"
+                                class="p-4 flex items-center justify-between hover:bg-slate-50 transition group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-blue-50 text-cyan-700 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800 group-hover:text-blue-600 transition">Ubah Password</div>
+                                        <div class="text-[11px] text-slate-400">Perbarui kata sandi akun</div>
+                                    </div>
+                                </div>
+                                <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+
+                            <!-- Notifikasi Switch -->
+                            <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-blue-50 text-cyan-700 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800">Notifikasi Kerja</div>
+                                        <div class="text-[11px] text-slate-400">Pemberitahuan order & pembayaran</div>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="notificationToggle" onchange="toggleNotification(this.checked)" checked class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-600"></div>
+                                </label>
+                            </div>
+
+                            <!-- Keluar dari Sistem -->
+                            <a href="login.html"
+                                class="p-4 flex items-center justify-between hover:bg-rose-50/50 transition group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-lg bg-rose-50 text-red-500 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-red-600 group-hover:text-red-700 transition">Keluar dari Sistem</div>
+                                        <div class="text-[11px] text-slate-400">Akhiri sesi kerja Anda saat ini</div>
+                                    </div>
+                                </div>
+                                <svg class="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SHIFT HARI INI CARD -->
+                    <div class="bg-gradient-to-br from-blue-950 to-cyan-900 rounded-xl p-5 text-white shadow-md relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[9px] font-bold tracking-wider uppercase text-sky-300 bg-white/10 px-2.5 py-1 rounded-md">
+                                SHIFT HARI INI
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-semibold">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Sedang Berlangsung
+                            </span>
+                        </div>
+
+                        <div class="text-lg font-bold">08.00 – 16.00 WIB</div>
+                        <p class="text-xs text-sky-200 mt-0.5">Cabang Dago · Kasir Utama</p>
+
+                        <!-- Progress Bar -->
+                        <div class="mt-4 space-y-1.5">
+                            <div class="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div class="h-full bg-sky-300 rounded-full" style="width: 65%;"></div>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-sky-200/80">
+                                <span>5 jam 12 menit berjalan</span>
+                                <span>Sisa 2 jam 48 menit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification"
+        class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-xl text-xs">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <div id="toastMessage" class="font-medium">Berhasil disalin</div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Mobile Sidebar Drawer Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (sidebarToggle && sidebar && sidebarOverlay) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+            });
+
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            });
+        }
+
+        // Show Toast Notification
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Copy to clipboard helper
+        function copyToClipboard(text, fieldName) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${fieldName} berhasil disalin ke clipboard!`);
+            }).catch(() => {
+                showToast(`Gagal menyalin ${fieldName}`);
+            });
+        }
+
+        // Toggle notifications
+        function toggleNotification(isEnabled) {
+            if (isEnabled) {
+                showToast("Notifikasi kerja telah diaktifkan.");
+            } else {
+                showToast("Notifikasi kerja telah dinonaktifkan.");
+            }
+        }
+    </script>
+</body>
+
+</html>

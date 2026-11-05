@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pesanan - Bersihin Staff Portal</title>
+    <!-- Google Fonts Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+
+    <!-- MOBILE TOPBAR & TOGGLE -->
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
+        <div class="flex items-center gap-2.5">
+            <div
+                class="w-9 h-9 -rotate-3 rounded-xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px]">
+                <span class="w-[3px] h-3 bg-white rounded-full rotate-[27deg]"></span>
+                <span class="w-[2.5px] h-4 bg-white rounded-full rotate-[27deg]"></span>
+                <span class="w-[3px] h-2.5 bg-white rounded-full rotate-[27deg]"></span>
+            </div>
+            <div>
+                <div class="leading-none">
+                    <span class="text-lg font-bold text-blue-950 tracking-tight">Bersih</span><span
+                        class="text-lg font-bold text-blue-400">in</span>
+                </div>
+                <span class="block text-[8px] font-bold tracking-[2.2px] text-slate-400 uppercase mt-0.5">
+                    STAFF PORTAL
+                </span>
+            </div>
+        </div>
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- SIDEBAR OVERLAY FOR MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:static md:inset-auto md:z-10 px-5 pt-7 pb-5 shrink-0">
+
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <!-- Brand Logo -->
+            <div class="hidden md:flex items-center gap-2.5 pl-1.5 pb-7">
+                <div
+                    class="w-10 h-10 -rotate-3 rounded-xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px] shrink-0">
+                    <span class="w-[3px] h-3.5 bg-white rounded-full rotate-[27deg]"></span>
+                    <span class="w-[2.5px] h-5 bg-white rounded-full rotate-[27deg]"></span>
+                    <span class="w-[3px] h-3 bg-white rounded-full rotate-[27deg]"></span>
+                </div>
+                <div>
+                    <div class="leading-none">
+                        <span class="text-xl font-bold text-blue-950 tracking-tight">Bersih</span><span
+                            class="text-xl font-bold text-blue-400">in</span>
+                    </div>
+                    <span class="block text-[8px] font-bold tracking-[2.6px] text-slate-400 uppercase mt-1">
+                        STAFF PORTAL
+                    </span>
+                </div>
+            </div>
+
+            <!-- Shift Aktif Card -->
+            <div class="p-2.5 bg-emerald-50 rounded-[10px] border border-slate-200/80 flex items-center gap-2.5">
+                <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center shrink-0">
+                    <span
+                        class="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_0_4px_rgba(50,164,125,0.14)]"></span>
+                </div>
+                <div>
+                    <div class="text-teal-700 text-[11px] font-bold leading-tight">Shift Aktif</div>
+                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 – 16.00 WIB</div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="mt-6 space-y-6">
+                <!-- Operasional -->
+                <div>
+                    <p class="px-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">
+                        OPERASIONAL
+                    </p>
+                    <div class="space-y-1">
+                        <!-- Dashboard -->
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <!-- Data Pelanggan -->
+                        <a href="datapelanggan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>Data Pelanggan</span>
+                        </a>
+
+                        <!-- Data Pesanan (Active) -->
+                        <a href="datapesanan.html"
+                            class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold bg-blue-50 text-cyan-700 transition">
+                            <span
+                                class="w-[3px] h-7 -left-5 top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-[3px]"></span>
+                            <svg class="w-5 h-5 text-cyan-700 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <span>Data Pesanan</span>
+                        </a>
+
+                        <!-- Kelola Status -->
+                        <a href="statuspesanan.html"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <span>Kelola Status</span>
+                            </div>
+                            <span
+                                class="w-4 h-4 bg-red-400 rounded-full text-white text-[9px] font-semibold flex items-center justify-center">
+                                4
+                            </span>
+                        </a>
+
+                        <!-- Data Transaksi -->
+                        <a href="datatransaksi.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Data Transaksi</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Akun -->
+                <div>
+                    <p class="px-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">
+                        AKUN
+                    </p>
+                    <div class="space-y-1">
+                        <!-- Profil Saya -->
+                        <a href="profil.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>Profil Saya</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer User Info -->
+        <div class="pt-3.5 border-t border-slate-200 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div
+                    class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold shrink-0">
+                    DN
+                </div>
+                <div class="truncate">
+                    <div class="text-slate-800 text-xs font-bold leading-tight truncate">Dina Nurhaliza</div>
+                    <div class="text-slate-400 text-[10px] font-normal leading-tight mt-0.5">Kasir · Shift Pagi</div>
+                </div>
+            </div>
+            <a href="login.html" title="Keluar"
+                class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col min-w-0">
+        <!-- TOPBAR -->
+        <header
+            class="h-24 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
+            <div>
+                <h1 class="text-lg md:text-xl font-normal text-slate-800 leading-8">Detail Pesanan</h1>
+                <p class="text-xs text-slate-400 mt-0.5">Informasi lengkap dan proses pesanan</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Tanggal -->
+                <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+                    <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="leading-tight">
+                        <span class="block text-[10px] text-gray-400 font-normal">Senin</span>
+                        <span class="text-xs font-bold text-slate-500">20 Mei 2024</span>
+                    </div>
+                </div>
+
+                <!-- Notifikasi -->
+                <button
+                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition"
+                    aria-label="Notifikasi">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span
+                        class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+                </button>
+
+                <!-- Avatar -->
+                <div
+                    class="w-9 h-9 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold">
+                    DN
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE MAIN CONTENT -->
+        <main class="w-full max-w-[1460px] px-6 md:px-9 pt-7 pb-14 mx-auto">
+
+            <!-- Back Link -->
+            <div class="mb-4">
+                <a href="datapesanan.html"
+                    class="inline-flex items-center gap-1.5 text-slate-500 hover:text-cyan-700 text-xs font-normal transition">
+                    <span>← Kembali ke Data Pesanan</span>
+                </a>
+            </div>
+
+            <!-- 2-COLUMN CONTENT GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+                <!-- LEFT COLUMN (8 Cols) -->
+                <div class="lg:col-span-8 space-y-3.5">
+
+                    <!-- Card 1: Nomor Pesanan & Status -->
+                    <div
+                        class="bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-6 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <span class="block text-cyan-600 text-[10px] font-bold tracking-widest uppercase">
+                                NOMOR PESANAN
+                            </span>
+                            <h2 id="orderId" class="text-slate-800 text-xl font-normal leading-8 mt-1">
+                                ORD-0524-018
+                            </h2>
+                            <p id="orderDate" class="text-slate-400 text-xs font-normal mt-0.5">
+                                Dibuat pada 20 Mei 2024, 09.15 WIB
+                            </p>
+                        </div>
+
+                        <div id="orderStatusBadge"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sky-100 text-cyan-600 rounded-full text-xs font-semibold">
+                            <span id="orderStatusDot" class="w-1.5 h-1.5 bg-cyan-600 rounded-full"></span>
+                            <span id="orderStatusText">Dicuci</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Informasi Pelanggan -->
+                    <div
+                        class="bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-5">
+                        <div class="pb-3 border-b border-slate-100">
+                            <h3 class="text-slate-800 text-sm font-normal leading-5">Informasi Pelanggan</h3>
+                        </div>
+
+                        <div class="pt-3.5 flex items-center gap-3">
+                            <div id="customerInitials"
+                                class="w-10 h-10 bg-sky-100 rounded-[10px] flex items-center justify-center text-cyan-600 text-xs font-bold shrink-0">
+                                AP
+                            </div>
+                            <div>
+                                <div id="customerName" class="text-slate-800 text-xs font-bold leading-4">
+                                    Andi Pratama
+                                </div>
+                                <div class="text-gray-400 text-[11px] font-normal mt-0.5">
+                                    Pelanggan terdaftar
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="mt-3.5 p-3.5 bg-slate-50 rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-gray-400 text-[11px] font-normal">Nomor HP</div>
+                                <div id="customerPhone" class="text-slate-800 text-xs font-bold mt-1">
+                                    0812 3456 7890
+                                </div>
+                            </div>
+                            <div class="sm:pl-4 sm:border-l sm:border-slate-200">
+                                <div class="text-gray-400 text-[11px] font-normal">Alamat</div>
+                                <div id="customerAddress" class="text-slate-800 text-xs font-bold mt-1">
+                                    Jl. Cempaka Indah No. 12, Bandung
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Detail Laundry -->
+                    <div
+                        class="bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-5">
+                        <div class="pb-3 border-b border-slate-100">
+                            <h3 class="text-slate-800 text-sm font-normal leading-5">Detail Laundry</h3>
+                        </div>
+
+                        <div class="py-3.5 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div
+                                    class="w-9 h-9 bg-blue-50 rounded-[10px] flex items-center justify-center text-cyan-600 shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                    </svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <div id="serviceName" class="text-slate-800 text-xs font-bold leading-4">
+                                        Cuci + Setrika
+                                    </div>
+                                    <div id="serviceDesc" class="text-gray-400 text-[11px] font-normal mt-0.5">
+                                        Pakaian campuran · Reguler
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-6 shrink-0">
+                                <span id="serviceWeight" class="text-slate-500 text-xs font-normal">4.5 kg</span>
+                                <span id="servicePrice" class="text-slate-800 text-xs font-bold">Rp45.000</span>
+                            </div>
+                        </div>
+
+                        <!-- Catatan Pesanan -->
+                        <div class="p-3 bg-amber-50 rounded-lg">
+                            <div class="text-stone-500 text-[11px] font-normal">Catatan Pesanan</div>
+                            <div id="orderNote" class="text-stone-600 text-xs font-normal mt-1">
+                                Pisahkan pakaian putih dan gunakan pewangi lembut.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN (4 Cols) -->
+                <div class="lg:col-span-4 space-y-3.5">
+
+                    <!-- Card: Ringkasan Harga -->
+                    <div
+                        class="bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-5">
+                        <h3 class="text-slate-800 text-sm font-normal leading-5">Ringkasan Harga</h3>
+
+                        <div class="mt-4 space-y-2.5 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">Harga layanan</span>
+                                <span id="summarySubtotal" class="text-slate-700 font-bold">Rp45.000</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500">Biaya tambahan</span>
+                                <span class="text-slate-700 font-bold">Rp0</span>
+                            </div>
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <span class="text-slate-700 font-semibold">Total</span>
+                                <span id="summaryTotal" class="text-blue-950 text-base font-bold">Rp45.000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <a href="statuspesanan.html"
+                        class="w-full py-3 px-4 bg-blue-950 hover:bg-blue-900 active:scale-[0.99] text-white text-xs font-semibold rounded-lg shadow-[0_7px_17px_0_rgba(23,49,74,0.13)] flex items-center justify-center gap-2 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span>Perbarui Status</span>
+                    </a>
+
+                    <button type="button" onclick="window.print()"
+                        class="w-full py-2.5 px-4 bg-white hover:bg-slate-50 active:scale-[0.99] text-slate-600 text-xs font-semibold rounded-lg border border-slate-300 flex items-center justify-center gap-2 transition">
+                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Cetak Nota</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        }
+
+        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // Data pesanan dinamis berdasarkan parameter ?id=ORD-...
+        const orders = {
+            'ORD-0524-018': {
+                id: 'ORD-0524-018',
+                date: 'Dibuat pada 20 Mei 2024, 09.15 WIB',
+                status: 'Dicuci',
+                badgeClass: 'bg-sky-100 text-cyan-600',
+                dotClass: 'bg-cyan-600',
+                initials: 'AP',
+                customer: 'Andi Pratama',
+                phone: '0812 3456 7890',
+                address: 'Jl. Cempaka Indah No. 12, Bandung',
+                service: 'Cuci + Setrika',
+                desc: 'Pakaian campuran · Reguler',
+                weight: '4.5 kg',
+                price: 'Rp45.000',
+                note: 'Pisahkan pakaian putih dan gunakan pewangi lembut.'
+            },
+            'ORD-0524-017': {
+                id: 'ORD-0524-017',
+                date: 'Dibuat pada 20 Mei 2024, 08.40 WIB',
+                status: 'Menunggu konfirmasi',
+                badgeClass: 'bg-rose-50 text-red-500',
+                dotClass: 'bg-red-500',
+                initials: 'SR',
+                customer: 'Siti Rahma',
+                phone: '0813 8890 1122',
+                address: 'Jl. Ir. H. Juanda No. 84, Bandung',
+                service: 'Express',
+                desc: 'Pakaian campuran · Express 6 Jam',
+                weight: '3 kg',
+                price: 'Rp54.000',
+                note: 'Selesaikan sebelum pukul 15.00 WIB.'
+            },
+            'ORD-0524-016': {
+                id: 'ORD-0524-016',
+                date: 'Dibuat pada 19 Mei 2024, 14.20 WIB',
+                status: 'Diproses',
+                badgeClass: 'bg-yellow-50 text-yellow-600',
+                dotClass: 'bg-yellow-600',
+                initials: 'BS',
+                customer: 'Budi Santoso',
+                phone: '0857 2020 3344',
+                address: 'Jl. Tubagus Ismail No. 7, Bandung',
+                service: 'Cuci Kering',
+                desc: 'Pakaian harian · Reguler',
+                weight: '6 kg',
+                price: 'Rp42.000',
+                note: 'Tanpa pewangi tambahan.'
+            },
+            'ORD-0524-015': {
+                id: 'ORD-0524-015',
+                date: 'Dibuat pada 19 Mei 2024, 11.10 WIB',
+                status: 'Disetrika',
+                badgeClass: 'bg-violet-100 text-slate-600',
+                dotClass: 'bg-slate-500',
+                initials: 'ML',
+                customer: 'Maya Lestari',
+                phone: '0821 4466 7733',
+                address: 'Jl. Sekeloa Selatan No. 21, Bandung',
+                service: 'Setrika Saja',
+                desc: 'Kemeja & pakaian kerja · Reguler',
+                weight: '5 kg',
+                price: 'Rp30.000',
+                note: 'Kemeja kerja harap dilipat rapi.'
+            },
+            'ORD-0524-014': {
+                id: 'ORD-0524-014',
+                date: 'Dibuat pada 18 Mei 2024, 15.05 WIB',
+                status: 'Selesai',
+                badgeClass: 'bg-emerald-50 text-teal-700',
+                dotClass: 'bg-teal-700',
+                initials: 'RM',
+                customer: 'Rizky Maulana',
+                phone: '0819 7788 2211',
+                address: 'Jl. Dipatiukur No. 36, Bandung',
+                service: 'Cuci + Setrika',
+                desc: 'Pakaian campuran · Reguler',
+                weight: '3.5 kg',
+                price: 'Rp35.000',
+                note: 'Tidak ada catatan khusus.'
+            },
+            'ORD-0524-013': {
+                id: 'ORD-0524-013',
+                date: 'Dibuat pada 18 Mei 2024, 10.30 WIB',
+                status: 'Diambil',
+                badgeClass: 'bg-slate-100 text-slate-500',
+                dotClass: 'bg-slate-500',
+                initials: 'NP',
+                customer: 'Nadia Putri',
+                phone: '0812 9988 7766',
+                address: 'Jl. Cisitu Indah No. 15, Bandung',
+                service: 'Cuci Kering',
+                desc: 'Pakaian campuran · Reguler',
+                weight: '4 kg',
+                price: 'Rp28.000',
+                note: 'Sudah diambil oleh pelanggan.'
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('id');
+        if (orderId && orders[orderId]) {
+            const o = orders[orderId];
+            document.getElementById('orderId').textContent = o.id;
+            document.getElementById('orderDate').textContent = o.date;
+            document.getElementById('orderStatusText').textContent = o.status;
+            document.getElementById('orderStatusBadge').className = `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${o.badgeClass}`;
+            document.getElementById('orderStatusDot').className = `w-1.5 h-1.5 rounded-full ${o.dotClass}`;
+            document.getElementById('customerInitials').textContent = o.initials;
+            document.getElementById('customerName').textContent = o.customer;
+            document.getElementById('customerPhone').textContent = o.phone;
+            document.getElementById('customerAddress').textContent = o.address;
+            document.getElementById('serviceName').textContent = o.service;
+            document.getElementById('serviceDesc').textContent = o.desc;
+            document.getElementById('serviceWeight').textContent = o.weight;
+            document.getElementById('servicePrice').textContent = o.price;
+            document.getElementById('orderNote').textContent = o.note;
+            document.getElementById('summarySubtotal').textContent = o.price;
+            document.getElementById('summaryTotal').textContent = o.price;
+        }
+    </script>
+</body>
+
+</html>
