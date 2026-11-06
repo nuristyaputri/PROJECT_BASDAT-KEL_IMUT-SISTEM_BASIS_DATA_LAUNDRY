@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layanan Laundry - Bersihin Laundry</title>
+
+  <!-- Google Fonts: Poppins (sesuai desain Figma) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Cursor affordance pada seluruh kontrol interaktif */
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]) {
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    [aria-disabled="true"] {
+      cursor: not-allowed;
+    }
+
+    /* Gradien Kartu Bantuan Sidebar sesuai Figma: bg-linear-60 from-blue-50 to-slate-50 */
+    .bg-figma-help {
+      background: linear-gradient(150deg, #eff6ff 0%, #f8fafc 100%);
+    }
+
+    /* Hormati preferensi pengurangan gerakan (reduced motion) */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+  <!-- OVERLAY SIDEBAR MOBILE -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden" aria-hidden="true"></div>
+
+  <!-- ===================================================================== -->
+  <!-- SIDEBAR NAVIGASI PELANGGAN (Acuan Figma: w-60, border-r border-slate-200) -->
+  <!-- ===================================================================== -->
+  <aside id="sidebar" aria-label="Menu Samping Pelanggan"
+    class="w-60 min-h-screen px-5 pt-7 pb-5 fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 flex flex-col justify-between items-start transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out shrink-0">
+
+    <!-- Bagian Atas: Logo & Daftar Menu -->
+    <div class="w-full flex flex-col justify-start items-start">
+
+      <!-- Logo Brand Bersihin Laundry -->
+      <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
+        <a href="dashboard.html"
+          class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="44" height="44"
+            fetchpriority="high"
+            class="size-10 rounded-xl shadow-[0px_8px_22px_0px_rgba(121,199,232,0.30)] shrink-0 select-none" />
+          <div class="inline-flex flex-col justify-start items-start">
+            <div class="leading-5">
+              <span class="text-blue-950 text-xl font-bold font-['Poppins'] leading-5">Bersih</span><span
+                class="text-sky-600 text-xl font-bold font-['Poppins'] leading-5">in</span>
+            </div>
+            <div class="pt-1 flex flex-col justify-start items-start">
+              <span
+                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[4px]">LAUNDRY</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Tombol Tutup Sidebar di Mobile -->
+        <button type="button" id="closeSidebarBtn" aria-label="Tutup menu navigasi"
+          class="lg:hidden min-w-[44px] min-h-[44px] -mr-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigasi Utama -->
+      <nav aria-label="Navigasi Utama" class="w-full flex flex-col justify-start items-start">
+
+        <!-- Kelompok: MENU UTAMA -->
+        <div class="w-full px-2.5 pt-2 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            MENU UTAMA
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 1: Dashboard -->
+          <li>
+            <a href="dashboard.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <!-- Item 2: Layanan (Aktif sesuai Figma) -->
+          <li>
+            <a href="layanan.html" aria-current="page"
+              class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                aria-hidden="true"></span>
+              <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                <path d="M6.5 7H13.5M6.5 10.5H13.5M6.5 14H10.5" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" />
+              </svg>
+              <span>Layanan</span>
+            </a>
+          </li>
+
+          <!-- Item 3: Buat Pesanan -->
+          <li>
+            <a href="pesanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M10 6.5V13.5M6.5 10H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Buat Pesanan</span>
+            </a>
+          </li>
+
+          <!-- Item 4: Status Pesanan (dengan badge 1 sesuai Figma) -->
+          <li>
+            <a href="status.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-between items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="inline-flex items-center gap-3">
+                <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 6.2V10L12.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <span>Status Pesanan</span>
+              </span>
+              <span id="sidebarActiveBadge"
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
+                1
+              </span>
+            </a>
+          </li>
+
+          <!-- Item 5: Riwayat -->
+          <li>
+            <a href="riwayat.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M8 9.5H13M8 13H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Riwayat</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Kelompok: AKUN -->
+        <div class="w-full px-2.5 pt-6 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            AKUN
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 6: Profil Saya -->
+          <li>
+            <a href="profil.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Profil Saya</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
+
+      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
+      <div
+        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
+        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
+          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
+          Butuh bantuan?
+        </div>
+        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
+          Tim kami siap membantu Anda.
+        </p>
+        <button type="button" id="openHelpModalBtn"
+          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+          <span>Hubungi Kami</span>
+          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tombol Keluar -->
+      <a href="login.html"
+        class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+        <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
+          <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- WRAPPER KONTEN UTAMA (pl-60 pada layar Desktop sesuai Figma)          -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
+
+    <!-- TOPBAR (Acuan Figma: h-20 px-9 bg-white/90 border-b border-slate-200) -->
+    <header
+      class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
+
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+          aria-controls="sidebar"
+          class="lg:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <div class="flex flex-col justify-start items-start">
+          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Layanan Laundry</h1>
+          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+          </p>
+        </div>
+      </div>
+      <!-- Kanan: Notifikasi & Profil Pelanggan -->
+      <div class="flex justify-end items-center gap-3">
+
+        <!-- Tombol Notifikasi -->
+        <div class="relative">
+          <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span id="notifDot"
+              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+          </button>
+
+          <!-- Panel Dropdown Notifikasi -->
+          <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+            class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+              <button type="button" id="markNotifReadBtn"
+                class="min-h-[44px] px-2 -my-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                Tandai dibaca
+              </button>
+            </div>
+            <div class="py-3 flex items-start gap-3">
+              <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="text-xs leading-4">
+                <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <div class="relative">
+          <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+            aria-label="Profil Pengguna"
+            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            AP
+          </button>
+
+          <!-- Dropdown Profil -->
+          <div id="profileDropdown" role="menu" aria-label="Menu Akun Pelanggan"
+            class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+            <div class="px-4 py-2 border-b border-slate-100">
+              <p id="dropdownUserName" class="text-xs font-bold text-slate-800">Andi Pratama</p>
+              <p id="dropdownUserEmail" class="text-[11px] text-slate-500 truncate">andi.pratama@email.com</p>
+            </div>
+            <a href="profil.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+              <span>Profil Saya</span>
+            </a>
+            <a href="login.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+              <span>Keluar Akun</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- KONTEN UTAMA HALAMAN LAYANAN (Acuan Figma: px-9 pt-7 pb-14)         -->
+    <!-- =================================================================== -->
+    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-7 pb-14 flex flex-col justify-start items-start">
+
+      <!-- HEADER SECTION: Judul & Badge Jaminan Bersih -->
+      <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+        <div class="max-w-xl flex flex-col justify-start items-start">
+          <span class="text-cyan-600 text-xs font-bold font-['Poppins'] leading-4 tracking-widest uppercase">
+            PILIH YANG TERBAIK
+          </span>
+          <h2 class="pt-1.5 text-slate-800 text-xl sm:text-2xl font-normal font-['Poppins'] leading-8 sm:leading-9">
+            Layanan untuk setiap kebutuhan Anda
+          </h2>
+          <p class="pt-1.5 text-slate-500 text-xs font-normal font-['Poppins'] leading-4">
+            Dikerjakan oleh tim profesional dengan deterjen berkualitas dan proses higienis.
+          </p>
+        </div>
+
+        <!-- Badge Jaminan Bersih (Sesuai Figma: bg-emerald-50 rounded-[10px]) -->
+        <button type="button" id="jaminanBadgeBtn"
+          class="px-3.5 py-3 bg-emerald-50 hover:bg-emerald-100/80 rounded-[10px] flex justify-start items-center gap-2.5 transition shrink-0 text-left">
+          <div class="size-7 bg-white rounded-xl flex justify-center items-center text-teal-700 shadow-2xs shrink-0">
+            <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8.2L6.5 11.2L12.5 5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-start items-start">
+            <span class="text-teal-700 text-[11px] font-bold font-['Poppins'] leading-3.5">Jaminan Bersih</span>
+            <span class="pt-0.5 text-slate-500 text-[9px] font-normal font-['Poppins'] leading-3">Cuci ulang gratis*</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- GRID 4 KARTU LAYANAN LAUNDRY (Sesuai Figma) -->
+      <div id="pilihLayananGrid" class="w-full pt-7 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+        <!-- KARTU 1: Cuci Kering -->
+        <article
+          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-blue-50 rounded-xl flex justify-center items-center text-cyan-600">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="2" />
+                <circle cx="14" cy="15" r="5" stroke="currentColor" stroke-width="2" />
+                <circle cx="8" cy="7.5" r="1" fill="currentColor" />
+                <circle cx="11.5" cy="7.5" r="1" fill="currentColor" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Kering
+            </h3>
+
+            <!-- Deskripsi -->
+            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Pakaian dicuci bersih dan dikeringkan sempurna.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>2-3 hari</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 3 kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp7.000</span><span
+                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+              </div>
+            </div>
+            <button type="button"
+              onclick="openServiceOrderModal('Cuci Kering', 7000, '2-3 hari', 'Minimal 3 kg', 'Pakaian dicuci bersih dan dikeringkan sempurna.')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- KARTU 2: Cuci + Setrika (PALING POPULER - Sesuai Figma) -->
+        <article
+          class="p-5 relative bg-white rounded-2xl shadow-[0px_10px_30px_0px_rgba(76,167,206,0.07)] border border-sky-300 hover:shadow-lg transition flex flex-col justify-between items-start">
+          <!-- Badge PALING POPULER -->
+          <div
+            class="px-2.5 py-1 right-4 -top-2.5 absolute bg-blue-400 rounded-[20px] inline-flex justify-center items-center shadow-2xs">
+            <span class="text-white text-[9px] font-bold font-['Poppins'] leading-3 tracking-wide uppercase">
+              PALING POPULER
+            </span>
+          </div>
+
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-indigo-50 rounded-xl flex justify-center items-center text-indigo-500">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path
+                  d="M9 4.5L14 7L19 4.5L23.5 8.5L20.5 12.5L19 11.5V22.5C19 23.05 18.55 23.5 18 23.5H10C9.45 23.5 9 23.05 9 22.5V11.5L7.5 12.5L4.5 8.5L9 4.5Z"
+                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci + Setrika
+            </h3>
+
+            <!-- Deskripsi -->
+            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Paket lengkap, pakaian bersih, wangi, dan rapi.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>2-3 hari</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 3 kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp10.000</span><span
+                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+              </div>
+            </div>
+            <button type="button"
+              onclick="openServiceOrderModal('Cuci + Setrika', 10000, '2-3 hari', 'Minimal 3 kg', 'Paket lengkap, pakaian bersih, wangi, dan rapi.')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- KARTU 3: Setrika Saja -->
+        <article
+          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-orange-50 rounded-xl flex justify-center items-center text-orange-400">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M10 8H18.5C20.43 8 22 9.57 22 11.5V14H7.5L4.5 19.5H23.5V16.5C23.5 14 22 12 19 12H10"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Setrika Saja
+            </h3>
+
+            <!-- Deskripsi -->
+            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Pakaian disetrika rapi dengan pewangi premium.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>1-2 hari</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 3 kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp6.000</span><span
+                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+              </div>
+            </div>
+            <button type="button"
+              onclick="openServiceOrderModal('Setrika Saja', 6000, '1-2 hari', 'Minimal 3 kg', 'Pakaian disetrika rapi dengan pewangi premium.')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- KARTU 4: Express -->
+        <article
+          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-orange-50 rounded-xl flex justify-center items-center text-red-400">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M15.5 3.5L6.5 15.5H14L12.5 24.5L21.5 12.5H14L15.5 3.5Z" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Express
+            </h3>
+
+            <!-- Deskripsi -->
+            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Solusi cepat untuk kebutuhan laundry di hari yang sama.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span>6 jam</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 3 kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp18.000</span><span
+                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+              </div>
+            </div>
+            <button type="button"
+              onclick="openServiceOrderModal('Express', 18000, '6 jam', 'Minimal 3 kg', 'Solusi cepat untuk kebutuhan laundry di hari yang sama.')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- BANNER INFORMASI LAYANAN BAWAH (Sesuai Figma: bg-blue-50 rounded-xl border-blue-100) -->
+      <div class="w-full pt-5">
+        <div
+          class="w-full px-5 py-4 bg-blue-50 rounded-xl border border-blue-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div class="flex justify-start items-center gap-3">
+            <div class="size-9 bg-white rounded-[10px] flex justify-center items-center text-cyan-600 shrink-0 shadow-2xs">
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path
+                  d="M10 2.5L4 5V9.5C4 13.5 6.56 17.15 10 18.2C13.44 17.15 16 13.5 16 9.5V5L10 2.5Z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                <path d="M7.5 10L9.2 11.7L12.8 8.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="flex flex-col justify-start items-start">
+              <span class="text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
+                Semua layanan sudah termasuk
+              </span>
+              <span class="pt-0.5 text-slate-500 text-[11px] font-normal font-['Poppins'] leading-4">
+                Deterjen premium, pewangi pilihan, dan pengemasan rapi.
+              </span>
+            </div>
+          </div>
+
+          <button type="button" id="openTermsModalBtn"
+            class="text-cyan-700 hover:text-cyan-900 text-xs font-semibold font-['Poppins'] leading-4 underline-offset-4 hover:underline shrink-0">
+            Lihat syarat layanan
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL PILIH LAYANAN & SIMULASI PESANAN                                -->
+  <!-- ===================================================================== -->
+  <div id="serviceOrderModal" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-600">Pilih Paket Laundry</span>
+          <h3 id="serviceModalTitle" class="text-base font-bold text-slate-800">Cuci + Setrika</h3>
+        </div>
+        <button type="button" id="closeServiceModalBtn" aria-label="Tutup modal"
+          class="size-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="serviceOrderForm" class="p-6 space-y-4">
+        <p id="serviceModalDesc" class="text-xs text-slate-500 leading-relaxed">
+          Paket lengkap, pakaian bersih, wangi, dan rapi.
+        </p>
+
+        <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+          <div>
+            <span class="block text-[10px] text-slate-400">Harga / kg</span>
+            <span id="serviceModalPrice" class="text-xs font-bold text-slate-800">Rp10.000</span>
+          </div>
+          <div class="border-x border-slate-200/80">
+            <span class="block text-[10px] text-slate-400">Estimasi</span>
+            <span id="serviceModalDuration" class="text-xs font-bold text-slate-800">2-3 hari</span>
+          </div>
+          <div>
+            <span class="block text-[10px] text-slate-400">Ketentuan</span>
+            <span id="serviceModalMinWeight" class="text-xs font-bold text-slate-800">Minimal 3 kg</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="orderWeightInput" class="block text-xs font-semibold text-slate-700 mb-1">
+              Estimasi Berat (kg)
+            </label>
+            <input type="number" id="orderWeightInput" min="3" max="100" step="0.5" value="3" required
+              class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:border-cyan-600">
+          </div>
+          <div>
+            <label for="orderPerfumeSelect" class="block text-xs font-semibold text-slate-700 mb-1">
+              Pilihan Pewangi
+            </label>
+            <select id="orderPerfumeSelect"
+              class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 bg-white focus:outline-none focus:border-cyan-600">
+              <option value="Ocean Fresh">Ocean Fresh (Populer)</option>
+              <option value="Sakura Blossom">Sakura Blossom</option>
+              <option value="Lavender Soft">Lavender Soft</option>
+              <option value="Tanpa Pewangi">Tanpa Pewangi</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="orderNotesInput" class="block text-xs font-semibold text-slate-700 mb-1">
+            Catatan Tambahan (Opsional)
+          </label>
+          <input type="text" id="orderNotesInput" placeholder="Contoh: Pisahkan pakaian putih, jangan disetrika terlalu panas"
+            class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-cyan-600">
+        </div>
+
+        <div class="p-3.5 bg-blue-50/80 rounded-xl border border-blue-100 flex items-center justify-between">
+          <div>
+            <span class="block text-[10px] font-medium text-slate-500">Estimasi Total Biaya</span>
+            <span id="serviceModalTotalCost" class="text-base font-bold text-cyan-800">Rp30.000</span>
+          </div>
+          <span class="text-[10px] text-cyan-700 bg-white px-2.5 py-1 rounded-full font-semibold border border-blue-100">
+            Termasuk deterjen & kemas
+          </span>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2.5">
+          <button type="button" id="cancelServiceModalBtn"
+            class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold shadow-xs transition">
+            Konfirmasi & Buat Pesanan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL SYARAT & JAMINAN LAYANAN                                        -->
+  <!-- ===================================================================== -->
+  <div id="termsModal" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="termsModalTitle" class="text-sm font-bold text-slate-800">Syarat & Jaminan Layanan Bersihin</h3>
+        <button type="button" id="closeTermsModalBtn" aria-label="Tutup syarat layanan"
+          class="size-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-3 text-xs text-slate-600 leading-relaxed">
+        <div class="flex items-start gap-2.5">
+          <span class="size-5 rounded-full bg-emerald-100 text-teal-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">1</span>
+          <p><strong class="text-slate-800">Berat Minimal 3 kg:</strong> Seluruh paket kiloan berlaku minimum perhitungan 3 kg per nota transaksi.</p>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <span class="size-5 rounded-full bg-emerald-100 text-teal-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">2</span>
+          <p><strong class="text-slate-800">Jaminan Bersih (Cuci Ulang Gratis):</strong> Klaim garansi cuci ulang dapat diajukan maksimal 1x24 jam setelah pakaian diterima dengan menunjukkan nota transaksi.</p>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <span class="size-5 rounded-full bg-emerald-100 text-teal-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">3</span>
+          <p><strong class="text-slate-800">Proses Higienis 1 Mesin 1 Pelanggan:</strong> Pakaian Anda tidak pernah dicampur dengan pakaian pelanggan lain.</p>
+        </div>
+        <div class="pt-3 flex justify-end">
+          <button type="button" id="okTermsModalBtn"
+            class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold transition">
+            Mengerti
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL BANTUAN PELANGGAN                                               -->
+  <!-- ===================================================================== -->
+  <div id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="helpModalTitle" class="text-sm font-bold text-slate-800">Bantuan Pelanggan</h3>
+        <button type="button" id="closeHelpModalBtn" aria-label="Tutup bantuan"
+          class="size-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-3 text-xs text-slate-600">
+        <p>Tim layanan pelanggan Bersihin siap membantu pertanyaan seputar paket laundry dan penjemputan:</p>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+          <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
+          <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
+        </div>
+        <div class="pt-2 flex justify-end">
+          <button type="button" id="okHelpModalBtn"
+            class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold transition">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT INTERAKTIVITAS                                             -->
+  <!-- ===================================================================== -->
+  <script>
+    // 1. Toggle Sidebar Mobile
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    function openSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarOverlay.classList.remove('hidden');
+      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebarOverlay.classList.add('hidden');
+      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
+    // 3. Modal Pilih Layanan & Kalkulator Estimasi Biaya
+    const serviceOrderModal = document.getElementById('serviceOrderModal');
+    const serviceModalTitle = document.getElementById('serviceModalTitle');
+    const serviceModalDesc = document.getElementById('serviceModalDesc');
+    const serviceModalPrice = document.getElementById('serviceModalPrice');
+    const serviceModalDuration = document.getElementById('serviceModalDuration');
+    const serviceModalMinWeight = document.getElementById('serviceModalMinWeight');
+    const orderWeightInput = document.getElementById('orderWeightInput');
+    const serviceModalTotalCost = document.getElementById('serviceModalTotalCost');
+    const serviceOrderForm = document.getElementById('serviceOrderForm');
+    const closeServiceModalBtn = document.getElementById('closeServiceModalBtn');
+    const cancelServiceModalBtn = document.getElementById('cancelServiceModalBtn');
+    const navBuatPesananLink = document.getElementById('navBuatPesananLink');
+
+    let currentServicePricePerKg = 10000;
+    let currentServiceName = 'Cuci + Setrika';
+
+    function formatRupiah(num) {
+      return 'Rp' + Number(num).toLocaleString('id-ID');
+    }
+
+    function updateEstimatedTotal() {
+      const weight = Math.max(3, parseFloat(orderWeightInput.value) || 3);
+      const total = Math.round(weight * currentServicePricePerKg);
+      serviceModalTotalCost.textContent = formatRupiah(total);
+    }
+
+    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description) {
+      window.location.href = 'pesanan.html?service=' + encodeURIComponent(name);
+    };
+
+    function closeServiceOrderModal() {
+      serviceOrderModal.classList.add('hidden');
+    }
+
+    if (orderWeightInput) {
+      orderWeightInput.addEventListener('input', updateEstimatedTotal);
+    }
+    if (closeServiceModalBtn) closeServiceModalBtn.addEventListener('click', closeServiceOrderModal);
+    if (cancelServiceModalBtn) cancelServiceModalBtn.addEventListener('click', closeServiceOrderModal);
+
+    if (navBuatPesananLink) {
+      navBuatPesananLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeSidebar();
+        window.openServiceOrderModal(
+          'Cuci + Setrika',
+          10000,
+          '2-3 hari',
+          'Minimal 3 kg',
+          'Paket lengkap, pakaian bersih, wangi, dan rapi.'
+        );
+      });
+    }
+
+    if (serviceOrderForm) {
+      serviceOrderForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const weight = Math.max(3, parseFloat(orderWeightInput.value) || 3);
+        const perfume = document.getElementById('orderPerfumeSelect').value;
+        const total = formatRupiah(Math.round(weight * currentServicePricePerKg));
+
+        try {
+          sessionStorage.setItem('bersihin_last_order', JSON.stringify({
+            service: currentServiceName,
+            weightKg: weight,
+            perfume: perfume,
+            totalFormatted: total
+          }));
+        } catch (err) {
+          // Abaikan jika storage dibatasi pada mode privat
+        }
+
+        closeServiceOrderModal();
+        alert(`Pesanan layanan "${currentServiceName}" (${weight} kg - ${perfume}) dengan estimasi total ${total} berhasil dibuat! Anda akan diarahkan ke Dashboard untuk memantau status pesanan.`);
+        window.location.href = 'dashboard.html#pesananAktifSection';
+      });
+    }
+
+    // 4. Modal Syarat Layanan & Jaminan Bersih
+    const termsModal = document.getElementById('termsModal');
+    const openTermsModalBtn = document.getElementById('openTermsModalBtn');
+    const jaminanBadgeBtn = document.getElementById('jaminanBadgeBtn');
+    const closeTermsModalBtn = document.getElementById('closeTermsModalBtn');
+    const okTermsModalBtn = document.getElementById('okTermsModalBtn');
+
+    function openTermsModal() {
+      if (termsModal) termsModal.classList.remove('hidden');
+    }
+    function closeTermsModal() {
+      if (termsModal) termsModal.classList.add('hidden');
+    }
+
+    if (openTermsModalBtn) openTermsModalBtn.addEventListener('click', openTermsModal);
+    if (jaminanBadgeBtn) jaminanBadgeBtn.addEventListener('click', openTermsModal);
+    if (closeTermsModalBtn) closeTermsModalBtn.addEventListener('click', closeTermsModal);
+    if (okTermsModalBtn) okTermsModalBtn.addEventListener('click', closeTermsModal);
+
+    // 5. Modal Bantuan
+    const helpModal = document.getElementById('helpModal');
+    const openHelpModalBtn = document.getElementById('openHelpModalBtn');
+    const closeHelpModalBtn = document.getElementById('closeHelpModalBtn');
+    const okHelpModalBtn = document.getElementById('okHelpModalBtn');
+
+    if (openHelpModalBtn && helpModal) {
+      openHelpModalBtn.addEventListener('click', () => helpModal.classList.remove('hidden'));
+    }
+    if (closeHelpModalBtn && helpModal) {
+      closeHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
+    }
+    if (okHelpModalBtn && helpModal) {
+      okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
+    }
+  </script>
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pelanggan - Bersihin Laundry</title>
+
+  <!-- Google Fonts: Poppins (sesuai desain Figma) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* R-39: Cursor affordance pada seluruh kontrol interaktif aktif dan nonaktif */
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]) {
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    [aria-disabled="true"] {
+      cursor: not-allowed;
+    }
+
+    /* Gradien Banner Selamat Datang sesuai Figma: bg-linear-20 from-cyan-800 via-cyan-700 via 62% to-sky-300 */
+    .bg-figma-welcome {
+      background: linear-gradient(110deg, #155e75 0%, #0e7490 62%, #7dd3fc 100%);
+    }
+
+    /* Gradien Ilustrasi Mesin Cuci sesuai Figma: bg-linear-50 from-white to-blue-100 */
+    .bg-figma-washer {
+      background: linear-gradient(140deg, #ffffff 0%, #dbeafe 100%);
+    }
+
+    /* Gradien Kartu Bantuan Sidebar sesuai Figma: bg-linear-60 from-blue-50 to-slate-50 */
+    .bg-figma-help {
+      background: linear-gradient(150deg, #eff6ff 0%, #f8fafc 100%);
+    }
+
+    /* R-39: Hormati preferensi pengurangan gerakan (reduced motion) */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+  <!-- OVERLAY SIDEBAR MOBILE -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden" aria-hidden="true"></div>
+
+  <!-- ===================================================================== -->
+  <!-- SIDEBAR NAVIGASI PELANGGAN (Acuan Figma: w-60, border-r border-slate-200) -->
+  <!-- ===================================================================== -->
+  <aside id="sidebar" aria-label="Menu Samping Pelanggan"
+    class="w-60 min-h-screen px-5 pt-7 pb-5 fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 flex flex-col justify-between items-start transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out shrink-0">
+
+    <!-- Bagian Atas: Logo & Daftar Menu -->
+    <div class="w-full flex flex-col justify-start items-start">
+
+      <!-- Logo Brand Bersihin Laundry -->
+      <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
+        <a href="dashboard.html"
+          class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="44" height="44"
+            fetchpriority="high"
+            class="size-10 rounded-xl shadow-[0px_8px_22px_0px_rgba(121,199,232,0.30)] shrink-0 select-none" />
+          <div class="inline-flex flex-col justify-start items-start">
+            <div class="leading-5">
+              <span class="text-blue-950 text-xl font-bold font-['Poppins'] leading-5">Bersih</span><span
+                class="text-sky-600 text-xl font-bold font-['Poppins'] leading-5">in</span>
+            </div>
+            <div class="pt-1 flex flex-col justify-start items-start">
+              <span
+                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[4px]">LAUNDRY</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Tombol Tutup Sidebar di Mobile -->
+        <button type="button" id="closeSidebarBtn" aria-label="Tutup menu navigasi"
+          class="lg:hidden min-w-[44px] min-h-[44px] -mr-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigasi Utama -->
+      <nav aria-label="Navigasi Utama" class="w-full flex flex-col justify-start items-start">
+
+        <!-- Kelompok: MENU UTAMA -->
+        <div class="w-full px-2.5 pt-2 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            MENU UTAMA
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 1: Dashboard (Aktif) -->
+          <li>
+            <a href="dashboard.html" aria-current="page"
+              class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                aria-hidden="true"></span>
+              <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <!-- Item 2: Layanan -->
+          <li>
+            <a href="layanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                <path d="M6.5 7H13.5M6.5 10.5H13.5M6.5 14H10.5" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" />
+              </svg>
+              <span>Layanan</span>
+            </a>
+          </li>
+
+          <!-- Item 3: Buat Pesanan -->
+          <li>
+            <a href="pesanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M10 6.5V13.5M6.5 10H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Buat Pesanan</span>
+            </a>
+          </li>
+
+          <!-- Item 4: Status Pesanan (dengan badge 1) -->
+          <li>
+            <a href="status.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-between items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="inline-flex items-center gap-3">
+                <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 6.2V10L12.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <span>Status Pesanan</span>
+              </span>
+              <span id="sidebarActiveBadge"
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
+                1
+              </span>
+            </a>
+          </li>
+
+          <!-- Item 5: Riwayat -->
+          <li>
+            <a href="riwayat.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M8 9.5H13M8 13H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Riwayat</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Kelompok: AKUN -->
+        <div class="w-full px-2.5 pt-6 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            AKUN
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 6: Profil Saya -->
+          <li>
+            <a href="profil.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Profil Saya</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
+
+      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
+      <div
+        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
+        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
+          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
+          Butuh bantuan?
+        </div>
+        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
+          Tim kami siap membantu Anda.
+        </p>
+        <button type="button" id="openHelpModalBtn"
+          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+          <span>Hubungi Kami</span>
+          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tombol Keluar -->
+      <a href="login.html"
+        class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+        <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
+          <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- WRAPPER KONTEN UTAMA (pl-60 pada layar Desktop sesuai Figma)          -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
+
+    <!-- TOPBAR -->
+    <header
+      class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
+
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+          aria-controls="sidebar"
+          class="lg:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <div class="flex flex-col justify-start items-start">
+          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Dashboard</h1>
+          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+          </p>
+        </div>
+      </div>
+
+      <!-- Kanan: Notifikasi & Profil Pelanggan -->
+      <div class="flex justify-end items-center gap-3">
+
+        <!-- Tombol Notifikasi -->
+        <div class="relative">
+          <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span id="notifDot"
+              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+          </button>
+
+          <!-- Panel Dropdown Notifikasi -->
+          <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+            class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+              <button type="button" id="markNotifReadBtn"
+                class="min-h-[44px] px-2 -my-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                Tandai dibaca
+              </button>
+            </div>
+            <div class="py-3 flex items-start gap-3">
+              <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="text-xs leading-4">
+                <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <div class="relative">
+          <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+            aria-label="Profil Pengguna"
+            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            AP
+          </button>
+
+          <!-- Dropdown Profil -->
+          <div id="profileDropdown" role="menu" aria-label="Menu Akun Pelanggan"
+            class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+            <div class="px-4 py-2 border-b border-slate-100">
+              <p id="dropdownUserName" class="text-xs font-bold text-slate-800">Andi Pratama</p>
+              <p id="dropdownUserEmail" class="text-[11px] text-slate-500 truncate">andi.pratama@email.com</p>
+            </div>
+            <a href="profil.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+              <span>Profil Saya</span>
+            </a>
+            <a href="login.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+              <span>Keluar Akun</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- KONTEN UTAMA DASHBOARD PELANGGAN                                    -->
+    <!-- =================================================================== -->
+    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-6 sm:pt-7 pb-14 flex flex-col justify-start items-start">
+
+      <!-- 1. HERO BANNER SELAMAT DATANG (Sesuai Figma) -->
+      <section aria-label="Sambutan Pelanggan"
+        class="self-stretch min-h-44 px-6 sm:px-9 py-7 sm:py-8 relative bg-figma-welcome rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center overflow-hidden">
+
+        <div class="relative z-10 max-w-[500px] flex flex-col justify-start items-start">
+          <span class="text-cyan-100 text-xs font-bold font-['Poppins'] leading-4 tracking-widest uppercase">
+            SELAMAT DATANG KEMBALI
+          </span>
+          <h2 class="pt-1.5 text-white text-xl sm:text-2xl font-normal font-['Poppins'] leading-8 sm:leading-9">
+            Halo, Andi! Semoga harimu menyenangkan.
+          </h2>
+          <p class="pt-1.5 text-blue-50 text-xs font-normal font-['Poppins'] leading-4">
+            Laundry Anda sedang kami tangani dengan sepenuh hati.
+          </p>
+        </div>
+
+        <!-- Elemen Dekoratif Lingkaran & Ilustrasi Mesin Cuci (Sesuai Koordinat & Bentuk Figma) -->
+        <div
+          class="size-72 right-[180px] top-[-170px] absolute bg-white/0 rounded-full shadow-[0px_0px_0px_55px_rgba(255,255,255,0.02)] border border-white/10 pointer-events-none hidden sm:block"
+          aria-hidden="true"></div>
+
+        <div class="w-44 h-40 right-6 lg:right-12 top-[17px] absolute pointer-events-none hidden md:block"
+          aria-hidden="true">
+          <div
+            class="w-28 h-32 left-[35px] top-[32px] absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
+            <div class="self-stretch h-7 relative border-b border-slate-300">
+              <div class="size-1.5 left-[86px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
+              <div class="size-1.5 left-[74px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
+            </div>
+            <div
+              class="size-16 left-[18px] top-[42px] absolute bg-cyan-700 rounded-[35px] outline outline-[6.40px] outline-offset-[-6.40px] outline-sky-200 overflow-hidden">
+              <div class="w-20 h-9 left-[-0.65px] top-[39.34px] absolute origin-top-left rotate-[-8deg] bg-sky-300">
+              </div>
+              <div
+                class="size-5 left-[31.32px] top-[25.08px] absolute origin-top-left rotate-[22deg] rounded-lg border-[4.80px] border-white">
+              </div>
+            </div>
+          </div>
+          <div class="left-[157px] top-[12px] absolute text-cyan-100 text-xl font-normal leading-8 select-none">✦</div>
+          <div class="left-[3px] top-[55px] absolute text-cyan-100 text-xs font-normal leading-5 select-none">✦</div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- R-27: STATE LOADING & ERROR BANNER (Muncul saat state diuji)      -->
+      <!-- ================================================================= -->
+      <div id="dashboardStateBanner" role="status" aria-live="polite" class="hidden w-full mt-4"></div>
+
+      <!-- 2. EMPAT KARTU RINGKASAN STATISTIK PELANGGAN (Sesuai Figma) -->
+      <section aria-label="Ringkasan Aktivitas Laundry"
+        class="self-stretch pt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <!-- Kartu 1: Total Transaksi -->
+        <article
+          class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
+          <div class="size-9 bg-sky-100 rounded-xl inline-flex justify-center items-center shrink-0">
+            <svg class="size-5 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                stroke-linejoin="round" />
+              <path d="M8 9.5H13M8 13H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-start items-start">
+            <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Transaksi</h3>
+            <div id="statTotalTransaksi" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">24</div>
+            <div id="statTotalTransaksiSub" class="pt-0.5 text-[10px] font-normal font-['Poppins'] leading-3">
+              <span class="text-emerald-700 font-semibold">+3</span>
+              <span class="text-slate-500"> bulan ini</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Kartu 2: Sedang Diproses -->
+        <article
+          class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
+          <div class="size-9 bg-orange-50 rounded-xl inline-flex justify-center items-center shrink-0">
+            <svg class="size-5 text-orange-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+              <path d="M10 6.2V10L12.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-start items-start">
+            <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Sedang Diproses</h3>
+            <div id="statSedangDiproses" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">1</div>
+            <div id="statSedangDiprosesSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+              Estimasi selesai besok
+            </div>
+          </div>
+        </article>
+
+        <!-- Kartu 3: Pesanan Selesai -->
+        <article
+          class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
+          <div class="size-9 bg-emerald-50 rounded-xl inline-flex justify-center items-center shrink-0">
+            <svg class="size-5 text-teal-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4.5 10.5L8.2 14.2L15.5 6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-start items-start">
+            <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Pesanan Selesai</h3>
+            <div id="statPesananSelesai" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">22</div>
+            <div id="statPesananSelesaiSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+              91% tepat waktu
+            </div>
+          </div>
+        </article>
+
+        <!-- Kartu 4: Total Pengeluaran -->
+        <article
+          class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
+          <div class="size-9 bg-purple-100 rounded-xl inline-flex justify-center items-center shrink-0">
+            <svg class="size-5 text-violet-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
+              <path d="M2.5 8.2H17.5" stroke="currentColor" stroke-width="1.5" />
+              <circle cx="13.5" cy="12" r="1" fill="currentColor" />
+            </svg>
+          </div>
+          <div class="flex flex-col justify-start items-start">
+            <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Pengeluaran</h3>
+            <div id="statTotalPengeluaran" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">Rp842k</div>
+            <div id="statTotalPengeluaranSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+              Sejak Jan 2024
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- 3. BARIS TENGAH: PESANAN AKTIF (Kiri) & AKSES CEPAT (Kanan) -->
+      <div class="self-stretch pt-4 grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+
+        <!-- Kiri: Kartu Pesanan Aktif (8 kolom di Desktop) -->
+        <section id="pesananAktifSection" aria-labelledby="pesananAktifHeading"
+          class="lg:col-span-8 px-5 sm:px-6 py-5 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col justify-between items-start">
+
+          <!-- Konten Saat Data Aktif (Default) -->
+          <div id="activeOrderReadyContent" class="w-full">
+            <!-- Header Pesanan Aktif -->
+            <div class="w-full flex justify-between items-start gap-3">
+              <div class="flex flex-col justify-start items-start">
+                <span class="text-cyan-700 text-xs font-bold font-['Poppins'] leading-4 tracking-widest uppercase">
+                  PESANAN AKTIF
+                </span>
+                <h2 id="pesananAktifHeading"
+                  class="pt-1 text-slate-800 text-base font-normal font-['Poppins'] leading-6">
+                  Cuci + Setrika
+                </h2>
+              </div>
+              <span
+                class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5 shrink-0">
+                <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
+                <span class="text-amber-800 text-[10px] font-semibold font-['Poppins'] leading-3">Sedang dicuci</span>
+              </span>
+            </div>
+
+            <!-- Kotak Detail Ringkas (No. Transaksi, Berat, Estimasi Selesai) -->
+            <div
+              class="w-full mt-4 px-4 py-3 bg-slate-50 rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-0">
+              <div class="flex flex-col justify-start items-start">
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">No. Transaksi</span>
+                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">TRX-240518-01</span>
+              </div>
+              <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Berat</span>
+                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">4,5 kg</span>
+              </div>
+              <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Estimasi Selesai</span>
+                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">21 Mei 2024</span>
+              </div>
+            </div>
+
+            <!-- 4 Tahap Progress Stepper (Dikonfirmasi -> Dicuci -> Disetrika -> Selesai) -->
+            <ol aria-label="Tahapan Proses Laundry" class="w-full pt-6 pb-2 grid grid-cols-4 gap-2 relative">
+              <!-- Tahap 1: Dikonfirmasi -->
+              <li class="relative flex flex-col items-center text-center">
+                <div class="w-full h-0.5 left-1/2 top-3 absolute bg-blue-400" aria-hidden="true"></div>
+                <div
+                  class="size-6 relative z-10 bg-blue-400 rounded-xl inline-flex justify-center items-center text-white">
+                  <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span class="pt-1.5 text-cyan-700 text-[10px] font-medium font-['Poppins'] leading-3">
+                  Dikonfirmasi
+                </span>
+              </li>
+
+              <!-- Tahap 2: Dicuci -->
+              <li class="relative flex flex-col items-center text-center">
+                <div class="w-full h-0.5 left-1/2 top-3 absolute bg-blue-400" aria-hidden="true"></div>
+                <div
+                  class="size-6 relative z-10 bg-blue-400 rounded-xl inline-flex justify-center items-center text-white">
+                  <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span class="pt-1.5 text-cyan-700 text-[10px] font-semibold font-['Poppins'] leading-3">
+                  Dicuci
+                </span>
+              </li>
+
+              <!-- Tahap 3: Disetrika -->
+              <li class="relative flex flex-col items-center text-center">
+                <div class="w-full h-0.5 left-1/2 top-3 absolute bg-slate-200" aria-hidden="true"></div>
+                <div
+                  class="size-6 relative z-10 bg-white rounded-xl border-2 border-slate-300 inline-flex justify-center items-center">
+                  <span class="text-slate-500 text-[10px] font-bold font-['Poppins'] leading-3">3</span>
+                </div>
+                <span class="pt-1.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+                  Disetrika
+                </span>
+              </li>
+
+              <!-- Tahap 4: Selesai -->
+              <li class="relative flex flex-col items-center text-center">
+                <div
+                  class="size-6 relative z-10 bg-white rounded-xl border-2 border-slate-300 inline-flex justify-center items-center">
+                  <span class="text-slate-500 text-[10px] font-bold font-['Poppins'] leading-3">4</span>
+                </div>
+                <span class="pt-1.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+                  Selesai
+                </span>
+              </li>
+            </ol>
+
+            <!-- Footer Kartu Pesanan Aktif -->
+            <div class="w-full mt-3 pt-3 border-t border-slate-100 flex justify-between items-center gap-2">
+              <div class="inline-flex justify-start items-center gap-1.5 text-slate-500">
+                <svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                </svg>
+                <span class="text-[10px] font-normal font-['Poppins'] leading-3">Diperbarui 12 menit lalu</span>
+              </div>
+
+              <button type="button" data-order-detail="TRX-240518-01"
+                class="min-h-[44px] px-2.5 -my-2 rounded-lg inline-flex justify-center items-center gap-1.5 text-cyan-700 hover:text-cyan-900 hover:bg-cyan-50 active:bg-cyan-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                <span>Lihat Detail</span>
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3.5 8H12.5M12.5 8L9 4.5M12.5 8L9 11.5" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- R-27: Empty State untuk Pesanan Aktif -->
+          <div id="activeOrderEmptyContent" class="hidden w-full py-8 flex flex-col items-center justify-center text-center">
+            <div class="size-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mb-3">
+              <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6" />
+                <path d="M9 12H15M12 9V15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </div>
+            <p class="text-slate-800 text-sm font-semibold">Tidak Ada Pesanan Aktif</p>
+            <p class="text-slate-500 text-xs mt-1 max-w-sm">
+              Saat ini Anda tidak memiliki cucian yang sedang diproses. Buat pesanan baru kapan saja saat pakaian Anda siap dicuci.
+            </p>
+            <a href="pesanan.html"
+              class="mt-4 min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold inline-flex items-center">
+              Buat Pesanan Laundry
+            </a>
+          </div>
+        </section>
+
+        <!-- Kanan: Kartu Akses Cepat (4 kolom di Desktop) -->
+        <section aria-labelledby="aksesCepatHeading"
+          class="lg:col-span-4 p-5 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col justify-start items-start">
+
+          <h2 id="aksesCepatHeading" class="text-slate-800 text-xs font-semibold font-['Poppins'] leading-5">
+            Akses Cepat
+          </h2>
+
+          <div class="w-full pt-2 flex flex-col divide-y divide-slate-100">
+
+            <!-- Aksi Cepat 1: Buat Pesanan -->
+            <a href="pesanan.html"
+              class="w-full min-h-[56px] px-1.5 py-2.5 inline-flex justify-start items-center gap-3 hover:bg-slate-50 active:bg-slate-100 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <div class="size-8 bg-blue-50 rounded-lg inline-flex justify-center items-center shrink-0">
+                <svg class="size-4 text-cyan-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="3.5" y="3.5" width="13" height="13" rx="2.5" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 6.8V13.2M6.8 10H13.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="flex-1 flex flex-col justify-start items-start">
+                <span class="text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">Buat Pesanan</span>
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3.5">
+                  Pesan laundry baru
+                </span>
+              </div>
+              <svg class="size-4 text-slate-400 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </a>
+
+            <!-- Aksi Cepat 2: Lihat Layanan -->
+            <a href="layanan.html"
+              class="w-full min-h-[56px] px-1.5 py-2.5 inline-flex justify-start items-center gap-3 hover:bg-slate-50 active:bg-slate-100 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <div class="size-8 bg-blue-50 rounded-lg inline-flex justify-center items-center shrink-0">
+                <svg class="size-4 text-cyan-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M6.5 7H13.5M6.5 10.5H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="flex-1 flex flex-col justify-start items-start">
+                <span class="text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">Lihat Layanan</span>
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3.5">
+                  Cek layanan &amp; harga
+                </span>
+              </div>
+              <svg class="size-4 text-slate-400 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </a>
+
+            <!-- Aksi Cepat 3: Riwayat -->
+            <a href="riwayat.html"
+              class="w-full min-h-[56px] px-1.5 py-2.5 inline-flex justify-start items-center gap-3 hover:bg-slate-50 active:bg-slate-100 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <div class="size-8 bg-blue-50 rounded-lg inline-flex justify-center items-center shrink-0">
+                <svg class="size-4 text-cyan-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                    stroke-linejoin="round" />
+                  <path d="M8 9.5H13M8 13H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="flex-1 flex flex-col justify-start items-start">
+                <span class="text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">Riwayat</span>
+                <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3.5">
+                  Lihat transaksi Anda
+                </span>
+              </div>
+              <svg class="size-4 text-slate-400 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </a>
+
+          </div>
+        </section>
+      </div>
+
+      <!-- 4. TABEL TRANSAKSI TERBARU (Sesuai Figma) -->
+      <section id="transaksiTerbaruSection" aria-labelledby="transaksiTerbaruHeading"
+        class="self-stretch mt-4 px-5 sm:px-6 py-5 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col justify-start items-start">
+
+        <!-- Header Tabel -->
+        <div class="self-stretch flex justify-between items-start gap-4">
+          <div class="flex flex-col justify-start items-start">
+            <h2 id="transaksiTerbaruHeading" class="text-slate-800 text-xs font-semibold font-['Poppins'] leading-5">
+              Transaksi Terbaru
+            </h2>
+            <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+              Aktivitas laundry terakhir Anda
+            </p>
+          </div>
+
+          <a href="riwayat.html"
+            class="min-h-[44px] px-2.5 -my-2 rounded-lg inline-flex justify-center items-center gap-1.5 text-cyan-700 hover:text-cyan-900 hover:bg-cyan-50 active:bg-cyan-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+            <span>Lihat Semua</span>
+            <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8H12.5M12.5 8L9 4.5M12.5 8L9 11.5" stroke="currentColor" stroke-width="1.3"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Pembungkus Tabel Responsif -->
+        <div id="recentTransactionsTableWrapper" class="w-full pt-3 overflow-x-auto">
+          <table class="w-full min-w-[640px] text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-600 text-[10px] font-semibold font-['Poppins'] leading-3">
+                <th scope="col" class="px-3 py-2.5 rounded-l-lg">No. Transaksi</th>
+                <th scope="col" class="px-3 py-2.5">Tanggal</th>
+                <th scope="col" class="px-3 py-2.5">Layanan</th>
+                <th scope="col" class="px-3 py-2.5">Total</th>
+                <th scope="col" class="px-3 py-2.5">Status</th>
+                <th scope="col" class="px-3 py-2.5 text-right rounded-r-lg">Detail</th>
+              </tr>
+            </thead>
+            <tbody id="recentTransactionsBody" class="divide-y divide-slate-100 text-[11px] font-['Poppins']">
+              <!-- Baris 1: TRX-240518-01 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="px-3 py-3 font-bold text-slate-800">TRX-240518-01</td>
+                <td class="px-3 py-3 text-slate-600">18 Mei 2024</td>
+                <td class="px-3 py-3 text-slate-600">Cuci + Setrika</td>
+                <td class="px-3 py-3 font-bold text-slate-800">Rp45.000</td>
+                <td class="px-3 py-3">
+                  <span
+                    class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5">
+                    <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-amber-800 text-[10px] font-semibold leading-3">Diproses</span>
+                  </span>
+                </td>
+                <td class="px-3 py-1.5 text-right">
+                  <button type="button" data-order-detail="TRX-240518-01"
+                    aria-label="Lihat detail transaksi TRX-240518-01"
+                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Baris 2: TRX-240512-08 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="px-3 py-3 font-bold text-slate-800">TRX-240512-08</td>
+                <td class="px-3 py-3 text-slate-600">12 Mei 2024</td>
+                <td class="px-3 py-3 text-slate-600">Express</td>
+                <td class="px-3 py-3 font-bold text-slate-800">Rp72.000</td>
+                <td class="px-3 py-3">
+                  <span
+                    class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex justify-start items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-800 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-3 py-1.5 text-right">
+                  <button type="button" data-order-detail="TRX-240512-08"
+                    aria-label="Lihat detail transaksi TRX-240512-08"
+                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Baris 3: TRX-240506-12 -->
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="px-3 py-3 font-bold text-slate-800">TRX-240506-12</td>
+                <td class="px-3 py-3 text-slate-600">6 Mei 2024</td>
+                <td class="px-3 py-3 text-slate-600">Cuci Kering</td>
+                <td class="px-3 py-3 font-bold text-slate-800">Rp28.000</td>
+                <td class="px-3 py-3">
+                  <span class="px-2.5 py-1 bg-indigo-50 rounded-[20px] inline-flex justify-start items-center gap-1.5">
+                    <span class="size-1.5 bg-cyan-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-cyan-800 text-[10px] font-semibold leading-3">Diambil</span>
+                  </span>
+                </td>
+                <td class="px-3 py-1.5 text-right">
+                  <button type="button" data-order-detail="TRX-240506-12"
+                    aria-label="Lihat detail transaksi TRX-240506-12"
+                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- R-27: Empty State untuk Tabel Transaksi Terbaru -->
+        <div id="recentTransactionsEmpty" class="hidden w-full py-8 text-center">
+          <p class="text-slate-700 text-xs font-semibold">Belum Ada Riwayat Transaksi</p>
+          <p class="text-slate-500 text-[11px] mt-1">Riwayat transaksi laundry Anda akan tercatat secara otomatis di tabel ini.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER HALAMAN -->
+    <footer class="w-full px-6 lg:px-9 py-4 border-t border-slate-200/80 bg-white text-slate-500 text-[11px] flex flex-col sm:flex-row justify-between items-center gap-2">
+      <span>&copy; 2024 Bersihin Laundry. Sistem Basis Data Laundry - Modul Pelanggan.</span>
+      <span>Masuk sebagai: <strong class="font-semibold text-slate-700">Andi Pratama</strong></span>
+    </footer>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 1: DETAIL TRANSAKSI PELANGGAN                                   -->
+  <!-- ===================================================================== -->
+  <div id="orderDetailModal" role="dialog" aria-modal="true" aria-labelledby="orderDetailModalTitle"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-6 relative">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span class="text-cyan-700 text-[10px] font-bold tracking-widest uppercase">Rincian Transaksi</span>
+          <h3 id="orderDetailModalTitle" class="text-slate-800 text-lg font-semibold mt-0.5">TRX-240518-01</h3>
+        </div>
+        <button type="button" data-close-modal="orderDetailModal" aria-label="Tutup rincian transaksi"
+          class="min-w-[44px] min-h-[44px] -mr-2 -mt-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <dl class="mt-4 divide-y divide-slate-100 text-xs">
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Pelanggan</dt>
+          <dd class="font-semibold text-slate-800">Andi Pratama</dd>
+        </div>
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Paket Layanan</dt>
+          <dd id="modalOrderService" class="font-semibold text-slate-800">Cuci + Setrika</dd>
+        </div>
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Tanggal Masuk</dt>
+          <dd id="modalOrderDate" class="font-medium text-slate-700">18 Mei 2024</dd>
+        </div>
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Berat Cucian</dt>
+          <dd id="modalOrderWeight" class="font-medium text-slate-700">4,5 kg</dd>
+        </div>
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Status Saat Ini</dt>
+          <dd id="modalOrderStatus" class="font-semibold text-cyan-700">Sedang dicuci</dd>
+        </div>
+        <div class="py-2.5 flex justify-between">
+          <dt class="text-slate-500">Total Biaya</dt>
+          <dd id="modalOrderTotal" class="font-bold text-slate-900 text-sm">Rp45.000</dd>
+        </div>
+      </dl>
+
+      <div class="mt-5 flex justify-end">
+        <button type="button" data-close-modal="orderDetailModal"
+          class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 focus-visible:ring-offset-2">
+          Tutup Rincian
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 2: MODUL NAVIGASI / AKSES CEPAT (Jika halaman belum dibuat)     -->
+  <!-- ===================================================================== -->
+  <div id="modulePreviewModal" role="dialog" aria-modal="true" aria-labelledby="modulePreviewModalTitle"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-6 relative">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span class="text-cyan-700 text-[10px] font-bold tracking-widest uppercase">Navigasi Modul Pelanggan</span>
+          <h3 id="modulePreviewModalTitle" class="text-slate-800 text-lg font-semibold mt-0.5">Modul Layanan</h3>
+        </div>
+        <button type="button" data-close-modal="modulePreviewModal" aria-label="Tutup dialog modul"
+          class="min-w-[44px] min-h-[44px] -mr-2 -mt-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <p id="modulePreviewModalDesc" class="mt-2 text-slate-600 text-xs leading-5"></p>
+
+      <div class="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
+        <p class="font-semibold text-slate-800">Status Integrasi Halaman:</p>
+        <p id="modulePreviewTargetFile" class="mt-1 text-slate-600"></p>
+      </div>
+
+      <div class="mt-5 flex justify-end">
+        <button type="button" data-close-modal="modulePreviewModal"
+          class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 focus-visible:ring-offset-2">
+          Mengerti
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL 3: HUBUNGI KAMI (Bantuan Pelanggan)                             -->
+  <!-- ===================================================================== -->
+  <div id="helpContactModal" role="dialog" aria-modal="true" aria-labelledby="helpContactModalTitle"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50">
+    <div class="w-full max-w-md bg-white rounded-2xl border border-slate-200 shadow-xl p-6 relative">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span class="text-cyan-700 text-[10px] font-bold tracking-widest uppercase">Layanan Pelanggan</span>
+          <h3 id="helpContactModalTitle" class="text-slate-800 text-lg font-semibold mt-0.5">Hubungi Bersihin Laundry</h3>
+        </div>
+        <button type="button" data-close-modal="helpContactModal" aria-label="Tutup dialog bantuan"
+          class="min-w-[44px] min-h-[44px] -mr-2 -mt-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <p class="mt-2 text-slate-600 text-xs leading-5">
+        Sampaikan pertanyaan terkait pesanan aktif Anda (<strong class="font-semibold text-slate-800">TRX-240518-01</strong>) atau layanan laundry kami.
+      </p>
+
+      <div id="helpModalStatus" role="status" aria-live="polite"
+        class="hidden mt-3 px-3.5 py-2.5 rounded-lg border text-xs"></div>
+
+      <form id="helpContactForm" novalidate class="mt-4 space-y-3.5">
+        <div>
+          <label for="helpTopic" class="block text-xs font-semibold text-slate-700 mb-1">Topik Bantuan</label>
+          <select id="helpTopic" name="topik"
+            class="w-full min-h-[44px] px-3 py-2 bg-white rounded-[10px] border border-slate-300 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-700">
+            <option value="TRX-240518-01">Status Pesanan TRX-240518-01</option>
+            <option value="layanan">Informasi Layanan &amp; Harga</option>
+            <option value="antar-jemput">Jadwal Pengambilan Cucian</option>
+          </select>
+        </div>
+        <div>
+          <label for="helpMessage" class="block text-xs font-semibold text-slate-700 mb-1">Pesan Anda</label>
+          <textarea id="helpMessage" name="pesan" rows="3" placeholder="Tuliskan pertanyaan atau catatan untuk petugas..."
+            required
+            class="w-full p-3 bg-white rounded-[10px] border border-slate-300 text-xs text-slate-800 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-700"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" data-close-modal="helpContactModal"
+            class="min-h-[44px] px-4 py-2 rounded-[10px] border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50">
+            Batal
+          </button>
+          <button type="submit"
+            class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold">
+            Kirim Pesan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SCRIPT: INTERAKTIVITAS DASHBOARD & STRUKTUR INTEGRASI BASIS DATA      -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * Struktur integrasi data Dashboard Pelanggan (Siap dihubungkan ke tabel transaksi & pelanggan).
+     * Menyimpan state awal dari desain Figma agar dapat dikembalikan setelah pengujian Empty/Loading/Error state.
+     */
+    const PelangganDashboardStore = {
+      endpoints: {
+        summary: '/api/pelanggan/dashboard-summary',
+        activeOrder: '/api/pelanggan/orders/active',
+        recentOrders: '/api/pelanggan/orders/recent',
+        supportTicket: '/api/pelanggan/support'
+      },
+      ordersById: {
+        'TRX-240518-01': {
+          id: 'TRX-240518-01',
+          service: 'Cuci + Setrika',
+          date: '18 Mei 2024',
+          weight: '4,5 kg',
+          status: 'Sedang dicuci (Estimasi selesai 21 Mei 2024)',
+          total: 'Rp45.000'
+        },
+        'TRX-240512-08': {
+          id: 'TRX-240512-08',
+          service: 'Express',
+          date: '12 Mei 2024',
+          weight: '6,0 kg',
+          status: 'Selesai',
+          total: 'Rp72.000'
+        },
+        'TRX-240506-12': {
+          id: 'TRX-240506-12',
+          service: 'Cuci Kering',
+          date: '6 Mei 2024',
+          weight: '4,0 kg',
+          status: 'Diambil',
+          total: 'Rp28.000'
+        }
+      }
+    };
+
+    // 1. Drawer Sidebar Mobile
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    function setMobileSidebar(isOpen) {
+      sidebar.classList.toggle('-translate-x-full', !isOpen);
+      sidebarOverlay.classList.toggle('hidden', !isOpen);
+      openSidebarBtn.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    openSidebarBtn.addEventListener('click', () => setMobileSidebar(true));
+    closeSidebarBtn.addEventListener('click', () => setMobileSidebar(false));
+    sidebarOverlay.addEventListener('click', () => setMobileSidebar(false));
+
+    // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
+
+    // 3. Manajemen Modal Dialog (Detail Pesanan, Modul Navigasi, Bantuan)
+    let lastFocusedControl = null;
+
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      lastFocusedControl = document.activeElement;
+      modal.classList.remove('hidden');
+      const focusable = modal.querySelector('button, input, select, textarea');
+      if (focusable) focusable.focus();
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.add('hidden');
+      if (lastFocusedControl) lastFocusedControl.focus();
+    }
+
+    document.querySelectorAll('[data-close-modal]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        closeModal(btn.getAttribute('data-close-modal'));
+      });
+    });
+
+    ['orderDetailModal', 'modulePreviewModal', 'helpContactModal'].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener('click', (e) => {
+        if (e.target === el) closeModal(id);
+      });
+    });
+
+    // R-32: Tutup semua modal atau dropdown dengan tombol Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        ['orderDetailModal', 'modulePreviewModal', 'helpContactModal'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && !el.classList.contains('hidden')) closeModal(id);
+        });
+        notifDropdown.classList.add('hidden');
+        profileDropdown.classList.add('hidden');
+        setMobileSidebar(false);
+      }
+    });
+
+    // 4. Tombol "Lihat Detail" pada Pesanan Aktif & Baris Tabel Transaksi
+    document.querySelectorAll('[data-order-detail]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const orderId = btn.getAttribute('data-order-detail');
+        window.location.href = 'dtltransaksi.html?id=' + encodeURIComponent(orderId || 'TRX-240518-01');
+      });
+    });
+
+    // 5. Navigasi Cerdas untuk Halaman Pelanggan yang Akan Dibuat Bertahap
+    document.querySelectorAll('[data-nav-scroll]').forEach((link) => {
+      link.addEventListener('click', async (e) => {
+        const targetFile = link.getAttribute('data-nav-target');
+        const sectionId = link.getAttribute('data-nav-scroll');
+        setMobileSidebar(false);
+
+        if (targetFile) {
+          try {
+            const res = await fetch(targetFile, { method: 'HEAD' });
+            if (res.ok) {
+              window.location.href = targetFile;
+              return;
+            }
+          } catch (_) {
+            // File belum dibuat, gulir ke bagian terkait di dashboard
+          }
+        }
+
+        e.preventDefault();
+        const sectionEl = document.getElementById(sectionId);
+        if (sectionEl) {
+          sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          sectionEl.classList.add('ring-2', 'ring-cyan-600');
+          setTimeout(() => sectionEl.classList.remove('ring-2', 'ring-cyan-600'), 1400);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-nav-module]').forEach((link) => {
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const moduleName = link.getAttribute('data-nav-module');
+        const targetFile = link.getAttribute('data-nav-target');
+        setMobileSidebar(false);
+        profileDropdown.classList.add('hidden');
+
+        if (targetFile) {
+          try {
+            const res = await fetch(targetFile, { method: 'HEAD' });
+            if (res.ok) {
+              window.location.href = targetFile;
+              return;
+            }
+          } catch (_) {
+            // Tampilkan dialog informasi modul jika file HTML belum dibuat
+          }
+        }
+
+        document.getElementById('modulePreviewModalTitle').textContent = moduleName;
+        document.getElementById('modulePreviewModalDesc').textContent =
+          'Anda memilih menu "' + moduleName + '". Sesuai alur pengerjaan bertahap per halaman Figma, halaman ini siap diimplementasikan begitu kode Figma untuk "' + targetFile + '" diberikan.';
+        document.getElementById('modulePreviewTargetFile').textContent =
+          'Target file: PELANGGAN/' + targetFile;
+        openModal('modulePreviewModal');
+      });
+    });
+
+    // 6. Modal Bantuan ("Hubungi Kami")
+    document.getElementById('openHelpModalBtn').addEventListener('click', () => {
+      setMobileSidebar(false);
+      openModal('helpContactModal');
+    });
+
+    document.getElementById('helpContactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = document.getElementById('helpMessage').value.trim();
+      const topic = document.getElementById('helpTopic').value;
+      const statusEl = document.getElementById('helpModalStatus');
+
+      if (!msg) {
+        statusEl.className = 'mt-3 px-3.5 py-2.5 rounded-lg border border-red-300 bg-red-50 text-red-900 text-xs';
+        statusEl.textContent = 'Silakan tuliskan pesan atau pertanyaan Anda terlebih dahulu.';
+        return;
+      }
+
+      statusEl.className = 'mt-3 px-3.5 py-2.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-950 text-xs';
+      statusEl.textContent = 'Pesan untuk topik "' + topic + '" siap dikirim ke endpoint ' + PelangganDashboardStore.endpoints.supportTicket + '.';
+      document.getElementById('helpMessage').value = '';
+    });
+
+    // 7. R-27: Fungsi Pengelolaan State UI (Ready, Loading, Empty, Error) untuk integrasi API/Database
+    const dashboardStateBanner = document.getElementById('dashboardStateBanner');
+    const activeOrderReadyContent = document.getElementById('activeOrderReadyContent');
+    const activeOrderEmptyContent = document.getElementById('activeOrderEmptyContent');
+    const recentTransactionsTableWrapper = document.getElementById('recentTransactionsTableWrapper');
+    const recentTransactionsEmpty = document.getElementById('recentTransactionsEmpty');
+    const sidebarActiveBadge = document.getElementById('sidebarActiveBadge');
+
+    function applyDashboardState(state) {
+      if (state === 'ready') {
+        dashboardStateBanner.className = 'hidden';
+        document.getElementById('statTotalTransaksi').textContent = '24';
+        document.getElementById('statSedangDiproses').textContent = '1';
+        document.getElementById('statPesananSelesai').textContent = '22';
+        document.getElementById('statTotalPengeluaran').textContent = 'Rp842k';
+        sidebarActiveBadge.textContent = '1';
+        activeOrderReadyContent.classList.remove('hidden');
+        activeOrderEmptyContent.classList.add('hidden');
+        recentTransactionsTableWrapper.classList.remove('hidden');
+        recentTransactionsEmpty.classList.add('hidden');
+        return;
+      }
+
+      if (state === 'loading') {
+        dashboardStateBanner.className =
+          'w-full mt-4 px-4 py-3 rounded-xl border border-cyan-300 bg-cyan-50 text-cyan-950 text-xs flex items-center justify-between gap-3';
+        dashboardStateBanner.innerHTML =
+          '<span><strong>Memuat data pelanggan...</strong> Menyinkronkan ringkasan transaksi dan status cucian dari server.</span>' +
+          '<button type="button" onclick="applyDashboardState(\'ready\')" class="min-h-[44px] px-3 py-1 rounded-lg bg-white border border-cyan-300 font-semibold text-cyan-800">Selesai Memuat</button>';
+        document.getElementById('statTotalTransaksi').textContent = '...';
+        document.getElementById('statSedangDiproses').textContent = '...';
+        document.getElementById('statPesananSelesai').textContent = '...';
+        document.getElementById('statTotalPengeluaran').textContent = '...';
+        return;
+      }
+
+      if (state === 'empty') {
+        dashboardStateBanner.className = 'hidden';
+        document.getElementById('statTotalTransaksi').textContent = '0';
+        document.getElementById('statSedangDiproses').textContent = '0';
+        document.getElementById('statPesananSelesai').textContent = '0';
+        document.getElementById('statTotalPengeluaran').textContent = 'Rp0';
+        sidebarActiveBadge.textContent = '0';
+        activeOrderReadyContent.classList.add('hidden');
+        activeOrderEmptyContent.classList.remove('hidden');
+        recentTransactionsTableWrapper.classList.add('hidden');
+        recentTransactionsEmpty.classList.remove('hidden');
+        return;
+      }
+
+      if (state === 'error') {
+        dashboardStateBanner.className =
+          'w-full mt-4 px-4 py-3 rounded-xl border border-red-300 bg-red-50 text-red-900 text-xs flex items-center justify-between gap-3';
+        dashboardStateBanner.innerHTML =
+          '<span><strong>Gagal memuat pembaruan pesanan.</strong> Koneksi ke endpoint <code>' +
+          PelangganDashboardStore.endpoints.summary +
+          '</code> terputus. Menampilkan data terakhir yang tersimpan.</span>' +
+          '<button type="button" onclick="applyDashboardState(\'ready\')" class="min-h-[44px] px-3 py-1 rounded-lg bg-red-800 text-white font-semibold">Coba Lagi</button>';
+      }
+    }
+
+    // Ekspos ke window untuk integrasi backend / pemanggilan API
+    window.applyDashboardState = applyDashboardState;
+  </script>
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+</body>
+
+</html>

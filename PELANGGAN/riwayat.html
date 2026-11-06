@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Transaksi - Bersihin Laundry</title>
+
+  <!-- Google Fonts: Poppins (sesuai standar Figma) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Cursor affordance pada seluruh kontrol interaktif */
+    a[href],
+    button:not(:disabled),
+    summary,
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled),
+    input[type="radio"]:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]) {
+      cursor: pointer;
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled,
+    [aria-disabled="true"] {
+      cursor: not-allowed;
+    }
+
+    /* Gradien Kartu Bantuan Sidebar sesuai Figma: bg-linear-60 from-blue-50 to-slate-50 */
+    .bg-figma-help {
+      background: linear-gradient(150deg, #eff6ff 0%, #f8fafc 100%);
+    }
+
+    /* Hormati preferensi pengurangan gerakan (reduced motion) */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col lg:flex-row overflow-x-hidden">
+
+  <!-- OVERLAY SIDEBAR MOBILE -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden lg:hidden" aria-hidden="true"></div>
+
+  <!-- ===================================================================== -->
+  <!-- SIDEBAR NAVIGASI PELANGGAN (Acuan Figma: w-60, border-r border-slate-200) -->
+  <!-- ===================================================================== -->
+  <aside id="sidebar" aria-label="Menu Samping Pelanggan"
+    class="w-60 min-h-screen px-5 pt-7 pb-5 fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 flex flex-col justify-between items-start transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out shrink-0">
+
+    <!-- Bagian Atas: Logo & Navigasi -->
+    <div class="w-full flex flex-col justify-start items-start">
+
+      <!-- Logo Brand Bersihin Laundry -->
+      <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
+        <a href="dashboard.html"
+          class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="44" height="44"
+            fetchpriority="high"
+            class="size-10 rounded-xl shadow-[0px_8px_22px_0px_rgba(121,199,232,0.30)] shrink-0 select-none" />
+          <div class="inline-flex flex-col justify-start items-start">
+            <div class="leading-5">
+              <span class="text-blue-950 text-xl font-bold font-['Poppins'] leading-5">Bersih</span><span
+                class="text-sky-600 text-xl font-bold font-['Poppins'] leading-5">in</span>
+            </div>
+            <div class="pt-1 flex flex-col justify-start items-start">
+              <span
+                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[4px]">LAUNDRY</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Tombol Tutup Sidebar di Mobile -->
+        <button type="button" id="closeSidebarBtn" aria-label="Tutup menu navigasi"
+          class="lg:hidden min-w-[44px] min-h-[44px] -mr-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigasi Utama -->
+      <nav aria-label="Navigasi Utama" class="w-full flex flex-col justify-start items-start">
+
+        <!-- Kelompok: MENU UTAMA -->
+        <div class="w-full px-2.5 pt-2 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            MENU UTAMA
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 1: Dashboard -->
+          <li>
+            <a href="dashboard.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+
+          <!-- Item 2: Layanan -->
+          <li>
+            <a href="layanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                <path d="M6.5 7H13.5M6.5 10.5H13.5M6.5 14H10.5" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" />
+              </svg>
+              <span>Layanan</span>
+            </a>
+          </li>
+
+          <!-- Item 3: Buat Pesanan -->
+          <li>
+            <a href="pesanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M10 6.5V13.5M6.5 10H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Buat Pesanan</span>
+            </a>
+          </li>
+
+          <!-- Item 4: Status Pesanan (dengan badge 1) -->
+          <li>
+            <a href="status.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-between items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="inline-flex items-center gap-3">
+                <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 6.2V10L12.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <span>Status Pesanan</span>
+              </span>
+              <span id="sidebarActiveBadge"
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
+                1
+              </span>
+            </a>
+          </li>
+
+          <!-- Item 5: Riwayat (HALAMAN AKTIF) -->
+          <li>
+            <a href="riwayat.html" aria-current="page"
+              class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                aria-hidden="true"></span>
+              <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M8 9.5H13M8 13H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Riwayat</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Kelompok: AKUN -->
+        <div class="w-full px-2.5 pt-6 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            AKUN
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 6: Profil Saya -->
+          <li>
+            <a href="profil.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span>Profil Saya</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
+
+      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
+      <div
+        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
+        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
+          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
+          Butuh bantuan?
+        </div>
+        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
+          Tim kami siap membantu Anda.
+        </p>
+        <button type="button" id="openHelpModalBtn"
+          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+          <span>Hubungi Kami</span>
+          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Tombol Keluar -->
+      <a href="login.html"
+        class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+        <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
+          <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================================================================== -->
+  <!-- WRAPPER KONTEN UTAMA (pl-60 pada Desktop sesuai Figma)               -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
+
+    <!-- TOPBAR (Acuan Figma: h-20 px-9 bg-white/90 border-b border-slate-200) -->
+    <header
+      class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
+
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+          aria-controls="sidebar"
+          class="lg:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <div class="flex flex-col justify-start items-start">
+          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Riwayat Transaksi</h1>
+          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+          </p>
+        </div>
+      </div>
+      <!-- Kanan: Notifikasi & Profil Pelanggan -->
+      <div class="flex justify-end items-center gap-3">
+
+        <!-- Tombol Notifikasi -->
+        <div class="relative">
+          <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span id="notifDot"
+              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+          </button>
+
+          <!-- Panel Dropdown Notifikasi -->
+          <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+            class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+              <button type="button" id="markNotifReadBtn"
+                class="min-h-[44px] px-2 -my-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                Tandai dibaca
+              </button>
+            </div>
+            <div class="py-3 flex items-start gap-3">
+              <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="text-xs leading-4">
+                <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <div class="relative">
+          <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+            aria-label="Profil Pengguna"
+            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            AP
+          </button>
+
+          <!-- Dropdown Profil -->
+          <div id="profileDropdown" role="menu" aria-label="Menu Akun Pelanggan"
+            class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+            <div class="px-4 py-2 border-b border-slate-100">
+              <p id="dropdownUserName" class="text-xs font-bold text-slate-800">Andi Pratama</p>
+              <p id="dropdownUserEmail" class="text-[11px] text-slate-500 truncate">andi.pratama@email.com</p>
+            </div>
+            <a href="profil.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+              <span>Profil Saya</span>
+            </a>
+            <a href="login.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+              <span>Keluar Akun</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- KONTEN UTAMA RIWAYAT TRANSAKSI (Acuan Figma: px-9 pt-7 pb-14)       -->
+    <!-- =================================================================== -->
+    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-7 pb-14 flex flex-col items-start gap-6">
+
+      <!-- 1. HEADER HALAMAN & TOMBOL BUAT PESANAN -->
+      <div class="w-full flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div>
+          <h2 class="text-slate-900 text-xl font-bold font-['Poppins'] leading-7">
+            Riwayat Transaksi
+          </h2>
+          <p class="pt-1 text-slate-500 text-xs font-normal font-['Poppins'] leading-5">
+            Daftar lengkap seluruh transaksi laundry dan status pembayaran Anda.
+          </p>
+        </div>
+
+        <a href="pesanan.html"
+          class="min-h-[44px] px-4 py-2.5 bg-blue-950 hover:bg-blue-900 active:bg-slate-950 text-white rounded-xl text-xs font-semibold font-['Poppins'] shadow-sm inline-flex items-center justify-center gap-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 self-start sm:self-auto">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3.5V12.5M3.5 8H12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <span>Pesan Laundry Baru</span>
+        </a>
+      </div>
+
+      <!-- 2. KARTU STATISTIK RINGKASAN TRANSAKSI (4 Kolom Sesuai Figma) -->
+      <section aria-label="Statistik Transaksi Pelanggan"
+        class="w-full grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Stat 1: Total Transaksi -->
+        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Total Pesanan</span>
+            <div class="size-8 rounded-lg bg-blue-50 text-cyan-700 flex items-center justify-center shrink-0">
+              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.4" />
+                <path d="M5.5 6H10.5M5.5 8.5H10.5M5.5 11H8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+          <div class="pt-3">
+            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">24</span>
+            <span class="text-slate-400 text-[10px] block pt-0.5">Semua transaksi</span>
+          </div>
+        </div>
+
+        <!-- Stat 2: Sedang Diproses -->
+        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Diproses</span>
+            <div class="size-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+          <div class="pt-3">
+            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">1</span>
+            <span class="text-amber-700 text-[10px] font-semibold block pt-0.5">1 pesanan berjalan</span>
+          </div>
+        </div>
+
+        <!-- Stat 3: Pesanan Selesai -->
+        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Selesai</span>
+            <div class="size-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.5L6.5 11.5L12.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+          <div class="pt-3">
+            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">22</span>
+            <span class="text-emerald-700 text-[10px] font-semibold block pt-0.5">Telah diambil</span>
+          </div>
+        </div>
+
+        <!-- Stat 4: Total Pengeluaran -->
+        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Total Pengeluaran</span>
+            <div class="size-8 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="2.5" y="4" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" />
+                <circle cx="8" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3" />
+              </svg>
+            </div>
+          </div>
+          <div class="pt-3">
+            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">Rp842.000</span>
+            <span class="text-slate-400 text-[10px] block pt-0.5">Akumulasi pengeluaran</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 3. KONTEN TABEL DENGAN FILTER & SEARCH -->
+      <section aria-labelledby="historyListHeading"
+        class="w-full bg-white rounded-2xl border border-slate-200 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] p-5 sm:p-6 flex flex-col items-start gap-5">
+
+        <!-- Toolbar Atas: Tabs Filter & Pencarian -->
+        <div class="w-full flex flex-col lg:flex-row justify-between lg:items-center gap-4">
+
+          <!-- Tabs Filter Status -->
+          <div role="tablist" aria-label="Filter status transaksi" class="inline-flex p-1 bg-slate-100 rounded-xl gap-1 self-start">
+            <button type="button" role="tab" id="tabAll" aria-selected="true" data-filter="all"
+              class="filter-tab px-3 py-1.5 rounded-lg text-xs font-semibold font-['Poppins'] transition bg-white text-slate-800 shadow-xs">
+              Semua <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">24</span>
+            </button>
+            <button type="button" role="tab" id="tabProcess" aria-selected="false" data-filter="Diproses"
+              class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
+              Diproses <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 text-amber-800">1</span>
+            </button>
+            <button type="button" role="tab" id="tabDone" aria-selected="false" data-filter="Selesai"
+              class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
+              Selesai <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-teal-800">22</span>
+            </button>
+            <button type="button" role="tab" id="tabCanceled" aria-selected="false" data-filter="Dibatalkan"
+              class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
+              Dibatalkan <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700">1</span>
+            </button>
+          </div>
+
+          <!-- Bagian Pencarian & Urutan -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
+            <!-- Input Cari -->
+            <div class="relative flex-1 sm:w-64">
+              <svg class="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4" />
+                <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+              <input type="text" id="searchInput" placeholder="Cari kode transaksi..."
+                class="w-full min-h-[40px] pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 bg-white placeholder-slate-400 text-slate-800 focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition" />
+            </div>
+
+            <!-- Selector Urutkan -->
+            <div class="relative">
+              <select id="sortSelect" aria-label="Urutkan transaksi"
+                class="min-h-[40px] px-3 py-2 pr-8 text-xs rounded-xl border border-slate-200 bg-white text-slate-700 font-medium focus:outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition appearance-none">
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+                <option value="highest">Nominal Tertinggi</option>
+                <option value="lowest">Nominal Terendah</option>
+              </select>
+              <svg class="size-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <h3 id="historyListHeading" class="sr-only">Tabel Riwayat Transaksi</h3>
+
+        <!-- Tabel Responsif -->
+        <div class="w-full overflow-x-auto">
+          <table class="w-full min-w-[700px] text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-600 text-[11px] font-semibold font-['Poppins'] leading-4">
+                <th scope="col" class="px-4 py-3 rounded-l-xl">No. Transaksi</th>
+                <th scope="col" class="px-4 py-3">Tanggal Masuk</th>
+                <th scope="col" class="px-4 py-3">Jenis Layanan</th>
+                <th scope="col" class="px-4 py-3">Berat</th>
+                <th scope="col" class="px-4 py-3">Total Biaya</th>
+                <th scope="col" class="px-4 py-3">Status</th>
+                <th scope="col" class="px-4 py-3 text-right rounded-r-xl">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody" class="divide-y divide-slate-100 text-xs font-['Poppins']">
+
+              <!-- Baris 1: TRX-240518-01 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240518-01" data-service="Cuci + Setrika" data-status="Diproses" data-amount="45000" data-timestamp="2024-05-18">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240518-01" class="hover:text-cyan-700 transition">TRX-240518-01</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">18 Mei 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
+                <td class="px-4 py-3.5 text-slate-600">4,5 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp45.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
+                    <span class="text-yellow-700 text-[10px] font-semibold leading-3">Diproses</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240518-01" aria-label="Lihat rincian transaksi TRX-240518-01"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 2: TRX-240512-08 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240512-08" data-service="Express" data-status="Selesai" data-amount="72000" data-timestamp="2024-05-12">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240512-08" class="hover:text-cyan-700 transition">TRX-240512-08</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">12 Mei 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Express</td>
+                <td class="px-4 py-3.5 text-slate-600">4,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp72.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240512-08" aria-label="Lihat rincian transaksi TRX-240512-08"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 3: TRX-240506-12 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240506-12" data-service="Cuci Kering" data-status="Selesai" data-amount="28000" data-timestamp="2024-05-06">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240506-12" class="hover:text-cyan-700 transition">TRX-240506-12</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">6 Mei 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci Kering</td>
+                <td class="px-4 py-3.5 text-slate-600">4,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp28.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240506-12" aria-label="Lihat rincian transaksi TRX-240506-12"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 4: TRX-240430-05 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240430-05" data-service="Setrika Saja" data-status="Selesai" data-amount="30000" data-timestamp="2024-04-30">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240430-05" class="hover:text-cyan-700 transition">TRX-240430-05</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">30 Apr 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Setrika Saja</td>
+                <td class="px-4 py-3.5 text-slate-600">5,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp30.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240430-05" aria-label="Lihat rincian transaksi TRX-240430-05"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 5: TRX-240422-09 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240422-09" data-service="Cuci + Setrika" data-status="Selesai" data-amount="60000" data-timestamp="2024-04-22">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240422-09" class="hover:text-cyan-700 transition">TRX-240422-09</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">22 Apr 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
+                <td class="px-4 py-3.5 text-slate-600">6,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp60.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240422-09" aria-label="Lihat rincian transaksi TRX-240422-09"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 6: TRX-240415-02 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240415-02" data-service="Express" data-status="Selesai" data-amount="54000" data-timestamp="2024-04-15">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240415-02" class="hover:text-cyan-700 transition">TRX-240415-02</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">15 Apr 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Express</td>
+                <td class="px-4 py-3.5 text-slate-600">3,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp54.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240415-02" aria-label="Lihat rincian transaksi TRX-240415-02"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 7: TRX-240408-07 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240408-07" data-service="Cuci Kering" data-status="Selesai" data-amount="24500" data-timestamp="2024-04-08">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240408-07" class="hover:text-cyan-700 transition">TRX-240408-07</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">8 Apr 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci Kering</td>
+                <td class="px-4 py-3.5 text-slate-600">3,5 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp24.500</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240408-07" aria-label="Lihat rincian transaksi TRX-240408-07"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+              <!-- Baris 8: TRX-240328-04 -->
+              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240328-04" data-service="Cuci + Setrika" data-status="Dibatalkan" data-amount="30000" data-timestamp="2024-03-28">
+                <td class="px-4 py-3.5 font-bold text-slate-800">
+                  <a href="dtltransaksi.html?id=TRX-240328-04" class="hover:text-cyan-700 transition">TRX-240328-04</a>
+                </td>
+                <td class="px-4 py-3.5 text-slate-600">28 Mar 2024</td>
+                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
+                <td class="px-4 py-3.5 text-slate-600">3,0 kg</td>
+                <td class="px-4 py-3.5 font-bold text-slate-800">Rp30.000</td>
+                <td class="px-4 py-3.5">
+                  <span class="px-2.5 py-1 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5">
+                    <span class="size-1.5 bg-slate-500 rounded-full" aria-hidden="true"></span>
+                    <span class="text-slate-600 text-[10px] font-semibold leading-3">Dibatalkan</span>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-right">
+                  <a href="dtltransaksi.html?id=TRX-240328-04" aria-label="Lihat rincian transaksi TRX-240328-04"
+                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <span>Detail</span>
+                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State jika pencarian atau filter tidak ditemukan -->
+        <div id="emptySearchState" class="hidden w-full py-12 flex flex-col items-center justify-center text-center">
+          <div class="size-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+            <svg class="size-7" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6" />
+              <path d="M16 16L20 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="text-slate-800 text-sm font-semibold">Transaksi Tidak Ditemukan</p>
+          <p class="text-slate-500 text-xs mt-1 max-w-sm">
+            Tidak ada transaksi yang cocok dengan kata kunci atau filter status yang Anda pilih.
+          </p>
+          <button type="button" id="resetFilterBtn"
+            class="mt-4 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
+            Reset Filter &amp; Pencarian
+          </button>
+        </div>
+
+        <!-- Footer Tabel: Informasi & Pagination -->
+        <div class="w-full pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <p id="tableInfoText" class="text-slate-500 text-xs font-normal font-['Poppins']">
+            Menampilkan <span class="font-semibold text-slate-700">1 - 8</span> dari <span id="totalItemsCount" class="font-semibold text-slate-700">24</span> transaksi
+          </p>
+
+          <nav aria-label="Navigasi Halaman" class="inline-flex items-center gap-1">
+            <button type="button" id="prevPageBtn" disabled
+              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed">
+              Sebelumnya
+            </button>
+            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold">
+              1
+            </button>
+            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
+              2
+            </button>
+            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
+              3
+            </button>
+            <button type="button" id="nextPageBtn"
+              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50">
+              Selanjutnya
+            </button>
+          </nav>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL BANTUAN PELANGGAN                                               -->
+  <!-- ===================================================================== -->
+  <div id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle"
+    class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+      <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="helpModalTitle" class="text-sm font-bold text-slate-800">Bantuan Pelanggan</h3>
+        <button type="button" id="closeHelpModalBtn" aria-label="Tutup bantuan"
+          class="size-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-3 text-xs text-slate-600">
+        <p>Pertanyaan terkait pesanan lama atau bukti nota transaksi Anda?</p>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+          <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
+          <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
+        </div>
+        <div class="pt-2 flex justify-end">
+          <button type="button" id="okHelpModalBtn"
+            class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold transition">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT RIWAYAT TRANSAKSI                                          -->
+  <!-- ===================================================================== -->
+  <script>
+    // 1. Sidebar Toggle Mobile
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    function openSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarOverlay.classList.remove('hidden');
+      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebarOverlay.classList.add('hidden');
+      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
+    // 3. Modal Bantuan
+    const helpModal = document.getElementById('helpModal');
+    const openHelpModalBtn = document.getElementById('openHelpModalBtn');
+    const closeHelpModalBtn = document.getElementById('closeHelpModalBtn');
+    const okHelpModalBtn = document.getElementById('okHelpModalBtn');
+
+    if (openHelpModalBtn && helpModal) {
+      openHelpModalBtn.addEventListener('click', () => helpModal.classList.remove('hidden'));
+    }
+    if (closeHelpModalBtn && helpModal) {
+      closeHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
+    }
+    if (okHelpModalBtn && helpModal) {
+      okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
+    }
+
+    // 4. Logika Interaktif Filter Status, Pencarian, & Urutkan
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const trxRows = Array.from(document.querySelectorAll('.trx-row'));
+    const emptySearchState = document.getElementById('emptySearchState');
+    const resetFilterBtn = document.getElementById('resetFilterBtn');
+    const tableBody = document.getElementById('historyTableBody');
+    const tableInfoText = document.getElementById('tableInfoText');
+
+    let currentFilter = 'all';
+    let currentSearch = '';
+
+    function applyFilterAndSearch() {
+      let visibleCount = 0;
+
+      trxRows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        const rowCode = (row.getAttribute('data-code') || '').toLowerCase();
+        const rowService = (row.getAttribute('data-service') || '').toLowerCase();
+
+        const matchStatus = currentFilter === 'all' || rowStatus === currentFilter;
+        const matchSearch = currentSearch === '' || rowCode.includes(currentSearch) || rowService.includes(currentSearch);
+
+        if (matchStatus && matchSearch) {
+          row.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+
+      if (visibleCount === 0) {
+        emptySearchState.classList.remove('hidden');
+        if (tableBody) tableBody.parentElement.classList.add('hidden');
+      } else {
+        emptySearchState.classList.add('hidden');
+        if (tableBody) tableBody.parentElement.classList.remove('hidden');
+      }
+
+      if (tableInfoText) {
+        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${visibleCount}</span> dari <span class="font-semibold text-slate-700">${visibleCount}</span> transaksi`;
+      }
+    }
+
+    // Tab Filter Klik
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => {
+          t.setAttribute('aria-selected', 'false');
+          t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+          t.classList.add('text-slate-600');
+        });
+
+        tab.setAttribute('aria-selected', 'true');
+        tab.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+        tab.classList.remove('text-slate-600');
+
+        currentFilter = tab.getAttribute('data-filter');
+        applyFilterAndSearch();
+      });
+    });
+
+    // Real-time Search Input
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim().toLowerCase();
+        applyFilterAndSearch();
+      });
+    }
+
+    // Reset Filter Button
+    if (resetFilterBtn) {
+      resetFilterBtn.addEventListener('click', () => {
+        currentFilter = 'all';
+        currentSearch = '';
+        if (searchInput) searchInput.value = '';
+
+        filterTabs.forEach(t => {
+          if (t.getAttribute('data-filter') === 'all') {
+            t.setAttribute('aria-selected', 'true');
+            t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+            t.classList.remove('text-slate-600');
+          } else {
+            t.setAttribute('aria-selected', 'false');
+            t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+            t.classList.add('text-slate-600');
+          }
+        });
+
+        applyFilterAndSearch();
+      });
+    }
+
+    // Sort Dropdown
+    if (sortSelect && tableBody) {
+      sortSelect.addEventListener('change', () => {
+        const val = sortSelect.value;
+        const rows = Array.from(tableBody.querySelectorAll('.trx-row'));
+
+        rows.sort((a, b) => {
+          const dateA = new Date(a.getAttribute('data-timestamp')).getTime();
+          const dateB = new Date(b.getAttribute('data-timestamp')).getTime();
+          const amtA = parseInt(a.getAttribute('data-amount') || '0', 10);
+          const amtB = parseInt(b.getAttribute('data-amount') || '0', 10);
+
+          if (val === 'newest') return dateB - dateA;
+          if (val === 'oldest') return dateA - dateB;
+          if (val === 'highest') return amtB - amtA;
+          if (val === 'lowest') return amtA - amtB;
+          return 0;
+        });
+
+        rows.forEach(r => tableBody.appendChild(r));
+      });
+    }
+
+    // 5. Pagination Dummy Buttons
+    const pageNumBtns = document.querySelectorAll('.page-num-btn');
+    pageNumBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        pageNumBtns.forEach(b => {
+          b.className = 'page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium';
+        });
+        btn.className = 'page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold';
+      });
+    });
+  </script>
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+</body>
+
+</html>
