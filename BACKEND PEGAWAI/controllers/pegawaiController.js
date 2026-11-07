@@ -4,17 +4,6 @@ const STATUS_PESANAN = [
     "MENUNGGU", "DIPROSES", "DICUCI", "DISETRIKA",
     "SIAP_DIAMBIL", "SELESAI", "DIBATALKAN"
 ];
-
-// Transisi status yang diperbolehkan agar status pesanan tidak mundur/berubah sembarangan.
-const TRANSISI_STATUS = {
-    MENUNGGU: ["DIPROSES", "DIBATALKAN"],
-    DIPROSES: ["DICUCI", "DIBATALKAN"],
-    DICUCI: ["DISETRIKA", "DIBATALKAN"],
-    DISETRIKA: ["SIAP_DIAMBIL", "DIBATALKAN"],
-    SIAP_DIAMBIL: ["SELESAI", "DIBATALKAN"],
-    SELESAI: [],
-    DIBATALKAN: []
-};
 const METODE_PEMBAYARAN = ["TUNAI", "TRANSFER", "QRIS"];
 
 function sendError(res, status, message) {
@@ -251,8 +240,6 @@ exports.tambahPesanan = async (req, res) => {
         }
 
         let total = 0;
-        let totalBeratKg = 0;
-        let semuaLayananKg = true;
         const rincian = [];
         for (const item of detail) {
             if (!validId(item.id_layanan) || !Number.isFinite(Number(item.jumlah)) || Number(item.jumlah) <= 0) {
@@ -261,7 +248,7 @@ exports.tambahPesanan = async (req, res) => {
                 return sendError(res, 400, "Setiap detail harus memiliki ID layanan dan jumlah lebih dari 0");
             }
             const [layanan] = await connection.execute(
-                "SELECT id_layanan, harga, status, satuan FROM layanan WHERE id_layanan = ? LIMIT 1 FOR UPDATE",
+                "SELECT id_layanan, harga, status FROM layanan WHERE id_layanan = ? LIMIT 1 FOR UPDATE",
                 [Number(item.id_layanan)]
             );
             if (!layanan.length || layanan[0].status !== "AKTIF") {
@@ -271,11 +258,6 @@ exports.tambahPesanan = async (req, res) => {
             }
             const jumlah = Number(item.jumlah);
             const harga = Number(layanan[0].harga);
-            if (layanan[0].satuan === "kg") {
-                totalBeratKg += jumlah;
-            } else {
-                semuaLayananKg = false;
-            }
             const subtotal = Math.round((jumlah * harga + Number.EPSILON) * 100) / 100;
             total += subtotal;
             rincian.push({ id_layanan: Number(item.id_layanan), jumlah, harga, subtotal });
@@ -283,9 +265,9 @@ exports.tambahPesanan = async (req, res) => {
         total = Math.round((total + Number.EPSILON) * 100) / 100;
         const kode = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
         const [created] = await connection.execute(
-            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, total_berat, total_harga, status, catatan)
-             VALUES (?, ?, ?, ?, ?, 'MENUNGGU', ?)`,
-            [kode, Number(id_pelanggan), idPegawai, semuaLayananKg ? totalBeratKg : null, total, catatan || null]
+            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, total_harga, status, catatan)
+             VALUES (?, ?, ?, ?, 'MENUNGGU', ?)`,
+            [kode, Number(id_pelanggan), idPegawai, total, catatan || null]
         );
         for (const item of rincian) {
             await connection.execute(
@@ -335,12 +317,6 @@ exports.updateStatus = async (req, res) => {
             await connection.rollback();
             transactionStarted = false;
             return sendError(res, 404, "Pesanan tidak ditemukan");
-        }
-        const statusSaatIni = orders[0].status;
-        if (!TRANSISI_STATUS[statusSaatIni]?.includes(status)) {
-            await connection.rollback();
-            transactionStarted = false;
-            return sendError(res, 400, `Perubahan status dari ${statusSaatIni} ke ${status} tidak diperbolehkan`);
         }
         await connection.execute(
             "UPDATE pesanan SET status = ?, tanggal_selesai = CASE WHEN ? = 'SELESAI' THEN CURRENT_TIMESTAMP ELSE tanggal_selesai END WHERE id_pesanan = ?",
