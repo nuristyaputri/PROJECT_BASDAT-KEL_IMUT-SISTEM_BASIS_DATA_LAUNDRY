@@ -128,9 +128,11 @@
    */
   function getOwnerProfile() {
     try {
-      const stored = localStorage.getItem(PemilikConfig.storageKeys.profile);
+      const stored = localStorage.getItem(PemilikConfig.storageKeys.profile) || localStorage.getItem('bersihin_pemilik_profile');
       if (stored) {
-        return Object.assign({}, PemilikConfig.defaultProfile, JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        if (parsed.nama && !parsed.fullName) parsed.fullName = parsed.nama;
+        return Object.assign({}, PemilikConfig.defaultProfile, parsed);
       }
     } catch (e) {
       console.warn('Gagal membaca storage profil pemilik:', e);
@@ -649,7 +651,7 @@
     const formLayanan = document.querySelector('form[action*="layananpegawai.html"]') || document.getElementById('formLayanan');
     if (formLayanan) {
       formLayanan.addEventListener('submit', (e) => {
-        const namaInput = formLayanan.querySelector('[name="nama"]') || formLayanan.querySelector('#nama');
+        const namaInput = formLayanan.querySelector('[name="nama_layanan"]') || formLayanan.querySelector('#nama_layanan') || formLayanan.querySelector('[name="nama"]') || formLayanan.querySelector('#nama');
         const nama = namaInput ? namaInput.value.trim() : '';
 
         if (!nama) {
@@ -851,8 +853,8 @@
   function initProfilPage() {
     const profile = getOwnerProfile();
 
-    const displayFullName = document.getElementById('displayFullName');
-    const displayEmail = document.getElementById('displayEmail');
+    const displayFullName = document.getElementById('displayFullName') || document.getElementById('bannerProfileName');
+    const displayEmail = document.getElementById('displayEmail') || document.getElementById('bannerProfileEmail');
     const displayPhone = document.getElementById('displayPhone');
     const displayRole = document.getElementById('displayRole');
     const displayLocation = document.getElementById('displayLocation');
@@ -866,10 +868,10 @@
     // Form Edit Profil Pemilik
     const editProfileForm = document.getElementById('editProfileForm');
     if (editProfileForm) {
-      const fullNameInput = document.getElementById('fullName');
+      const fullNameInput = document.getElementById('fullName') || document.getElementById('nama');
       const emailInput = document.getElementById('email');
       const phoneInput = document.getElementById('phone');
-      const roleInput = document.getElementById('role');
+      const roleInput = document.getElementById('role') || document.getElementById('nama_usaha');
       const locationInput = document.getElementById('location');
 
       if (fullNameInput) fullNameInput.value = profile.fullName;

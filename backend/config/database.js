@@ -30,16 +30,17 @@ const pool = mysql.createPool({
 async function testConnection() {
   try {
     const conn = await pool.getConnection();
-    console.log(`Database MySQL berhasil terhubung: ${process.env.DB_NAME || 'bersihinlaundry'}`);
+    console.log(`[DATABASE] MySQL berhasil terhubung: ${process.env.DB_NAME || 'bersihinlaundry'}`);
     conn.release();
     return true;
   } catch (error) {
-    console.warn(`Peringatan: Tidak dapat terhubung ke MySQL (${error.message}). Sistem berjalan dengan data cadangan.`);
+    console.warn(`[DATABASE] Catatan: Tidak dapat terhubung ke MySQL (${error.message}).`);
+    console.warn(`[DATABASE] Server tetap berjalan normal dengan fallback data.`);
     return false;
   }
 }
 
+pool.testConnection = testConnection;
+
 module.exports = pool;
-module.exports.pool = pool;
-module.exports.testConnection = testConnection;
 

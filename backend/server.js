@@ -16,7 +16,7 @@ const { testConnection } = require('./config/database');
 const apiRoutes = require('./routes/index');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT) || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'bersihin_laundry_session_secret_key_2024';
 
 // 1. Middleware Global
@@ -80,15 +80,34 @@ app.use((err, req, res, next) => {
 });
 
 // 8. Start Server & Test DB
-app.listen(PORT, async () => {
-  console.log('========================================================');
-  console.log(`🚀 Server Backend BersihIn Laundry berjalan di:`);
-  console.log(`   http://localhost:${PORT}`);
-  console.log(`   Portal Login Terpadu: http://localhost:${PORT}/login.html`);
-  console.log(`   API Health Check:     http://localhost:${PORT}/api/health`);
-  console.log('========================================================');
-  await testConnection();
-});
+function startServer(portToTry) {
+  const server = app.listen(portToTry, async () => {
+    console.log('========================================================');
+    console.log(`🚀 Server Backend BersihIn Laundry berjalan di:`);
+    console.log(`   http://localhost:${portToTry}`);
+    console.log(`   Portal Login Terpadu: http://localhost:${portToTry}/login.html`);
+    console.log(`   API Health Check:     http://localhost:${portToTry}/api/health`);
+    console.log('========================================================');
+    await testConnection();
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EACCES' || err.code === 'EADDRINUSE') {
+      const fallbackPort = portToTry === 3000 ? 3001 : (portToTry === 3001 ? 8080 : 8000);
+      console.warn(`[PERINGATAN] Port ${portToTry} tidak dapat digunakan (${err.code}).`);
+      console.warn(`[OTOMATIS] Beralih ke port alternatif ${fallbackPort}...`);
+      startServer(fallbackPort);
+    } else {
+      console.error('SERVER ERROR:', err.message);
+    }
+  });
+
+  return server;
+}
+
+if (require.main === module) {
+  startServer(PORT);
+}
 
 module.exports = app;
 
