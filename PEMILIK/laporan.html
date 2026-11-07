@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,15 +37,22 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+
         @media print {
-            aside, header, #reportControls, .no-print {
+
+            aside,
+            header,
+            #reportControls,
+            .no-print {
                 display: none !important;
             }
+
             main {
                 padding: 0 !important;
                 margin: 0 !important;
                 max-width: 100% !important;
             }
+
             .card-report {
                 border: 1px solid #e2e8f0 !important;
                 box-shadow: none !important;
@@ -51,18 +60,25 @@
         }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
-    <header class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
         <div class="flex items-center gap-2.5">
-            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36"
+                class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
             <div>
-                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span class="text-lg font-bold text-sky-500">in</span>
-                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner Console</span>
+                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span
+                    class="text-lg font-bold text-sky-500">in</span>
+                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner
+                    Console</span>
             </div>
         </div>
-        <button id="sidebarToggle" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle Menu">
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -70,14 +86,17 @@
     </header>
 
     <!-- MOBILE OVERLAY BACKDROP -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden md:hidden transition-opacity no-print"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden md:hidden transition-opacity no-print">
+    </div>
 
     <!-- SIDEBAR NAVIGATION -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-200 ease-in-out no-print">
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-200 ease-in-out no-print">
         <div>
             <!-- Brand Logo -->
             <div class="h-20 px-6 border-b border-slate-100 flex items-center gap-3">
-                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40" class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
+                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
+                    class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
                 <div>
                     <div class="flex items-center">
                         <span class="text-xl font-bold text-slate-900 tracking-tight">Bersih</span>
@@ -94,53 +113,67 @@
                     <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Menu Utama</p>
                     <div class="space-y-1">
                         <!-- Dashboard -->
-                        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                             </svg>
                             <span>Dashboard</span>
                         </a>
 
                         <!-- Data Pelanggan -->
-                        <a href="datapelanggan.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="datapelanggan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             <span>Data Pelanggan</span>
                         </a>
 
                         <!-- Data Pegawai -->
-                        <a href="datapegawai.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="datapegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <span>Data Pegawai</span>
                         </a>
 
                         <!-- Layanan -->
-                        <a href="layananpegawai.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="layananpegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                             </svg>
                             <span>Layanan</span>
                         </a>
 
                         <!-- Transaksi -->
-                        <a href="transaksi.html" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="transaksi.html"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <div class="flex items-center gap-3">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
                                 <span>Transaksi</span>
                             </div>
-                            <span class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
+                            <span
+                                class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
                         </a>
 
                         <!-- Laporan (ACTIVE) -->
-                        <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-sky-50 text-cyan-700 relative transition">
+                        <a href="laporan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-sky-50 text-cyan-700 relative transition">
                             <span class="absolute left-0 top-1.5 bottom-1.5 w-1 bg-sky-500 rounded-r-md"></span>
                             <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                             <span>Laporan</span>
                         </a>
@@ -151,9 +184,11 @@
                 <div>
                     <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Akun</p>
                     <div class="space-y-1">
-                        <a href="profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="profil.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <span>Profil Saya</span>
                         </a>
@@ -167,12 +202,14 @@
             <div class="p-3.5 bg-gradient-to-br from-blue-50/80 to-slate-50 rounded-xl border border-blue-100">
                 <div class="flex items-center gap-2 mb-1.5 text-blue-600">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                     <span class="text-xs font-semibold text-slate-700">Bisnis bertumbuh</span>
                 </div>
                 <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">Pendapatan naik 18% dari bulan lalu.</p>
-                <a href="laporan.html" class="text-xs font-semibold text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-1">
+                <a href="laporan.html"
+                    class="text-xs font-semibold text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-1">
                     Lihat laporan
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -181,9 +218,11 @@
             </div>
 
             <!-- Logout -->
-            <a href="login.html" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition">
+            <a href="../login.html"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
                 <span>Keluar</span>
             </a>
@@ -193,7 +232,8 @@
     <!-- MAIN CONTENT WRAPPER -->
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
-        <header class="h-20 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20 no-print">
+        <header
+            class="h-20 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20 no-print">
             <div>
                 <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">Laporan Laundry</h1>
                 <p class="text-xs text-slate-400">Analisis performa dan pendapatan bisnis</p>
@@ -205,7 +245,8 @@
                 <div class="hidden sm:flex items-center gap-2 pr-4 border-r border-slate-200">
                     <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
                     <div class="text-left">
@@ -216,24 +257,34 @@
 
                 <!-- Notification Bell -->
                 <div class="relative">
-                    <button type="button" id="notifToggleBtn" aria-expanded="false" class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer" aria-label="Notifikasi">
+                    <button type="button" id="notifToggleBtn" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                        aria-label="Notifikasi">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span id="notifDot" class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                        <span id="notifDot"
+                            class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
                     </button>
 
                     <!-- Notification Dropdown -->
-                    <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+                    <div id="notifDropdown"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
                         <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
                             <span class="text-xs font-bold text-slate-800">Notifikasi Operasional</span>
-                            <button type="button" id="markNotifReadBtn" class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">Tandai dibaca</button>
+                            <button type="button" id="markNotifReadBtn"
+                                class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">Tandai
+                                dibaca</button>
                         </div>
                         <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
-                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                            <a href="transaksi.html"
+                                class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
@@ -242,10 +293,13 @@
                                     <span class="block text-[10px] text-slate-400 mt-1">8 menit lalu</span>
                                 </div>
                             </a>
-                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
-                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
+                            <a href="transaksi.html"
+                                class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
@@ -256,13 +310,15 @@
                             </a>
                         </div>
                         <div class="pt-2.5 border-t border-slate-100 text-center">
-                            <a href="transaksi.html" class="text-xs font-semibold text-cyan-600 hover:text-cyan-700">Lihat Semua Aktivitas</a>
+                            <a href="transaksi.html"
+                                class="text-xs font-semibold text-cyan-600 hover:text-cyan-700">Lihat Semua
+                                Aktivitas</a>
                         </div>
                     </div>
                 </div>
 
                 <!-- User Profile -->
-                                <!-- Profil Saya (Avatar & Dropdown Identik Pelanggan) -->
+                <!-- Profil Saya (Avatar & Dropdown Identik Pelanggan) -->
                 <div class="relative">
                     <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
                         aria-label="Profil Pengguna"
@@ -275,13 +331,14 @@
                         class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
                         <div class="px-4 py-2 border-b border-slate-100">
                             <p id="dropdownOwnerName" class="text-xs font-bold text-slate-800">Rangga Saputra</p>
-                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id</p>
+                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id
+                            </p>
                         </div>
                         <a href="profil.html" role="menuitem"
                             class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
                             <span>Profil Saya</span>
                         </a>
-                        <a href="login.html" role="menuitem"
+                        <a href="../login.html" role="menuitem"
                             class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
                             <span>Keluar Akun</span>
                         </a>
@@ -299,13 +356,16 @@
                     <span class="text-[10px] font-bold tracking-widest text-cyan-600 uppercase">Periode Laporan</span>
                     <!-- Tabs -->
                     <div class="mt-1.5 p-1 bg-slate-200/80 rounded-xl inline-flex items-center gap-1">
-                        <button onclick="setTab('harian')" id="tabHarian" class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+                        <button onclick="setTab('harian')" id="tabHarian"
+                            class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
                             Harian
                         </button>
-                        <button onclick="setTab('bulanan')" id="tabBulanan" class="px-4 py-1.5 bg-white rounded-lg text-xs font-semibold text-cyan-900 shadow-sm transition">
+                        <button onclick="setTab('bulanan')" id="tabBulanan"
+                            class="px-4 py-1.5 bg-white rounded-lg text-xs font-semibold text-cyan-900 shadow-sm transition">
                             Bulanan
                         </button>
-                        <button onclick="setTab('tahunan')" id="tabTahunan" class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+                        <button onclick="setTab('tahunan')" id="tabTahunan"
+                            class="px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition">
                             Tahunan
                         </button>
                     </div>
@@ -314,7 +374,8 @@
                 <!-- Right Action Buttons -->
                 <div class="flex items-center gap-2.5">
                     <div class="relative">
-                        <select id="monthSelect" class="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs cursor-pointer">
+                        <select id="monthSelect"
+                            class="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs cursor-pointer">
                             <option value="2024-05" selected>Mei 2024</option>
                             <option value="2024-04">April 2024</option>
                             <option value="2024-03">Maret 2024</option>
@@ -326,7 +387,8 @@
                     <button onclick="window.print()"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs md:text-sm font-semibold shadow-2xs transition active:scale-[0.98] cursor-pointer">
                         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                         </svg>
                         <span>Cetak</span>
                     </button>
@@ -334,7 +396,8 @@
                     <button onclick="exportReport()"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs md:text-sm font-semibold shadow-md shadow-slate-900/10 transition active:scale-[0.98] cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                         <span>Ekspor Laporan</span>
                     </button>
@@ -344,48 +407,57 @@
             <!-- 4 KPI SUMMARY CARDS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- KPI 1: Pendapatan Bulanan -->
-                <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
+                <div
+                    class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel1" class="block text-xs font-medium text-slate-400">Pendapatan Bulanan</span>
-                    <span id="kpiValue1" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp24.800.000</span>
+                    <span id="kpiValue1"
+                        class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp24.800.000</span>
                     <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                         <span id="kpiSub1">18,2% dari periode sebelumnya</span>
                     </div>
                 </div>
 
                 <!-- KPI 2: Jumlah Transaksi -->
-                <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
+                <div
+                    class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel2" class="block text-xs font-medium text-slate-400">Jumlah Transaksi</span>
                     <span id="kpiValue2" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">684</span>
                     <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                         <span id="kpiSub2">12,4% dari periode sebelumnya</span>
                     </div>
                 </div>
 
                 <!-- KPI 3: Rata-rata Transaksi -->
-                <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
+                <div
+                    class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel3" class="block text-xs font-medium text-slate-400">Rata-rata Transaksi</span>
                     <span id="kpiValue3" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp36.250</span>
                     <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                         <span id="kpiSub3">5,1% dari periode sebelumnya</span>
                     </div>
                 </div>
 
                 <!-- KPI 4: Pelanggan Baru -->
-                <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
+                <div
+                    class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel4" class="block text-xs font-medium text-slate-400">Pelanggan Baru</span>
                     <span id="kpiValue4" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">18</span>
                     <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                         <span id="kpiSub4">8,1% dari periode sebelumnya</span>
                     </div>
@@ -396,15 +468,18 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <!-- CHART 1: STATISTIK PENDAPATAN (2 COLUMNS) -->
-                <div class="lg:col-span-2 card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
+                <div
+                    class="lg:col-span-2 card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <h3 class="text-sm md:text-base font-bold text-slate-800">Statistik Pendapatan</h3>
-                                <p id="reportChartSubtitle" class="text-xs text-slate-400">Klik titik atau bulan untuk melihat detail pendapatan</p>
+                                <p id="reportChartSubtitle" class="text-xs text-slate-400">Klik titik atau bulan untuk
+                                    melihat detail pendapatan</p>
                             </div>
                             <div class="flex items-center gap-3">
-                                <span id="reportPointBadge" class="hidden text-xs font-semibold text-cyan-700 bg-sky-50 px-2.5 py-1 rounded-lg"></span>
+                                <span id="reportPointBadge"
+                                    class="hidden text-xs font-semibold text-cyan-700 bg-sky-50 px-2.5 py-1 rounded-lg"></span>
                                 <div class="flex items-center gap-2">
                                     <span class="w-3 h-3 rounded-full bg-sky-500"></span>
                                     <span class="text-xs text-slate-500 font-medium">Pendapatan</span>
@@ -414,7 +489,8 @@
 
                         <!-- SVG REVENUE AREA CHART -->
                         <div class="w-full h-64 pt-2">
-                            <svg class="w-full h-full overflow-visible" viewBox="0 0 700 220" preserveAspectRatio="none">
+                            <svg class="w-full h-full overflow-visible" viewBox="0 0 700 220"
+                                preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
@@ -426,7 +502,8 @@
                                 <line x1="40" y1="20" x2="690" y2="20" stroke="#f1f5f9" stroke-width="1" />
                                 <line x1="40" y1="70" x2="690" y2="70" stroke="#f1f5f9" stroke-width="1" />
                                 <line x1="40" y1="120" x2="690" y2="120" stroke="#f1f5f9" stroke-width="1" />
-                                <line x1="40" y1="170" x2="690" y2="170" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4" />
+                                <line x1="40" y1="170" x2="690" y2="170" stroke="#f1f5f9" stroke-width="1"
+                                    stroke-dasharray="4" />
 
                                 <!-- Y-Axis Text Labels -->
                                 <text x="10" y="24" fill="#94a3b8" font-size="10" font-family="Poppins">15jt</text>
@@ -441,8 +518,7 @@
                                          C 390 55, 430 45, 480 35 
                                          C 530 40, 580 50, 630 45 
                                          C 660 42, 680 40, 690 38
-                                         L 690 170 L 60 170 Z" 
-                                      fill="url(#revenueGrad)" />
+                                         L 690 170 L 60 170 Z" fill="url(#revenueGrad)" />
 
                                 <!-- Line Curve Path -->
                                 <path id="reportLinePath" d="M 60 145 
@@ -450,36 +526,58 @@
                                          C 250 100, 290 85, 340 70 
                                          C 390 55, 430 45, 480 35 
                                          C 530 40, 580 50, 630 45 
-                                         C 660 42, 680 40, 690 38" 
-                                      fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" />
+                                         C 660 42, 680 40, 690 38" fill="none" stroke="#0ea5e9" stroke-width="3"
+                                    stroke-linecap="round" />
 
                                 <!-- Interactive Data Points -->
-                                <circle data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)" cx="60" cy="145" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)" cx="200" cy="110" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)" cx="340" cy="70" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)" cx="480" cy="35" r="6" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Agustus 2024 (Proyeksi)" data-month-rev="Rp23.900.000 (650 trx)" cx="630" cy="45" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
+                                <circle data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)" cx="60"
+                                    cy="145" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5"
+                                    class="cursor-pointer transition-all" />
+                                <circle data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)"
+                                    cx="200" cy="110" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5"
+                                    class="cursor-pointer transition-all" />
+                                <circle data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)" cx="340"
+                                    cy="70" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5"
+                                    class="cursor-pointer transition-all" />
+                                <circle data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)" cx="480"
+                                    cy="35" r="6" fill="#0ea5e9" stroke="#ffffff" stroke-width="2"
+                                    class="cursor-pointer transition-all" />
+                                <circle data-month-point="Agustus 2024 (Proyeksi)"
+                                    data-month-rev="Rp23.900.000 (650 trx)" cx="630" cy="45" r="5" fill="#ffffff"
+                                    stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
                             </svg>
                         </div>
                     </div>
 
                     <!-- X-Axis Month Labels (Clickable) -->
-                    <div class="flex justify-between pl-8 pr-2 pt-2 text-[10px] md:text-xs text-slate-400 font-medium border-t border-slate-100">
-                        <button type="button" data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jan</button>
-                        <button type="button" data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Feb</button>
-                        <button type="button" data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Mar</button>
-                        <button type="button" data-month-point="April 2024" data-month-rev="Rp20.980.000 (612 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Apr</button>
-                        <button type="button" data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)" class="month-axis-btn text-sky-600 font-bold cursor-pointer px-1">Mei</button>
-                        <button type="button" data-month-point="Juni 2024 (Target)" data-month-rev="Rp25.400.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jun</button>
-                        <button type="button" data-month-point="Juli 2024 (Target)" data-month-rev="Rp24.600.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jul</button>
-                        <button type="button" data-month-point="Agustus 2024 (Target)" data-month-rev="Rp23.900.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Agu</button>
-                        <button type="button" data-month-point="September 2024 (Target)" data-month-rev="Rp25.800.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Sep</button>
-                        <button type="button" data-month-point="Oktober 2024 (Target)" data-month-rev="Rp26.500.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Okt</button>
+                    <div
+                        class="flex justify-between pl-8 pr-2 pt-2 text-[10px] md:text-xs text-slate-400 font-medium border-t border-slate-100">
+                        <button type="button" data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jan</button>
+                        <button type="button" data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Feb</button>
+                        <button type="button" data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Mar</button>
+                        <button type="button" data-month-point="April 2024" data-month-rev="Rp20.980.000 (612 trx)"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Apr</button>
+                        <button type="button" data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)"
+                            class="month-axis-btn text-sky-600 font-bold cursor-pointer px-1">Mei</button>
+                        <button type="button" data-month-point="Juni 2024 (Target)" data-month-rev="Rp25.400.000"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jun</button>
+                        <button type="button" data-month-point="Juli 2024 (Target)" data-month-rev="Rp24.600.000"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jul</button>
+                        <button type="button" data-month-point="Agustus 2024 (Target)" data-month-rev="Rp23.900.000"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Agu</button>
+                        <button type="button" data-month-point="September 2024 (Target)" data-month-rev="Rp25.800.000"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Sep</button>
+                        <button type="button" data-month-point="Oktober 2024 (Target)" data-month-rev="Rp26.500.000"
+                            class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Okt</button>
                     </div>
                 </div>
 
                 <!-- CHART 2: LAYANAN TERLARIS (1 COLUMN, Interactive) -->
-                <div class="card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
+                <div
+                    class="card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                     <div>
                         <h3 class="text-sm md:text-base font-bold text-slate-800">Layanan Terlaris</h3>
                         <p class="text-xs text-slate-400 mb-6">Klik paket untuk melihat kontribusi pendapatan</p>
@@ -487,46 +585,62 @@
                         <!-- Progress Bars (Clickable) -->
                         <div class="space-y-4">
                             <!-- Service 1: Cuci + Setrika -->
-                            <button type="button" data-service-name="Cuci + Setrika" data-service-share="41,8%" data-service-rev="Rp10.366.000 (286 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer ring-1 ring-sky-200 bg-sky-50/30">
+                            <button type="button" data-service-name="Cuci + Setrika" data-service-share="41,8%"
+                                data-service-rev="Rp10.366.000 (286 transaksi)"
+                                class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer ring-1 ring-sky-200 bg-sky-50/30">
                                 <div class="flex justify-between items-center text-xs mb-1.5">
                                     <span class="font-semibold text-slate-700">Cuci + Setrika</span>
-                                    <span class="font-bold text-slate-900">286 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
+                                    <span class="font-bold text-slate-900">286 <span
+                                            class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
                                 </div>
                                 <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full" style="width: 72%;"></div>
+                                    <div class="h-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full"
+                                        style="width: 72%;"></div>
                                 </div>
                             </button>
 
                             <!-- Service 2: Cuci Kering -->
-                            <button type="button" data-service-name="Cuci Kering" data-service-share="28,4%" data-service-rev="Rp7.043.000 (194 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <button type="button" data-service-name="Cuci Kering" data-service-share="28,4%"
+                                data-service-rev="Rp7.043.000 (194 transaksi)"
+                                class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
                                 <div class="flex justify-between items-center text-xs mb-1.5">
                                     <span class="font-semibold text-slate-700">Cuci Kering</span>
-                                    <span class="font-bold text-slate-900">194 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
+                                    <span class="font-bold text-slate-900">194 <span
+                                            class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
                                 </div>
                                 <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full" style="width: 52%;"></div>
+                                    <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full"
+                                        style="width: 52%;"></div>
                                 </div>
                             </button>
 
                             <!-- Service 3: Express -->
-                            <button type="button" data-service-name="Express" data-service-share="17,8%" data-service-rev="Rp4.414.000 (122 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <button type="button" data-service-name="Express" data-service-share="17,8%"
+                                data-service-rev="Rp4.414.000 (122 transaksi)"
+                                class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
                                 <div class="flex justify-between items-center text-xs mb-1.5">
                                     <span class="font-semibold text-slate-700">Express</span>
-                                    <span class="font-bold text-slate-900">122 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
+                                    <span class="font-bold text-slate-900">122 <span
+                                            class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
                                 </div>
                                 <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full" style="width: 38%;"></div>
+                                    <div class="h-full bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full"
+                                        style="width: 38%;"></div>
                                 </div>
                             </button>
 
                             <!-- Service 4: Setrika Saja -->
-                            <button type="button" data-service-name="Setrika Saja" data-service-share="12,0%" data-service-rev="Rp2.977.000 (82 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
+                            <button type="button" data-service-name="Setrika Saja" data-service-share="12,0%"
+                                data-service-rev="Rp2.977.000 (82 transaksi)"
+                                class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
                                 <div class="flex justify-between items-center text-xs mb-1.5">
                                     <span class="font-semibold text-slate-700">Setrika Saja</span>
-                                    <span class="font-bold text-slate-900">82 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
+                                    <span class="font-bold text-slate-900">82 <span
+                                            class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
                                 </div>
                                 <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style="width: 25%;"></div>
+                                    <div class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full"
+                                        style="width: 25%;"></div>
                                 </div>
                             </button>
                         </div>
@@ -534,13 +648,16 @@
 
                     <!-- Highlight summary -->
                     <div class="mt-6 p-3 bg-sky-50/60 rounded-xl border border-sky-100 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center shrink-0">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
                         </div>
                         <p id="serviceHighlightText" class="text-[11px] text-slate-600 leading-snug">
-                            Paket <strong class="text-slate-800">Cuci + Setrika</strong> menyumbang <strong class="text-cyan-700">41,8%</strong> dari total seluruh transaksi.
+                            Paket <strong class="text-slate-800">Cuci + Setrika</strong> menyumbang <strong
+                                class="text-cyan-700">41,8%</strong> dari total seluruh transaksi.
                         </p>
                     </div>
                 </div>
@@ -559,7 +676,8 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50/75 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                            <tr
+                                class="bg-slate-50/75 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                                 <th class="py-3.5 px-6">Bulan</th>
                                 <th class="py-3.5 px-6">Transaksi</th>
                                 <th class="py-3.5 px-6">Pendapatan</th>
@@ -785,4 +903,5 @@
     <!-- Skrip Utama Pemilik (Vanilla JS) -->
     <script src="../JS/pemilik.js"></script>
 </body>
+
 </html>

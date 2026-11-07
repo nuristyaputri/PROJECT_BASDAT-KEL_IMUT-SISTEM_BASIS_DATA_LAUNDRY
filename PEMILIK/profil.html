@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,18 +39,25 @@
         }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
-    <header class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
         <div class="flex items-center gap-2.5">
-            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36"
+                class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
             <div>
-                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span class="text-lg font-bold text-sky-500">in</span>
-                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner Console</span>
+                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span
+                    class="text-lg font-bold text-sky-500">in</span>
+                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner
+                    Console</span>
             </div>
         </div>
-        <button id="sidebarToggle" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle Menu">
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -59,11 +68,13 @@
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR NAVIGATION -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-200 ease-in-out">
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 md:static md:inset-auto transition-transform duration-200 ease-in-out">
         <div>
             <!-- Brand Logo -->
             <div class="h-20 px-6 border-b border-slate-100 flex items-center gap-3">
-                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40" class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
+                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
+                    class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
                 <div>
                     <div class="flex items-center">
                         <span class="text-xl font-bold text-slate-900 tracking-tight">Bersih</span>
@@ -80,52 +91,66 @@
                     <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Menu Utama</p>
                     <div class="space-y-1">
                         <!-- Dashboard -->
-                        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                             </svg>
                             <span>Dashboard</span>
                         </a>
 
                         <!-- Data Pelanggan -->
-                        <a href="datapelanggan.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="datapelanggan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             <span>Data Pelanggan</span>
                         </a>
 
                         <!-- Data Pegawai -->
-                        <a href="datapegawai.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="datapegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                             <span>Data Pegawai</span>
                         </a>
 
                         <!-- Layanan -->
-                        <a href="layananpegawai.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="layananpegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                             </svg>
                             <span>Layanan</span>
                         </a>
 
                         <!-- Transaksi -->
-                        <a href="transaksi.html" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="transaksi.html"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <div class="flex items-center gap-3">
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
                                 <span>Transaksi</span>
                             </div>
-                            <span class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
+                            <span
+                                class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
                         </a>
 
                         <!-- Laporan -->
-                        <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="laporan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                             </svg>
                             <span>Laporan</span>
                         </a>
@@ -137,10 +162,12 @@
                     <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Akun</p>
                     <div class="space-y-1">
                         <!-- Profil Saya (ACTIVE) -->
-                        <a href="profil.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-sky-50 text-cyan-700 relative transition">
+                        <a href="profil.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-sky-50 text-cyan-700 relative transition">
                             <span class="absolute left-0 top-1.5 bottom-1.5 w-1 bg-sky-500 rounded-r-md"></span>
                             <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                             <span>Profil Saya</span>
                         </a>
@@ -152,13 +179,13 @@
         <!-- Sidebar Footer -->
         <div class="p-4 border-t border-slate-200/90 flex flex-col gap-2">
             <!-- Logout Button -->
-            <a href="login.html"
+            <a href="../login.html"
                 class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
                 <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
                         stroke-width="1.5" stroke-linecap="round" />
-                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <span>Keluar</span>
             </a>
@@ -168,7 +195,8 @@
     <!-- MAIN CONTENT WRAPPER -->
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
-        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
+        <header
+            class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
             <div class="flex flex-col justify-start items-start">
                 <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Profil Saya</h1>
                 <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
@@ -180,37 +208,48 @@
             <div class="flex items-center gap-4">
                 <!-- Notification Bell -->
                 <div class="relative">
-                    <button id="notifToggleBtn" type="button" class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer" aria-label="Notifikasi" aria-expanded="false">
+                    <button id="notifToggleBtn" type="button"
+                        class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer"
+                        aria-label="Notifikasi" aria-expanded="false">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span id="notifDot" class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                        <span id="notifDot"
+                            class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
                     </button>
 
                     <!-- Notification Dropdown -->
-                    <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg border border-slate-200/90 z-50 overflow-hidden">
+                    <div id="notifDropdown"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg border border-slate-200/90 z-50 overflow-hidden">
                         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-800">Notifikasi Sistem</span>
-                            <button id="markNotifReadBtn" type="button" class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">Tandai dibaca</button>
+                            <button id="markNotifReadBtn" type="button"
+                                class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">Tandai
+                                dibaca</button>
                         </div>
                         <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
                             <a href="transaksi.html" class="block px-4 py-3 hover:bg-slate-50 transition">
                                 <p class="text-xs font-semibold text-slate-800">Pesanan baru #TRX-2024-0891</p>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Andi Wijaya memilih paket Cuci Komplit (4,5 kg).</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Andi Wijaya memilih paket Cuci Komplit (4,5
+                                    kg).</p>
                                 <span class="text-[10px] text-slate-400 mt-1 block">5 menit yang lalu</span>
                             </a>
                             <a href="laporan.html" class="block px-4 py-3 hover:bg-slate-50 transition">
                                 <p class="text-xs font-semibold text-slate-800">Target harian tercapai</p>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Pendapatan hari ini sudah melampaui Rp 2.500.000.</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Pendapatan hari ini sudah melampaui Rp
+                                    2.500.000.</p>
                                 <span class="text-[10px] text-slate-400 mt-1 block">1 jam yang lalu</span>
                             </a>
                         </div>
-                        <a href="transaksi.html" class="block px-4 py-2.5 text-center text-xs font-semibold text-slate-600 hover:bg-slate-50 border-t border-slate-100">Lihat semua aktivitas</a>
+                        <a href="transaksi.html"
+                            class="block px-4 py-2.5 text-center text-xs font-semibold text-slate-600 hover:bg-slate-50 border-t border-slate-100">Lihat
+                            semua aktivitas</a>
                     </div>
                 </div>
 
                 <!-- User Profile -->
-                                <!-- Profil Saya (Avatar & Dropdown Identik Pelanggan) -->
+                <!-- Profil Saya (Avatar & Dropdown Identik Pelanggan) -->
                 <div class="relative">
                     <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
                         aria-label="Profil Pengguna"
@@ -223,13 +262,14 @@
                         class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
                         <div class="px-4 py-2 border-b border-slate-100">
                             <p id="dropdownOwnerName" class="text-xs font-bold text-slate-800">Rangga Saputra</p>
-                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id</p>
+                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id
+                            </p>
                         </div>
                         <a href="profil.html" role="menuitem"
                             class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
                             <span>Profil Saya</span>
                         </a>
-                        <a href="login.html" role="menuitem"
+                        <a href="../login.html" role="menuitem"
                             class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
                             <span>Keluar Akun</span>
                         </a>
@@ -246,8 +286,10 @@
                 class="w-full relative overflow-hidden rounded-2xl p-6 sm:p-7 bg-gradient-to-r from-cyan-800 via-sky-700 to-blue-500 text-white shadow-[0px_8px_24px_0px_rgba(14,116,144,0.18)] flex flex-col sm:flex-row justify-between sm:items-center gap-5">
 
                 <!-- Aksen Dekoratif Lingkaran di Background (Sesuai Desain Pelanggan) -->
-                <div class="absolute -right-12 -top-24 size-72 rounded-full border border-white/10 bg-white/5 pointer-events-none" aria-hidden="true"></div>
-                <div class="absolute right-36 -bottom-20 size-48 rounded-full border border-white/10 bg-white/5 pointer-events-none" aria-hidden="true"></div>
+                <div class="absolute -right-12 -top-24 size-72 rounded-full border border-white/10 bg-white/5 pointer-events-none"
+                    aria-hidden="true"></div>
+                <div class="absolute right-36 -bottom-20 size-48 rounded-full border border-white/10 bg-white/5 pointer-events-none"
+                    aria-hidden="true"></div>
 
                 <!-- Sisi Kiri: Foto Profil & Identitas -->
                 <div class="relative z-10 flex items-center gap-4 sm:gap-5">
@@ -262,19 +304,23 @@
                     <!-- Nama, Email, & Jabatan -->
                     <div class="flex flex-col items-start">
                         <div class="flex items-center gap-2.5">
-                            <h2 id="bannerProfileName" class="text-white text-xl sm:text-2xl font-bold font-['Poppins'] leading-tight">
+                            <h2 id="bannerProfileName"
+                                class="text-white text-xl sm:text-2xl font-bold font-['Poppins'] leading-tight">
                                 Rangga Saputra
                             </h2>
-                            <span class="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-semibold tracking-wide uppercase text-sky-100 border border-white/20">
+                            <span
+                                class="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-semibold tracking-wide uppercase text-sky-100 border border-white/20">
                                 Super Admin
                             </span>
                         </div>
                         <p id="bannerProfileEmail" class="text-sky-100 text-xs sm:text-sm font-normal pt-1">
                             rangga@bersihin.id
                         </p>
-                        <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-xs rounded-full border border-white/20">
+                        <div
+                            class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-xs rounded-full border border-white/20">
                             <span class="size-1.5 bg-emerald-300 rounded-full"></span>
-                            <span class="text-white text-[11px] font-medium leading-none">Pemilik Bisnis · Owner sejak Agustus 2021</span>
+                            <span class="text-white text-[11px] font-medium leading-none">Pemilik Bisnis · Owner sejak
+                                Agustus 2021</span>
                         </div>
                     </div>
                 </div>
@@ -284,7 +330,8 @@
                     <a href="editprofil.html"
                         class="min-h-[44px] px-5 py-2.5 bg-white/15 hover:bg-white/25 active:bg-white/30 backdrop-blur-xs border border-white/30 rounded-xl text-white text-xs font-semibold font-['Poppins'] inline-flex items-center gap-2 shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
                         <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                            <path d="M11.5 2.5L13.5 4.5M2 14L4.5 13.5L13 5L11 3L2.5 11.5L2 14Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M11.5 2.5L13.5 4.5M2 14L4.5 13.5L13 5L11 3L2.5 11.5L2 14Z" stroke="currentColor"
+                                stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span>Edit Profil</span>
                     </a>
@@ -306,7 +353,8 @@
 
                         <div class="w-full pb-4 border-b border-slate-100 flex justify-between items-center">
                             <div>
-                                <h3 id="ownerInfoHeading" class="text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+                                <h3 id="ownerInfoHeading"
+                                    class="text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
                                     Informasi Akun Pemilik
                                 </h3>
                                 <p class="pt-0.5 text-slate-500 text-xs font-normal font-['Poppins']">
@@ -314,9 +362,12 @@
                                 </p>
                             </div>
 
-                            <span class="px-2.5 py-1 bg-emerald-50 rounded-full text-emerald-700 text-[11px] font-semibold inline-flex items-center gap-1.5 border border-emerald-100">
-                                <svg class="size-3.5 text-emerald-600" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                            <span
+                                class="px-2.5 py-1 bg-emerald-50 rounded-full text-emerald-700 text-[11px] font-semibold inline-flex items-center gap-1.5 border border-emerald-100">
+                                <svg class="size-3.5 text-emerald-600" viewBox="0 0 16 16" fill="none"
+                                    aria-hidden="true">
+                                    <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.8"
+                                        stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <span>Terverifikasi</span>
                             </span>
@@ -330,13 +381,16 @@
                                 <span class="block text-slate-500 text-[11px] font-semibold font-['Poppins'] mb-1.5">
                                     Nama Lengkap
                                 </span>
-                                <div class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div
+                                    class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                     <span class="text-slate-800 text-xs font-semibold font-['Poppins']">
                                         Rangga Saputra
                                     </span>
-                                    <svg class="size-4 text-slate-400" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <svg class="size-4 text-slate-400" viewBox="0 0 16 16" fill="none"
+                                        aria-hidden="true">
                                         <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
-                                        <path d="M3 13C3 10.8 5.2 9 8 9C10.8 9 13 10.8 13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                                        <path d="M3 13C3 10.8 5.2 9 8 9C10.8 9 13 10.8 13 13" stroke="currentColor"
+                                            stroke-width="1.3" stroke-linecap="round" />
                                     </svg>
                                 </div>
                             </div>
@@ -346,11 +400,13 @@
                                 <span class="block text-slate-500 text-[11px] font-semibold font-['Poppins'] mb-1.5">
                                     Username Pemilik
                                 </span>
-                                <div class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div
+                                    class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                     <span class="text-slate-800 text-xs font-semibold font-['Poppins']">
                                         rangga.owner
                                     </span>
-                                    <span class="text-[10px] font-semibold text-cyan-700 bg-sky-100/70 px-2 py-0.5 rounded-md">
+                                    <span
+                                        class="text-[10px] font-semibold text-cyan-700 bg-sky-100/70 px-2 py-0.5 rounded-md">
                                         Super Admin
                                     </span>
                                 </div>
@@ -361,13 +417,17 @@
                                 <span class="block text-slate-500 text-[11px] font-semibold font-['Poppins'] mb-1.5">
                                     Alamat Email
                                 </span>
-                                <div class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div
+                                    class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                     <span class="text-slate-800 text-xs font-semibold font-['Poppins']">
                                         rangga@bersihin.id
                                     </span>
-                                    <svg class="size-4 text-slate-400" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                        <rect x="2.5" y="3.5" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3" />
-                                        <path d="M3.5 5L8 8.5L12.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                                    <svg class="size-4 text-slate-400" viewBox="0 0 16 16" fill="none"
+                                        aria-hidden="true">
+                                        <rect x="2.5" y="3.5" width="11" height="9" rx="1.5" stroke="currentColor"
+                                            stroke-width="1.3" />
+                                        <path d="M3.5 5L8 8.5L12.5 5" stroke="currentColor" stroke-width="1.3"
+                                            stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </div>
                             </div>
@@ -377,11 +437,13 @@
                                 <span class="block text-slate-500 text-[11px] font-semibold font-['Poppins'] mb-1.5">
                                     Nomor HP / WhatsApp
                                 </span>
-                                <div class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div
+                                    class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                     <span class="text-slate-800 text-xs font-semibold font-['Poppins']">
                                         0812 1122 3344
                                     </span>
-                                    <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
+                                    <span
+                                        class="text-[10px] font-semibold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
                                         WhatsApp Aktif
                                     </span>
                                 </div>
@@ -392,11 +454,13 @@
                                 <span class="block text-slate-500 text-[11px] font-semibold font-['Poppins'] mb-1.5">
                                     Nama Usaha / Bisnis
                                 </span>
-                                <div class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div
+                                    class="w-full min-h-[46px] px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                                     <span class="text-slate-800 text-xs font-semibold font-['Poppins']">
                                         Bersihin Laundry
                                     </span>
-                                    <span class="text-[10px] font-semibold text-sky-700 bg-sky-100/70 px-2 py-0.5 rounded-md">
+                                    <span
+                                        class="text-[10px] font-semibold text-sky-700 bg-sky-100/70 px-2 py-0.5 rounded-md">
                                         Pusat &amp; Outlet
                                     </span>
                                 </div>
@@ -409,7 +473,9 @@
                             <a href="editprofil.html"
                                 class="min-h-[40px] px-4 py-2 bg-blue-950 hover:bg-blue-900 active:bg-slate-950 text-white rounded-xl text-xs font-semibold font-['Poppins'] inline-flex items-center gap-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                                 <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                    <path d="M11.5 2.5L13.5 4.5M2 14L4.5 13.5L13 5L11 3L2.5 11.5L2 14Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M11.5 2.5L13.5 4.5M2 14L4.5 13.5L13 5L11 3L2.5 11.5L2 14Z"
+                                        stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                                        stroke-linejoin="round" />
                                 </svg>
                                 <span>Perbarui Data Kontak</span>
                             </a>
@@ -432,14 +498,16 @@
                             <span class="text-sky-300 text-[10px] font-bold font-['Poppins'] tracking-wider uppercase">
                                 STATUS USAHA
                             </span>
-                            <span class="px-2 py-0.5 bg-emerald-400/20 text-emerald-200 border border-emerald-400/30 rounded-md text-[10px] font-semibold flex items-center gap-1">
+                            <span
+                                class="px-2 py-0.5 bg-emerald-400/20 text-emerald-200 border border-emerald-400/30 rounded-md text-[10px] font-semibold flex items-center gap-1">
                                 <span class="size-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                                 Bisnis Aktif
                             </span>
                         </div>
 
                         <div class="pt-3">
-                            <h3 id="statusHeading" class="text-white text-lg font-bold font-['Poppins'] leading-6 flex items-center gap-2">
+                            <h3 id="statusHeading"
+                                class="text-white text-lg font-bold font-['Poppins'] leading-6 flex items-center gap-2">
                                 <span>Bersihin Laundry</span>
                             </h3>
                             <p class="pt-1 text-slate-300 text-xs font-normal font-['Poppins']">
@@ -464,7 +532,8 @@
                             class="w-full mt-4 min-h-[40px] px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold font-['Poppins'] border border-white/20 flex items-center justify-center gap-1.5 transition">
                             <span>Buka Dashboard Pemilik</span>
                             <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </a>
                     </section>
@@ -473,7 +542,8 @@
                     <section aria-labelledby="accountSettingsHeading"
                         class="w-full bg-white rounded-2xl border border-slate-200 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] p-5 flex flex-col items-start">
 
-                        <h3 id="accountSettingsHeading" class="text-slate-800 text-sm font-semibold font-['Poppins'] leading-5 pb-3 border-b border-slate-100 w-full">
+                        <h3 id="accountSettingsHeading"
+                            class="text-slate-800 text-sm font-semibold font-['Poppins'] leading-5 pb-3 border-b border-slate-100 w-full">
                             Pengaturan Akun
                         </h3>
 
@@ -483,59 +553,82 @@
                             <a href="password.html"
                                 class="w-full min-h-[56px] py-3 flex items-center justify-between text-left hover:bg-slate-50 px-2 rounded-xl transition group">
                                 <div class="flex items-center gap-3">
-                                    <div class="size-9 bg-blue-50 text-cyan-700 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-cyan-100 transition">
+                                    <div
+                                        class="size-9 bg-blue-50 text-cyan-700 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-cyan-100 transition">
                                         <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                            <rect x="3" y="6.5" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.4" />
-                                            <path d="M5.5 6.5V4.5C5.5 3.1 6.6 2 8 2C9.4 2 10.5 3.1 10.5 4.5V6.5" stroke="currentColor" stroke-width="1.4" />
+                                            <rect x="3" y="6.5" width="10" height="7" rx="1.5" stroke="currentColor"
+                                                stroke-width="1.4" />
+                                            <path d="M5.5 6.5V4.5C5.5 3.1 6.6 2 8 2C9.4 2 10.5 3.1 10.5 4.5V6.5"
+                                                stroke="currentColor" stroke-width="1.4" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <span class="text-slate-800 text-xs font-semibold font-['Poppins'] block">Ubah Password</span>
-                                        <span class="text-slate-400 text-[10px] block">Perbarui kata sandi akun pemilik</span>
+                                        <span class="text-slate-800 text-xs font-semibold font-['Poppins'] block">Ubah
+                                            Password</span>
+                                        <span class="text-slate-400 text-[10px] block">Perbarui kata sandi akun
+                                            pemilik</span>
                                     </div>
                                 </div>
-                                <svg class="size-4 text-slate-400 group-hover:text-slate-700 transition" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                <svg class="size-4 text-slate-400 group-hover:text-slate-700 transition"
+                                    viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4"
+                                        stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </a>
 
                             <!-- Item 2: Pengaturan Notifikasi Bisnis -->
-                            <div class="w-full min-h-[56px] py-3 flex items-center justify-between text-left px-2 rounded-xl">
+                            <div
+                                class="w-full min-h-[56px] py-3 flex items-center justify-between text-left px-2 rounded-xl">
                                 <div class="flex items-center gap-3">
-                                    <div class="size-9 bg-blue-50 text-cyan-700 rounded-xl flex items-center justify-center shrink-0">
+                                    <div
+                                        class="size-9 bg-blue-50 text-cyan-700 rounded-xl flex items-center justify-center shrink-0">
                                         <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                            <path d="M8 2.5C5.8 2.5 4 4.3 4 6.5V9.1L2.9 11C2.6 11.5 3 12.2 3.6 12.2H12.4C13 12.2 13.4 11.5 13.1 11L12 9.1V6.5C12 4.3 10.2 2.5 8 2.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
-                                            <path d="M6.5 12.5C6.7 13.4 7.3 14 8 14C8.7 14 9.3 13.4 9.5 12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                                            <path
+                                                d="M8 2.5C5.8 2.5 4 4.3 4 6.5V9.1L2.9 11C2.6 11.5 3 12.2 3.6 12.2H12.4C13 12.2 13.4 11.5 13.1 11L12 9.1V6.5C12 4.3 10.2 2.5 8 2.5Z"
+                                                stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                                            <path d="M6.5 12.5C6.7 13.4 7.3 14 8 14C8.7 14 9.3 13.4 9.5 12.5"
+                                                stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <span class="text-slate-800 text-xs font-semibold font-['Poppins'] block">Notifikasi Bisnis</span>
-                                        <span class="text-slate-400 text-[10px] block">Atur pemberitahuan &amp; omzet</span>
+                                        <span
+                                            class="text-slate-800 text-xs font-semibold font-['Poppins'] block">Notifikasi
+                                            Bisnis</span>
+                                        <span class="text-slate-400 text-[10px] block">Atur pemberitahuan &amp;
+                                            omzet</span>
                                     </div>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="notificationToggle" checked class="sr-only peer">
-                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-600"></div>
+                                    <div
+                                        class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-600">
+                                    </div>
                                 </label>
                             </div>
 
                             <!-- Item 3: Keluar dari Akun -->
-                            <a href="login.html"
+                            <a href="../login.html"
                                 class="w-full min-h-[56px] py-3 flex items-center justify-between text-left hover:bg-red-50/70 px-2 rounded-xl transition group">
                                 <div class="flex items-center gap-3">
-                                    <div class="size-9 bg-rose-50 text-red-600 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-red-100 transition">
+                                    <div
+                                        class="size-9 bg-rose-50 text-red-600 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-red-100 transition">
                                         <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                            <path d="M6 14H3.6C3 14 2.5 13.5 2.5 12.9V3.1C2.5 2.5 3 2 3.6 2H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                                            <path d="M10.5 11L13.5 8L10.5 5M13.5 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M6 14H3.6C3 14 2.5 13.5 2.5 12.9V3.1C2.5 2.5 3 2 3.6 2H6"
+                                                stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                            <path d="M10.5 11L13.5 8L10.5 5M13.5 8H6" stroke="currentColor"
+                                                stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <span class="text-red-700 text-xs font-semibold font-['Poppins'] block">Keluar dari Akun</span>
+                                        <span class="text-red-700 text-xs font-semibold font-['Poppins'] block">Keluar
+                                            dari Akun</span>
                                         <span class="text-slate-400 text-[10px] block">Akhiri sesi konsol pemilik</span>
                                     </div>
                                 </div>
-                                <svg class="size-4 text-slate-400 group-hover:text-red-600 transition" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                                <svg class="size-4 text-slate-400 group-hover:text-red-600 transition"
+                                    viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4"
+                                        stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </a>
 
@@ -564,8 +657,9 @@
         if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
         if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 
-        </script>
+    </script>
     <!-- Skrip Utama Pemilik (Vanilla JS) -->
     <script src="../JS/pemilik.js"></script>
 </body>
+
 </html>
