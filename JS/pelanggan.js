@@ -416,13 +416,19 @@
       if (submitLoginText) submitLoginText.textContent = 'Memverifikasi...';
       setAuthStatus('loading', 'Memproses autentikasi pelanggan', 'Mengarahkan ke dashboard akun ' + identifier + '...');
 
+<<<<<<< HEAD
+      // Simpan status remember me jika dicentang
+=======
       // Simpan status remember me & profil jika dicentang
+>>>>>>> 45445859ae7b27a0e4ae63e2c32d0da8f65ea726
       try {
         if (rememberInput && rememberInput.checked) {
           localStorage.setItem('bersihin_remember_identifier', identifier);
         } else {
           localStorage.removeItem('bersihin_remember_identifier');
         }
+<<<<<<< HEAD
+=======
         localStorage.setItem('bersihin_customer_profile', JSON.stringify({
           nama: 'Andi Pratama',
           email: identifier.includes('@') ? identifier : 'andi.pratama@email.com',
@@ -430,6 +436,7 @@
           alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
           member_tier: 'Silver Member'
         }));
+>>>>>>> 45445859ae7b27a0e4ae63e2c32d0da8f65ea726
       } catch (err) {
         // Storage restricted
       }
@@ -689,7 +696,7 @@
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) customList = parsed;
       }
-    } catch (_) {}
+    } catch (_) { }
 
     try {
       const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
@@ -700,7 +707,7 @@
           customList.unshift(active);
         }
       }
-    } catch (_) {}
+    } catch (_) { }
 
     const result = [];
     const seen = new Set();
@@ -1472,7 +1479,7 @@
           if (active && (active.code || active.orderId) && catalog[active.code || active.orderId]) {
             trxId = active.code || active.orderId;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
       if (!trxId || !catalog[trxId]) {
         trxId = allTrx.length > 0 ? allTrx[0].code : 'TRX-240518-01';
