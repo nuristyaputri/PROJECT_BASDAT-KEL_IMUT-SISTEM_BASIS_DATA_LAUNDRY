@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Login Terpadu - Bersihin Laundry</title>
+
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    a[href],
+    button:not(:disabled),
+    select:not(:disabled),
+    label[for],
+    input[type="checkbox"]:not(:disabled) {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ===================================================================== -->
+  <!-- KONTEN UTAMA: DUA PANEL (BRAND VISUAL & FORM LOGIN TERPADU)           -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 flex flex-col lg:flex-row min-h-screen">
+
+    <!-- PANEL KIRI: BRANDING & TIGA PERAN SISTEM -->
+    <header
+      class="w-full lg:w-5/12 bg-gradient-to-br from-blue-950 via-slate-900 to-cyan-900 text-white p-7 sm:p-10 lg:p-14 flex flex-col justify-between relative overflow-hidden">
+      <!-- Ornamen Dekoratif Lingkaran Background -->
+      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full pointer-events-none"
+        aria-hidden="true"></div>
+      <div class="absolute -left-12 top-1/4 w-44 h-44 bg-cyan-400/10 rounded-full blur-2xl pointer-events-none"
+        aria-hidden="true"></div>
+
+      <!-- Bagian Atas: Logo Brand -->
+      <div class="relative z-10 flex items-center gap-3">
+        <img src="assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="44" height="44"
+          class="size-11 rounded-xl shadow-lg shadow-sky-500/20 shrink-0 select-none bg-white p-1" />
+        <div class="inline-flex flex-col justify-start items-start">
+          <div class="leading-none">
+            <span class="text-white text-2xl font-bold tracking-tight">Bersih</span><span
+              class="text-sky-400 text-2xl font-bold">in</span>
+          </div>
+          <span class="text-cyan-200 text-[9px] font-bold tracking-[3px] uppercase mt-1">SISTEM BASIS DATA</span>
+        </div>
+      </div>
+
+      <!-- Bagian Tengah: Headline & Penjelasan 3 Aktor -->
+      <div class="relative z-10 my-10 lg:my-0 flex flex-col gap-6">
+        <div>
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-cyan-200 border border-white/15 backdrop-blur-sm">
+            <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Portal Login Tunggal
+          </span>
+          <h1 class="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug">
+            Satu Akses Terpadu untuk Semua Kebutuhan Laundry
+          </h1>
+          <p class="mt-2 text-slate-300 text-xs sm:text-sm leading-relaxed">
+            Sistem otomatis mengenali peran Anda dan mengarahkan langsung ke dashboard aktor yang bersangkutan.
+          </p>
+        </div>
+
+        <!-- 3 Kartu Peran Ringkas -->
+        <div class="space-y-3">
+          <!-- Aktor 1: Pelanggan -->
+          <div class="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-3">
+            <div class="size-9 rounded-lg bg-sky-400/20 text-sky-300 flex items-center justify-center shrink-0">
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <circle cx="10" cy="7" r="3.5" stroke-width="1.6" />
+                <path d="M4 16.5C4 13.5 6.7 11.5 10 11.5C13.3 11.5 16 13.5 16 16.5" stroke-width="1.6"
+                  stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="text-xs">
+              <p class="font-bold text-white">Pelanggan</p>
+              <p class="text-slate-300 text-[11px]">Pantau status cucian real-time, buat pesanan, dan cek riwayat.</p>
+            </div>
+          </div>
+
+          <!-- Aktor 2: Pegawai -->
+          <div class="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-3">
+            <div class="size-9 rounded-lg bg-emerald-400/20 text-emerald-300 flex items-center justify-center shrink-0">
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <rect x="3" y="4" width="14" height="13" rx="2" stroke-width="1.6" />
+                <path d="M7 2V5M13 2V5M3 8H17" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="text-xs">
+              <p class="font-bold text-white">Pegawai / Kasir</p>
+              <p class="text-slate-300 text-[11px]">Kelola POS kasir, timbang laundry, dan mutakhirkan tahapan cucian.</p>
+            </div>
+          </div>
+
+          <!-- Aktor 3: Pemilik -->
+          <div class="p-3.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center gap-3">
+            <div class="size-9 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
+              <svg class="size-5" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <path d="M3 17H17M4 14L2 6L7 9L10 3L13 9L18 6L16 14H4Z" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <div class="text-xs">
+              <p class="font-bold text-white">Pemilik Usaha</p>
+              <p class="text-slate-300 text-[11px]">Pantau grafik omzet bisnis, data staf pegawai, dan tarif layanan.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bagian Bawah: Copyright & Navigasi Cepat -->
+      <div class="relative z-10 pt-4 border-t border-white/10 text-xs text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <span>&copy; 2024 Bersihin Laundry · Kelompok Imut</span>
+        <span class="text-[11px] text-cyan-300">Tugas Proyek Basis Data</span>
+      </div>
+    </header>
+
+    <!-- PANEL KANAN: FORMULIR LOGIN TERPADU -->
+    <main class="w-full lg:w-7/12 bg-white px-6 py-10 sm:px-12 sm:py-14 lg:px-16 flex justify-center items-center">
+      <div class="w-full max-w-[500px] flex flex-col items-start">
+
+        <!-- Header Form -->
+        <span class="text-cyan-700 text-xs font-bold tracking-widest uppercase">PORTAL AUTENTIKASI</span>
+        <h2 class="mt-1 text-2xl sm:text-3xl font-bold text-slate-800 leading-tight">
+          Masuk ke Dashboard
+        </h2>
+        <p class="mt-1 text-slate-500 text-xs leading-relaxed">
+          Pilih tab peran aktor atau masukkan kredensial akun Anda di bawah ini:
+        </p>
+
+        <!-- Tab Pilihan Peran Aktor -->
+        <div class="w-full mt-6 grid grid-cols-3 p-1 bg-slate-100 rounded-xl gap-1">
+          <button type="button" id="tabPelanggan" data-role="PELANGGAN"
+            class="role-tab py-2.5 px-3 rounded-lg text-xs font-semibold text-center transition flex items-center justify-center gap-1.5 bg-white text-cyan-800 shadow-sm">
+            <span>👤</span>
+            <span>Pelanggan</span>
+          </button>
+          <button type="button" id="tabPegawai" data-role="PEGAWAI"
+            class="role-tab py-2.5 px-3 rounded-lg text-xs font-medium text-slate-600 text-center hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+            <span>👔</span>
+            <span>Pegawai</span>
+          </button>
+          <button type="button" id="tabPemilik" data-role="PEMILIK"
+            class="role-tab py-2.5 px-3 rounded-lg text-xs font-medium text-slate-600 text-center hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+            <span>👑</span>
+            <span>Pemilik</span>
+          </button>
+        </div>
+
+        <!-- Bar Tombol Isi Cepat Demo (Quick Fill) -->
+        <div class="w-full mt-3.5 p-3 rounded-xl bg-sky-50 border border-sky-100 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between text-[11px] font-semibold text-cyan-900">
+            <span>⚡ Isi Kredensial Demo 1-Klik:</span>
+            <span class="text-[10px] text-cyan-600 font-normal">Password: password123</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button type="button" id="btnQuickPelanggan"
+              class="px-2.5 py-1 rounded-md bg-white hover:bg-sky-100 active:scale-95 text-slate-700 hover:text-cyan-800 border border-slate-200 text-[11px] font-medium transition flex items-center gap-1">
+              <span>👤</span> Pelanggan (Andi)
+            </button>
+            <button type="button" id="btnQuickPegawai"
+              class="px-2.5 py-1 rounded-md bg-white hover:bg-sky-100 active:scale-95 text-slate-700 hover:text-cyan-800 border border-slate-200 text-[11px] font-medium transition flex items-center gap-1">
+              <span>👔</span> Pegawai (Dina)
+            </button>
+            <button type="button" id="btnQuickPemilik"
+              class="px-2.5 py-1 rounded-md bg-white hover:bg-sky-100 active:scale-95 text-slate-700 hover:text-cyan-800 border border-slate-200 text-[11px] font-medium transition flex items-center gap-1">
+              <span>👑</span> Pemilik (Rangga)
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner Alert Status UI -->
+        <div id="authAlert" role="status" aria-live="polite"
+          class="hidden w-full mt-4 px-3.5 py-3 rounded-xl border text-xs font-medium flex items-start gap-2.5">
+          <div id="authAlertIcon" class="mt-0.5 shrink-0"></div>
+          <div class="flex-1">
+            <p id="authAlertTitle" class="font-bold"></p>
+            <p id="authAlertMessage" class="mt-0.5 leading-relaxed font-normal"></p>
+          </div>
+        </div>
+
+        <!-- Form Login Terpadu -->
+        <form id="unifiedLoginForm" class="w-full mt-5 flex flex-col gap-4">
+          <!-- Hidden Input untuk Role yang Dipilih -->
+          <input type="hidden" id="selectedRole" name="role" value="PELANGGAN" />
+
+          <!-- Field 1: Identifier (Username / Email / Telepon) -->
+          <div class="w-full flex flex-col items-start">
+            <label for="identifier" id="identifierLabel"
+              class="text-slate-700 text-xs font-semibold leading-4 mb-1.5 flex items-center justify-between w-full">
+              <span>Email atau Username</span>
+              <span id="roleIndicatorBadge" class="text-[10px] font-semibold text-cyan-700 bg-sky-100 px-2 py-0.5 rounded-full">
+                Peran: Pelanggan
+              </span>
+            </label>
+            <div class="w-full relative">
+              <input type="text" id="identifier" name="identifier" value="andi.pratama@email.com" required
+                autocomplete="username" placeholder="Masukkan username, email, atau no. telepon"
+                class="w-full h-11 px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-blue-950 placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700 transition" />
+            </div>
+            <p id="identifierError" class="hidden mt-1 text-red-600 text-[11px] font-medium">
+              Kolom ini wajib diisi.
+            </p>
+          </div>
+
+          <!-- Field 2: Password -->
+          <div class="w-full flex flex-col items-start">
+            <label for="password" class="text-slate-700 text-xs font-semibold leading-4 mb-1.5">
+              Kata Sandi
+            </label>
+            <div class="w-full relative">
+              <input type="password" id="password" name="password" value="password123" required
+                autocomplete="current-password" placeholder="Masukkan kata sandi akun Anda"
+                class="w-full h-11 pl-3.5 pr-11 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-blue-950 placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-cyan-700 focus:border-cyan-700 transition" />
+              <button type="button" id="togglePasswordBtn" aria-label="Tampilkan kata sandi"
+                class="w-11 h-11 right-0 top-0 absolute inline-flex justify-center items-center text-slate-400 hover:text-slate-700 rounded-r-xl transition">
+                <svg id="eyeIconOpen" class="size-4" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                    d="M10 4.5C5.5 4.5 2 10 2 10s3.5 5.5 8 5.5 8-5.5 8-5.5-3.5-5.5-8-5.5z" />
+                  <circle cx="10" cy="10" r="2.5" stroke-width="1.6" />
+                </svg>
+                <svg id="eyeIconClosed" class="size-4 hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                    d="M3 3l14 14M10 7a3 3 0 013 3m-1.5 3a3 3 0 01-3-3" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                    d="M6.5 6.5C4.2 7.7 2.5 10 2.5 10s3.5 5.5 8 5.5c2 0 3.7-.8 5-2m-2-3.5c.3-.6.5-1.3.5-2 0-.2 0-.5 0-.7" />
+                </svg>
+              </button>
+            </div>
+            <p id="passwordError" class="hidden mt-1 text-red-600 text-[11px] font-medium">
+              Kata sandi wajib diisi (minimal 6 karakter).
+            </p>
+          </div>
+
+          <!-- Pilihan Ingat Saya & Lupa Sandi -->
+          <div class="w-full flex items-center justify-between text-xs">
+            <label class="flex items-center gap-2 cursor-pointer text-slate-600">
+              <input type="checkbox" id="rememberMe" checked
+                class="size-4 text-cyan-700 rounded border-slate-300 focus:ring-cyan-700" />
+              <span>Ingat kredensial di perangkat ini</span>
+            </label>
+          </div>
+
+          <!-- Tombol Masuk Utama -->
+          <button type="submit" id="submitBtn"
+            class="w-full min-h-[46px] mt-2 px-5 py-3 bg-blue-950 hover:bg-blue-900 active:scale-[0.99] text-white rounded-xl text-xs sm:text-sm font-semibold shadow-md flex items-center justify-center gap-2 transition">
+            <span id="submitBtnText">Masuk ke Dashboard</span>
+            <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </form>
+
+        <!-- Navigasi Beralih Peran di Satu Halaman Login -->
+        <div class="w-full mt-6 pt-5 border-t border-slate-200 flex flex-col items-center gap-2 text-xs">
+          <span class="text-slate-500">Pilih peran akun yang ingin Anda masuki:</span>
+          <div class="flex flex-wrap items-center justify-center gap-2 text-cyan-700 font-semibold">
+            <button type="button" onclick="window.__switchRole && window.__switchRole('PELANGGAN')" class="px-2 py-1 hover:bg-slate-100 rounded-lg transition">Tab Pelanggan</button>
+            <span class="text-slate-300">·</span>
+            <button type="button" onclick="window.__switchRole && window.__switchRole('PEGAWAI')" class="px-2 py-1 hover:bg-slate-100 rounded-lg transition">Tab Pegawai</button>
+            <span class="text-slate-300">·</span>
+            <button type="button" onclick="window.__switchRole && window.__switchRole('PEMILIK')" class="px-2 py-1 hover:bg-slate-100 rounded-lg transition">Tab Pemilik</button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SKRIP LOGIKA LOGIN TERPADU & ROUTING OTOMATIS                         -->
+  <!-- ===================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Kamus Akun Bawaan Demo untuk 3 Aktor
+      const CREDENTIALS_DEMO = {
+        PELANGGAN: {
+          identifier: 'andi.pratama@email.com',
+          password: 'password123',
+          nama: 'Andi Pratama',
+          redirect: 'PELANGGAN/dashboard.html',
+          label: 'Peran: Pelanggan'
+        },
+        PEGAWAI: {
+          identifier: 'dina.staff',
+          password: 'password123',
+          nama: 'Dina Nurhaliza',
+          redirect: 'PEGAWAI/dashboard.html',
+          label: 'Peran: Pegawai'
+        },
+        PEMILIK: {
+          identifier: 'pemilik',
+          password: 'password123',
+          nama: 'Rangga Saputra',
+          redirect: 'PEMILIK/dashboard.html',
+          label: 'Peran: Pemilik'
+        }
+      };
+
+      // Referensi DOM
+      const tabPelanggan = document.getElementById('tabPelanggan');
+      const tabPegawai = document.getElementById('tabPegawai');
+      const tabPemilik = document.getElementById('tabPemilik');
+      const selectedRoleInput = document.getElementById('selectedRole');
+      const roleIndicatorBadge = document.getElementById('roleIndicatorBadge');
+
+      const identifierInput = document.getElementById('identifier');
+      const passwordInput = document.getElementById('password');
+      const rememberMeInput = document.getElementById('rememberMe');
+      const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+      const eyeIconOpen = document.getElementById('eyeIconOpen');
+      const eyeIconClosed = document.getElementById('eyeIconClosed');
+
+      const form = document.getElementById('unifiedLoginForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const submitBtnText = document.getElementById('submitBtnText');
+
+      const authAlert = document.getElementById('authAlert');
+      const authAlertIcon = document.getElementById('authAlertIcon');
+      const authAlertTitle = document.getElementById('authAlertTitle');
+      const authAlertMessage = document.getElementById('authAlertMessage');
+
+      const btnQuickPelanggan = document.getElementById('btnQuickPelanggan');
+      const btnQuickPegawai = document.getElementById('btnQuickPegawai');
+      const btnQuickPemilik = document.getElementById('btnQuickPemilik');
+
+      // 2. Fungsi Menampilkan Alert Status
+      function showAlert(type, title, message) {
+        if (!type) {
+          authAlert.classList.add('hidden');
+          return;
+        }
+
+        authAlert.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-900', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-950', 'bg-sky-50', 'border-sky-200', 'text-cyan-950');
+
+        if (type === 'error') {
+          authAlert.classList.add('bg-red-50', 'border-red-200', 'text-red-900');
+          authAlertIcon.innerHTML = `<svg class="size-4 text-red-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>`;
+        } else if (type === 'success') {
+          authAlert.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-950');
+          authAlertIcon.innerHTML = `<svg class="size-4 text-emerald-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>`;
+        } else {
+          authAlert.classList.add('bg-sky-50', 'border-sky-200', 'text-cyan-950');
+          authAlertIcon.innerHTML = `<svg class="size-4 text-cyan-600 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>`;
+        }
+
+        authAlertTitle.textContent = title;
+        authAlertMessage.textContent = message;
+      }
+
+      // 3. Tab Peran Switcher
+      const tabs = [
+        { btn: tabPelanggan, role: 'PELANGGAN' },
+        { btn: tabPegawai, role: 'PEGAWAI' },
+        { btn: tabPemilik, role: 'PEMILIK' }
+      ];
+
+      function setActiveRole(role) {
+        selectedRoleInput.value = role;
+        roleIndicatorBadge.textContent = 'Peran: ' + role.charAt(0) + role.slice(1).toLowerCase();
+
+        tabs.forEach(t => {
+          if (t.role === role) {
+            t.btn.className = 'role-tab py-2.5 px-3 rounded-lg text-xs font-semibold text-center transition flex items-center justify-center gap-1.5 bg-white text-cyan-800 shadow-sm';
+          } else {
+            t.btn.className = 'role-tab py-2.5 px-3 rounded-lg text-xs font-medium text-slate-600 text-center hover:text-slate-900 transition flex items-center justify-center gap-1.5';
+          }
+        });
+      }
+
+      window.__switchRole = setActiveRole;
+
+      tabPelanggan.addEventListener('click', () => setActiveRole('PELANGGAN'));
+      tabPegawai.addEventListener('click', () => setActiveRole('PEGAWAI'));
+      tabPemilik.addEventListener('click', () => setActiveRole('PEMILIK'));
+
+      // 4. Quick Fill Buttons
+      function fillCredentials(role) {
+        setActiveRole(role);
+        const cred = CREDENTIALS_DEMO[role];
+        identifierInput.value = cred.identifier;
+        passwordInput.value = cred.password;
+        showAlert(null);
+      }
+
+      btnQuickPelanggan.addEventListener('click', () => fillCredentials('PELANGGAN'));
+      btnQuickPegawai.addEventListener('click', () => fillCredentials('PEGAWAI'));
+      btnQuickPemilik.addEventListener('click', () => fillCredentials('PEMILIK'));
+
+      // 5. Toggle Show/Hide Password
+      if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', () => {
+          const isHidden = passwordInput.type === 'password';
+          passwordInput.type = isHidden ? 'text' : 'password';
+          eyeIconOpen.classList.toggle('hidden', isHidden);
+          eyeIconClosed.classList.toggle('hidden', !isHidden);
+        });
+      }
+
+      // 6. Deteksi Otomatis Aktor Berdasarkan Kredensial
+      function detectRoleFromInput(val, currentRole) {
+        const lower = val.toLowerCase();
+        if (lower.includes('pemilik') || lower.includes('rangga')) return 'PEMILIK';
+        if (lower.includes('staff') || lower.includes('pegawai') || lower.includes('dina') || lower.includes('budi')) return 'PEGAWAI';
+        if (lower.includes('andi') || lower.includes('pelanggan') || lower.startsWith('0812')) return 'PELANGGAN';
+        return currentRole;
+      }
+
+      // 7. Form Submission & Smart Routing
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const rawId = identifierInput.value.trim();
+        const rawPass = passwordInput.value;
+        const currentRole = selectedRoleInput.value;
+
+        if (!rawId) {
+          showAlert('error', 'Kredensial Belum Diisi', 'Silakan masukkan username, email, atau no. telepon.');
+          return;
+        }
+
+        if (!rawPass || rawPass.length < 6) {
+          showAlert('error', 'Kata Sandi Belum Lengkap', 'Kata sandi minimal harus 6 karakter.');
+          return;
+        }
+
+        // Tampilkan Loading State
+        submitBtn.disabled = true;
+        submitBtnText.textContent = 'Memverifikasi Akun...';
+        showAlert('loading', 'Memeriksa Kredensial', 'Menghubungkan ke layanan router autentikasi...');
+
+        // Tentukan peran sasaran (bisa dari tab atau deteksi cerdas)
+        const targetRole = detectRoleFromInput(rawId, currentRole);
+        setActiveRole(targetRole);
+
+        // A. Coba kirimkan ke endpoint router PHP atau Node.js jika tersedia
+        let backendSucceeded = false;
+        let finalRedirectUrl = CREDENTIALS_DEMO[targetRole] ? CREDENTIALS_DEMO[targetRole].redirect : 'PELANGGAN/dashboard.html';
+
+        try {
+          const payload = {
+            identifier: rawId,
+            password: rawPass,
+            role: targetRole
+          };
+
+          // Uji endpoint routes/auth.php terlebih dahulu
+          const response = await fetch('routes/auth.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data && result.data.redirect) {
+              finalRedirectUrl = result.data.redirect;
+              backendSucceeded = true;
+            }
+          }
+        } catch (_) {
+          // Berjalan di lingkungan lokal / file standalone tanpa HTTP server PHP
+        }
+
+        // B. Simpan status session & profil aktif di localStorage untuk frontend
+        try {
+          const activeCred = CREDENTIALS_DEMO[targetRole];
+          if (rememberMeInput && rememberMeInput.checked) {
+            localStorage.setItem('bersihin_remember_identifier', rawId);
+          } else {
+            localStorage.removeItem('bersihin_remember_identifier');
+          }
+
+          if (targetRole === 'PELANGGAN') {
+            localStorage.setItem('bersihin_customer_profile', JSON.stringify({
+              nama: activeCred.nama,
+              email: rawId.includes('@') ? rawId : activeCred.identifier,
+              telepon: '0812 3456 7821',
+              alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
+              member_tier: 'Silver Member'
+            }));
+          }
+        } catch (storageErr) {}
+
+        // Tampilkan Notifikasi Berhasil & Redirect Mulus
+        setTimeout(() => {
+          showAlert(
+            'success',
+            'Login Berhasil!',
+            `Selamat datang kembali! Mengalihkan ke dashboard ${targetRole.toLowerCase()}...`
+          );
+
+          setTimeout(() => {
+            window.location.href = finalRedirectUrl;
+          }, 450);
+        }, 500);
+      });
+
+      // 8. Cek Apakah Ada Remembered Identifier Sebelumnya
+      try {
+        const remembered = localStorage.getItem('bersihin_remember_identifier');
+        if (remembered) {
+          identifierInput.value = remembered;
+          const detected = detectRoleFromInput(remembered, 'PELANGGAN');
+          setActiveRole(detected);
+        }
+      } catch (_) {}
+
+    })();
+  </script>
+</body>
+
+</html>
+

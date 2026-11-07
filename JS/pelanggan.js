@@ -416,20 +416,27 @@
       if (submitLoginText) submitLoginText.textContent = 'Memverifikasi...';
       setAuthStatus('loading', 'Memproses autentikasi pelanggan', 'Mengarahkan ke dashboard akun ' + identifier + '...');
 
-      // Simpan status remember me jika dicentang
+      // Simpan status remember me & profil jika dicentang
       try {
         if (rememberInput && rememberInput.checked) {
           localStorage.setItem('bersihin_remember_identifier', identifier);
         } else {
           localStorage.removeItem('bersihin_remember_identifier');
         }
+        localStorage.setItem('bersihin_customer_profile', JSON.stringify({
+          nama: 'Andi Pratama',
+          email: identifier.includes('@') ? identifier : 'andi.pratama@email.com',
+          telepon: '0812 3456 7821',
+          alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
+          member_tier: 'Silver Member'
+        }));
       } catch (err) {
         // Storage restricted
       }
 
       setTimeout(() => {
         window.location.href = 'dashboard.html';
-      }, 900);
+      }, 500);
     });
 
     // Cek remembered identifier
