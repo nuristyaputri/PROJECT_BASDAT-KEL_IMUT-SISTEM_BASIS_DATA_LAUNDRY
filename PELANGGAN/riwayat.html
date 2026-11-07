@@ -251,7 +251,7 @@
       </div>
 
       <!-- Tombol Keluar -->
-      <a href="login.html"
+      <a href="../login.html"
         class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
         <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
@@ -350,7 +350,7 @@
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
               <span>Profil Saya</span>
             </a>
-            <a href="login.html" role="menuitem"
+            <a href="../login.html" role="menuitem"
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
               <span>Keluar Akun</span>
             </a>
@@ -401,7 +401,7 @@
             </div>
           </div>
           <div class="pt-3">
-            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">24</span>
+            <span id="statTotalOrders" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">24</span>
             <span class="text-slate-400 text-[10px] block pt-0.5">Semua transaksi</span>
           </div>
         </div>
@@ -418,8 +418,8 @@
             </div>
           </div>
           <div class="pt-3">
-            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">1</span>
-            <span class="text-amber-700 text-[10px] font-semibold block pt-0.5">1 pesanan berjalan</span>
+            <span id="statProcessOrders" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">1</span>
+            <span id="statProcessOrdersSub" class="text-amber-700 text-[10px] font-semibold block pt-0.5">1 pesanan berjalan</span>
           </div>
         </div>
 
@@ -434,7 +434,7 @@
             </div>
           </div>
           <div class="pt-3">
-            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">22</span>
+            <span id="statDoneOrders" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">22</span>
             <span class="text-emerald-700 text-[10px] font-semibold block pt-0.5">Telah diambil</span>
           </div>
         </div>
@@ -451,7 +451,7 @@
             </div>
           </div>
           <div class="pt-3">
-            <span class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">Rp842.000</span>
+            <span id="statTotalExpense" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">Rp842.000</span>
             <span class="text-slate-400 text-[10px] block pt-0.5">Akumulasi pengeluaran</span>
           </div>
         </div>
@@ -469,19 +469,19 @@
           <div role="tablist" aria-label="Filter status transaksi" class="inline-flex p-1 bg-slate-100 rounded-xl gap-1 self-start">
             <button type="button" role="tab" id="tabAll" aria-selected="true" data-filter="all"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-semibold font-['Poppins'] transition bg-white text-slate-800 shadow-xs">
-              Semua <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">24</span>
+              Semua <span id="badgeTabAll" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">24</span>
             </button>
             <button type="button" role="tab" id="tabProcess" aria-selected="false" data-filter="Diproses"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Diproses <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 text-amber-800">1</span>
+              Diproses <span id="badgeTabProcess" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 text-amber-800">1</span>
             </button>
             <button type="button" role="tab" id="tabDone" aria-selected="false" data-filter="Selesai"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Selesai <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-teal-800">22</span>
+              Selesai <span id="badgeTabDone" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-teal-800">22</span>
             </button>
             <button type="button" role="tab" id="tabCanceled" aria-selected="false" data-filter="Dibatalkan"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Dibatalkan <span class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700">1</span>
+              Dibatalkan <span id="badgeTabCanceled" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700">1</span>
             </button>
           </div>
 
@@ -867,122 +867,8 @@
       okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
     }
 
-    // 4. Logika Interaktif Filter Status, Pencarian, & Urutkan
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const searchInput = document.getElementById('searchInput');
-    const sortSelect = document.getElementById('sortSelect');
-    const trxRows = Array.from(document.querySelectorAll('.trx-row'));
-    const emptySearchState = document.getElementById('emptySearchState');
-    const resetFilterBtn = document.getElementById('resetFilterBtn');
-    const tableBody = document.getElementById('historyTableBody');
-    const tableInfoText = document.getElementById('tableInfoText');
-
-    let currentFilter = 'all';
-    let currentSearch = '';
-
-    function applyFilterAndSearch() {
-      let visibleCount = 0;
-
-      trxRows.forEach(row => {
-        const rowStatus = row.getAttribute('data-status');
-        const rowCode = (row.getAttribute('data-code') || '').toLowerCase();
-        const rowService = (row.getAttribute('data-service') || '').toLowerCase();
-
-        const matchStatus = currentFilter === 'all' || rowStatus === currentFilter;
-        const matchSearch = currentSearch === '' || rowCode.includes(currentSearch) || rowService.includes(currentSearch);
-
-        if (matchStatus && matchSearch) {
-          row.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          row.classList.add('hidden');
-        }
-      });
-
-      if (visibleCount === 0) {
-        emptySearchState.classList.remove('hidden');
-        if (tableBody) tableBody.parentElement.classList.add('hidden');
-      } else {
-        emptySearchState.classList.add('hidden');
-        if (tableBody) tableBody.parentElement.classList.remove('hidden');
-      }
-
-      if (tableInfoText) {
-        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${visibleCount}</span> dari <span class="font-semibold text-slate-700">${visibleCount}</span> transaksi`;
-      }
-    }
-
-    // Tab Filter Klik
-    filterTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        filterTabs.forEach(t => {
-          t.setAttribute('aria-selected', 'false');
-          t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-          t.classList.add('text-slate-600');
-        });
-
-        tab.setAttribute('aria-selected', 'true');
-        tab.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-        tab.classList.remove('text-slate-600');
-
-        currentFilter = tab.getAttribute('data-filter');
-        applyFilterAndSearch();
-      });
-    });
-
-    // Real-time Search Input
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        currentSearch = e.target.value.trim().toLowerCase();
-        applyFilterAndSearch();
-      });
-    }
-
-    // Reset Filter Button
-    if (resetFilterBtn) {
-      resetFilterBtn.addEventListener('click', () => {
-        currentFilter = 'all';
-        currentSearch = '';
-        if (searchInput) searchInput.value = '';
-
-        filterTabs.forEach(t => {
-          if (t.getAttribute('data-filter') === 'all') {
-            t.setAttribute('aria-selected', 'true');
-            t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.remove('text-slate-600');
-          } else {
-            t.setAttribute('aria-selected', 'false');
-            t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.add('text-slate-600');
-          }
-        });
-
-        applyFilterAndSearch();
-      });
-    }
-
-    // Sort Dropdown
-    if (sortSelect && tableBody) {
-      sortSelect.addEventListener('change', () => {
-        const val = sortSelect.value;
-        const rows = Array.from(tableBody.querySelectorAll('.trx-row'));
-
-        rows.sort((a, b) => {
-          const dateA = new Date(a.getAttribute('data-timestamp')).getTime();
-          const dateB = new Date(b.getAttribute('data-timestamp')).getTime();
-          const amtA = parseInt(a.getAttribute('data-amount') || '0', 10);
-          const amtB = parseInt(b.getAttribute('data-amount') || '0', 10);
-
-          if (val === 'newest') return dateB - dateA;
-          if (val === 'oldest') return dateA - dateB;
-          if (val === 'highest') return amtB - amtA;
-          if (val === 'lowest') return amtA - amtB;
-          return 0;
-        });
-
-        rows.forEach(r => tableBody.appendChild(r));
-      });
-    }
+    // 4. Logika Interaktif Filter Status, Pencarian, Urutkan, & Rendering Dinamis
+    // Dikelola secara terpusat oleh ../JS/pelanggan.js (fungsi initRiwayatPage)
 
     // 5. Pagination Dummy Buttons
     const pageNumBtns = document.querySelectorAll('.page-num-btn');

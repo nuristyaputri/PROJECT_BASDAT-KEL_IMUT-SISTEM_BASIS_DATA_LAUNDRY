@@ -261,7 +261,7 @@
       </div>
 
       <!-- Tombol Keluar -->
-      <a href="login.html"
+      <a href="../login.html"
         class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
         <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
@@ -361,7 +361,7 @@
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
               <span>Profil Saya</span>
             </a>
-            <a href="login.html" role="menuitem"
+            <a href="../login.html" role="menuitem"
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
               <span>Keluar Akun</span>
             </a>
@@ -384,7 +384,7 @@
           <span class="text-cyan-100 text-xs font-bold font-['Poppins'] leading-4 tracking-widest uppercase">
             SELAMAT DATANG KEMBALI
           </span>
-          <h2 class="pt-1.5 text-white text-xl sm:text-2xl font-normal font-['Poppins'] leading-8 sm:leading-9">
+          <h2 id="greetingHeading" class="pt-1.5 text-white text-xl sm:text-2xl font-normal font-['Poppins'] leading-8 sm:leading-9">
             Halo, Andi! Semoga harimu menyenangkan.
           </h2>
           <p class="pt-1.5 text-blue-50 text-xs font-normal font-['Poppins'] leading-4">
@@ -851,7 +851,7 @@
     <!-- FOOTER HALAMAN -->
     <footer class="w-full px-6 lg:px-9 py-4 border-t border-slate-200/80 bg-white text-slate-500 text-[11px] flex flex-col sm:flex-row justify-between items-center gap-2">
       <span>&copy; 2024 Bersihin Laundry. Sistem Basis Data Laundry - Modul Pelanggan.</span>
-      <span>Masuk sebagai: <strong class="font-semibold text-slate-700">Andi Pratama</strong></span>
+      <span>Masuk sebagai: <strong id="loggedAsName" class="font-semibold text-slate-700">Andi Pratama</strong></span>
     </footer>
   </div>
 
@@ -877,7 +877,7 @@
       <dl class="mt-4 divide-y divide-slate-100 text-xs">
         <div class="py-2.5 flex justify-between">
           <dt class="text-slate-500">Pelanggan</dt>
-          <dd class="font-semibold text-slate-800">Andi Pratama</dd>
+          <dd id="modalCustomerName" class="font-semibold text-slate-800">Andi Pratama</dd>
         </div>
         <div class="py-2.5 flex justify-between">
           <dt class="text-slate-500">Paket Layanan</dt>
@@ -1259,6 +1259,44 @@
 
     // Ekspos ke window untuk integrasi backend / pemanggilan API
     window.applyDashboardState = applyDashboardState;
+
+    // Periksa dan tampilkan pesanan terbaru jika ada pesanan baru yang dibuat
+    function checkAndApplyActiveOrder() {
+      const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+      if (!activeRaw) return;
+      try {
+        const order = JSON.parse(activeRaw);
+        if (!order || !order.service) return;
+
+        const heading = document.getElementById('pesananAktifHeading');
+        if (heading) heading.textContent = order.service;
+
+        const trxCode = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(1) span:last-child');
+        if (trxCode) trxCode.textContent = order.code || order.orderId;
+
+        const weight = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(2) span:last-child');
+        if (weight) weight.textContent = order.weight || (order.weightKg ? order.weightKg + ',0 kg' : '4,0 kg');
+
+        const estDone = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(3) span:last-child');
+        if (estDone) estDone.textContent = order.estDone || '2 hari lagi';
+
+        const total = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(4) span:last-child');
+        if (total) total.textContent = order.totalFormatted || order.total;
+
+        const badge = document.querySelector('#activeOrderReadyContent .inline-flex.items-center.rounded-\\[20px\\]');
+        if (badge) {
+          badge.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          badge.innerHTML = '<span class="size-1.5 bg-amber-500 rounded-full animate-pulse"></span><span class="text-amber-800 text-[11px] font-semibold">Menunggu konfirmasi</span>';
+        }
+
+        const detailBtn = document.querySelector('#activeOrderReadyContent button[data-order-detail]');
+        if (detailBtn) {
+          detailBtn.setAttribute('data-order-detail', order.code || order.orderId);
+        }
+      } catch (e) {}
+    }
+
+    checkAndApplyActiveOrder();
   </script>
   <!-- Skrip Utama Pelanggan (Vanilla JS) -->
   <script src="../JS/pelanggan.js"></script>

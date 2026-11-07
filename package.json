@@ -1,0 +1,23 @@
+{
+  "name": "bersihin-laundry",
+  "version": "1.0.0",
+  "description": "Sistem Informasi Basis Data BersihIn Laundry",
+  "main": "backend/server.js",
+  "scripts": {
+    "migrate": "node database/migrate.js",
+    "seed": "node database/migrate.js",
+    "db:setup": "node database/migrate.js",
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js"
+  },
+  "keywords": [
+    "basis-data",
+    "laundry",
+    "migration",
+    "seeder",
+    "phpmyadmin"
+  ],
+  "author": "Kelompok Imut",
+  "license": "ISC"
+}
+

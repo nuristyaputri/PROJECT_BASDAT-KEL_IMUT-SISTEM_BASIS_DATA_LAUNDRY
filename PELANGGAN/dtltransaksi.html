@@ -263,7 +263,7 @@
       </div>
 
       <!-- Tombol Keluar -->
-      <a href="login.html"
+      <a href="../login.html"
         class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
         <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
@@ -362,7 +362,7 @@
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
               <span>Profil Saya</span>
             </a>
-            <a href="login.html" role="menuitem"
+            <a href="../login.html" role="menuitem"
               class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
               <span>Keluar Akun</span>
             </a>
@@ -760,8 +760,75 @@
       }
     };
 
+    // Muat semua transaksi yang tersimpan di localStorage
+    try {
+      const storedTrxRaw = localStorage.getItem('bersihin_transactions');
+      if (storedTrxRaw) {
+        const storedList = JSON.parse(storedTrxRaw);
+        if (Array.isArray(storedList)) {
+          storedList.forEach(item => {
+            const id = item.code || item.id;
+            if (id) {
+              transactionsCatalog[id] = {
+                code: id,
+                created: item.created || item.dateInTime || `Dibuat pada ${item.date || 'Hari ini'}`,
+                status: item.status || 'Menunggu konfirmasi',
+                service: item.service || 'Cuci + Setrika',
+                weight: item.weight || (item.weightKg ? `${item.weightKg},0 kg` : '4,0 kg'),
+                dateIn: item.date || item.dateIn || 'Hari ini',
+                dateOut: item.dateOut || item.estDone || '2 hari lagi',
+                notes: item.notes || 'Pakaian reguler',
+                calcSub: item.calcSub || `${item.weight || '4,0 kg'} (Estimasi)`,
+                total: item.totalFormatted || item.total || 'Rp45.000',
+                paidDate: item.paidDate || (item.status === 'Selesai' ? `Dibayar ${item.date}` : 'Belum dibayar')
+              };
+            }
+          });
+        }
+      }
+    } catch (_) {}
+
+    // Muat pesanan aktif terbaru jika tersedia
+    const activeOrderRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+    if (activeOrderRaw) {
+      try {
+        const activeOrder = JSON.parse(activeOrderRaw);
+        if (activeOrder && (activeOrder.code || activeOrder.orderId)) {
+          const id = activeOrder.code || activeOrder.orderId;
+          transactionsCatalog[id] = {
+            code: id,
+            created: activeOrder.dateInTime || 'Baru saja dibuat',
+            status: activeOrder.status || 'Menunggu konfirmasi',
+            service: activeOrder.service || 'Cuci + Setrika',
+            weight: activeOrder.weight || `${activeOrder.weightKg},0 kg`,
+            dateIn: activeOrder.dateIn || 'Hari ini',
+            dateOut: activeOrder.estDone || '2 hari lagi',
+            notes: activeOrder.notes || 'Pakaian reguler',
+            calcSub: `${activeOrder.weightKg || 4} kg (Estimasi)`,
+            total: activeOrder.totalFormatted || activeOrder.total || 'Rp45.000',
+            paidDate: 'Belum dibayar'
+          };
+        }
+      } catch (e) {}
+    }
+
     const params = new URLSearchParams(window.location.search);
-    const trxId = params.get('id');
+    let trxId = params.get('id');
+
+    if (!trxId || !transactionsCatalog[trxId]) {
+      if (activeOrderRaw) {
+        try {
+          const act = JSON.parse(activeOrderRaw);
+          if (act && (act.code || act.orderId) && transactionsCatalog[act.code || act.orderId]) {
+            trxId = act.code || act.orderId;
+          }
+        } catch (_) {}
+      }
+      if (!trxId || !transactionsCatalog[trxId]) {
+        trxId = Object.keys(transactionsCatalog)[0];
+      }
+    }
+
     if (trxId && transactionsCatalog[trxId]) {
       const item = transactionsCatalog[trxId];
       document.getElementById('trxCodeDisplay').textContent = item.code;
@@ -790,6 +857,10 @@
         statusPill.className = 'px-3 py-1.5 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
         statusDot.className = 'size-1.5 bg-slate-500 rounded-full';
         statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
+      } else if (item.status === 'Menunggu konfirmasi') {
+        statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+        statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
+        statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
       } else {
         statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
         statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';

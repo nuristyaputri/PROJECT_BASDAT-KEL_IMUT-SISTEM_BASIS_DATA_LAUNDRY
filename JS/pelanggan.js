@@ -416,20 +416,27 @@
       if (submitLoginText) submitLoginText.textContent = 'Memverifikasi...';
       setAuthStatus('loading', 'Memproses autentikasi pelanggan', 'Mengarahkan ke dashboard akun ' + identifier + '...');
 
-      // Simpan status remember me jika dicentang
+      // Simpan status remember me & profil jika dicentang
       try {
         if (rememberInput && rememberInput.checked) {
           localStorage.setItem('bersihin_remember_identifier', identifier);
         } else {
           localStorage.removeItem('bersihin_remember_identifier');
         }
+        localStorage.setItem('bersihin_customer_profile', JSON.stringify({
+          nama: 'Andi Pratama',
+          email: identifier.includes('@') ? identifier : 'andi.pratama@email.com',
+          telepon: '0812 3456 7821',
+          alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
+          member_tier: 'Silver Member'
+        }));
       } catch (err) {
         // Storage restricted
       }
 
       setTimeout(() => {
         window.location.href = 'dashboard.html';
-      }, 900);
+      }, 500);
     });
 
     // Cek remembered identifier
@@ -533,6 +540,280 @@
   }
 
   // ===========================================================================
+  // 4. PENGELOLAAN DATA TRANSAKSI PELANGGAN (CENTRAL TRANSACTIONS STORE)
+  // ===========================================================================
+  const DEFAULT_CUSTOMER_TRANSACTIONS = [
+    {
+      code: 'TRX-240518-01',
+      date: '18 Mei 2024',
+      timestamp: '2024-05-18T09:15:00',
+      service: 'Cuci + Setrika',
+      weight: '4,5 kg',
+      weightKg: 4.5,
+      amount: 45000,
+      total: 'Rp45.000',
+      status: 'Diproses',
+      dateIn: '18 Mei 2024',
+      dateOut: '21 Mei 2024',
+      notes: 'Pisahkan pakaian putih, gunakan pewangi lembut.',
+      calcSub: '4,5 kg x Rp10.000',
+      paidDate: 'Dibayar 18 Mei 2024 (Lunas - QRIS)',
+      created: 'Dibuat pada 18 Mei 2024, 09.15 WIB'
+    },
+    {
+      code: 'TRX-240512-08',
+      date: '12 Mei 2024',
+      timestamp: '2024-05-12T14:20:00',
+      service: 'Express',
+      weight: '4,0 kg',
+      weightKg: 4.0,
+      amount: 72000,
+      total: 'Rp72.000',
+      status: 'Selesai',
+      dateIn: '12 Mei 2024',
+      dateOut: '13 Mei 2024',
+      notes: 'Lipat rapi sesuai kategori kemeja.',
+      calcSub: '4,0 kg x Rp18.000',
+      paidDate: 'Dibayar 12 Mei 2024 (Lunas - Tunai)',
+      created: 'Dibuat pada 12 Mei 2024, 14.20 WIB'
+    },
+    {
+      code: 'TRX-240506-12',
+      date: '6 Mei 2024',
+      timestamp: '2024-05-06T10:15:00',
+      service: 'Cuci Kering',
+      weight: '4,0 kg',
+      weightKg: 4.0,
+      amount: 28000,
+      total: 'Rp28.000',
+      status: 'Selesai',
+      dateIn: '6 Mei 2024',
+      dateOut: '8 Mei 2024',
+      notes: 'Gunakan deterjen hypoallergenic.',
+      calcSub: '4,0 kg x Rp7.000',
+      paidDate: 'Dibayar 6 Mei 2024 (Lunas - QRIS)',
+      created: 'Dibuat pada 6 Mei 2024, 10.15 WIB'
+    },
+    {
+      code: 'TRX-240430-05',
+      date: '30 Apr 2024',
+      timestamp: '2024-04-30T08:45:00',
+      service: 'Setrika Saja',
+      weight: '5,0 kg',
+      weightKg: 5.0,
+      amount: 30000,
+      total: 'Rp30.000',
+      status: 'Selesai',
+      dateIn: '30 Apr 2024',
+      dateOut: '1 Mei 2024',
+      notes: 'Setrika rapi licin dengan pewangi.',
+      calcSub: '5,0 kg x Rp6.000',
+      paidDate: 'Dibayar 30 Apr 2024 (Lunas - Tunai)',
+      created: 'Dibuat pada 30 Apr 2024, 08.45 WIB'
+    },
+    {
+      code: 'TRX-240422-09',
+      date: '22 Apr 2024',
+      timestamp: '2024-04-22T10:00:00',
+      service: 'Cuci + Setrika',
+      weight: '6,0 kg',
+      weightKg: 6.0,
+      amount: 60000,
+      total: 'Rp60.000',
+      status: 'Selesai',
+      dateIn: '22 Apr 2024',
+      dateOut: '25 Apr 2024',
+      notes: 'Termasuk selimut tipis.',
+      calcSub: '6,0 kg x Rp10.000',
+      paidDate: 'Dibayar 22 Apr 2024 (Lunas - Transfer Bank)',
+      created: 'Dibuat pada 22 Apr 2024, 10.00 WIB'
+    },
+    {
+      code: 'TRX-240415-02',
+      date: '15 Apr 2024',
+      timestamp: '2024-04-15T08:45:00',
+      service: 'Express',
+      weight: '3,0 kg',
+      weightKg: 3.0,
+      amount: 54000,
+      total: 'Rp54.000',
+      status: 'Selesai',
+      dateIn: '15 Apr 2024',
+      dateOut: '16 Apr 2024',
+      notes: 'Paket kilat.',
+      calcSub: '3,0 kg x Rp18.000',
+      paidDate: 'Dibayar 15 Apr 2024 (Lunas - QRIS)',
+      created: 'Dibuat pada 15 Apr 2024, 08.45 WIB'
+    },
+    {
+      code: 'TRX-240408-07',
+      date: '8 Apr 2024',
+      timestamp: '2024-04-08T15:00:00',
+      service: 'Cuci Kering',
+      weight: '3,5 kg',
+      weightKg: 3.5,
+      amount: 24500,
+      total: 'Rp24.500',
+      status: 'Selesai',
+      dateIn: '8 Apr 2024',
+      dateOut: '10 Apr 2024',
+      notes: 'Pewangi Ocean Fresh.',
+      calcSub: '3,5 kg x Rp7.000',
+      paidDate: 'Dibayar 8 Apr 2024 (Lunas - QRIS)',
+      created: 'Dibuat pada 8 Apr 2024, 15.00 WIB'
+    },
+    {
+      code: 'TRX-240328-04',
+      date: '28 Mar 2024',
+      timestamp: '2024-03-28T11:30:00',
+      service: 'Cuci + Setrika',
+      weight: '3,0 kg',
+      weightKg: 3.0,
+      amount: 30000,
+      total: 'Rp30.000',
+      status: 'Dibatalkan',
+      dateIn: '28 Mar 2024',
+      dateOut: '31 Mar 2024',
+      notes: 'Dibatalkan oleh pelanggan sebelum penjemputan.',
+      calcSub: '3,0 kg x Rp10.000',
+      paidDate: 'Dikembalikan (Refund)',
+      created: 'Dibuat pada 28 Mar 2024, 11.30 WIB'
+    }
+  ];
+
+  function getAllCustomerTransactions() {
+    let customList = [];
+    try {
+      const stored = localStorage.getItem('bersihin_transactions');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) customList = parsed;
+      }
+    } catch (_) {}
+
+    try {
+      const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+      if (activeRaw) {
+        const active = JSON.parse(activeRaw);
+        const code = active.code || active.orderId;
+        if (code && !customList.some(item => (item.code || item.id) === code)) {
+          customList.unshift(active);
+        }
+      }
+    } catch (_) {}
+
+    const result = [];
+    const seen = new Set();
+
+    customList.forEach(raw => {
+      const code = raw.code || raw.id || raw.orderId;
+      if (code && !seen.has(code)) {
+        seen.add(code);
+        const amountNum = typeof raw.amount === 'number'
+          ? raw.amount
+          : (typeof raw.total === 'number'
+            ? raw.total
+            : parseInt(String(raw.total || raw.totalFormatted || '0').replace(/[^0-9]/g, ''), 10) || 45000);
+
+        result.push({
+          code: code,
+          date: raw.date || raw.dateIn || 'Hari ini',
+          timestamp: raw.createdAt || raw.timestamp || new Date().toISOString(),
+          service: raw.service || 'Cuci + Setrika',
+          weight: raw.weight || (raw.weightKg ? `${raw.weightKg},0 kg` : '4,0 kg'),
+          weightKg: parseFloat(raw.weightKg) || 4.0,
+          amount: amountNum,
+          total: raw.totalFormatted || (typeof raw.total === 'string' && raw.total.startsWith('Rp') ? raw.total : formatRupiah(amountNum)),
+          status: raw.status || 'Menunggu konfirmasi',
+          dateIn: raw.dateIn || raw.date || 'Hari ini',
+          dateOut: raw.estDone || raw.dateOut || '2 hari lagi',
+          notes: raw.notes || 'Pakaian reguler',
+          calcSub: raw.calcSub || `${raw.weight || '4,0 kg'} (Estimasi)`,
+          paidDate: raw.paidDate || (raw.status === 'Selesai' ? `Dibayar ${raw.date || 'kemarin'}` : 'Belum dibayar'),
+          created: raw.created || raw.dateInTime || `Dibuat pada ${raw.date || 'Hari ini'}`
+        });
+      }
+    });
+
+    DEFAULT_CUSTOMER_TRANSACTIONS.forEach(def => {
+      if (!seen.has(def.code)) {
+        seen.add(def.code);
+        result.push(def);
+      }
+    });
+
+    return result;
+  }
+
+  function getCustomerStats(transactions) {
+    const list = transactions || getAllCustomerTransactions();
+    const totalOrders = list.length;
+    const processing = list.filter(t => t.status === 'Diproses' || t.status === 'Menunggu konfirmasi').length;
+    const completed = list.filter(t => t.status === 'Selesai' || t.status === 'Diambil').length;
+    const canceled = list.filter(t => t.status === 'Dibatalkan').length;
+    const totalExpense = list
+      .filter(t => t.status !== 'Dibatalkan')
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+    return {
+      total: totalOrders,
+      processing: processing,
+      completed: completed,
+      canceled: canceled,
+      totalExpense: totalExpense,
+      totalExpenseFormatted: formatRupiah(totalExpense)
+    };
+  }
+
+  function getStatusBadgeHtml(status, isSmall) {
+    if (status === 'Menunggu konfirmasi') {
+      return `
+        <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="text-amber-800 text-[10px] font-semibold leading-3">Menunggu konfirmasi</span>
+        </span>
+      `;
+    }
+    if (status === 'Diproses') {
+      return `
+        <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
+          <span class="text-yellow-700 text-[10px] font-semibold leading-3">Diproses</span>
+        </span>
+      `;
+    }
+    if (status === 'Selesai') {
+      return `
+        <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+          <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+        </span>
+      `;
+    }
+    if (status === 'Diambil') {
+      return `
+        <span class="px-2.5 py-1 bg-indigo-50 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-cyan-700 rounded-full" aria-hidden="true"></span>
+          <span class="text-cyan-800 text-[10px] font-semibold leading-3">Diambil</span>
+        </span>
+      `;
+    }
+    return `
+      <span class="px-2.5 py-1 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5">
+        <span class="size-1.5 bg-slate-500 rounded-full" aria-hidden="true"></span>
+        <span class="text-slate-600 text-[10px] font-semibold leading-3">${status || 'Dibatalkan'}</span>
+      </span>
+    `;
+  }
+
+  // Ekspor BersihinTrx ke window global
+  window.BersihinTrx = {
+    getAll: getAllCustomerTransactions,
+    getStats: getCustomerStats,
+    getStatusBadgeHtml: getStatusBadgeHtml
+  };
+
+  // ===========================================================================
   // 5. MODUL DASHBOARD PELANGGAN (PELANGGAN/dashboard.html)
   // ===========================================================================
   function initDashboardPage() {
@@ -540,7 +821,8 @@
     // Pastikan berada di dashboard dengan memeriksa elemen unik
     if (!document.getElementById('pesananAktifSection') && !document.getElementById('orderDetailModal')) return;
 
-    // 5.1 Ucapan Waktu Dinamis (Pagi, Siang, Sore, Malam)
+    // 5.1 Ucapan Waktu Dinamis & Profil Pengguna
+    const profile = getCustomerProfile();
     const hour = new Date().getHours();
     let greeting = 'Selamat Datang';
     if (hour >= 4 && hour < 11) greeting = 'Selamat Pagi';
@@ -548,13 +830,74 @@
     else if (hour >= 15 && hour < 18) greeting = 'Selamat Sore';
     else greeting = 'Selamat Malam';
 
-    const greetingElement = document.querySelector('h1.font-bold');
-    if (greetingElement && greetingElement.textContent.includes('Andi Pratama')) {
-      const profile = getCustomerProfile();
-      greetingElement.textContent = `${greeting}, ${profile.fullName.split(' ')[0]}!`;
+    const greetingHeading = document.getElementById('greetingHeading') || document.querySelector('h2.font-normal');
+    if (greetingHeading && greetingHeading.textContent.includes('Halo,')) {
+      const firstName = profile.fullName ? profile.fullName.split(' ')[0] : 'Andi';
+      greetingHeading.textContent = `${greeting}, ${firstName}! Semoga harimu menyenangkan.`;
     }
 
-    // 5.2 Modal Detail Pesanan Aktif
+    const loggedAsEl = document.getElementById('loggedAsName');
+    if (loggedAsEl && profile.fullName) loggedAsEl.textContent = profile.fullName;
+
+    const modalCustName = document.getElementById('modalCustomerName');
+    if (modalCustName && profile.fullName) modalCustName.textContent = profile.fullName;
+
+    // 5.2 Perbarui Ringkasan Statistik Dashboard Secara Dinamis
+    const allTrx = getAllCustomerTransactions();
+    const stats = getCustomerStats(allTrx);
+
+    const statTotalEl = document.getElementById('statTotalTransaksi');
+    if (statTotalEl) statTotalEl.textContent = stats.total;
+
+    const statSedangEl = document.getElementById('statSedangDiproses');
+    if (statSedangEl) statSedangEl.textContent = stats.processing;
+
+    const statSelesaiEl = document.getElementById('statPesananSelesai');
+    if (statSelesaiEl) statSelesaiEl.textContent = stats.completed;
+
+    const statExpenseEl = document.getElementById('statTotalPengeluaran');
+    if (statExpenseEl) statExpenseEl.textContent = stats.totalExpenseFormatted;
+
+    // 5.3 Render Tabel Riwayat Transaksi Terbaru (Dinamis dari Storage)
+    const recentBody = document.getElementById('recentTransactionsBody');
+    const recentEmpty = document.getElementById('recentTransactionsEmpty');
+    const recentTableWrapper = document.getElementById('recentTransactionsTableWrapper');
+
+    if (recentBody) {
+      const recentList = allTrx.slice(0, 4); // Ambil 4 transaksi terbaru
+      if (recentList.length === 0) {
+        if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
+        if (recentEmpty) recentEmpty.classList.remove('hidden');
+      } else {
+        if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
+        if (recentEmpty) recentEmpty.classList.add('hidden');
+
+        recentBody.innerHTML = recentList.map(trx => `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="px-3 py-3 font-bold text-slate-800">
+              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+            </td>
+            <td class="px-3 py-3 text-slate-600">${trx.date}</td>
+            <td class="px-3 py-3 text-slate-600">${trx.service}</td>
+            <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
+            <td class="px-3 py-3">
+              ${getStatusBadgeHtml(trx.status)}
+            </td>
+            <td class="px-3 py-1.5 text-right">
+              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
+                aria-label="Lihat detail transaksi ${trx.code}"
+                class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // 5.4 Modal Detail Pesanan Aktif
     const orderDetailModal = document.getElementById('orderDetailModal');
     const openOrderDetailBtns = document.querySelectorAll('[data-open-modal="orderDetailModal"]');
 
@@ -812,42 +1155,55 @@
       const deliveryDateInput = document.getElementById('deliveryDateInput');
       const laundryNotesInput = document.getElementById('laundryNotesInput');
 
-      const deliveryDate = deliveryDateInput ? deliveryDateInput.value : '';
+      const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+      const now = new Date();
+      const deliveryDate = deliveryDateInput && deliveryDateInput.value ? deliveryDateInput.value : now.toLocaleDateString('id-ID', dateOptions);
       const notes = laundryNotesInput ? laundryNotesInput.value.trim() : '';
-
-      if (!deliveryDate) {
-        showToast('Silakan pilih perkiraan tanggal antar terlebih dahulu.', true);
-        if (deliveryDateInput) deliveryDateInput.focus();
-        return;
-      }
 
       const total = (currentWeightKg * selectedPricePerKg) + selectedDeliveryFee;
 
       // Simpan riwayat pesanan ke localStorage agar tersinkronisasi ke status.html dan riwayat.html
-      const newOrderId = 'TRX-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.floor(10 + Math.random() * 90);
+      const y = String(now.getFullYear()).slice(2);
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const randomNum = Math.floor(10 + Math.random() * 90);
+      const newOrderId = `TRX-${y}${m}${d}-${randomNum}`;
+
+      const estDate = new Date(now);
+      estDate.setDate(now.getDate() + 2);
+      const estDoneFormatted = estDate.toLocaleDateString('id-ID', dateOptions);
+
       const newOrder = {
+        orderId: newOrderId,
         code: newOrderId,
         created: 'Baru saja dibuat',
-        status: 'Diproses',
+        status: 'Menunggu konfirmasi',
+        statusCode: 'MENUNGGU',
+        step: 1,
         service: selectedService,
         weight: currentWeightKg + ',0 kg',
+        weightKg: currentWeightKg,
+        deliveryMethod: selectedDeliveryMethod,
         dateIn: deliveryDate,
-        dateOut: 'Estimasi 2-3 hari',
+        dateInTime: `${deliveryDate}, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')} WIB`,
+        dateOut: estDoneFormatted,
+        estDone: estDoneFormatted,
         notes: notes || 'Pakaian reguler',
         calcSub: `${currentWeightKg} kg x ${formatRupiah(selectedPricePerKg)}`,
         total: formatRupiah(total),
+        totalFormatted: formatRupiah(total),
         paidDate: 'Belum dibayar'
       };
 
       try {
         sessionStorage.setItem(BersihinConfig.storageKeys.lastOrder, JSON.stringify(newOrder));
+        localStorage.setItem('bersihin_active_order', JSON.stringify(newOrder));
+
+        const existingRaw = localStorage.getItem(BersihinConfig.storageKeys.transactions);
+        const trxList = existingRaw ? JSON.parse(existingRaw) : [];
+        trxList.unshift(newOrder);
+        localStorage.setItem(BersihinConfig.storageKeys.transactions, JSON.stringify(trxList));
       } catch (err) { }
-
-      showToast('Pesanan ' + newOrderId + ' berhasil dibuat! Mengalihkan ke status pesanan...');
-
-      setTimeout(() => {
-        window.location.href = 'status.html';
-      }, 1200);
     });
 
     // Inisialisasi awal kalkulasi
@@ -893,61 +1249,152 @@
     if (askQuestionBannerBtn && helpModal) {
       askQuestionBannerBtn.addEventListener('click', () => helpModal.classList.remove('hidden'));
     }
+
+    if (typeof loadActiveOrderStatus === 'function') {
+      loadActiveOrderStatus();
+    }
   }
 
   // ===========================================================================
   // 9. MODUL RIWAYAT TRANSAKSI (PELANGGAN/riwayat.html)
   // ===========================================================================
   function initRiwayatPage() {
+    const tableBody = document.getElementById('historyTableBody');
     const filterTabs = document.querySelectorAll('.filter-tab');
     const searchInput = document.getElementById('searchInput');
     const sortSelect = document.getElementById('sortSelect');
-    const trxRows = Array.from(document.querySelectorAll('.trx-row'));
     const emptySearchState = document.getElementById('emptySearchState');
     const resetFilterBtn = document.getElementById('resetFilterBtn');
-    const tableBody = document.getElementById('historyTableBody');
     const tableInfoText = document.getElementById('tableInfoText');
 
-    if (!filterTabs.length && !searchInput) return;
+    if (!tableBody && !filterTabs.length && !searchInput) return;
+
+    const allTrx = getAllCustomerTransactions();
+    const stats = getCustomerStats(allTrx);
+
+    // Perbarui 4 Kartu Ringkasan Statistik
+    const statTotalEl = document.getElementById('statTotalOrders');
+    if (statTotalEl) statTotalEl.textContent = stats.total;
+
+    const statProcessEl = document.getElementById('statProcessOrders');
+    if (statProcessEl) statProcessEl.textContent = stats.processing;
+
+    const statProcessSub = document.getElementById('statProcessOrdersSub');
+    if (statProcessSub) statProcessSub.textContent = `${stats.processing} pesanan berjalan`;
+
+    const statDoneEl = document.getElementById('statDoneOrders');
+    if (statDoneEl) statDoneEl.textContent = stats.completed;
+
+    const statExpenseEl = document.getElementById('statTotalExpense');
+    if (statExpenseEl) statExpenseEl.textContent = stats.totalExpenseFormatted;
+
+    // Perbarui Badge Angka pada Tab Filter
+    const badgeAll = document.getElementById('badgeTabAll');
+    if (badgeAll) badgeAll.textContent = stats.total;
+
+    const badgeProcess = document.getElementById('badgeTabProcess');
+    if (badgeProcess) badgeProcess.textContent = stats.processing;
+
+    const badgeDone = document.getElementById('badgeTabDone');
+    if (badgeDone) badgeDone.textContent = stats.completed;
+
+    const badgeCanceled = document.getElementById('badgeTabCanceled');
+    if (badgeCanceled) badgeCanceled.textContent = stats.canceled;
+
+    const totalCountEl = document.getElementById('totalItemsCount');
+    if (totalCountEl) totalCountEl.textContent = stats.total;
 
     let currentFilter = 'all';
     let currentSearch = '';
+    let currentSort = 'newest';
 
-    function applyFilterAndSearch() {
-      let visibleCount = 0;
+    function renderRows() {
+      if (!tableBody) return;
 
-      trxRows.forEach(row => {
-        const rowStatus = row.getAttribute('data-status');
-        const rowCode = (row.getAttribute('data-code') || '').toLowerCase();
-        const rowService = (row.getAttribute('data-service') || '').toLowerCase();
-
-        const matchStatus = currentFilter === 'all' || rowStatus === currentFilter;
-        const matchSearch = currentSearch === '' || rowCode.includes(currentSearch) || rowService.includes(currentSearch);
-
-        if (matchStatus && matchSearch) {
-          row.classList.remove('hidden');
-          visibleCount++;
-        } else {
-          row.classList.add('hidden');
+      // 1. Filter data
+      let filtered = allTrx.filter(trx => {
+        let matchFilter = true;
+        if (currentFilter === 'Diproses') {
+          matchFilter = (trx.status === 'Diproses' || trx.status === 'Menunggu konfirmasi');
+        } else if (currentFilter === 'Selesai') {
+          matchFilter = (trx.status === 'Selesai' || trx.status === 'Diambil');
+        } else if (currentFilter === 'Dibatalkan') {
+          matchFilter = (trx.status === 'Dibatalkan');
         }
+
+        const q = currentSearch.toLowerCase();
+        const matchSearch = !q ||
+          trx.code.toLowerCase().includes(q) ||
+          trx.service.toLowerCase().includes(q) ||
+          trx.date.toLowerCase().includes(q) ||
+          trx.status.toLowerCase().includes(q);
+
+        return matchFilter && matchSearch;
       });
 
-      if (emptySearchState) {
-        if (visibleCount === 0) {
-          emptySearchState.classList.remove('hidden');
-          if (tableBody && tableBody.parentElement) tableBody.parentElement.classList.add('hidden');
-        } else {
-          emptySearchState.classList.add('hidden');
-          if (tableBody && tableBody.parentElement) tableBody.parentElement.classList.remove('hidden');
-        }
+      // 2. Sort data
+      filtered.sort((a, b) => {
+        const timeA = new Date(a.timestamp).getTime() || 0;
+        const timeB = new Date(b.timestamp).getTime() || 0;
+        const amtA = a.amount || 0;
+        const amtB = b.amount || 0;
+
+        if (currentSort === 'newest') return timeB - timeA;
+        if (currentSort === 'oldest') return timeA - timeB;
+        if (currentSort === 'highest') return amtB - amtA;
+        if (currentSort === 'lowest') return amtA - amtB;
+        return 0;
+      });
+
+      // 3. Render ke tabel
+      if (filtered.length === 0) {
+        tableBody.innerHTML = '';
+        if (tableBody.parentElement) tableBody.parentElement.classList.add('hidden');
+        if (emptySearchState) emptySearchState.classList.remove('hidden');
+      } else {
+        if (tableBody.parentElement) tableBody.parentElement.classList.remove('hidden');
+        if (emptySearchState) emptySearchState.classList.add('hidden');
+
+        tableBody.innerHTML = filtered.map(trx => `
+          <tr class="trx-row hover:bg-slate-50/80 transition"
+            data-code="${trx.code}"
+            data-service="${trx.service}"
+            data-status="${trx.status}"
+            data-amount="${trx.amount}"
+            data-timestamp="${trx.timestamp}">
+            <td class="px-4 py-3.5 font-bold text-slate-800">
+              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+            </td>
+            <td class="px-4 py-3.5 text-slate-600">${trx.date}</td>
+            <td class="px-4 py-3.5 text-slate-700 font-medium">${trx.service}</td>
+            <td class="px-4 py-3.5 text-slate-600">${trx.weight}</td>
+            <td class="px-4 py-3.5 font-bold text-slate-800">${trx.total}</td>
+            <td class="px-4 py-3.5">
+              ${getStatusBadgeHtml(trx.status)}
+            </td>
+            <td class="px-4 py-2 text-right">
+              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
+                aria-label="Lihat rincian transaksi ${trx.code}"
+                class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                <span>Detail</span>
+                <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </td>
+          </tr>
+        `).join('');
       }
 
+      // 4. Update Info Text
       if (tableInfoText) {
-        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${visibleCount}</span> dari <span class="font-semibold text-slate-700">${visibleCount}</span> transaksi`;
+        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${filtered.length}</span> dari <span class="font-semibold text-slate-700">${allTrx.length}</span> transaksi`;
       }
     }
 
-    // Klik Tab Filter Status
+    renderRows();
+
+    // Event Klik Tab Filter
     filterTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         filterTabs.forEach(t => {
@@ -961,19 +1408,19 @@
         tab.classList.remove('text-slate-600');
 
         currentFilter = tab.getAttribute('data-filter') || 'all';
-        applyFilterAndSearch();
+        renderRows();
       });
     });
 
-    // Pencarian Teks Real-time
+    // Real-time Search Input
     if (searchInput) {
-      searchInput.addEventListener('input', () => {
-        currentSearch = searchInput.value.toLowerCase().trim();
-        applyFilterAndSearch();
+      searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim().toLowerCase();
+        renderRows();
       });
     }
 
-    // Tombol Reset Filter
+    // Reset Filter Button
     if (resetFilterBtn) {
       resetFilterBtn.addEventListener('click', () => {
         currentFilter = 'all';
@@ -992,30 +1439,15 @@
           }
         });
 
-        applyFilterAndSearch();
+        renderRows();
       });
     }
 
-    // Pengurutan Tanggal / Nominal
-    if (sortSelect && tableBody) {
-      sortSelect.addEventListener('change', () => {
-        const val = sortSelect.value;
-        const rows = Array.from(document.querySelectorAll('.trx-row'));
-
-        rows.sort((a, b) => {
-          const dateA = new Date(a.getAttribute('data-date') || '2024-05-01');
-          const dateB = new Date(b.getAttribute('data-date') || '2024-05-01');
-          const totalA = parseInt(a.getAttribute('data-total') || '0', 10);
-          const totalB = parseInt(b.getAttribute('data-total') || '0', 10);
-
-          if (val === 'latest') return dateB - dateA;
-          if (val === 'oldest') return dateA - dateB;
-          if (val === 'highest') return totalB - totalA;
-          if (val === 'lowest') return totalA - totalB;
-          return 0;
-        });
-
-        rows.forEach(r => tableBody.appendChild(r));
+    // Sort Dropdown
+    if (sortSelect) {
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        renderRows();
       });
     }
   }
@@ -1024,83 +1456,98 @@
   // 10. MODUL DETAIL TRANSAKSI (PELANGGAN/dtltransaksi.html)
   // ===========================================================================
   function initDtlTransaksiPage() {
-    const transactionsCatalog = {
-      'TRX-240518-01': {
-        code: 'TRX-240518-01',
-        created: 'Dibuat pada 18 Mei 2024, 09.15 WIB',
-        status: 'Diproses',
-        service: 'Cuci + Setrika',
-        weight: '4,5 kg',
-        dateIn: '18 Mei 2024',
-        dateOut: '21 Mei 2024',
-        notes: 'Pisahkan pakaian putih, gunakan pewangi lembut.',
-        calcSub: '4,5 kg x Rp10.000',
-        total: 'Rp45.000',
-        paidDate: 'Dibayar 18 Mei 2024'
-      },
-      'TRX-240512-08': {
-        code: 'TRX-240512-08',
-        created: 'Dibuat pada 12 Mei 2024, 14.20 WIB',
-        status: 'Selesai',
-        service: 'Express',
-        weight: '4,0 kg',
-        dateIn: '12 Mei 2024',
-        dateOut: '13 Mei 2024',
-        notes: 'Lipat rapi sesuai kategori kemeja.',
-        calcSub: '4,0 kg x Rp18.000',
-        total: 'Rp72.000',
-        paidDate: 'Dibayar 12 Mei 2024'
-      },
-      'TRX-240506-12': {
-        code: 'TRX-240506-12',
-        created: 'Dibuat pada 6 Mei 2024, 10.15 WIB',
-        status: 'Selesai',
-        service: 'Cuci Kering',
-        weight: '4,0 kg',
-        dateIn: '6 Mei 2024',
-        dateOut: '8 Mei 2024',
-        notes: 'Gunakan deterjen hypoallergenic.',
-        calcSub: '4,0 kg x Rp7.000',
-        total: 'Rp28.000',
-        paidDate: 'Dibayar 6 Mei 2024'
-      }
-    };
-
-    const dtlCodeEl = document.getElementById('dtlTrxCode');
-    if (!dtlCodeEl) return;
+    const allTrx = getAllCustomerTransactions();
+    const catalog = {};
+    allTrx.forEach(t => { catalog[t.code] = t; });
 
     const params = new URLSearchParams(window.location.search);
-    const trxId = params.get('id') || 'TRX-240518-01';
-    const data = transactionsCatalog[trxId] || transactionsCatalog['TRX-240518-01'];
+    let trxId = params.get('id');
 
-    // Render data transaksi ke DOM
-    if (dtlCodeEl) dtlCodeEl.textContent = data.code;
-    const dtlCreatedEl = document.getElementById('dtlTrxCreated');
-    if (dtlCreatedEl) dtlCreatedEl.textContent = data.created;
+    if (!trxId || !catalog[trxId]) {
+      // Prioritaskan pesanan aktif terbaru atau transaksi pertama
+      const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+      if (activeRaw) {
+        try {
+          const active = JSON.parse(activeRaw);
+          if (active && (active.code || active.orderId) && catalog[active.code || active.orderId]) {
+            trxId = active.code || active.orderId;
+          }
+        } catch (_) {}
+      }
+      if (!trxId || !catalog[trxId]) {
+        trxId = allTrx.length > 0 ? allTrx[0].code : 'TRX-240518-01';
+      }
+    }
 
-    const dtlServiceEl = document.getElementById('dtlServiceName');
-    if (dtlServiceEl) dtlServiceEl.textContent = data.service;
+    const data = catalog[trxId] || allTrx[0];
+    if (!data) return;
 
-    const dtlWeightEl = document.getElementById('dtlWeight');
-    if (dtlWeightEl) dtlWeightEl.textContent = data.weight;
+    // Render ke elemen dtltransaksi.html
+    const trxCodeEl = document.getElementById('trxCodeDisplay') || document.getElementById('dtlTrxCode');
+    if (trxCodeEl) trxCodeEl.textContent = data.code;
 
-    const dtlDateInEl = document.getElementById('dtlDateIn');
-    if (dtlDateInEl) dtlDateInEl.textContent = data.dateIn;
+    const trxCreatedEl = document.getElementById('trxCreatedDisplay') || document.getElementById('dtlTrxCreated');
+    if (trxCreatedEl) trxCreatedEl.textContent = data.created;
 
-    const dtlDateOutEl = document.getElementById('dtlDateOut');
-    if (dtlDateOutEl) dtlDateOutEl.textContent = data.dateOut;
+    const infoServiceEl = document.getElementById('infoService') || document.getElementById('dtlServiceName');
+    if (infoServiceEl) infoServiceEl.textContent = data.service;
 
-    const dtlNotesEl = document.getElementById('dtlNotes');
-    if (dtlNotesEl) dtlNotesEl.textContent = data.notes;
+    const infoWeightEl = document.getElementById('infoWeight') || document.getElementById('dtlWeight');
+    if (infoWeightEl) infoWeightEl.textContent = data.weight;
 
-    const dtlCalcSubEl = document.getElementById('dtlCalcSub');
-    if (dtlCalcSubEl) dtlCalcSubEl.textContent = data.calcSub;
+    const infoDateInEl = document.getElementById('infoDateIn') || document.getElementById('dtlDateIn');
+    if (infoDateInEl) infoDateInEl.textContent = data.dateIn;
 
-    const dtlTotalEl = document.getElementById('dtlTotal');
-    if (dtlTotalEl) dtlTotalEl.textContent = data.total;
+    const infoDateOutEl = document.getElementById('infoDateOut') || document.getElementById('dtlDateOut');
+    if (infoDateOutEl) infoDateOutEl.textContent = data.dateOut;
 
-    const dtlPaidDateEl = document.getElementById('dtlPaidDate');
-    if (dtlPaidDateEl) dtlPaidDateEl.textContent = data.paidDate;
+    const infoNotesEl = document.getElementById('infoNotes') || document.getElementById('dtlNotes');
+    if (infoNotesEl) infoNotesEl.textContent = data.notes;
+
+    const priceTitleEl = document.getElementById('priceServiceTitle');
+    if (priceTitleEl) priceTitleEl.textContent = data.service;
+
+    const priceCalcEl = document.getElementById('priceCalcSub') || document.getElementById('dtlCalcSub');
+    if (priceCalcEl) priceCalcEl.textContent = data.calcSub;
+
+    const priceSubtotalEl = document.getElementById('priceSubtotal');
+    if (priceSubtotalEl) priceSubtotalEl.textContent = data.total;
+
+    const priceTotalEl = document.getElementById('priceTotal') || document.getElementById('dtlTotal');
+    if (priceTotalEl) priceTotalEl.textContent = data.total;
+
+    const paymentAmountEl = document.getElementById('paymentAmount');
+    if (paymentAmountEl) paymentAmountEl.textContent = data.total;
+
+    const paymentDateEl = document.getElementById('paymentDate') || document.getElementById('dtlPaidDate');
+    if (paymentDateEl) paymentDateEl.textContent = data.paidDate;
+
+    // Status Pill & Dot
+    const statusPill = document.getElementById('trxStatusPill');
+    const statusDot = document.getElementById('trxStatusDot');
+    const statusText = document.getElementById('trxStatusText');
+
+    if (statusText) statusText.textContent = data.status;
+
+    if (statusPill && statusDot && statusText) {
+      if (data.status === 'Selesai') {
+        statusPill.className = 'px-3 py-1.5 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+        statusDot.className = 'size-1.5 bg-teal-700 rounded-full';
+        statusText.className = 'text-teal-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+      } else if (data.status === 'Dibatalkan') {
+        statusPill.className = 'px-3 py-1.5 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+        statusDot.className = 'size-1.5 bg-slate-500 rounded-full';
+        statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
+      } else if (data.status === 'Menunggu konfirmasi') {
+        statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+        statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
+        statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
+      } else {
+        statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+        statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
+        statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+      }
+    }
 
     // Salin Kode Transaksi
     const copyTrxBtn = document.getElementById('copyTrxBtn');
