@@ -971,8 +971,14 @@
         }
 
         closeServiceOrderModal();
-        alert(`Pesanan layanan "${currentServiceName}" (${weight} kg - ${perfume}) dengan estimasi total ${total} berhasil dibuat! Anda akan diarahkan ke Dashboard untuk memantau status pesanan.`);
-        window.location.href = 'dashboard.html#pesananAktifSection';
+        if (typeof showBersihinToast === 'function') {
+          showBersihinToast(`Pesanan "${currentServiceName}" (${weight} kg) berhasil dibuat! Mengalihkan ke dashboard...`);
+        } else if (typeof window.showBersihinToast === 'function') {
+          window.showBersihinToast(`Pesanan "${currentServiceName}" (${weight} kg) berhasil dibuat! Mengalihkan ke dashboard...`);
+        }
+        setTimeout(() => {
+          window.location.href = 'dashboard.html#pesananAktifSection';
+        }, 1500);
       });
     }
 

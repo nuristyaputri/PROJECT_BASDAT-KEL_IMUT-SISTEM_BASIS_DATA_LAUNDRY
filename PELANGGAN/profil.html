@@ -1055,7 +1055,11 @@
         const confirmPass = document.getElementById('confirmPassInput').value;
 
         if (newPass !== confirmPass) {
-          alert('Konfirmasi password tidak cocok dengan password baru!');
+          if (typeof showToast === 'function') {
+            showToast('Konfirmasi password tidak cocok dengan password baru!', true);
+          } else if (typeof window.showBersihinToast === 'function') {
+            window.showBersihinToast('Konfirmasi password tidak cocok dengan password baru!', true);
+          }
           return;
         }
 

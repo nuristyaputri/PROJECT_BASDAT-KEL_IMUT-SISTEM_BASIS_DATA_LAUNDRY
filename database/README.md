@@ -1,10 +1,42 @@
-# Dokumentasi Basis Data & Migrasi phpMyAdmin - Bersihin Laundry
+# Dokumentasi Basis Data, Migrasi Terminal & phpMyAdmin - Bersihin Laundry
 
 Dokumen ini berisi panduan lengkap migrasi skema tabel, seeder data demo, dan konfigurasi database MySQL untuk proyek Sistem Informasi Basis Data Laundry (Bersihin Laundry).
 
 ---
 
-## 1. Panduan Import 1-Klik di phpMyAdmin
+## 1. Migrasi Sekali Perintah di Terminal (Direkomendasikan)
+
+Anda dapat menjalankan seluruh proses migrasi (otomatis membuat database `bersihinlaundry`, 9 tabel relasional, serta seluruh seeder data demo) langsung dari terminal hanya dengan **satu perintah**.
+
+### Langkah-Langkah:
+1. **Nyalakan MySQL**:
+   Buka XAMPP Control Panel / Laragon dan klik **Start** pada modul MySQL.
+2. **Buka Terminal** di direktori proyek dan jalankan salah satu perintah berikut:
+
+```bash
+# Opsi A: Menggunakan npm run (dari root proyek atau folder backend)
+npm run migrate
+
+# Opsi B: Menggunakan node langsung
+node database/migrate.js
+
+# Opsi C: Menggunakan batch file (Windows Command Prompt)
+.\migrate.bat
+
+# Opsi D: Menggunakan skrip PowerShell
+.\migrate.ps1
+```
+
+Skrip migrasi terminal akan:
+- Menghubungkan ke MySQL Server (`127.0.0.1:3306`).
+- Otomatis membuat database `bersihinlaundry` jika belum dibuat.
+- Mengeksekusi pembuatan 9 tabel relasional lengkap dengan Primary Key dan Foreign Key.
+- Mengisi data seeder awal (seluruh akun Pemilik, Pegawai, Pelanggan, katalog layanan, pesanan, riwayat cucian, dan pembayaran).
+- Menampilkan rekapitulasi data dan akun demo yang siap digunakan.
+
+---
+
+## 2. Panduan Import 1-Klik di GUI phpMyAdmin
 
 Untuk menjalankan database pada lingkungan lokal (XAMPP, WAMP, Laragon, atau Docker):
 

@@ -506,43 +506,28 @@
                 Berikan informasi mengenai cucian Anda.
               </p>
 
-              <!-- Baris Input Berat & Tanggal Antar -->
-              <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                <!-- Perkiraan berat (kg) dengan tombol - dan + sesuai Figma -->
-                <div class="flex flex-col">
-                  <label for="weightDisplay" class="text-slate-600 text-[11px] font-semibold font-['Poppins'] leading-4">
-                    Perkiraan berat (kg)
-                  </label>
-                  <div
-                    class="mt-1.5 h-10 px-1.5 rounded-lg border border-slate-200 flex justify-between items-center bg-white">
-                    <button type="button" id="decreaseWeightBtn" aria-label="Kurangi berat 1 kg"
-                      class="size-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-md inline-flex justify-center items-center text-cyan-700 text-base font-semibold leading-none transition">
-                      -
-                    </button>
-                    <output id="weightDisplay" class="text-slate-700 text-xs font-extrabold font-['Poppins'] leading-4">
-                      4 kg
-                    </output>
-                    <button type="button" id="increaseWeightBtn" aria-label="Tambah berat 1 kg"
-                      class="size-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-md inline-flex justify-center items-center text-cyan-700 text-base font-semibold leading-none transition">
-                      +
-                    </button>
-                  </div>
-                  <span class="pt-1 text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">
-                    Minimal pemesanan 3 kg
-                  </span>
+              <!-- Perkiraan berat (kg) dengan tombol - dan + sesuai Figma -->
+              <div class="pt-4 flex flex-col max-w-sm">
+                <label for="weightDisplay" class="text-slate-600 text-[11px] font-semibold font-['Poppins'] leading-4">
+                  Perkiraan berat (kg)
+                </label>
+                <div
+                  class="mt-1.5 h-10 px-1.5 rounded-lg border border-slate-200 flex justify-between items-center bg-white">
+                  <button type="button" id="decreaseWeightBtn" aria-label="Kurangi berat 1 kg"
+                    class="size-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-md inline-flex justify-center items-center text-cyan-700 text-base font-semibold leading-none transition">
+                    -
+                  </button>
+                  <output id="weightDisplay" class="text-slate-700 text-xs font-extrabold font-['Poppins'] leading-4">
+                    4 kg
+                  </output>
+                  <button type="button" id="increaseWeightBtn" aria-label="Tambah berat 1 kg"
+                    class="size-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-md inline-flex justify-center items-center text-cyan-700 text-base font-semibold leading-none transition">
+                    +
+                  </button>
                 </div>
-
-                <!-- Tanggal antar -->
-                <div class="flex flex-col">
-                  <label for="deliveryDateInput"
-                    class="text-slate-600 text-[11px] font-semibold font-['Poppins'] leading-4">
-                    Tanggal antar
-                  </label>
-                  <input type="date" id="deliveryDateInput" value="2024-05-20" required
-                    class="mt-1.5 h-10 px-3 rounded-lg border border-slate-200 text-xs text-slate-700 bg-white focus:outline-none focus:border-blue-400" />
-                </div>
-
+                <span class="pt-1 text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">
+                  Minimal pemesanan 3 kg
+                </span>
               </div>
 
               <!-- Catatan untuk laundry (opsional) -->
@@ -894,36 +879,160 @@
       });
     });
 
+    // Fungsi Menampilkan Toast Notifikasi Pesanan Berhasil
+    function showOrderSuccessToast(data) {
+      let toast = document.getElementById('orderSuccessToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'orderSuccessToast';
+        toast.className = 'fixed top-6 right-6 z-[9999] max-w-sm w-full bg-white border border-emerald-200 rounded-2xl shadow-2xl p-4 transform transition-all duration-300 -translate-y-6 opacity-0 pointer-events-auto';
+        toast.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="size-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+              <svg class="size-6" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-slate-800">Pesanan Berhasil Dibuat!</h4>
+                <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Sukses</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">Rincian pesanan laundry Anda:</p>
+              
+              <div class="mt-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] space-y-1.5 text-slate-600">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400">Kode Pesanan:</span>
+                  <span class="font-bold text-cyan-800" id="toastCode">${data.orderId}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400">Layanan:</span>
+                  <span class="font-semibold text-slate-800" id="toastService">${data.service}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400">Perkiraan Berat:</span>
+                  <span class="font-semibold text-slate-800" id="toastWeight">${data.weightKg} kg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-400">Metode Pengantaran:</span>
+                  <span class="font-semibold text-slate-800" id="toastDelivery">${data.deliveryMethod}</span>
+                </div>
+                <div class="flex justify-between items-center pt-1.5 border-t border-slate-200 font-bold text-cyan-800">
+                  <span>Total Estimasi:</span>
+                  <span id="toastTotal" class="text-xs text-cyan-800">${data.totalFormatted}</span>
+                </div>
+              </div>
+
+              <div class="mt-2.5 flex items-center justify-between">
+                <span class="text-[10px] text-slate-400 flex items-center gap-1.5">
+                  <svg class="size-3 animate-spin text-cyan-600" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                  Mengalihkan ke status...
+                </span>
+                <a href="status.html" class="text-[10px] font-bold text-cyan-700 hover:text-cyan-900 underline">Lihat Status &rarr;</a>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(toast);
+      } else {
+        document.getElementById('toastCode').textContent = data.orderId;
+        document.getElementById('toastService').textContent = data.service;
+        document.getElementById('toastWeight').textContent = data.weightKg + ' kg';
+        document.getElementById('toastDelivery').textContent = data.deliveryMethod;
+        document.getElementById('toastTotal').textContent = data.totalFormatted;
+      }
+
+      // Animasi masuk toast
+      setTimeout(() => {
+        toast.classList.remove('-translate-y-6', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+      }, 50);
+
+      // Alihkan ke halaman status cucian setelah toast terlihat dengan jelas (2.8 detik)
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-6', 'opacity-0');
+        setTimeout(() => {
+          window.location.href = 'status.html';
+        }, 300);
+      }, 2800);
+    }
+
     // Submit Buat Pesanan
     if (createOrderForm) {
       createOrderForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const deliveryDate = document.getElementById('deliveryDateInput').value;
-        const notes = document.getElementById('laundryNotesInput').value.trim();
+        const notesInput = document.getElementById('laundryNotesInput');
+        const notes = notesInput ? notesInput.value.trim() : '';
         const total = (currentWeightKg * selectedPricePerKg) + selectedDeliveryFee;
 
+        // Generate ID transaksi baru yang unik dan tanggal saat ini
+        const now = new Date();
+        const y = String(now.getFullYear()).slice(2);
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const randomNum = Math.floor(10 + Math.random() * 90);
+        const newOrderId = `TRX-${y}${m}${d}-${randomNum}`;
+
+        const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+        const dateInFormatted = now.toLocaleDateString('id-ID', dateOptions);
+
+        const estDate = new Date(now);
+        estDate.setDate(now.getDate() + 2);
+        const estDoneFormatted = estDate.toLocaleDateString('id-ID', dateOptions);
+
+        const orderData = {
+          orderId: newOrderId,
+          code: newOrderId,
+          service: selectedService,
+          weightKg: currentWeightKg,
+          weight: `${currentWeightKg},0 kg`,
+          deliveryMethod: selectedDeliveryMethod,
+          notes: notes || 'Pakaian reguler',
+          total: total,
+          totalFormatted: formatRupiah(total),
+          status: 'Menunggu konfirmasi',
+          statusCode: 'MENUNGGU',
+          step: 1,
+          dateIn: dateInFormatted,
+          dateInTime: `${dateInFormatted}, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')} WIB`,
+          estDone: estDoneFormatted,
+          createdAt: now.toISOString()
+        };
+
         try {
-          sessionStorage.setItem('bersihin_last_order', JSON.stringify({
+          sessionStorage.setItem('bersihin_last_order', JSON.stringify(orderData));
+          localStorage.setItem('bersihin_active_order', JSON.stringify(orderData));
+
+          // Simpan juga ke daftar riwayat transaksi pelanggan
+          const existingTrxRaw = localStorage.getItem('bersihin_transactions');
+          const trxList = existingTrxRaw ? JSON.parse(existingTrxRaw) : [];
+          trxList.unshift({
+            id: newOrderId,
+            code: newOrderId,
+            date: dateInFormatted,
+            timestamp: now.toISOString(),
             service: selectedService,
+            weight: `${currentWeightKg},0 kg`,
             weightKg: currentWeightKg,
+            amount: total,
+            total: formatRupiah(total),
+            totalFormatted: formatRupiah(total),
+            status: 'Menunggu konfirmasi',
             deliveryMethod: selectedDeliveryMethod,
-            deliveryDate: deliveryDate,
-            notes: notes,
-            totalFormatted: formatRupiah(total)
-          }));
+            notes: notes || 'Pakaian reguler',
+            calcSub: `${currentWeightKg},0 kg (Estimasi)`,
+            paidDate: 'Belum dibayar',
+            dateInTime: orderData.dateInTime,
+            estDone: estDoneFormatted
+          });
+          localStorage.setItem('bersihin_transactions', JSON.stringify(trxList));
         } catch (err) {
           // Abaikan jika storage dibatasi
         }
 
-        alert(
-          'Pesanan berhasil dibuat!\n\n' +
-          'Layanan: ' + selectedService + '\n' +
-          'Perkiraan Berat: ' + currentWeightKg + ' kg\n' +
-          'Metode Pengantaran: ' + selectedDeliveryMethod + '\n' +
-          'Tanggal Antar: ' + deliveryDate + '\n' +
-          'Total Estimasi: ' + formatRupiah(total)
-        );
-        window.location.href = 'status.html';
+        // Tampilkan Toast Notifikasi Elegan Menggantikan Alert Bawaan Browser
+        showOrderSuccessToast(orderData);
       });
     }
 

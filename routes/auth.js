@@ -11,16 +11,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 
-// Helper untuk deteksi database pool dari berbagai modul backend
+// Helper untuk deteksi database pool dari backend tunggal
 let pool = null;
 try {
-  pool = require('../BACKEND PELANGGAN/backend/config/db').pool;
+  pool = require('../backend/config/database');
 } catch (e) {
-  try {
-    pool = require('../BACKEND PEGAWAI/config/database');
-  } catch (err) {
-    pool = null;
-  }
+  pool = null;
 }
 
 // Data Akun Bawaan (Demo Fallback jika server berjalan tanpa koneksi MySQL aktif)
