@@ -46,13 +46,7 @@
     <header
         class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
         <div class="flex items-center gap-2.5">
-            <div
-                class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white shadow-sm shadow-sky-200">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-            </div>
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
             <div>
                 <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span
                     class="text-lg font-bold text-sky-500">in</span>
@@ -78,13 +72,7 @@
         <div class="flex flex-col flex-1 overflow-y-auto">
             <!-- Brand Logo -->
             <div class="hidden md:flex items-center gap-3 px-6 pt-7 pb-6">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-white shadow-md shadow-sky-200/80">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                </div>
+                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40" class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
                 <div>
                     <div class="leading-none">
                         <span class="text-xl font-bold text-slate-900 tracking-tight">Bersih</span><span
@@ -179,7 +167,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            <span>Profil Pemilik</span>
+                            <span>Profil Saya</span>
                         </a>
                     </div>
                 </div>
@@ -197,7 +185,7 @@
                     <span class="text-xs font-semibold text-slate-700">Bisnis bertumbuh</span>
                 </div>
                 <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">Pendapatan naik 18% dari bulan lalu.</p>
-                <a href="#"
+                <a href="laporan.html"
                     class="text-xs font-semibold text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-1">
                     Lihat laporan
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,30 +232,87 @@
                 </div>
 
                 <!-- Notifications -->
-                <button
-                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition"
-                    aria-label="Notifikasi">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                </button>
+                <div class="relative">
+                    <button type="button" id="notifToggleBtn" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition cursor-pointer"
+                        aria-label="Notifikasi">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span id="notifDot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <div id="notifDropdown"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+                        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                            <span class="text-xs font-bold text-slate-800">Notifikasi Operasional</span>
+                            <button type="button" id="markNotifReadBtn"
+                                class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">
+                                Tandai dibaca
+                            </button>
+                        </div>
+                        <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-semibold text-slate-800">Pesanan ORD-0524-014 selesai</p>
+                                    <p class="text-slate-500 text-[11px] mt-0.5">Rizky Maulana - Cuci + Setrika</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1">8 menit lalu</span>
+                                </div>
+                            </a>
+                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
+                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-semibold text-slate-800">Pembayaran baru diterima</p>
+                                    <p class="text-slate-500 text-[11px] mt-0.5">TRX-240520-09 - Rp45.000 via QRIS</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1">24 menit lalu</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="pt-2.5 border-t border-slate-100 text-center">
+                            <a href="transaksi.html" class="text-xs font-semibold text-cyan-600 hover:text-cyan-700">
+                                Lihat Semua Aktivitas
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Profile Info -->
-                <div class="flex items-center gap-3 pl-1">
-                    <div
-                        class="w-9 h-9 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs">
+                                <!-- Profil Saya (Avatar & Dropdown Identik Pelanggan) -->
+                <div class="relative">
+                    <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+                        aria-label="Profil Pengguna"
+                        class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                         RS
+                    </button>
+
+                    <!-- Dropdown Profil Saya -->
+                    <div id="profileDropdown" role="menu" aria-label="Menu Akun Pemilik"
+                        class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p id="dropdownOwnerName" class="text-xs font-bold text-slate-800">Rangga Saputra</p>
+                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id</p>
+                        </div>
+                        <a href="profil.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+                            <span>Profil Saya</span>
+                        </a>
+                        <a href="login.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+                            <span>Keluar Akun</span>
+                        </a>
                     </div>
-                    <div class="hidden md:block leading-tight">
-                        <div class="text-xs font-bold text-slate-800">Rangga Saputra</div>
-                        <div class="text-[10px] text-slate-400 font-medium">Pemilik</div>
-                    </div>
-                    <svg class="w-3.5 h-3.5 text-slate-400 hidden md:block" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
                 </div>
             </div>
         </header>
@@ -460,27 +505,41 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <h3 class="text-sm font-semibold text-slate-800">Grafik Pendapatan</h3>
-                                <p class="text-xs text-slate-400">Performa pendapatan 7 hari terakhir</p>
+                                <p id="revChartSubtitle" class="text-xs text-slate-400">Klik titik atau hari untuk melihat detail pendapatan</p>
                             </div>
-                            <div
-                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 text-xs text-slate-600 bg-white">
-                                <span>7 hari terakhir</span>
-                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 9l-7 7-7-7" />
-                                </svg>
+                            <div class="relative">
+                                <button type="button" id="revPeriodBtn"
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 text-xs text-slate-600 bg-white hover:bg-slate-50 transition cursor-pointer">
+                                    <span id="revPeriodLabel">7 hari terakhir</span>
+                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+                                <div id="revPeriodMenu"
+                                    class="hidden absolute right-0 mt-1.5 w-40 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 text-xs">
+                                    <button type="button" data-rev-period="7d"
+                                        class="w-full text-left px-3.5 py-2 font-semibold text-cyan-700 bg-sky-50/60 hover:bg-slate-50 cursor-pointer">7 hari terakhir</button>
+                                    <button type="button" data-rev-period="14d"
+                                        class="w-full text-left px-3.5 py-2 text-slate-600 hover:bg-slate-50 cursor-pointer">14 hari terakhir</button>
+                                    <button type="button" data-rev-period="30d"
+                                        class="w-full text-left px-3.5 py-2 text-slate-600 hover:bg-slate-50 cursor-pointer">30 hari terakhir</button>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Big Total -->
-                        <div class="flex items-center gap-2.5 mb-6">
-                            <div class="text-2xl font-bold text-slate-900">Rp6.840.000</div>
-                            <span
-                                class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+15,8%</span>
+                        <div class="flex items-center justify-between gap-2.5 mb-6">
+                            <div class="flex items-center gap-2.5">
+                                <div id="revTotalValue" class="text-2xl font-bold text-slate-900">Rp6.840.000</div>
+                                <span id="revBadgeValue"
+                                    class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+15,8%</span>
+                            </div>
+                            <span id="revSelectedDayBadge" class="hidden text-[11px] font-medium text-cyan-700 bg-sky-50 px-2.5 py-1 rounded-lg"></span>
                         </div>
 
-                        <!-- Area / Line Chart (SVG Crisp Responsive) -->
+                        <!-- Area / Line Chart (SVG Crisp Responsive & Interactive) -->
                         <div class="relative w-full h-44">
                             <!-- Y-Axis Values -->
                             <div
@@ -512,29 +571,33 @@
                                     <line x1="0" y1="130" x2="700" y2="130" stroke="#f1f5f9" stroke-width="1" />
 
                                     <!-- Area Fill -->
-                                    <path
+                                    <path id="revAreaPath"
                                         d="M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25 L 700 130 L 0 130 Z"
                                         fill="url(#revenueGrad)" />
 
                                     <!-- Line Stroke -->
-                                    <path
+                                    <path id="revLinePath"
                                         d="M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25"
                                         fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" />
 
-                                    <!-- Interactive Dots -->
-                                    <circle cx="230" cy="65" r="4" fill="#0284c7" class="ring-4 ring-sky-100" />
-                                    <circle cx="480" cy="40" r="4" fill="#0284c7" class="ring-4 ring-sky-100" />
-                                    <circle cx="700" cy="25" r="5" fill="#0284c7" />
+                                    <!-- Interactive Dots for All 7 Days -->
+                                    <circle data-rev-day="Sen" data-rev-val="Rp680.000" data-rev-growth="+4,2%" cx="0" cy="95" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
+                                    <circle data-rev-day="Sel" data-rev-val="Rp790.000" data-rev-growth="+6,8%" cx="115" cy="88" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
+                                    <circle data-rev-day="Rab" data-rev-val="Rp920.000" data-rev-growth="+11,5%" cx="230" cy="65" r="5" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer ring-4 ring-sky-100 transition-all" />
+                                    <circle data-rev-day="Kam" data-rev-val="Rp860.000" data-rev-growth="+9,1%" cx="355" cy="58" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
+                                    <circle data-rev-day="Jum" data-rev-val="Rp1.080.000" data-rev-growth="+16,4%" cx="480" cy="40" r="5" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer ring-4 ring-sky-100 transition-all" />
+                                    <circle data-rev-day="Sab" data-rev-val="Rp1.190.000" data-rev-growth="+19,0%" cx="590" cy="32" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
+                                    <circle data-rev-day="Min" data-rev-val="Rp1.320.000" data-rev-growth="+22,4%" cx="700" cy="25" r="6" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-all" />
                                 </svg>
-                                <!-- X-Axis Days -->
+                                <!-- X-Axis Days (Clickable) -->
                                 <div class="flex justify-between text-[11px] text-slate-400 font-medium pt-2">
-                                    <span>Sen</span>
-                                    <span>Sel</span>
-                                    <span>Rab</span>
-                                    <span>Kam</span>
-                                    <span>Jum</span>
-                                    <span>Sab</span>
-                                    <span>Min</span>
+                                    <button type="button" data-rev-day="Sen" data-rev-val="Rp680.000" data-rev-growth="+4,2%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sen</button>
+                                    <button type="button" data-rev-day="Sel" data-rev-val="Rp790.000" data-rev-growth="+6,8%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sel</button>
+                                    <button type="button" data-rev-day="Rab" data-rev-val="Rp920.000" data-rev-growth="+11,5%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Rab</button>
+                                    <button type="button" data-rev-day="Kam" data-rev-val="Rp860.000" data-rev-growth="+9,1%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Kam</button>
+                                    <button type="button" data-rev-day="Jum" data-rev-val="Rp1.080.000" data-rev-growth="+16,4%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Jum</button>
+                                    <button type="button" data-rev-day="Sab" data-rev-val="Rp1.190.000" data-rev-growth="+19,0%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sab</button>
+                                    <button type="button" data-rev-day="Min" data-rev-val="Rp1.320.000" data-rev-growth="+22,4%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Min</button>
                                 </div>
                             </div>
                         </div>
@@ -547,88 +610,99 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <h3 class="text-sm font-semibold text-slate-800">Grafik Transaksi</h3>
-                                <p class="text-xs text-slate-400">Jumlah transaksi harian</p>
+                                <p class="text-xs text-slate-400">Klik batang diagram untuk rincian harian</p>
                             </div>
-                            <button class="text-slate-400 hover:text-slate-600 p-1" aria-label="Menu Opsi">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                                </svg>
-                            </button>
+                            <div class="relative">
+                                <button type="button" id="trxChartMenuBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 cursor-pointer" aria-label="Menu Opsi">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                    </svg>
+                                </button>
+                                <div id="trxChartMenu"
+                                    class="hidden absolute right-0 mt-1.5 w-44 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 text-xs">
+                                    <button type="button" id="trxResetBarBtn"
+                                        class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 cursor-pointer">Tampilkan Rata-rata</button>
+                                    <a href="transaksi.html"
+                                        class="block px-3.5 py-2 text-slate-700 hover:bg-slate-50">Buka Data Transaksi</a>
+                                    <a href="laporan.html"
+                                        class="block px-3.5 py-2 text-cyan-600 font-semibold hover:bg-slate-50">Buka Laporan Lengkap</a>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Bar Chart Container -->
+                        <!-- Bar Chart Container (Interactive) -->
                         <div class="h-44 flex items-end justify-between gap-2 sm:gap-4 px-2 pt-6">
                             <!-- Sen: 12 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Senin" data-trx-count="12 transaksi" data-trx-omzet="Rp680.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">12</span>
                                 <div
-                                    class="w-full max-w-[28px] h-16 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-16 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Sen</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sen</span>
+                            </button>
                             <!-- Sel: 15 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Selasa" data-trx-count="15 transaksi" data-trx-omzet="Rp790.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">15</span>
                                 <div
-                                    class="w-full max-w-[28px] h-20 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-20 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Sel</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sel</span>
+                            </button>
                             <!-- Rab: 18 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Rabu" data-trx-count="18 transaksi" data-trx-omzet="Rp920.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">18</span>
                                 <div
-                                    class="w-full max-w-[28px] h-24 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-24 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Rab</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Rab</span>
+                            </button>
                             <!-- Kam: 21 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Kamis" data-trx-count="21 transaksi" data-trx-omzet="Rp860.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">21</span>
                                 <div
-                                    class="w-full max-w-[28px] h-28 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-28 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Kam</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Kam</span>
+                            </button>
                             <!-- Jum: 24 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Jumat" data-trx-count="24 transaksi" data-trx-omzet="Rp1.080.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">24</span>
                                 <div
-                                    class="w-full max-w-[28px] h-32 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-32 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Jum</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Jum</span>
+                            </button>
                             <!-- Sab: 27 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Sabtu" data-trx-count="27 transaksi" data-trx-omzet="Rp1.190.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">27</span>
                                 <div
-                                    class="w-full max-w-[28px] h-36 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-36 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Sab</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sab</span>
+                            </button>
                             <!-- Min: 30 -->
-                            <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <button type="button" data-trx-day="Minggu" data-trx-count="30 transaksi" data-trx-omzet="Rp1.320.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
                                 <span
                                     class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">30</span>
                                 <div
-                                    class="w-full max-w-[28px] h-40 bg-gradient-to-t from-blue-600 to-sky-400 rounded-t-md group-hover:from-blue-700 group-hover:to-sky-500 transition-all">
+                                    class="trx-bar w-full max-w-[28px] h-40 bg-gradient-to-t from-blue-600 to-sky-400 rounded-t-md group-hover:from-blue-700 group-hover:to-sky-500 transition-all">
                                 </div>
-                                <span class="text-[11px] text-slate-400 font-medium">Min</span>
-                            </div>
+                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Min</span>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Footer Average -->
                     <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span class="text-slate-400">Rata-rata harian</span>
-                        <span class="font-semibold text-slate-800">21 transaksi</span>
+                        <span id="trxFooterLabel" class="text-slate-400">Rata-rata harian</span>
+                        <span id="trxFooterValue" class="font-semibold text-slate-800">21 transaksi</span>
                     </div>
                 </div>
             </div>
@@ -640,7 +714,7 @@
                         <h3 class="text-sm font-semibold text-slate-800">Aktivitas Terbaru</h3>
                         <p class="text-xs text-slate-400">Pembaruan terkini dari operasional laundry</p>
                     </div>
-                    <a href="#"
+                    <a href="transaksi.html"
                         class="text-xs font-semibold text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-1">
                         Lihat Semua
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -733,7 +807,138 @@
         if (sidebarOverlay) {
             sidebarOverlay.addEventListener('click', toggleSidebar);
         }
+
+        // Interactive Grafik Pendapatan (Period selector & Day points)
+        const revPeriodBtn = document.getElementById('revPeriodBtn');
+        const revPeriodLabel = document.getElementById('revPeriodLabel');
+        const revPeriodMenu = document.getElementById('revPeriodMenu');
+        const revTotalValue = document.getElementById('revTotalValue');
+        const revBadgeValue = document.getElementById('revBadgeValue');
+        const revSelectedDayBadge = document.getElementById('revSelectedDayBadge');
+        const revAreaPath = document.getElementById('revAreaPath');
+        const revLinePath = document.getElementById('revLinePath');
+
+        const revPeriodData = {
+            '7d': {
+                label: '7 hari terakhir',
+                total: 'Rp6.840.000',
+                growth: '+15,8%',
+                line: 'M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25',
+                area: 'M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25 L 700 130 L 0 130 Z'
+            },
+            '14d': {
+                label: '14 hari terakhir',
+                total: 'Rp13.120.000',
+                growth: '+16,9%',
+                line: 'M 0 105 C 100 90, 150 75, 230 70 C 320 55, 400 50, 480 45 C 560 30, 620 35, 700 20',
+                area: 'M 0 105 C 100 90, 150 75, 230 70 C 320 55, 400 50, 480 45 C 560 30, 620 35, 700 20 L 700 130 L 0 130 Z'
+            },
+            '30d': {
+                label: '30 hari terakhir',
+                total: 'Rp24.800.000',
+                growth: '+18,2%',
+                line: 'M 0 110 C 100 95, 150 85, 230 60 C 320 45, 400 55, 480 30 C 560 25, 620 20, 700 15',
+                area: 'M 0 110 C 100 95, 150 85, 230 60 C 320 45, 400 55, 480 30 C 560 25, 620 20, 700 15 L 700 130 L 0 130 Z'
+            }
+        };
+
+        if (revPeriodBtn && revPeriodMenu) {
+            revPeriodBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                revPeriodMenu.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('[data-rev-period]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const key = btn.getAttribute('data-rev-period');
+                    const d = revPeriodData[key];
+                    if (d) {
+                        revPeriodLabel.textContent = d.label;
+                        revTotalValue.textContent = d.total;
+                        revBadgeValue.textContent = d.growth;
+                        revLinePath.setAttribute('d', d.line);
+                        revAreaPath.setAttribute('d', d.area);
+                        revSelectedDayBadge.classList.add('hidden');
+                    }
+                    revPeriodMenu.classList.add('hidden');
+                });
+            });
+        }
+
+        document.querySelectorAll('[data-rev-day]').forEach((el) => {
+            el.addEventListener('click', () => {
+                const day = el.getAttribute('data-rev-day');
+                const val = el.getAttribute('data-rev-val');
+                const growth = el.getAttribute('data-rev-growth');
+                revTotalValue.textContent = val;
+                revBadgeValue.textContent = growth;
+                revSelectedDayBadge.textContent = 'Hari: ' + day + ' (Klik untuk reset)';
+                revSelectedDayBadge.classList.remove('hidden');
+                revSelectedDayBadge.classList.add('cursor-pointer');
+            });
+        });
+
+        if (revSelectedDayBadge) {
+            revSelectedDayBadge.addEventListener('click', () => {
+                revTotalValue.textContent = 'Rp6.840.000';
+                revBadgeValue.textContent = '+15,8%';
+                revSelectedDayBadge.classList.add('hidden');
+            });
+        }
+
+        // Interactive Grafik Transaksi (Bars & Menu Opsi)
+        const trxChartMenuBtn = document.getElementById('trxChartMenuBtn');
+        const trxChartMenu = document.getElementById('trxChartMenu');
+        const trxResetBarBtn = document.getElementById('trxResetBarBtn');
+        const trxFooterLabel = document.getElementById('trxFooterLabel');
+        const trxFooterValue = document.getElementById('trxFooterValue');
+
+        if (trxChartMenuBtn && trxChartMenu) {
+            trxChartMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                trxChartMenu.classList.toggle('hidden');
+            });
+        }
+
+        document.querySelectorAll('[data-trx-day]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const day = btn.getAttribute('data-trx-day');
+                const count = btn.getAttribute('data-trx-count');
+                const omzet = btn.getAttribute('data-trx-omzet');
+
+                document.querySelectorAll('.trx-bar').forEach((bar) => {
+                    bar.classList.remove('ring-4', 'ring-sky-200');
+                });
+                const currentBar = btn.querySelector('.trx-bar');
+                if (currentBar) currentBar.classList.add('ring-4', 'ring-sky-200');
+
+                trxFooterLabel.textContent = 'Hari ' + day + ' (' + omzet + ')';
+                trxFooterValue.textContent = count;
+            });
+        });
+
+        if (trxResetBarBtn) {
+            trxResetBarBtn.addEventListener('click', () => {
+                document.querySelectorAll('.trx-bar').forEach((bar) => {
+                    bar.classList.remove('ring-4', 'ring-sky-200');
+                });
+                trxFooterLabel.textContent = 'Rata-rata harian';
+                trxFooterValue.textContent = '21 transaksi';
+                trxChartMenu.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (revPeriodMenu && !revPeriodMenu.contains(e.target) && e.target !== revPeriodBtn) {
+                revPeriodMenu.classList.add('hidden');
+            }
+            if (trxChartMenu && !trxChartMenu.contains(e.target) && e.target !== trxChartMenuBtn) {
+                trxChartMenu.classList.add('hidden');
+            }
+        });
     </script>
+    <!-- Skrip Utama Pemilik (Vanilla JS) -->
+    <script src="../JS/pemilik.js"></script>
 </body>
 
 </html>
