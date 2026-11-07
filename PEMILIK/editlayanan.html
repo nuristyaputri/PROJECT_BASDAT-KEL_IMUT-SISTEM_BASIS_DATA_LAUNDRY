@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Layanan - Bersihin Owner Console</title>
+    <!-- Google Fonts Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row relative">
+
+    <!-- MOBILE TOPBAR & TOGGLE -->
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
+        <div class="flex items-center gap-2.5">
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
+            <div>
+                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span
+                    class="text-lg font-bold text-sky-500">in</span>
+                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner
+                    Console</span>
+            </div>
+        </div>
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- SIDEBAR OVERLAY FOR MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200/90 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:static md:inset-auto md:z-10 shadow-sm md:shadow-none">
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <!-- Brand Logo -->
+            <div class="hidden md:flex items-center gap-3 px-6 pt-7 pb-6">
+                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40" class="w-10 h-10 rounded-xl shadow-md shadow-sky-200/80 shrink-0 select-none" />
+                <div>
+                    <div class="leading-none">
+                        <span class="text-xl font-bold text-slate-900 tracking-tight">Bersih</span><span
+                            class="text-xl font-bold text-sky-500">in</span>
+                    </div>
+                    <span class="text-[9px] font-bold tracking-widest text-slate-400 uppercase">Owner Console</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-4 py-2 space-y-6">
+                <!-- Main Menu -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Menu Utama</p>
+                    <div class="space-y-1">
+                        <!-- Dashboard -->
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <!-- Data Pelanggan -->
+                        <a href="datapelanggan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <span>Data Pelanggan</span>
+                        </a>
+
+                        <!-- Data Pegawai -->
+                        <a href="datapegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>Data Pegawai</span>
+                        </a>
+
+                        <!-- Layanan (Active) -->
+                        <a href="layananpegawai.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold bg-sky-50 text-cyan-700 transition relative">
+                            <span
+                                class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-cyan-600 rounded-r-md"></span>
+                            <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                            </svg>
+                            <span>Layanan</span>
+                        </a>
+
+                        <!-- Transaksi -->
+                        <a href="transaksi.html"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                <span>Transaksi</span>
+                            </div>
+                            <span
+                                class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
+                        </a>
+
+                        <!-- Laporan -->
+                        <a href="laporan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span>Laporan</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Account Menu -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">Akun</p>
+                    <div class="space-y-1">
+                        <a href="profil.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>Profil Saya</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-slate-100 space-y-3">
+            <div class="p-3.5 bg-gradient-to-br from-blue-50/80 to-slate-50 rounded-xl border border-blue-100">
+                <div class="flex items-center gap-2 mb-1.5 text-blue-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <span class="text-xs font-semibold text-slate-700">Bisnis bertumbuh</span>
+                </div>
+                <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">Pendapatan naik 18% dari bulan lalu.</p>
+                <a href="#"
+                    class="text-xs font-semibold text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-1">
+                    Lihat laporan
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Logout -->
+            <a href="login.html"
+                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Keluar</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER (BACKGROUND SCREEN) -->
+    <div class="flex-1 flex flex-col min-w-0 filter blur-[1px] opacity-60 pointer-events-none select-none">
+        <!-- TOPBAR -->
+        <header class="h-20 bg-white border-b border-slate-200 px-6 md:px-9 flex items-center justify-between">
+            <div>
+                <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Manajemen Layanan</h1>
+                <p class="text-xs text-slate-400">Atur layanan dan harga laundry</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div
+                    class="w-9 h-9 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs">
+                    RS
+                </div>
+            </div>
+        </header>
+
+        <!-- BACKGROUND PREVIEW: SERVICES GRID -->
+        <main class="p-6 md:p-9 space-y-6 max-w-7xl w-full mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-base font-semibold text-slate-800">Paket layanan aktif</h2>
+                    <p class="text-xs text-slate-400">Atur layanan yang tersedia untuk pelanggan Anda.</p>
+                </div>
+                <div class="h-10 w-36 bg-slate-900 rounded-xl"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 h-64"></div>
+                <div class="bg-white p-5 rounded-xl border border-cyan-500 h-64 ring-2 ring-cyan-100"></div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 h-64"></div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 h-64"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL OVERLAY (EDIT LAYANAN - ACTIVE DIALOG) -->
+    <div
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div
+            class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden my-auto animate-in fade-in zoom-in duration-150">
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between bg-slate-50/50">
+                <div>
+                    <span class="text-[10px] font-bold tracking-widest text-cyan-600 uppercase">Manajemen Data</span>
+                    <h2 class="text-lg font-bold text-slate-800 leading-snug mt-0.5">Edit Layanan</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Perbarui informasi paket layanan dan tarif harga.</p>
+                </div>
+                <a href="layananpegawai.html"
+                    class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition"
+                    title="Tutup">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Modal Form -->
+            <form action="layananpegawai.html" method="GET" class="p-6 space-y-4">
+                <!-- Nama Layanan & Harga (2 Cols) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nama_layanan" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            Nama layanan <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="nama_layanan" name="nama_layanan" required value="Cuci + Setrika"
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs">
+                    </div>
+
+                    <div>
+                        <label for="harga" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            Harga (Rp) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs text-slate-400 font-semibold pointer-events-none">Rp</span>
+                            <input type="number" id="harga" name="harga" required value="10000"
+                                class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deskripsi Layanan -->
+                <div>
+                    <label for="deskripsi" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        Deskripsi Layanan <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="deskripsi" name="deskripsi" rows="3" required
+                        class="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs resize-none">Paket lengkap cuci, kering, dan setrika</textarea>
+                </div>
+
+                <!-- Satuan & Durasi (2 Cols) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="satuan" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            Satuan Hitung <span class="text-red-500">*</span>
+                        </label>
+                        <select id="satuan" name="satuan" required
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs">
+                            <option value="kg" selected>per kg (Kilogram)</option>
+                            <option value="pcs">per pcs (Satuan)</option>
+                            <option value="meter">per meter</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="durasi" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            Estimasi Durasi <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="durasi" name="durasi" required value="2–3 hari"
+                            class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs">
+                    </div>
+                </div>
+
+                <!-- Status Layanan -->
+                <div>
+                    <label for="status" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        Status Ketersediaan <span class="text-red-500">*</span>
+                    </label>
+                    <select id="status" name="status" required
+                        class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition shadow-2xs">
+                        <option value="Aktif" selected>Aktif (Tersedia untuk pesanan)</option>
+                        <option value="Nonaktif">Nonaktif (Sementara ditutup)</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+                    <a href="layananpegawai.html"
+                        class="px-4 py-2.5 text-xs md:text-sm font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition text-center">
+                        Batal
+                    </a>
+                    <button type="submit"
+                        class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs md:text-sm font-semibold rounded-xl shadow-md shadow-slate-900/10 flex items-center gap-2 transition active:scale-[0.98]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>Simpan Perubahan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MOBILE SIDEBAR SCRIPT -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        }
+
+        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+    </script>
+    <!-- Skrip Utama Pemilik (Vanilla JS) -->
+    <script src="../JS/pemilik.js"></script>
+</body>
+
+</html>
