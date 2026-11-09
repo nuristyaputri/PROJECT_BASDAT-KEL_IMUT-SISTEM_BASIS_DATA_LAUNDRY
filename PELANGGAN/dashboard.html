@@ -231,34 +231,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -296,7 +270,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Dashboard</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -342,7 +316,7 @@
           </div>
         </div>
 
-        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <!-- Profil Pengguna (Avatar Style Pelanggan) -->
         <div class="relative">
           <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
             aria-label="Profil Pengguna"
@@ -388,7 +362,7 @@
             Halo, Andi! Semoga harimu menyenangkan.
           </h2>
           <p class="pt-1.5 text-blue-50 text-xs font-normal font-['Poppins'] leading-4">
-            Laundry Anda sedang kami tangani dengan sepenuh hati.
+            Laundry Anda akan kami tangani dengan sepenuh hati.
           </p>
         </div>
 
@@ -499,7 +473,7 @@
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Pengeluaran</h3>
             <div id="statTotalPengeluaran" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">Rp842k</div>
             <div id="statTotalPengeluaranSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              Sejak Jan 2024
+              Akumulasi pengeluaran
             </div>
           </div>
         </article>
@@ -525,11 +499,13 @@
                   Cuci + Setrika
                 </h2>
               </div>
-              <span
-                class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5 shrink-0">
-                <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
-                <span class="text-amber-800 text-[10px] font-semibold font-['Poppins'] leading-3">Sedang dicuci</span>
-              </span>
+              <div id="activeOrderBadge">
+                <span
+                  class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5 shrink-0 shadow-2xs">
+                  <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
+                  <span class="text-amber-800 text-[10px] font-semibold font-['Poppins'] leading-3">Sedang dicuci</span>
+                </span>
+              </div>
             </div>
 
             <!-- Kotak Detail Ringkas (No. Transaksi, Berat, Estimasi Selesai) -->
@@ -537,20 +513,20 @@
               class="w-full mt-4 px-4 py-3 bg-slate-50 rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-0">
               <div class="flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">No. Transaksi</span>
-                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">TRX-240518-01</span>
+                <span id="activeOrderTrxCode" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">TRX-240518-01</span>
               </div>
               <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Berat</span>
-                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">4,5 kg</span>
+                <span id="activeOrderWeight" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">4,5 kg</span>
               </div>
               <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Estimasi Selesai</span>
-                <span class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">21 Mei 2024</span>
+                <span id="activeOrderEstDone" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">21 Mei 2024</span>
               </div>
             </div>
 
             <!-- 4 Tahap Progress Stepper (Dikonfirmasi -> Dicuci -> Disetrika -> Selesai) -->
-            <ol aria-label="Tahapan Proses Laundry" class="w-full pt-6 pb-2 grid grid-cols-4 gap-2 relative">
+            <ol id="activeOrderStepper" aria-label="Tahapan Proses Laundry" class="w-full pt-6 pb-2 grid grid-cols-4 gap-2 relative">
               <!-- Tahap 1: Dikonfirmasi -->
               <li class="relative flex flex-col items-center text-center">
                 <div class="w-full h-0.5 left-1/2 top-3 absolute bg-blue-400" aria-hidden="true"></div>
@@ -608,11 +584,11 @@
             <!-- Footer Kartu Pesanan Aktif -->
             <div class="w-full mt-3 pt-3 border-t border-slate-100 flex justify-between items-center gap-2">
               <div class="inline-flex justify-start items-center gap-1.5 text-slate-500">
-                <svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <svg class="size-4 shrink-0 text-cyan-700" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3" />
                   <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                 </svg>
-                <span class="text-[10px] font-normal font-['Poppins'] leading-3">Diperbarui 12 menit lalu</span>
+                <span id="activeOrderUpdatedAt" class="text-[10px] font-normal font-['Poppins'] leading-3">Diperbarui baru saja</span>
               </div>
 
               <button type="button" data-order-detail="TRX-240518-01"
@@ -762,79 +738,7 @@
               </tr>
             </thead>
             <tbody id="recentTransactionsBody" class="divide-y divide-slate-100 text-[11px] font-['Poppins']">
-              <!-- Baris 1: TRX-240518-01 -->
-              <tr class="hover:bg-slate-50/80 transition">
-                <td class="px-3 py-3 font-bold text-slate-800">TRX-240518-01</td>
-                <td class="px-3 py-3 text-slate-600">18 Mei 2024</td>
-                <td class="px-3 py-3 text-slate-600">Cuci + Setrika</td>
-                <td class="px-3 py-3 font-bold text-slate-800">Rp45.000</td>
-                <td class="px-3 py-3">
-                  <span
-                    class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5">
-                    <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-amber-800 text-[10px] font-semibold leading-3">Diproses</span>
-                  </span>
-                </td>
-                <td class="px-3 py-1.5 text-right">
-                  <button type="button" data-order-detail="TRX-240518-01"
-                    aria-label="Lihat detail transaksi TRX-240518-01"
-                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Baris 2: TRX-240512-08 -->
-              <tr class="hover:bg-slate-50/80 transition">
-                <td class="px-3 py-3 font-bold text-slate-800">TRX-240512-08</td>
-                <td class="px-3 py-3 text-slate-600">12 Mei 2024</td>
-                <td class="px-3 py-3 text-slate-600">Express</td>
-                <td class="px-3 py-3 font-bold text-slate-800">Rp72.000</td>
-                <td class="px-3 py-3">
-                  <span
-                    class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex justify-start items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-800 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-3 py-1.5 text-right">
-                  <button type="button" data-order-detail="TRX-240512-08"
-                    aria-label="Lihat detail transaksi TRX-240512-08"
-                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-
-              <!-- Baris 3: TRX-240506-12 -->
-              <tr class="hover:bg-slate-50/80 transition">
-                <td class="px-3 py-3 font-bold text-slate-800">TRX-240506-12</td>
-                <td class="px-3 py-3 text-slate-600">6 Mei 2024</td>
-                <td class="px-3 py-3 text-slate-600">Cuci Kering</td>
-                <td class="px-3 py-3 font-bold text-slate-800">Rp28.000</td>
-                <td class="px-3 py-3">
-                  <span class="px-2.5 py-1 bg-indigo-50 rounded-[20px] inline-flex justify-start items-center gap-1.5">
-                    <span class="size-1.5 bg-cyan-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-cyan-800 text-[10px] font-semibold leading-3">Diambil</span>
-                  </span>
-                </td>
-                <td class="px-3 py-1.5 text-right">
-                  <button type="button" data-order-detail="TRX-240506-12"
-                    aria-label="Lihat detail transaksi TRX-240506-12"
-                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
+              <!-- Riwayat transaksi terbaru akan dimuat secara dinamis dari database MySQL XAMPP -->
             </tbody>
           </table>
         </div>
@@ -1000,6 +904,9 @@
       </form>
     </div>
   </div>
+
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
 
   <!-- ===================================================================== -->
   <!-- SCRIPT: INTERAKTIVITAS DASHBOARD & STRUKTUR INTEGRASI BASIS DATA      -->
@@ -1174,10 +1081,13 @@
     });
 
     // 6. Modal Bantuan ("Hubungi Kami")
-    document.getElementById('openHelpModalBtn').addEventListener('click', () => {
-      setMobileSidebar(false);
-      openModal('helpContactModal');
-    });
+    const openHelpBtn = document.getElementById('openHelpModalBtn');
+    if (openHelpBtn) {
+      openHelpBtn.addEventListener('click', () => {
+        setMobileSidebar(false);
+        openModal('helpContactModal');
+      });
+    }
 
     document.getElementById('helpContactForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1207,11 +1117,19 @@
     function applyDashboardState(state) {
       if (state === 'ready') {
         dashboardStateBanner.className = 'hidden';
-        document.getElementById('statTotalTransaksi').textContent = '24';
-        document.getElementById('statSedangDiproses').textContent = '1';
-        document.getElementById('statPesananSelesai').textContent = '22';
-        document.getElementById('statTotalPengeluaran').textContent = 'Rp842k';
-        sidebarActiveBadge.textContent = '1';
+        const allTrx = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+        const stats = typeof getCustomerStats === 'function' ? getCustomerStats(allTrx) : null;
+        if (stats) {
+          document.getElementById('statTotalTransaksi').textContent = stats.total;
+          document.getElementById('statSedangDiproses').textContent = stats.processing;
+          document.getElementById('statPesananSelesai').textContent = stats.completed;
+          document.getElementById('statTotalPengeluaran').textContent = stats.totalExpenseFormatted;
+          const procSub = document.getElementById('statSedangDiprosesSub');
+          if (procSub) procSub.textContent = `${stats.processing} pesanan berjalan`;
+          const expSub = document.getElementById('statTotalPengeluaranSub');
+          if (expSub) expSub.textContent = 'Akumulasi pengeluaran';
+        }
+        sidebarActiveBadge.textContent = stats ? String(stats.processing) : '1';
         activeOrderReadyContent.classList.remove('hidden');
         activeOrderEmptyContent.classList.add('hidden');
         recentTransactionsTableWrapper.classList.remove('hidden');
@@ -1260,46 +1178,375 @@
     // Ekspos ke window untuk integrasi backend / pemanggilan API
     window.applyDashboardState = applyDashboardState;
 
-    // Periksa dan tampilkan pesanan terbaru jika ada pesanan baru yang dibuat
-    function checkAndApplyActiveOrder() {
-      const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
-      if (!activeRaw) return;
-      try {
-        const order = JSON.parse(activeRaw);
-        if (!order || !order.service) return;
-
-        const heading = document.getElementById('pesananAktifHeading');
-        if (heading) heading.textContent = order.service;
-
-        const trxCode = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(1) span:last-child');
-        if (trxCode) trxCode.textContent = order.code || order.orderId;
-
-        const weight = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(2) span:last-child');
-        if (weight) weight.textContent = order.weight || (order.weightKg ? order.weightKg + ',0 kg' : '4,0 kg');
-
-        const estDone = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(3) span:last-child');
-        if (estDone) estDone.textContent = order.estDone || '2 hari lagi';
-
-        const total = document.querySelector('#activeOrderReadyContent .grid > div:nth-child(4) span:last-child');
-        if (total) total.textContent = order.totalFormatted || order.total;
-
-        const badge = document.querySelector('#activeOrderReadyContent .inline-flex.items-center.rounded-\\[20px\\]');
-        if (badge) {
-          badge.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-          badge.innerHTML = '<span class="size-1.5 bg-amber-500 rounded-full animate-pulse"></span><span class="text-amber-800 text-[11px] font-semibold">Menunggu konfirmasi</span>';
-        }
-
-        const detailBtn = document.querySelector('#activeOrderReadyContent button[data-order-detail]');
-        if (detailBtn) {
-          detailBtn.setAttribute('data-order-detail', order.code || order.orderId);
-        }
-      } catch (e) {}
+    function getApiBaseUrl() {
+      if (window.location.origin.includes(':5000')) {
+        return '';
+      }
+      return 'http://localhost:5000';
     }
 
-    checkAndApplyActiveOrder();
+    // Periksa, sinkronkan ke backend MySQL, dan jalankan estimasi secara otomatis real-time
+    async function syncDashboardActiveOrder() {
+      // Sinkronkan data langsung dari database MySQL XAMPP jika terhubung
+      if (typeof syncAllCustomerDataWithBackend === 'function') {
+        try {
+          await syncAllCustomerDataWithBackend();
+        } catch (_) {}
+      }
+
+      // 1. Ambil transaksi paling baru secara dinamis murni dari database
+      const allTrx = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+      let order = typeof getActiveCustomerOrder === 'function' ? getActiveCustomerOrder() : null;
+      if (!order && allTrx && allTrx.length > 0) {
+        order = allTrx.find(x => {
+          const s = String(x.status || x.statusCode || '').toUpperCase();
+          const srv = String(x.service || x.layanan || '').toLowerCase();
+          const isExp = srv.includes('express') || srv.includes('kilat') || srv.includes('4 jam') || srv.includes('cepat');
+          return isExp && !s.includes('SELESAI') && !s.includes('BATAL') && s !== 'TELAH DIAMBIL';
+        }) || allTrx.find(x => {
+          const s = String(x.status || x.statusCode || '').toUpperCase();
+          return !s.includes('SELESAI') && !s.includes('BATAL') && s !== 'TELAH DIAMBIL';
+        });
+      }
+
+      // Perbarui 4 Kartu Statistik Ringkasan Dashboard murni sesuai pesanan di MySQL XAMPP
+      const stats = typeof getCustomerStats === 'function' ? getCustomerStats(allTrx) : null;
+      if (stats) {
+        const totalEl = document.getElementById('statTotalTransaksi');
+        if (totalEl) totalEl.textContent = stats.total;
+        const procEl = document.getElementById('statSedangDiproses');
+        if (procEl) procEl.textContent = stats.processing;
+        const doneEl = document.getElementById('statPesananSelesai');
+        if (doneEl) doneEl.textContent = stats.completed;
+        const expEl = document.getElementById('statTotalPengeluaran');
+        if (expEl) expEl.textContent = stats.totalExpenseFormatted;
+        const procSub = document.getElementById('statSedangDiprosesSub');
+        if (procSub) procSub.textContent = `${stats.processing} pesanan berjalan`;
+        const expSub = document.getElementById('statTotalPengeluaranSub');
+        if (expSub) expSub.textContent = 'Akumulasi pengeluaran';
+      }
+
+      const readyContent = document.getElementById('activeOrderReadyContent');
+      const emptyContent = document.getElementById('activeOrderEmptyContent');
+
+      // Jika tidak ada pesanan aktif sama sekali di database XAMPP, tampilkan empty state
+      if (!order) {
+        if (readyContent) readyContent.classList.add('hidden');
+        if (emptyContent) emptyContent.classList.remove('hidden');
+        return;
+      }
+
+      // Tampilkan kontainer pesanan aktif jika ada pesanan berjalan
+      if (readyContent) readyContent.classList.remove('hidden');
+      if (emptyContent) emptyContent.classList.add('hidden');
+
+      const orderCode = order.code || order.orderId || order.kode_pesanan;
+      if (!orderCode) return;
+
+      // 2. Evaluasi Estimasi Cerdas secara Real-Time (Express 4 Jam, Reguler 2 Hari dengan Jam & Menit Real-Time)
+      const srvCheck = String(order.service || order.layanan || '').toLowerCase();
+      const isExpress = srvCheck.includes('express') || srvCheck.includes('kilat') || srvCheck.includes('4 jam') || srvCheck.includes('cepat');
+      let base = new Date();
+      if (order.createdAt || order.timestamp) {
+        const p = new Date(order.createdAt || order.timestamp);
+        if (!isNaN(p.getTime())) base = p;
+      }
+
+      let estRealtimeText = '';
+      if (isExpress) {
+        const est = new Date(base.getTime() + 4 * 60 * 60 * 1000);
+        const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+        const isToday = est.toDateString() === base.toDateString();
+        estRealtimeText = isToday ? `Hari ini, ${timeStr} (4 Jam)` : `Besok, ${timeStr} (4 Jam)`;
+      } else {
+        const est = new Date(base.getTime() + 48 * 60 * 60 * 1000);
+        const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+        const dateStr = est.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        estRealtimeText = `${dateStr}, ${timeStr} (2 Hari)`;
+      }
+      order.estDone = estRealtimeText;
+
+      // Update Tampilan DOM secara instan tanpa menunggu panggilan API
+      const headingEl = document.getElementById('pesananAktifHeading');
+      if (headingEl) headingEl.textContent = order.service || order.layanan || 'Cuci Kilat Express (4 Jam)';
+
+      const trxCodeEl = document.getElementById('activeOrderTrxCode');
+      if (trxCodeEl) trxCodeEl.textContent = orderCode;
+
+      const weightEl = document.getElementById('activeOrderWeight');
+      if (weightEl) weightEl.textContent = order.weight || (order.weightKg ? `${order.weightKg},0 kg` : '5,0 kg');
+
+      const estDoneEl = document.getElementById('activeOrderEstDone');
+      if (estDoneEl) estDoneEl.textContent = estRealtimeText;
+
+      // 4. Update Footer Waktu Pembaruan Real-Time
+      const updatedEl = document.getElementById('activeOrderUpdatedAt');
+      if (updatedEl) {
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+        updatedEl.textContent = `Diperbarui pukul ${timeStr} (Real-time)`;
+      }
+
+      // Cek status terbaru ke server backend MySQL jika aktif
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/api/pelanggan/status/${encodeURIComponent(orderCode)}`);
+        if (res.status === 404) {
+          // Pesanan telah dihapus di database MySQL (phpMyAdmin)
+          try {
+            const allRaw = localStorage.getItem('bersihin_transactions');
+            if (allRaw) {
+              const list = JSON.parse(allRaw).filter(x => (x.code || x.id || x.orderId) !== orderCode);
+              localStorage.setItem('bersihin_transactions', JSON.stringify(list));
+            }
+            localStorage.removeItem('bersihin_active_order');
+          } catch (_) {}
+          // Muat ulang pesanan aktif berikutnya
+          setTimeout(() => syncDashboardActiveOrder(), 50);
+          return;
+        } else if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const dbData = json.data;
+            if (dbData.status) {
+              order.status = dbData.status;
+              order.statusCode = dbData.status;
+              if (dbData.total_harga) {
+                order.totalFormatted = `Rp${Number(dbData.total_harga).toLocaleString('id-ID')}`;
+                order.total = order.totalFormatted;
+              }
+              if (dbData.total_berat) order.weight = `${dbData.total_berat},0 kg`;
+              if (dbData.catatan) order.notes = dbData.catatan;
+              try {
+                localStorage.setItem('bersihin_active_order', JSON.stringify(order));
+                const allRaw = localStorage.getItem('bersihin_transactions');
+                if (allRaw) {
+                  const list = JSON.parse(allRaw);
+                  const idx = list.findIndex(x => (x.code || x.id) === orderCode);
+                  if (idx !== -1) {
+                    list[idx].status = dbData.status;
+                    localStorage.setItem('bersihin_transactions', JSON.stringify(list));
+                  }
+                }
+              } catch (_) {}
+            }
+          }
+        }
+      } catch (_) {}
+
+      // 1. Tampilkan Judul Layanan & Kode
+      if (headingEl) headingEl.textContent = order.service || order.layanan || 'Cuci Kilat Express (4 Jam)';
+      if (trxCodeEl) trxCodeEl.textContent = orderCode;
+      if (weightEl) weightEl.textContent = order.weight || (order.weightKg ? `${order.weightKg},0 kg` : '4,0 kg');
+
+      // 3. Evaluasi Status & Estimasi Pengerjaan
+      const badgeEl = document.getElementById('activeOrderBadge');
+      const stepperEl = document.getElementById('activeOrderStepper');
+      const subProcessEl = document.getElementById('statSedangDiprosesSub');
+
+      const rawStatus = String(order.status || '').toUpperCase().trim();
+      let step = 1;
+      let estText = order.estDone || '2 hari lagi';
+      let badgeHtml = '';
+
+      if (rawStatus === 'MENUNGGU' || rawStatus.includes('MENUNGGU') || !rawStatus) {
+        step = 1;
+        estText = order.estDone || 'Menunggu cek pegawai';
+        badgeHtml = `
+          <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
+            <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
+            <span class="text-amber-800 text-[10px] font-semibold">Menunggu konfirmasi pegawai</span>
+          </span>
+        `;
+        if (subProcessEl) subProcessEl.textContent = 'Menunggu cek pegawai';
+      } else if (rawStatus === 'DIPROSES' || rawStatus.includes('TERKONFIRMASI')) {
+        step = 2;
+        estText = order.estDone || 'Siap dicuci';
+        badgeHtml = `
+          <span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
+            <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true"></span>
+            <span class="text-teal-700 text-[10px] font-bold">Terkonfirmasi &bull; Siap dicuci</span>
+          </span>
+        `;
+        if (subProcessEl) subProcessEl.textContent = 'Terkonfirmasi pegawai';
+      } else if (rawStatus === 'DICUCI' || rawStatus.includes('CUCI')) {
+        step = 3;
+        estText = order.estDone || 'Estimasi selesai 2 hari lagi';
+        badgeHtml = `
+          <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
+            <span class="size-1.5 bg-yellow-600 rounded-full animate-pulse" aria-hidden="true"></span>
+            <span class="text-yellow-800 text-[10px] font-semibold">Sedang dicuci</span>
+          </span>
+        `;
+        if (subProcessEl) {
+          if (String(order.estDone || '').toLowerCase().includes('jam') || String(order.service || '').toLowerCase().includes('express')) {
+            subProcessEl.textContent = 'Proses kilat (4 Jam)';
+          } else {
+            subProcessEl.textContent = 'Estimasi selesai besok';
+          }
+        }
+      } else if (rawStatus === 'DISETRIKA' || rawStatus.includes('SETRIKA')) {
+        step = 4;
+        estText = order.estDone || 'Estimasi selesai hari ini';
+        badgeHtml = `
+          <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
+            <span class="size-1.5 bg-indigo-600 rounded-full animate-pulse" aria-hidden="true"></span>
+            <span class="text-indigo-800 text-[10px] font-semibold">Sedang disetrika</span>
+          </span>
+        `;
+        if (subProcessEl) subProcessEl.textContent = 'Tahap penyetrikaan';
+      } else if (rawStatus === 'SELESAI' || rawStatus.includes('SIAP')) {
+        step = 5;
+        estText = 'Pesanan siap / selesai';
+        badgeHtml = `
+          <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+            <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+            <span class="text-teal-700 text-[10px] font-semibold">Selesai</span>
+          </span>
+        `;
+        if (subProcessEl) subProcessEl.textContent = 'Pesanan telah selesai';
+      }
+
+      if (estDoneEl) estDoneEl.textContent = estRealtimeText || estText;
+      if (badgeEl) badgeEl.innerHTML = badgeHtml;
+
+      // 4. Render Stepper 4 Tahap Secara Dinamis
+      if (stepperEl) {
+        const isStep1Done = step >= 2;
+        const isStep1Active = step === 1;
+
+        const isStep2Done = step >= 4;
+        const isStep2Active = step === 2 || step === 3;
+
+        const isStep3Done = step >= 5;
+        const isStep3Active = step === 4;
+
+        const isStep4Done = step >= 5;
+
+        stepperEl.innerHTML = `
+          <!-- Tahap 1: Dikonfirmasi -->
+          <li class="relative flex flex-col items-center text-center">
+            <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep1Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
+            <div class="size-6 relative z-10 ${isStep1Done ? 'bg-blue-500 text-white shadow-2xs' : (isStep1Active ? 'bg-amber-400 text-white animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+              ${isStep1Done ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : `
+                <span class="${isStep1Active ? 'text-white' : 'text-slate-500'} text-[10px] font-bold">1</span>
+              `}
+            </div>
+            <span class="pt-1.5 ${isStep1Done ? 'text-cyan-700 font-semibold' : (isStep1Active ? 'text-amber-700 font-bold' : 'text-slate-400 font-normal')} text-[10px] leading-3">
+              ${isStep1Done ? 'Dikonfirmasi' : 'Cek Pegawai'}
+            </span>
+          </li>
+
+          <!-- Tahap 2: Dicuci -->
+          <li class="relative flex flex-col items-center text-center">
+            <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep2Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
+            <div class="size-6 relative z-10 ${isStep2Done ? 'bg-blue-500 text-white' : (isStep2Active ? 'bg-blue-500 text-white shadow-sm ring-2 ring-blue-300 animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+              ${isStep2Done ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : `
+                <span class="${isStep2Active ? 'text-white' : 'text-slate-500'} text-[10px] font-bold">2</span>
+              `}
+            </div>
+            <span class="pt-1.5 ${isStep2Active ? 'text-cyan-700 font-bold' : (isStep2Done ? 'text-cyan-700 font-semibold' : 'text-slate-400 font-normal')} text-[10px] leading-3">
+              ${isStep2Active ? 'Sedang Dicuci' : 'Dicuci'}
+            </span>
+          </li>
+
+          <!-- Tahap 3: Disetrika -->
+          <li class="relative flex flex-col items-center text-center">
+            <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep3Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
+            <div class="size-6 relative z-10 ${isStep3Done ? 'bg-blue-500 text-white' : (isStep3Active ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+              ${isStep3Done ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : `
+                <span class="${isStep3Active ? 'text-white' : 'text-slate-500'} text-[10px] font-bold">3</span>
+              `}
+            </div>
+            <span class="pt-1.5 ${isStep3Active ? 'text-indigo-700 font-bold' : (isStep3Done ? 'text-cyan-700 font-semibold' : 'text-slate-400 font-normal')} text-[10px] leading-3">
+              ${isStep3Active ? 'Sedang Disetrika' : 'Disetrika'}
+            </span>
+          </li>
+
+          <!-- Tahap 4: Selesai -->
+          <li class="relative flex flex-col items-center text-center">
+            <div class="size-6 relative z-10 ${isStep4Done ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border-2 border-slate-300'} rounded-xl inline-flex justify-center items-center">
+              ${isStep4Done ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : `
+                <span class="text-slate-500 text-[10px] font-bold">4</span>
+              `}
+            </div>
+            <span class="pt-1.5 ${isStep4Done ? 'text-emerald-700 font-bold' : 'text-slate-400 font-normal'} text-[10px] leading-3">
+              Selesai
+            </span>
+          </li>
+        `;
+      }
+
+      const detailBtn = document.querySelector('#activeOrderReadyContent button[data-order-detail]');
+      if (detailBtn) {
+        detailBtn.setAttribute('data-order-detail', orderCode);
+        detailBtn.onclick = () => {
+          window.location.href = `status.html?id=${encodeURIComponent(orderCode)}`;
+        };
+      }
+
+      // Render ulang 4 transaksi terbaru di dashboard murni dari database
+      const recentBody = document.getElementById('recentTransactionsBody');
+      const recentEmpty = document.getElementById('recentTransactionsEmpty');
+      const recentTableWrapper = document.getElementById('recentTransactionsTableWrapper');
+      if (recentBody && allTrx) {
+        const recentList = allTrx.slice(0, 4);
+        if (recentList.length === 0) {
+          if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
+          if (recentEmpty) recentEmpty.classList.remove('hidden');
+          recentBody.innerHTML = '';
+        } else {
+          if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
+          if (recentEmpty) recentEmpty.classList.add('hidden');
+          recentBody.innerHTML = recentList.map(trx => `
+            <tr class="hover:bg-slate-50/80 transition">
+              <td class="px-3 py-3 font-bold text-slate-800">
+                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+              </td>
+              <td class="px-3 py-3 text-slate-600">${trx.date}</td>
+              <td class="px-3 py-3 text-slate-600">${trx.service}</td>
+              <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
+              <td class="px-3 py-3">
+                ${typeof getStatusBadgeHtml === 'function' ? getStatusBadgeHtml(trx.status) : `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px]">${trx.status}</span>`}
+              </td>
+              <td class="px-3 py-1.5 text-right">
+                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
+                  aria-label="Lihat detail transaksi ${trx.code}"
+                  class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                  <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      if (typeof window.renderCustomerNotifications === 'function') {
+        window.renderCustomerNotifications();
+      }
+    }
+
+    // Jalankan pertama kali dan lakukan polling setiap 3 detik
+    syncDashboardActiveOrder();
+    setInterval(syncDashboardActiveOrder, 3000);
   </script>
-  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
-  <script src="../JS/pelanggan.js"></script>
 </body>
 
 </html>

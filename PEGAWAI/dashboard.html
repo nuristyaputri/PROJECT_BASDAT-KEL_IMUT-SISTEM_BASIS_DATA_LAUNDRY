@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Bersihin Staff Portal</title>
-    <!-- Google Fonts Poppins -->
+    <!-- Google Fonts: Poppins (sesuai desain Figma & Pelanggan) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +18,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -37,10 +38,20 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+
+        /* Gradien Banner Selamat Datang sesuai Figma & Dashboard Pegawai */
+        .bg-figma-welcome {
+            background: linear-gradient(90deg, #094e6c 0%, #166e93 35%, #2a8fb8 68%, #5ec1ee 100%);
+        }
+
+        /* Gradien Ilustrasi Mesin Cuci sesuai Figma: bg-linear-50 from-white to-blue-100 */
+        .bg-figma-washer {
+            background: linear-gradient(140deg, #ffffff 0%, #dbeafe 100%);
+        }
     </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
     <header
@@ -106,7 +117,7 @@
                 </div>
                 <div>
                     <div class="text-teal-700 text-[11px] font-bold leading-tight">Shift Aktif</div>
-                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 – 16.00 WIB</div>
+                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 - 16.00 WIB</div>
                 </div>
             </div>
 
@@ -213,7 +224,7 @@
                 </div>
                 <div class="truncate">
                     <div class="text-slate-800 text-xs font-bold leading-tight truncate">Dina Nurhaliza</div>
-                    <div class="text-slate-400 text-[10px] font-normal leading-tight mt-0.5">Kasir · Shift Pagi</div>
+                    <div class="text-slate-400 text-[10px] font-normal leading-tight mt-0.5">Kasir &bull; Shift Pagi</div>
                 </div>
             </div>
             <a href="../login.html" title="Keluar"
@@ -228,66 +239,96 @@
 
     <!-- MAIN CONTENT WRAPPER -->
     <div class="flex-1 flex flex-col min-w-0">
-        <!-- TOPBAR -->
+        <!-- TOPBAR (Konsisten dengan Pelanggan: h-20, background blur, tanggal real-time, dan dropdown) -->
         <header
-            class="h-24 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
-            <div>
-                <h1 class="text-lg md:text-xl font-normal text-slate-800 leading-8">Dashboard</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Ringkasan operasional laundry hari ini</p>
+            class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+            <!-- Kiri: Mobile Menu Toggle + Judul & Subtitle -->
+            <div class="flex items-center gap-3">
+                <button type="button" id="sidebarToggle" aria-label="Buka menu navigasi" aria-expanded="false"
+                    class="md:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="flex flex-col justify-start items-start">
+                    <h1 class="text-slate-800 text-base md:text-lg font-normal leading-6">Dashboard</h1>
+                    <p class="text-xs text-slate-400 mt-0.5">Ringkasan operasional laundry hari ini</p>
+                </div>
             </div>
 
+            <!-- Kanan: Tanggal Real-Time + Notifikasi + Avatar Profil Pegawai -->
             <div class="flex items-center gap-3">
-                <!-- Tanggal -->
+                <!-- Tanggal Real-Time -->
                 <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
-                    <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div class="leading-tight">
-                        <span class="block text-[10px] text-gray-400 font-normal">Senin</span>
-                        <span class="text-xs font-bold text-slate-500">20 Mei 2024</span>
+                        <span class="realtime-day block text-[10px] text-slate-400 font-normal" data-realtime-day>Senin</span>
+                        <span class="realtime-date text-xs font-bold text-slate-600" data-realtime-date>9 November 2026</span>
                     </div>
                 </div>
 
-                <!-- Notifikasi -->
-                <button
-                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition"
-                    aria-label="Notifikasi">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
-                </button>
+                <!-- Tombol & Dropdown Notifikasi -->
+                <div class="relative">
+                    <button type="button" aria-label="Notifikasi" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+                    </button>
+                </div>
 
-                <!-- Avatar -->
-                <div
-                    class="w-9 h-9 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold">
-                    DN
+                <!-- Profil Pegawai & Dropdown Menu -->
+                <div class="relative">
+                    <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+                        aria-label="Profil Pegawai"
+                        class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        DN
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="profileDropdown" role="menu" aria-label="Menu Akun Pegawai"
+                        class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p id="dropdownStaffName" class="text-xs font-bold text-slate-800">Dina Nurhaliza</p>
+                            <p id="dropdownStaffEmail" class="text-[11px] text-slate-500 truncate">dina.nurhaliza@bersihin.id</p>
+                        </div>
+                        <a href="profil.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50 transition">
+                            <span>Profil Saya</span>
+                        </a>
+                        <a href="../login.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50 transition border-t border-slate-100 mt-1">
+                            <span>Keluar Akun</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </header>
 
         <!-- PAGE MAIN CONTENT -->
-        <main class="w-full max-w-[1460px] px-6 md:px-9 pt-8 pb-14 mx-auto space-y-5">
+        <main class="w-full max-w-[1460px] px-6 md:px-9 pt-8 pb-14 mx-auto space-y-6">
 
-            <!-- HERO BANNER -->
-            <div
-                class="relative bg-gradient-to-r from-cyan-900 via-cyan-700 to-sky-300 rounded-2xl shadow-[0_12px_30px_0_rgba(22,65,94,0.12)] p-7 md:p-8 flex items-center justify-between overflow-hidden">
+            <!-- HERO BANNER (Sesuai Desain Figma Gambar 1 & Gambar 2) -->
+            <section aria-label="Sambutan Pegawai"
+                class="relative bg-figma-welcome rounded-3xl shadow-[0_12px_30px_0_rgba(22,65,94,0.12)] p-7 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center overflow-hidden">
                 <!-- Left Content -->
                 <div class="relative z-10 max-w-xl">
-                    <span class="block text-cyan-200 text-[10px] font-bold tracking-wider uppercase">
-                        SHIFT PAGI · CABANG DAGO
+                    <span class="inline-block px-2.5 py-1 bg-white/10 rounded-md text-cyan-200 text-[10px] font-bold tracking-wider uppercase mb-2">
+                        SHIFT PAGI - CABANG DAGO
                     </span>
-                    <h2 class="text-white text-2xl md:text-3xl font-normal leading-9 mt-1.5">
+                    <h2 id="greetingHeading" class="text-white text-2xl md:text-3xl font-semibold leading-tight">
                         Selamat bekerja, Dina!
                     </h2>
-                    <p class="text-slate-200 text-xs md:text-sm font-normal mt-1.5">
-                        Ada <span class="font-bold text-white">4 pesanan</span> yang membutuhkan perhatian Anda hari
-                        ini.
+                    <p class="text-cyan-50/90 text-xs md:text-sm font-normal mt-2">
+                        Ada <span class="font-bold text-white" id="bannerActiveOrdersCount">4 pesanan</span> yang membutuhkan perhatian Anda hari ini.
                     </p>
                     <a href="statuspesanan.html"
-                        class="mt-5 inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-slate-50 text-cyan-700 text-xs font-semibold rounded-lg shadow-xs transition">
+                        class="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-cyan-800 text-xs font-semibold rounded-xl shadow-xs transition">
                         <span>Kelola Status Pesanan</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -295,110 +336,144 @@
                     </a>
                 </div>
 
-                <!-- Right Decorative Washing Machine Card -->
-                <div class="hidden sm:flex relative z-10 pr-4 md:pr-8">
-                    <div
-                        class="w-28 h-28 -rotate-6 bg-white/10 backdrop-blur-xs rounded-3xl flex items-center justify-center relative">
-                        <span class="absolute -top-3 -right-2 text-cyan-100 text-lg leading-none">✦</span>
-                        <svg class="w-16 h-16 text-sky-100 rotate-6" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <rect x="4" y="2" width="16" height="20" rx="2.5" stroke-width="2" />
-                            <line x1="4" y1="7" x2="20" y2="7" stroke-width="2" />
-                            <circle cx="12" cy="14" r="4.5" stroke-width="2" />
-                            <circle cx="7.5" cy="4.5" r="0.75" fill="currentColor" />
-                            <circle cx="10.5" cy="4.5" r="0.75" fill="currentColor" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
+                <!-- Kontainer Ilustrasi Mesin Cuci Sesuai Gambar 1 (media_1794201704275_d624976b.png) -->
+                <div class="relative w-52 h-44 hidden md:flex items-center justify-center shrink-0">
+                    <svg class="w-full h-full drop-shadow-md select-none" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="washerCardBg" x1="0" y1="0" x2="220" y2="180" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#38bdf8" />
+                                <stop offset="50%" stop-color="#22a4e2" />
+                                <stop offset="100%" stop-color="#1483b8" />
+                            </linearGradient>
+                            <clipPath id="washerDrumClip">
+                                <circle cx="110" cy="115" r="34" />
+                            </clipPath>
+                        </defs>
 
-            <!-- 4 SUMMARY METRIC CARDS -->
+                        <!-- Rounded Card Background with Gradient -->
+                        <rect width="220" height="180" rx="28" fill="url(#washerCardBg)" />
+
+                        <!-- Decorative Arc Curve (Top Left) -->
+                        <path d="M-10 110 C35 100 65 50 15 -10" stroke="rgba(255,255,255,0.2)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+
+                        <!-- Sparkle Star Left -->
+                        <path d="M42 78 C42 78 44 71 47 68 C50 65 57 63 57 63 C57 63 50 61 47 58 C44 55 42 48 42 48 C42 48 40 55 37 58 C34 61 27 63 27 63 C27 63 34 65 37 68 C40 71 42 78 42 78 Z" fill="#d1fae5" opacity="0.95" />
+
+                        <!-- Sparkle Star Top Right -->
+                        <path d="M185 42 C185 42 187 34 191 30 C195 26 203 24 203 24 C203 24 195 22 191 18 C187 14 185 6 185 6 C185 6 183 14 179 18 C175 22 167 24 167 24 C167 24 175 26 179 30 C183 34 185 42 185 42 Z" fill="#ffffff" opacity="0.95" />
+
+                        <!-- Washing Machine Body -->
+                        <path d="M48 48 C48 34.7 58.7 24 72 24 H148 C161.3 24 172 34.7 172 48 V180 H48 V48 Z" fill="#ffffff" />
+
+                        <!-- Top Control Panel Divider Line -->
+                        <line x1="48" y1="62" x2="172" y2="62" stroke="#e2e8f0" stroke-width="1.5" />
+
+                        <!-- Indicator Pill Buttons on Top Right -->
+                        <rect x="134" y="38" width="9" height="6.5" rx="3.25" fill="#3b82f6" />
+                        <rect x="147" y="38" width="9" height="6.5" rx="3.25" fill="#3b82f6" />
+
+                        <!-- Circular Door Outer Ring (Light Blue Bezel) -->
+                        <circle cx="110" cy="115" r="43" fill="#bae6fd" />
+
+                        <!-- Circular Drum Interior (Dark Teal) -->
+                        <circle cx="110" cy="115" r="34" fill="#0c667d" />
+
+                        <!-- Water Wave & Foam Ring (Clipped to Drum Interior) -->
+                        <g clip-path="url(#washerDrumClip)">
+                            <path d="M68 112 C85 110 95 120 115 117 C135 114 145 111 155 112 V160 H68 Z" fill="#62ccfa" />
+                            <g transform="translate(110, 116) rotate(16)">
+                                <ellipse cx="0" cy="2" rx="10" ry="8" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- 4 SUMMARY METRIC CARDS (Sesuai Gambar 2) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Card 1: Pesanan Masuk -->
-                <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between hover:shadow-md transition">
                     <div class="flex items-start justify-between">
-                        <div class="w-10 h-10 bg-sky-100 rounded-[10px] flex items-center justify-center text-cyan-600">
+                        <div class="w-10 h-10 bg-sky-50 rounded-xl flex items-center justify-center text-sky-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
-                        <span class="text-gray-400 text-xs tracking-widest select-none">•••</span>
+                        <span class="text-slate-300 text-xs tracking-widest select-none">&bull;&bull;&bull;</span>
                     </div>
                     <div class="mt-4">
                         <div class="text-slate-500 text-xs font-normal">Pesanan Masuk</div>
-                        <div class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">28</div>
-                        <div class="text-gray-400 text-[11px] font-normal mt-0.5">+6 dari kemarin</div>
+                        <div id="statPesananMasuk" class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">28</div>
+                        <div id="subPesananMasuk" class="text-slate-400 text-[11px] font-normal mt-0.5">+6 dari kemarin</div>
                     </div>
                 </div>
 
                 <!-- Card 2: Sedang Diproses -->
-                <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between hover:shadow-md transition">
                     <div class="flex items-start justify-between">
-                        <div
-                            class="w-10 h-10 bg-yellow-50 rounded-[10px] flex items-center justify-center text-orange-400">
+                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                             </svg>
                         </div>
-                        <span class="text-gray-400 text-xs tracking-widest select-none">•••</span>
+                        <span class="text-slate-300 text-xs tracking-widest select-none">&bull;&bull;&bull;</span>
                     </div>
                     <div class="mt-4">
                         <div class="text-slate-500 text-xs font-normal">Sedang Diproses</div>
-                        <div class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">12</div>
-                        <div class="text-gray-400 text-[11px] font-normal mt-0.5">43% dari total</div>
+                        <div id="statSedangDiproses" class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">12</div>
+                        <div id="subSedangDiproses" class="text-slate-400 text-[11px] font-normal mt-0.5">43% dari total</div>
                     </div>
                 </div>
 
                 <!-- Card 3: Pesanan Selesai -->
-                <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between hover:shadow-md transition">
                     <div class="flex items-start justify-between">
-                        <div
-                            class="w-10 h-10 bg-emerald-50 rounded-[10px] flex items-center justify-center text-teal-600">
+                        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        <span class="text-gray-400 text-xs tracking-widest select-none">•••</span>
+                        <span class="text-slate-300 text-xs tracking-widest select-none">&bull;&bull;&bull;</span>
                     </div>
                     <div class="mt-4">
                         <div class="text-slate-500 text-xs font-normal">Pesanan Selesai</div>
-                        <div class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">9</div>
-                        <div class="text-gray-400 text-[11px] font-normal mt-0.5">Siap diambil</div>
+                        <div id="statPesananSelesai" class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">9</div>
+                        <div id="subPesananSelesai" class="text-slate-400 text-[11px] font-normal mt-0.5">Siap diambil</div>
                     </div>
                 </div>
 
                 <!-- Card 4: Menunggu Konfirmasi -->
-                <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between hover:shadow-md transition">
                     <div class="flex items-start justify-between">
-                        <div class="w-10 h-10 bg-rose-50 rounded-[10px] flex items-center justify-center text-red-400">
+                        <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-rose-500">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <span class="text-gray-400 text-xs tracking-widest select-none">•••</span>
+                        <span class="text-slate-300 text-xs tracking-widest select-none">&bull;&bull;&bull;</span>
                     </div>
                     <div class="mt-4">
                         <div class="text-slate-500 text-xs font-normal">Menunggu Konfirmasi</div>
-                        <div class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">7</div>
-                        <div class="text-gray-400 text-[11px] font-normal mt-0.5">Perlu tindakan</div>
+                        <div id="statMenungguKonfirmasi" class="text-slate-800 text-2xl font-bold leading-9 mt-0.5">7</div>
+                        <div id="subMenungguKonfirmasi" class="text-slate-400 text-[11px] font-normal mt-0.5">Perlu tindakan</div>
                     </div>
                 </div>
             </div>
 
             <!-- BOTTOM GRID: PESANAN TERBARU & PROGRES HARI INI -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
                 <!-- Left (8 Cols): Pesanan Terbaru -->
                 <div
-                    class="lg:col-span-8 bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-5 flex flex-col justify-between">
+                    class="lg:col-span-8 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 p-6 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-start justify-between gap-2 pb-1">
                             <div>
-                                <h3 class="text-slate-800 text-sm font-normal leading-5">Pesanan Terbaru</h3>
+                                <h3 class="text-slate-800 text-sm font-semibold leading-5">Pesanan Terbaru</h3>
                                 <p class="text-slate-400 text-xs font-normal mt-0.5">
                                     Pesanan yang baru masuk dan sedang berjalan
                                 </p>
@@ -427,144 +502,114 @@
                                         <th class="py-2.5 px-3 rounded-r-lg text-right"></th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-100 text-xs">
-                                    <!-- Row 1 -->
-                                    <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-018'"
+                                <tbody id="dashboardRecentOrdersBody" class="divide-y divide-slate-100 text-xs">
+                                    <!-- Row 1: ORD-0524-018 (Andi Pratama) -->
+                                    <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('ORD-0524-018'); else window.location.href='datapesanan.html'"
                                         class="hover:bg-slate-50/80 transition cursor-pointer">
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
                                             ORD-0524-018
                                         </td>
-                                        <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Andi Pratama</td>
+                                        <td class="py-3.5 px-3 text-slate-700 font-medium whitespace-nowrap">Andi Pratama</td>
                                         <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Cuci + Setrika</td>
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">Rp45.000</td>
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">Rp45.000</td>
                                         <td class="py-3.5 px-3 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-100 text-cyan-600 rounded-full text-[11px] font-semibold">
-                                                <span class="w-1.5 h-1.5 bg-cyan-600 rounded-full"></span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-50 text-sky-600 rounded-full text-[11px] font-semibold">
+                                                <span class="w-1.5 h-1.5 bg-sky-500 rounded-full"></span>
                                                 Dicuci
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-3 text-right whitespace-nowrap">
-                                            <a href="detailpesanan.html?id=ORD-0524-018"
-                                                class="inline-flex items-center justify-center text-slate-400 hover:text-cyan-600">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </td>
                                     </tr>
 
-                                    <!-- Row 2 -->
-                                    <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-017'"
+                                    <!-- Row 2: ORD-0524-017 (Siti Rahma) -->
+                                    <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('ORD-0524-017'); else window.location.href='datapesanan.html'"
                                         class="hover:bg-slate-50/80 transition cursor-pointer">
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
                                             ORD-0524-017
                                         </td>
-                                        <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Siti Rahma</td>
+                                        <td class="py-3.5 px-3 text-slate-700 font-medium whitespace-nowrap">Siti Rahma</td>
                                         <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Express</td>
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">Rp54.000</td>
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">Rp54.000</td>
                                         <td class="py-3.5 px-3 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 text-red-500 rounded-full text-[11px] font-semibold">
-                                                <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 text-rose-500 rounded-full text-[11px] font-semibold">
+                                                <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
                                                 Menunggu konfirmasi
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-3 text-right whitespace-nowrap">
-                                            <a href="detailpesanan.html?id=ORD-0524-017"
-                                                class="inline-flex items-center justify-center text-slate-400 hover:text-cyan-600">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </td>
                                     </tr>
 
-                                    <!-- Row 3 -->
-                                    <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-016'"
+                                    <!-- Row 3: ORD-0524-016 (Budi Santoso) -->
+                                    <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('ORD-0524-016'); else window.location.href='datapesanan.html'"
                                         class="hover:bg-slate-50/80 transition cursor-pointer">
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
                                             ORD-0524-016
                                         </td>
-                                        <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Budi Santoso</td>
+                                        <td class="py-3.5 px-3 text-slate-700 font-medium whitespace-nowrap">Budi Santoso</td>
                                         <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Cuci Kering</td>
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">Rp42.000</td>
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">Rp42.000</td>
                                         <td class="py-3.5 px-3 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-600 rounded-full text-[11px] font-semibold">
-                                                <span class="w-1.5 h-1.5 bg-yellow-600 rounded-full"></span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-600 rounded-full text-[11px] font-semibold">
+                                                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
                                                 Diproses
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-3 text-right whitespace-nowrap">
-                                            <a href="detailpesanan.html?id=ORD-0524-016"
-                                                class="inline-flex items-center justify-center text-slate-400 hover:text-cyan-600">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </td>
                                     </tr>
 
-                                    <!-- Row 4 -->
-                                    <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-015'"
+                                    <!-- Row 4: ORD-0524-015 (Maya Lestari) -->
+                                    <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('ORD-0524-015'); else window.location.href='datapesanan.html'"
                                         class="hover:bg-slate-50/80 transition cursor-pointer">
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
                                             ORD-0524-015
                                         </td>
-                                        <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Maya Lestari</td>
+                                        <td class="py-3.5 px-3 text-slate-700 font-medium whitespace-nowrap">Maya Lestari</td>
                                         <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Setrika Saja</td>
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">Rp30.000</td>
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">Rp30.000</td>
                                         <td class="py-3.5 px-3 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-violet-100 text-slate-600 rounded-full text-[11px] font-semibold">
-                                                <span class="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 text-purple-600 rounded-full text-[11px] font-semibold">
+                                                <span class="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                                                 Disetrika
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-3 text-right whitespace-nowrap">
-                                            <a href="detailpesanan.html?id=ORD-0524-015"
-                                                class="inline-flex items-center justify-center text-slate-400 hover:text-cyan-600">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </td>
                                     </tr>
 
-                                    <!-- Row 5 -->
-                                    <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-014'"
+                                    <!-- Row 5: ORD-0524-014 (Rizky Maulana) -->
+                                    <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('ORD-0524-014'); else window.location.href='datapesanan.html'"
                                         class="hover:bg-slate-50/80 transition cursor-pointer">
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
                                             ORD-0524-014
                                         </td>
-                                        <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Rizky Maulana</td>
+                                        <td class="py-3.5 px-3 text-slate-700 font-medium whitespace-nowrap">Rizky Maulana</td>
                                         <td class="py-3.5 px-3 text-slate-500 whitespace-nowrap">Cuci + Setrika</td>
-                                        <td class="py-3.5 px-3 font-bold text-slate-700 whitespace-nowrap">Rp35.000</td>
+                                        <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">Rp35.000</td>
                                         <td class="py-3.5 px-3 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-teal-700 rounded-full text-[11px] font-semibold">
-                                                <span class="w-1.5 h-1.5 bg-teal-700 rounded-full"></span>
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[11px] font-semibold">
+                                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
                                                 Selesai
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-3 text-right whitespace-nowrap">
-                                            <a href="detailpesanan.html?id=ORD-0524-014"
-                                                class="inline-flex items-center justify-center text-slate-400 hover:text-cyan-600">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
+                                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -575,44 +620,44 @@
 
                 <!-- Right (4 Cols): Progres Hari Ini -->
                 <div
-                    class="lg:col-span-4 bg-white rounded-xl shadow-[0_8px_26px_0_rgba(28,65,91,0.04)] border border-slate-200 p-5 flex flex-col justify-between">
+                    class="lg:col-span-4 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 p-6 flex flex-col justify-between">
                     <div>
-                        <h3 class="text-slate-800 text-sm font-normal leading-5">Progres Hari Ini</h3>
+                        <h3 class="text-slate-800 text-sm font-semibold leading-5">Progres Hari Ini</h3>
                         <p class="text-slate-400 text-xs font-normal mt-0.5">Target operasional shift pagi</p>
 
-                        <!-- Donut Progress 68% -->
+                        <!-- Donut Progress Real-Time (Sesuai Gambar 3) -->
                         <div class="py-6 flex justify-center items-center">
                             <div class="relative w-32 h-32 flex items-center justify-center">
                                 <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
                                     <!-- Background Ring -->
                                     <circle cx="18" cy="18" r="14.5" fill="none" class="stroke-slate-100"
                                         stroke-width="4"></circle>
-                                    <!-- Progress Ring (68% of ~91.1 circumference = 62) -->
-                                    <circle cx="18" cy="18" r="14.5" fill="none" class="stroke-blue-400"
-                                        stroke-width="4" stroke-dasharray="62 100" stroke-linecap="round"></circle>
+                                    <!-- Progress Ring -->
+                                    <circle id="progressCircleRing" cx="18" cy="18" r="14.5" fill="none" class="stroke-blue-500"
+                                        stroke-width="4" stroke-dasharray="68 100" stroke-linecap="round"></circle>
                                 </svg>
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <span class="text-slate-800 text-xl font-bold leading-none">68%</span>
-                                    <span class="text-gray-400 text-[10px] font-normal mt-1">tercapai</span>
+                                    <span id="progressPercentText" class="text-slate-800 text-xl font-bold leading-none">68%</span>
+                                    <span class="text-slate-400 text-[10px] font-normal mt-1">tercapai</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Legend Breakdown -->
-                        <div class="pt-3 border-t border-gray-100 space-y-2 text-xs">
+                        <div class="pt-3 border-t border-slate-100 space-y-2 text-xs">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 bg-blue-400 rounded-xs"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-xs"></span>
                                     <span class="text-slate-500">Selesai</span>
                                 </div>
-                                <span class="text-slate-800 font-bold">19</span>
+                                <span id="progressSelesaiCount" class="text-slate-800 font-bold">19</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2 h-2 bg-slate-200 rounded-xs"></span>
                                     <span class="text-slate-500">Dalam proses</span>
                                 </div>
-                                <span class="text-slate-800 font-bold">9</span>
+                                <span id="progressProsesCount" class="text-slate-800 font-bold">9</span>
                             </div>
                         </div>
                     </div>
@@ -630,14 +675,15 @@
     </div>
 
     <!-- SCRIPTS -->
+    <script src="../JS/pegawai.js?v=2.1"></script>
     <script>
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
 
         function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
+            if (sidebar) sidebar.classList.toggle('-translate-x-full');
+            if (sidebarOverlay) sidebarOverlay.classList.toggle('hidden');
         }
 
         if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);

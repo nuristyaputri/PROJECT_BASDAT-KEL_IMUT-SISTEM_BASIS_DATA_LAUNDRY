@@ -336,7 +336,7 @@
                     </div>
                     <div>
                         <div class="text-[10px] text-slate-400 font-medium">Hari ini</div>
-                        <div class="text-xs font-semibold text-slate-700">Senin, 20 Mei 2024</div>
+                        <div id="ownerDateDisplay" class="text-xs font-semibold text-slate-700" data-realtime-full-date>Senin, 20 Mei 2024</div>
                     </div>
                 </div>
             </div>
@@ -354,7 +354,7 @@
                         </div>
                         <div>
                             <span class="text-xs font-medium text-slate-500">Total Pendapatan</span>
-                            <div class="text-xl font-bold text-slate-800">Rp24,8 jt</div>
+                            <div id="ownerTotalPendapatan" class="text-xl font-bold text-slate-800">Rp294.000</div>
                         </div>
                     </div>
                     <div class="text-xs">
@@ -377,7 +377,7 @@
                         </div>
                         <div>
                             <span class="text-xs font-medium text-slate-500">Total Transaksi</span>
-                            <div class="text-xl font-bold text-slate-800">684</div>
+                            <div id="ownerTotalTransaksi" class="text-xl font-bold text-slate-800">8</div>
                         </div>
                     </div>
                     <div class="text-xs">
@@ -402,7 +402,7 @@
                         <div>
                             <span class="text-xs font-medium text-slate-500 group-hover:text-cyan-700 transition">Total
                                 Pelanggan</span>
-                            <div class="text-xl font-bold text-slate-800">124</div>
+                            <div id="ownerTotalPelanggan" class="text-xl font-bold text-slate-800">5</div>
                         </div>
                     </div>
                     <div class="text-xs">
@@ -425,7 +425,7 @@
                         </div>
                         <div>
                             <span class="text-xs font-medium text-slate-500 group-hover:text-cyan-700 transition">Total Pegawai</span>
-                            <div class="text-xl font-bold text-slate-800">8</div>
+                            <div id="ownerTotalPegawai" class="text-xl font-bold text-slate-800">2</div>
                         </div>
                     </div>
                     <div class="text-xs">
@@ -451,7 +451,7 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Pesanan Masuk</span>
-                            <div class="text-base font-bold text-slate-800">28</div>
+                            <div id="ownerPesananMasuk" class="text-base font-bold text-slate-800">8</div>
                         </div>
                     </div>
                     <span class="text-xs font-medium text-slate-400 bg-slate-50 px-2 py-1 rounded-md">Hari ini</span>
@@ -470,11 +470,10 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Pesanan Selesai</span>
-                            <div class="text-base font-bold text-slate-800">19</div>
+                            <div id="ownerPesananSelesai" class="text-base font-bold text-slate-800">2</div>
                         </div>
                     </div>
-                    <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">68%
-                        selesai</span>
+                    <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">Real-time</span>
                 </div>
 
                 <!-- Dalam Proses -->
@@ -489,11 +488,10 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Dalam Proses</span>
-                            <div class="text-base font-bold text-slate-800">9</div>
+                            <div id="ownerDalamProses" class="text-base font-bold text-slate-800">6</div>
                         </div>
                     </div>
-                    <span class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md">4 perlu
-                        perhatian</span>
+                    <span class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md">Operasional</span>
                 </div>
             </div>
 

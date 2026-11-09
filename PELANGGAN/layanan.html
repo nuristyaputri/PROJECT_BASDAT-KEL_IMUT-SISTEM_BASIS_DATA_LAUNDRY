@@ -221,34 +221,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -286,7 +260,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Layanan Laundry</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -637,7 +611,7 @@
                     <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
                     <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                   </svg>
-                  <span>6 jam</span>
+                  <span>4 jam</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
                   <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -957,15 +931,56 @@
         e.preventDefault();
         const weight = Math.max(3, parseFloat(orderWeightInput.value) || 3);
         const perfume = document.getElementById('orderPerfumeSelect').value;
-        const total = formatRupiah(Math.round(weight * currentServicePricePerKg));
+        const totalNum = Math.round(weight * currentServicePricePerKg);
+        const total = formatRupiah(totalNum);
+
+        const now = new Date();
+        const dateRealtime = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        const timeRealtime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+        const fullDateTime = `${dateRealtime}, ${timeRealtime}`;
+
+        const isExpress = String(currentServiceName || '').toLowerCase().includes('express');
+        const durationHours = isExpress ? 4 : 48;
+        const estDate = new Date(now.getTime() + durationHours * 60 * 60 * 1000);
+        const estTimeStr = `${String(estDate.getHours()).padStart(2, '0')}:${String(estDate.getMinutes()).padStart(2, '0')} WIB`;
+        const estDoneFormatted = isExpress
+          ? (estDate.getDate() === now.getDate() ? `Hari ini, ${estTimeStr} (4 Jam)` : `Besok, ${estTimeStr} (4 Jam)`)
+          : `${estDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}, ${estTimeStr} (2 Hari)`;
+
+        const y = String(now.getFullYear()).slice(2);
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const orderCode = `TRX-${y}${m}${d}-${randomNum}`;
+
+        const orderRecord = {
+          orderId: orderCode,
+          code: orderCode,
+          service: currentServiceName,
+          weightKg: weight,
+          weight: `${weight},0 kg`,
+          perfume: perfume,
+          amount: totalNum,
+          total: totalNum,
+          totalFormatted: total,
+          status: 'Menunggu konfirmasi',
+          statusCode: 'MENUNGGU',
+          step: 1,
+          date: dateRealtime,
+          dateIn: dateRealtime,
+          dateInTime: fullDateTime,
+          estDone: estDoneFormatted,
+          timestamp: now.toISOString(),
+          createdAt: now.toISOString()
+        };
 
         try {
-          sessionStorage.setItem('bersihin_last_order', JSON.stringify({
-            service: currentServiceName,
-            weightKg: weight,
-            perfume: perfume,
-            totalFormatted: total
-          }));
+          sessionStorage.setItem('bersihin_last_order', JSON.stringify(orderRecord));
+          localStorage.setItem('bersihin_active_order', JSON.stringify(orderRecord));
+          const existingRaw = localStorage.getItem('bersihin_transactions');
+          const trxList = existingRaw ? JSON.parse(existingRaw) : [];
+          trxList.unshift(orderRecord);
+          localStorage.setItem('bersihin_transactions', JSON.stringify(trxList));
         } catch (err) {
           // Abaikan jika storage dibatasi pada mode privat
         }

@@ -221,34 +221,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -286,7 +260,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Status Pesanan</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -370,10 +344,32 @@
         <!-- =============================================================== -->
         <!-- KOLOM KIRI: Kartu Pesanan Aktif & Timeline Perjalanan Pesanan   -->
         <!-- =============================================================== -->
-        <div class="w-full xl:flex-1 flex flex-col gap-4">
+        <div id="statusOrderContainer" class="w-full xl:flex-1 flex flex-col gap-4">
+
+          <!-- Empty State jika tidak ada pesanan aktif -->
+          <div id="statusEmptyContent" class="hidden w-full p-8 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col items-center justify-center text-center">
+            <div class="size-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mb-3">
+              <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6" />
+                <path d="M9 12H15M12 9V15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </div>
+            <p class="text-slate-800 text-sm font-semibold">Tidak Ada Pesanan Aktif</p>
+            <p class="text-slate-500 text-xs mt-1 max-w-sm">
+              Saat ini Anda tidak memiliki cucian yang sedang diproses. Buat pesanan baru kapan saja saat pakaian Anda siap dicuci.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 justify-center">
+              <a href="pesanan.html" class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold inline-flex items-center">
+                Buat Pesanan Laundry
+              </a>
+              <a href="riwayat.html" class="min-h-[44px] px-4 py-2 rounded-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold inline-flex items-center">
+                Lihat Riwayat Transaksi
+              </a>
+            </div>
+          </div>
 
           <!-- KARTU 1: Ringkasan Pesanan Aktif (Sesuai Figma) -->
-          <section aria-labelledby="activeOrderTitle"
+          <section id="statusOrderActiveCard" aria-labelledby="activeOrderTitle"
             class="w-full p-5 sm:p-6 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col justify-start items-start">
 
             <div class="w-full flex justify-between items-start gap-4">
@@ -434,7 +430,7 @@
           </section>
 
           <!-- KARTU 2: Perjalanan Pesanan (Vertical 6-Step Timeline sesuai Figma) -->
-          <section aria-labelledby="journeyHeading"
+          <section id="statusOrderTimelineCard" aria-labelledby="journeyHeading"
             class="w-full p-5 sm:p-6 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col justify-start items-start">
 
             <!-- Header Perjalanan Pesanan + LIVE UPDATE Badge -->
@@ -711,7 +707,7 @@
       <div class="p-6 space-y-3 text-xs">
         <div class="flex justify-between py-1.5 border-b border-slate-100">
           <span class="text-slate-500">Pelanggan</span>
-          <span class="font-semibold text-slate-800">Andi Pratama</span>
+          <span id="statusCustomerName" class="font-semibold text-slate-800">Andi Pratama</span>
         </div>
         <div class="flex justify-between py-1.5 border-b border-slate-100">
           <span class="text-slate-500">Paket Layanan</span>
@@ -806,10 +802,26 @@
     </div>
   </div>
 
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+
   <!-- ===================================================================== -->
   <!-- JAVASCRIPT INTERAKTIVITAS STATUS PESANAN                              -->
   <!-- ===================================================================== -->
   <script>
+    // 0. Update Tanggal Real-Time Topbar Langsung
+    (function updateTopDate() {
+      const nowRealtime = new Date();
+      const dateFormatted = nowRealtime.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      const topbarDate = document.getElementById('topbarDateDisplay');
+      if (topbarDate) topbarDate.textContent = dateFormatted;
+    })();
+
     // 1. Toggle Sidebar Mobile
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -884,219 +896,413 @@
       okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
     }
 
+    function getApiBaseUrl() {
+      if (window.location.origin.includes(':5000')) {
+        return '';
+      }
+      return 'http://localhost:5000';
+    }
+
     // 6. Muat Data Pesanan Baru Secara Dinamis ke Status Cucian
-    function loadActiveOrderStatus() {
+    async function loadActiveOrderStatus() {
+      // Sinkronkan data langsung dari database MySQL XAMPP jika terhubung
+      if (typeof syncAllCustomerDataWithBackend === 'function') {
+        try {
+          await syncAllCustomerDataWithBackend();
+        } catch (_) {}
+      }
+
       const params = new URLSearchParams(window.location.search);
       const urlId = params.get('id');
-      let orderRaw = null;
+      let order = null;
 
       if (urlId) {
         try {
           const allRaw = localStorage.getItem('bersihin_transactions');
           if (allRaw) {
             const list = JSON.parse(allRaw);
-            const found = list.find(x => (x.code || x.id) === urlId);
-            if (found) orderRaw = JSON.stringify(found);
+            order = list.find(x => (x.code || x.id || x.orderId) === urlId) || null;
           }
         } catch (_) {}
       }
 
-      if (!orderRaw) {
-        orderRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+      if (!order) {
+        order = typeof getActiveCustomerOrder === 'function' ? getActiveCustomerOrder() : null;
       }
 
-      if (!orderRaw) return;
+      if (!order) {
+        try {
+          const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+          if (activeRaw) order = JSON.parse(activeRaw);
+        } catch (_) {}
+      }
 
-      let order;
-      try {
-        order = JSON.parse(orderRaw);
-      } catch (e) {
+      const activeCard = document.getElementById('statusOrderActiveCard');
+      const timelineCard = document.getElementById('statusOrderTimelineCard');
+      const emptyContent = document.getElementById('statusEmptyContent');
+
+      if (!order || (!order.service && !order.layanan && !order.code && !order.kode_pesanan)) {
+        if (activeCard) activeCard.classList.add('hidden');
+        if (timelineCard) timelineCard.classList.add('hidden');
+        if (emptyContent) emptyContent.classList.remove('hidden');
         return;
       }
 
-      if (!order || !order.service) return;
+      if (activeCard) activeCard.classList.remove('hidden');
+      if (timelineCard) timelineCard.classList.remove('hidden');
+      if (emptyContent) emptyContent.classList.add('hidden');
+
+      // Evaluasi Estimasi Cerdas untuk Layanan Express / Kilat (Wajib 4 Jam, bukan 2 hari)
+      const srvCheck = String(order.service || order.layanan || '').toLowerCase();
+      const isExpress = srvCheck.includes('express') || srvCheck.includes('kilat') || srvCheck.includes('4 jam') || srvCheck.includes('cepat');
+      let estFormatted = '';
+      let base = new Date();
+      if (order.createdAt || order.timestamp) {
+        const p = new Date(order.createdAt || order.timestamp);
+        if (!isNaN(p.getTime())) base = p;
+      }
+
+      if (isExpress) {
+        const est = new Date(base.getTime() + 4 * 60 * 60 * 1000);
+        const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+        const isToday = est.toDateString() === base.toDateString();
+        estFormatted = isToday ? `Hari ini, ${timeStr} (4 Jam)` : `Besok, ${timeStr} (4 Jam)`;
+        order.estDone = estFormatted;
+      } else {
+        const est = new Date(base.getTime() + 48 * 60 * 60 * 1000);
+        const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+        const dateStr = est.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        estFormatted = `${dateStr}, ${timeStr} (2 Hari)`;
+        order.estDone = estFormatted;
+      }
+
+      const orderCode = order.code || order.orderId || order.kode_pesanan || 'TRX-BARU';
+
+      // Cek status terbaru ke database backend jika tersedia
+      try {
+        const res = await fetch(`${getApiBaseUrl()}/api/pelanggan/status/${encodeURIComponent(orderCode)}`);
+        if (res.status === 404) {
+          // Pesanan telah dihapus di database MySQL (phpMyAdmin)
+          try {
+            const allRaw = localStorage.getItem('bersihin_transactions');
+            if (allRaw) {
+              const list = JSON.parse(allRaw).filter(x => (x.code || x.id || x.orderId) !== orderCode);
+              localStorage.setItem('bersihin_transactions', JSON.stringify(list));
+            }
+            localStorage.removeItem('bersihin_active_order');
+          } catch (_) {}
+          if (activeCard) activeCard.classList.add('hidden');
+          if (timelineCard) timelineCard.classList.add('hidden');
+          if (emptyContent) emptyContent.classList.remove('hidden');
+          return;
+        } else if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            const dbData = json.data;
+            const newStatus = dbData.status;
+            if (dbData.layanan || dbData.service) {
+              order.service = dbData.layanan || dbData.service;
+              order.layanan = order.service;
+            }
+            const srvUpdated = String(order.service || order.layanan || '').toLowerCase();
+            const isExpNow = srvUpdated.includes('express') || srvUpdated.includes('kilat') || srvUpdated.includes('4 jam');
+            if (isExpNow) {
+              const estDate = new Date(base.getTime() + 4 * 60 * 60 * 1000);
+              const timeStr = `${String(estDate.getHours()).padStart(2, '0')}:${String(estDate.getMinutes()).padStart(2, '0')} WIB`;
+              const isToday = estDate.toDateString() === base.toDateString();
+              estFormatted = isToday ? `Hari ini, ${timeStr} (4 Jam)` : `Besok, ${timeStr} (4 Jam)`;
+              order.estDone = estFormatted;
+            }
+            if (newStatus) {
+              order.status = newStatus;
+              order.statusCode = newStatus;
+              if (dbData.total_harga) {
+                order.total = `Rp${Number(dbData.total_harga).toLocaleString('id-ID')}`;
+                order.totalFormatted = order.total;
+              }
+              if (dbData.total_berat) {
+                order.weight = `${dbData.total_berat},0 kg`;
+              }
+              if (dbData.catatan) {
+                order.notes = dbData.catatan;
+              }
+
+              // Update storage lokal
+              try {
+                localStorage.setItem('bersihin_active_order', JSON.stringify(order));
+                const allRaw = localStorage.getItem('bersihin_transactions');
+                if (allRaw) {
+                  const list = JSON.parse(allRaw);
+                  const idx = list.findIndex(x => (x.code || x.id) === orderCode);
+                  if (idx !== -1) {
+                    list[idx].status = newStatus;
+                    localStorage.setItem('bersihin_transactions', JSON.stringify(list));
+                  }
+                }
+              } catch (_) {}
+            }
+          }
+        }
+      } catch (_) {}
 
       // 1. Update Judul & Informasi Utama Kartu Pesanan Aktif
       const titleEl = document.getElementById('activeOrderTitle');
-      if (titleEl) titleEl.textContent = order.service;
+      if (titleEl) titleEl.textContent = order.service || order.layanan || 'Cuci + Setrika';
 
       const codeEl = document.getElementById('activeOrderCode');
-      if (codeEl) codeEl.textContent = order.code || order.orderId || 'TRX-BARU';
+      if (codeEl) codeEl.textContent = orderCode;
 
       const dateInEl = document.getElementById('activeOrderDateIn');
-      if (dateInEl) dateInEl.textContent = order.dateIn || 'Hari ini';
+      if (dateInEl) dateInEl.textContent = order.dateIn || order.tanggal_realtime || 'Hari ini';
 
       const weightEl = document.getElementById('activeOrderWeight');
       if (weightEl) weightEl.textContent = order.weight || (order.weightKg ? order.weightKg + ',0 kg' : '4,0 kg');
 
       const estDoneEl = document.getElementById('activeOrderEstDone');
-      if (estDoneEl) estDoneEl.textContent = order.estDone || '2 hari lagi';
+      if (estDoneEl) estDoneEl.textContent = estFormatted;
 
       const totalEl = document.getElementById('activeOrderTotal');
-      if (totalEl) totalEl.textContent = order.totalFormatted || order.total || 'Rp45.000';
+      if (totalEl) totalEl.textContent = order.totalFormatted || order.total || 'Rp40.000';
 
-      // 2. Update Badge Status Utama di Kanan Atas Kartu
+      // 2. Tentukan Tingkat Status (Step 1-6)
+      const rawStatus = String(order.status || '').toUpperCase().trim();
+      let stepNum = 1;
+      let statusLabel = 'Menunggu konfirmasi';
+      let isConfirmed = false;
+
+      if (rawStatus === 'DIPROSES' || rawStatus.includes('DIPROSES') || rawStatus.includes('TERKONFIRMASI')) {
+        stepNum = 2;
+        statusLabel = 'Terkonfirmasi & Diproses';
+        isConfirmed = true;
+      } else if (rawStatus === 'DICUCI' || rawStatus.includes('CUCI')) {
+        stepNum = 3;
+        statusLabel = 'Sedang dicuci';
+        isConfirmed = true;
+      } else if (rawStatus === 'DISETRIKA' || rawStatus.includes('SETRIKA')) {
+        stepNum = 4;
+        statusLabel = 'Sedang disetrika';
+        isConfirmed = true;
+      } else if (rawStatus === 'SIAP_DIAMBIL' || rawStatus.includes('SIAP') || rawStatus.includes('DIANTAR')) {
+        stepNum = 5;
+        statusLabel = 'Siap diambil / diantar';
+        isConfirmed = true;
+      } else if (rawStatus === 'SELESAI') {
+        stepNum = 6;
+        statusLabel = 'Selesai';
+        isConfirmed = true;
+      }
+
+      // 3. Update Badge Status Utama di Kanan Atas Kartu
       const badgeContainer = document.querySelector('section[aria-labelledby="activeOrderTitle"] .inline-flex.items-center');
       if (badgeContainer) {
-        const isMenunggu = (order.status && order.status.toLowerCase().includes('menunggu')) || !order.status;
-        if (isMenunggu) {
+        if (stepNum === 1) {
           badgeContainer.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
           badgeContainer.innerHTML = `
             <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
-            <span class="text-amber-800 text-[11px] font-semibold font-[\'Poppins\'] leading-3">Menunggu konfirmasi</span>
+            <span class="text-amber-800 text-[11px] font-semibold font-['Poppins'] leading-3">Menunggu konfirmasi pegawai</span>
+          `;
+        } else if (stepNum === 2) {
+          badgeContainer.className = 'px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-xs';
+          badgeContainer.innerHTML = `
+            <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true"></span>
+            <span class="text-teal-700 text-[11px] font-bold font-['Poppins'] leading-3">Terkonfirmasi &amp; Diproses</span>
+          `;
+        } else if (stepNum === 3) {
+          badgeContainer.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          badgeContainer.innerHTML = `
+            <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
+            <span class="text-yellow-700 text-[11px] font-semibold font-['Poppins'] leading-3">Sedang dicuci</span>
+          `;
+        } else if (stepNum === 4) {
+          badgeContainer.className = 'px-3 py-1.5 bg-indigo-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          badgeContainer.innerHTML = `
+            <span class="size-1.5 bg-indigo-600 rounded-full" aria-hidden="true"></span>
+            <span class="text-indigo-700 text-[11px] font-semibold font-['Poppins'] leading-3">Sedang disetrika</span>
+          `;
+        } else if (stepNum >= 5) {
+          badgeContainer.className = 'px-3 py-1.5 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          badgeContainer.innerHTML = `
+            <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+            <span class="text-teal-700 text-[11px] font-semibold font-['Poppins'] leading-3">${statusLabel}</span>
           `;
         }
       }
 
-      // 3. Update Timeline 6 Tahap Perjalanan Pesanan
+      // 4. Update Timeline 6 Tahap Perjalanan Pesanan
       const timelineOl = document.querySelector('section[aria-labelledby="journeyHeading"] ol');
       if (timelineOl) {
-        const timeNow = order.dateInTime || 'Baru saja';
+        const timeNow = order.dateInTime || order.tanggal_realtime || 'Baru saja';
         timelineOl.innerHTML = `
-          <!-- Tahap 1: Menunggu konfirmasi (Sedang Aktif Berjalan) -->
-          <li class="relative my-1 p-2.5 -mx-2.5 bg-sky-50 rounded-[10px] flex items-start gap-3">
-            <span class="w-0.5 h-full left-[23px] top-9 absolute bg-slate-200" aria-hidden="true"></span>
-            <div class="relative z-10 size-7 bg-blue-500 rounded-xl flex justify-center items-center text-white shrink-0 shadow-sm shadow-blue-500/20">
-              <svg class="size-3.5 animate-pulse" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.8" />
-                <path d="M7 4V7L9 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          <!-- Tahap 1: Pesanan Dibuat Pelanggan (Selesai/Telah Diterima) -->
+          <li class="relative pb-6 flex items-start gap-3">
+            <span class="w-0.5 h-full left-[13px] top-7 absolute ${stepNum > 1 ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></span>
+            <div class="relative z-10 size-7 bg-emerald-600 rounded-xl flex justify-center items-center text-white shrink-0 shadow-xs">
+              <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-blue-950 text-xs font-bold font-[\'Poppins\'] leading-4">Menunggu konfirmasi</p>
-              <p class="pt-0.5 text-slate-600 text-[11px] font-normal font-[\'Poppins\'] leading-4">
-                Pesanan Anda telah kami terima dan sedang menunggu verifikasi pegawai kasir.
+              <p class="text-blue-950 text-xs font-bold font-['Poppins'] leading-4">Pesanan Berhasil Dibuat</p>
+              <p class="pt-0.5 text-slate-500 text-[11px] font-normal font-['Poppins'] leading-4">
+                Pesanan telah masuk ke database sistem laundry.
               </p>
             </div>
-            <time class="text-cyan-700 text-[10px] font-bold font-[\'Poppins\'] leading-4 shrink-0">
+            <time class="text-slate-400 text-[10px] font-medium font-['Poppins'] leading-4 shrink-0">
               ${timeNow}
             </time>
           </li>
 
-          <!-- Tahap 2: Dikonfirmasi (Berikutnya) -->
-          <li class="relative pt-3 pb-6 flex items-start gap-3">
-            <span class="w-0.5 h-full left-[13px] top-10 absolute bg-slate-200" aria-hidden="true"></span>
-            <div class="relative z-10 size-7 bg-white rounded-xl border-[1.6px] border-slate-200 flex justify-center items-center text-gray-400 text-[11px] font-bold shrink-0">
-              2
+          <!-- Tahap 2: Dikonfirmasi oleh Pegawai -->
+          <li class="relative pb-6 flex items-start gap-3">
+            <span class="w-0.5 h-full left-[13px] top-7 absolute ${stepNum > 2 ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></span>
+            <div class="relative z-10 size-7 ${stepNum >= 2 ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20' : 'bg-white border-[1.6px] border-slate-200 text-gray-400'} rounded-xl flex justify-center items-center text-[11px] font-bold shrink-0">
+              ${stepNum >= 2 ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : '2'}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-slate-500 text-xs font-bold font-[\'Poppins\'] leading-4">Dikonfirmasi</p>
-              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-[\'Poppins\'] leading-4">
-                Pesanan akan diverifikasi oleh pegawai outlet.
+              <div class="flex items-center gap-2">
+                <p class="${stepNum >= 2 ? 'text-blue-950' : 'text-slate-500'} text-xs font-bold font-['Poppins'] leading-4">Dikonfirmasi oleh Pegawai</p>
+                ${stepNum === 2 ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Aktif</span>' : ''}
+              </div>
+              <p class="pt-0.5 ${stepNum >= 2 ? 'text-slate-600' : 'text-gray-400'} text-[11px] font-normal font-['Poppins'] leading-4">
+                ${stepNum >= 2 ? 'Pesanan telah diverifikasi dan dikonfirmasi oleh pegawai kasir.' : 'Menunggu verifikasi pegawai outlet.'}
               </p>
             </div>
-            <span class="text-gray-400 text-[10px] font-normal font-[\'Poppins\'] leading-4 shrink-0">
-              Menunggu
+            <span class="${stepNum >= 2 ? 'text-cyan-700 font-bold' : 'text-gray-400'} text-[10px] font-['Poppins'] leading-4 shrink-0">
+              ${stepNum >= 2 ? 'Terkonfirmasi' : 'Menunggu'}
             </span>
           </li>
 
-          <!-- Tahap 3: Sedang dicuci (Berikutnya) -->
+          <!-- Tahap 3: Sedang Dicuci -->
           <li class="relative pb-6 flex items-start gap-3">
-            <span class="w-0.5 h-full left-[13px] top-7 absolute bg-slate-200" aria-hidden="true"></span>
-            <div class="relative z-10 size-7 bg-white rounded-xl border-[1.6px] border-slate-200 flex justify-center items-center text-gray-400 text-[11px] font-bold shrink-0">
-              3
+            <span class="w-0.5 h-full left-[13px] top-7 absolute ${stepNum > 3 ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></span>
+            <div class="relative z-10 size-7 ${stepNum >= 3 ? 'bg-blue-600 text-white shadow-sm' : 'bg-white border-[1.6px] border-slate-200 text-gray-400'} rounded-xl flex justify-center items-center text-[11px] font-bold shrink-0">
+              ${stepNum > 3 ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : '3'}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-slate-500 text-xs font-bold font-[\'Poppins\'] leading-4">Sedang dicuci</p>
-              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-[\'Poppins\'] leading-4">
-                Pakaian akan diproses ke mesin cuci profesional.
+              <p class="${stepNum >= 3 ? 'text-blue-950' : 'text-slate-500'} text-xs font-bold font-['Poppins'] leading-4">Sedang Dicuci</p>
+              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-['Poppins'] leading-4">
+                Pakaian diproses ke mesin cuci profesional dengan detergen higienis.
               </p>
             </div>
-            <span class="text-gray-400 text-[10px] font-normal font-[\'Poppins\'] leading-4 shrink-0">
-              Antrean
+            <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-4 shrink-0">
+              ${stepNum === 3 ? 'Sedang Berjalan' : (stepNum > 3 ? 'Selesai' : 'Antrean')}
             </span>
           </li>
 
-          <!-- Tahap 4: Sedang disetrika (Berikutnya) -->
+          <!-- Tahap 4: Sedang Disetrika -->
           <li class="relative pb-6 flex items-start gap-3">
-            <span class="w-0.5 h-full left-[13px] top-7 absolute bg-slate-200" aria-hidden="true"></span>
-            <div class="relative z-10 size-7 bg-white rounded-xl border-[1.6px] border-slate-200 flex justify-center items-center text-gray-400 text-[11px] font-bold shrink-0">
-              4
+            <span class="w-0.5 h-full left-[13px] top-7 absolute ${stepNum > 4 ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></span>
+            <div class="relative z-10 size-7 ${stepNum >= 4 ? 'bg-blue-600 text-white' : 'bg-white border-[1.6px] border-slate-200 text-gray-400'} rounded-xl flex justify-center items-center text-[11px] font-bold shrink-0">
+              ${stepNum > 4 ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : '4'}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-slate-500 text-xs font-bold font-[\'Poppins\'] leading-4">Sedang disetrika</p>
-              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-[\'Poppins\'] leading-4">
+              <p class="${stepNum >= 4 ? 'text-blue-950' : 'text-slate-500'} text-xs font-bold font-['Poppins'] leading-4">Sedang Disetrika</p>
+              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-['Poppins'] leading-4">
                 Pakaian disetrika rapi dan diberi pewangi pilihan.
               </p>
             </div>
-            <span class="text-gray-400 text-[10px] font-normal font-[\'Poppins\'] leading-4 shrink-0">
-              Berikutnya
+            <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-4 shrink-0">
+              ${stepNum === 4 ? 'Sedang Berjalan' : (stepNum > 4 ? 'Selesai' : 'Berikutnya')}
             </span>
           </li>
 
-          <!-- Tahap 5: Siap diambil (Berikutnya) -->
+          <!-- Tahap 5: Siap Diambil / Diantar -->
           <li class="relative pb-6 flex items-start gap-3">
-            <span class="w-0.5 h-full left-[13px] top-7 absolute bg-slate-200" aria-hidden="true"></span>
-            <div class="relative z-10 size-7 bg-white rounded-xl border-[1.6px] border-slate-200 flex justify-center items-center text-gray-400 text-[11px] font-bold shrink-0">
-              5
+            <span class="w-0.5 h-full left-[13px] top-7 absolute ${stepNum > 5 ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></span>
+            <div class="relative z-10 size-7 ${stepNum >= 5 ? 'bg-blue-600 text-white' : 'bg-white border-[1.6px] border-slate-200 text-gray-400'} rounded-xl flex justify-center items-center text-[11px] font-bold shrink-0">
+              ${stepNum > 5 ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : '5'}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-slate-500 text-xs font-bold font-[\'Poppins\'] leading-4">Siap diambil / diantar</p>
-              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-[\'Poppins\'] leading-4">
-                Pakaian selesai dibungkus higienis dan siap serah terima.
+              <p class="${stepNum >= 5 ? 'text-blue-950' : 'text-slate-500'} text-xs font-bold font-['Poppins'] leading-4">Siap Diambil / Diantar</p>
+              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-['Poppins'] leading-4">
+                Pakaian selesai dibungkus rapi dan siap serah terima.
               </p>
             </div>
-            <span class="text-gray-400 text-[10px] font-normal font-[\'Poppins\'] leading-4 shrink-0">
-              ${order.estDone || '2 hari lagi'}
+            <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-4 shrink-0">
+              ${order.estDone || order.estimasi_selesai || '2 hari lagi'}
             </span>
           </li>
 
           <!-- Tahap 6: Selesai -->
           <li class="relative flex items-start gap-3">
-            <div class="relative z-10 size-7 bg-white rounded-xl border-[1.6px] border-slate-200 flex justify-center items-center text-gray-400 text-[11px] font-bold shrink-0">
-              6
+            <div class="relative z-10 size-7 ${stepNum === 6 ? 'bg-emerald-600 text-white' : 'bg-white border-[1.6px] border-slate-200 text-gray-400'} rounded-xl flex justify-center items-center text-[11px] font-bold shrink-0">
+              ${stepNum === 6 ? `
+                <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3 7L5.8 9.8L11 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              ` : '6'}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-slate-500 text-xs font-bold font-[\'Poppins\'] leading-4">Selesai</p>
-              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-[\'Poppins\'] leading-4">
-                Pesanan telah selesai dan diterima dengan baik.
+              <p class="${stepNum === 6 ? 'text-emerald-700 font-bold' : 'text-slate-500 font-semibold'} text-xs font-['Poppins'] leading-4">Pesanan Selesai</p>
+              <p class="pt-0.5 text-gray-400 text-[11px] font-normal font-['Poppins'] leading-4">
+                Pakaian telah diterima oleh pelanggan.
               </p>
             </div>
-            <span class="text-gray-400 text-[10px] font-normal font-[\'Poppins\'] leading-4 shrink-0">
-              -
+            <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-4 shrink-0">
+              ${stepNum === 6 ? 'Selesai' : '-'}
             </span>
           </li>
         `;
       }
 
-      // 4. Update Widget 1 Estimasi Selesai di Kolom Kanan
+      // 5. Update Widget Estimasi Selesai di Kolom Kanan
       const widgetEstHeading = document.querySelector('aside div p.text-base.font-bold');
-      if (widgetEstHeading && order.estDone) {
-        widgetEstHeading.textContent = order.estDone;
+      if (widgetEstHeading && (order.estDone || order.estimasi_selesai)) {
+        widgetEstHeading.textContent = order.estDone || order.estimasi_selesai;
       }
       const widgetEstSub = document.querySelector('aside div span.text-\\[10px\\].text-slate-400');
       if (widgetEstSub) {
         widgetEstSub.textContent = order.deliveryMethod === 'Jemput ke rumah' ? 'Kurir akan mengambil cucian' : 'Outlet siap menerima cucian';
       }
 
-      // 5. Update Modal Detail Transaksi
+      // 6. Update Modal Detail Transaksi
       const modalTitle = document.getElementById('trxDetailModalTitle');
-      if (modalTitle) modalTitle.textContent = order.code || order.orderId;
+      if (modalTitle) modalTitle.textContent = orderCode;
 
       const modalService = document.getElementById('modalDetailService');
-      if (modalService) modalService.textContent = order.service;
+      if (modalService) modalService.textContent = order.service || order.layanan || 'Cuci + Setrika';
 
       const modalWeight = document.getElementById('modalDetailWeight');
       if (modalWeight) modalWeight.textContent = order.weight || (order.weightKg ? order.weightKg + ',0 kg' : '4,0 kg');
 
       const modalTotal = document.getElementById('modalDetailTotal');
-      if (modalTotal) modalTotal.textContent = order.totalFormatted || order.total;
+      if (modalTotal) modalTotal.textContent = order.totalFormatted || order.total || 'Rp40.000';
 
       const modalDate = document.querySelector('#trxDetailModal .p-6 .border-b:nth-child(3) span:last-child');
-      if (modalDate) modalDate.textContent = order.dateInTime || order.dateIn || 'Hari ini';
+      if (modalDate) modalDate.textContent = order.dateInTime || order.tanggal_realtime || 'Hari ini';
 
       const modalBadge = document.querySelector('#trxDetailModal .p-6 .border-b:nth-child(5) span:last-child');
       if (modalBadge) {
-        modalBadge.className = 'px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[11px]';
-        modalBadge.textContent = 'Menunggu konfirmasi';
+        if (stepNum >= 2) {
+          modalBadge.className = 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold text-[11px]';
+          modalBadge.textContent = statusLabel;
+        } else {
+          modalBadge.className = 'px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold text-[11px]';
+          modalBadge.textContent = 'Menunggu konfirmasi';
+        }
       }
     }
 
-    // Jalankan pemuatan data pesanan saat halaman dibuka
+    // Jalankan pemuatan data pesanan saat halaman dibuka dan lakukan pembaruan berkala (setiap 4 detik)
     loadActiveOrderStatus();
+    setInterval(loadActiveOrderStatus, 4000);
   </script>
-  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
-  <script src="../JS/pelanggan.js"></script>
 </body>
 
 </html>

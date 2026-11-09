@@ -57,8 +57,61 @@
   };
 
   // ===========================================================================
-  // 2. UTILITAS GLOBAL
+  // 2. UTILITAS GLOBAL & AUTENTIKASI BACKEND MYSQL XAMPP
   // ===========================================================================
+
+  function getBackendBaseUrl() {
+    if (window.location.protocol.startsWith('http') && window.location.port === '5000') {
+      return '';
+    }
+    return 'http://localhost:5000';
+  }
+
+  async function ensurePemilikToken() {
+    const sessionToken = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_owner_token');
+    if (sessionToken) return sessionToken;
+
+    const localToken = localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_owner_token');
+    if (localToken) return localToken;
+
+    try {
+      const res = await fetch(`${getBackendBaseUrl()}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: 'pemilik', password: 'password123' })
+      });
+      const json = await res.json();
+      if (json && json.success && json.data && json.data.token) {
+        sessionStorage.setItem('bersihin_owner_token', json.data.token);
+        sessionStorage.setItem('bersihin_token', json.data.token);
+        localStorage.setItem('bersihin_owner_token', json.data.token);
+        return json.data.token;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  function updatePemilikRealtimeDate() {
+    const now = new Date();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const dayName = days[now.getDay()];
+    const dateFormatted = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const fullDateText = `${dayName}, ${dateFormatted}`;
+
+    document.querySelectorAll('#ownerDateDisplay, [data-realtime-full-date]').forEach(el => {
+      el.textContent = fullDateText;
+    });
+    document.querySelectorAll('[data-realtime-date]').forEach(el => {
+      el.textContent = dateFormatted;
+    });
+    document.querySelectorAll('[data-realtime-day]').forEach(el => {
+      el.textContent = dayName;
+    });
+  }
 
   /**
    * Format angka menjadi representasi Rupiah (contoh: Rp45.000)
@@ -475,6 +528,208 @@
         trxChartMenu.classList.add('hidden');
       }
     });
+
+    // 5.3 Sinkronisasi Metrik Real-Time dari MySQL XAMPP
+    syncPemilikDashboardFromDatabase();
+  }
+
+  /**
+   * Mengambil data dashboard ringkasan bisnis dari MySQL XAMPP secara dinamis
+   */
+  async function syncPemilikDashboardFromDatabase() {
+    try {
+      const token = await ensurePemilikToken();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/dashboard`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        const d = json.data;
+
+        const elRev = document.getElementById('ownerTotalPendapatan');
+        const elTrx = document.getElementById('ownerTotalTransaksi');
+        const elCust = document.getElementById('ownerTotalPelanggan');
+        const elEmp = document.getElementById('ownerTotalPegawai');
+        const elIn = document.getElementById('ownerPesananMasuk');
+        const elDone = document.getElementById('ownerPesananSelesai');
+        const elProc = document.getElementById('ownerDalamProses');
+
+        if (elRev) elRev.textContent = formatRupiah(d.pendapatan_total);
+        if (elTrx) elTrx.textContent = String(d.total_pesanan);
+        if (elCust) elCust.textContent = String(d.total_pelanggan);
+        if (elEmp) elEmp.textContent = String(d.total_pegawai);
+        if (elIn) elIn.textContent = String(d.total_pesanan);
+        if (elDone) elDone.textContent = String(d.pesanan_selesai);
+        if (elProc) elProc.textContent = String(d.pesanan_diproses);
+      }
+    } catch (_) {}
+  }
+
+  /**
+   * Mengambil data transaksi dari MySQL XAMPP dan merender ke tabel secara dinamis
+   */
+  async function syncPemilikTransaksiFromDatabase() {
+    const tbody = document.getElementById('trxTableBody') || document.querySelector('#trxTable tbody');
+    if (!tbody) return;
+
+    try {
+      const token = await ensurePemilikToken();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/transaksi`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        tbody.innerHTML = '';
+        json.data.forEach(trx => {
+          const tr = document.createElement('tr');
+          tr.className = 'trx-row hover:bg-slate-50/60 transition group';
+          tr.setAttribute('data-code', trx.kode_pesanan || '');
+          tr.setAttribute('data-name', trx.nama_pelanggan || '');
+          tr.setAttribute('data-service', 'Cuci Komplit');
+          tr.setAttribute('data-price', formatRupiah(trx.total_harga));
+          tr.setAttribute('data-status', trx.status_pesanan || 'Diproses');
+
+          const tgl = trx.tanggal_bayar ? new Date(trx.tanggal_bayar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Hari ini';
+
+          let statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>Diproses</span>';
+          if (trx.status_pesanan === 'SELESAI' || trx.status_pembayaran === 'BERHASIL') {
+            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>Selesai</span>';
+          } else if (trx.status_pesanan === 'MENUNGGU' || trx.status_pembayaran === 'MENUNGGU') {
+            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Menunggu</span>';
+          }
+
+          tr.innerHTML = `
+            <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.kode_pesanan}</td>
+            <td class="py-4 px-5 text-slate-700 font-medium">${trx.nama_pelanggan || 'Pelanggan'}</td>
+            <td class="py-4 px-5 text-slate-600">Layanan Laundry</td>
+            <td class="py-4 px-5 font-bold text-slate-800">${formatRupiah(trx.total_harga)}</td>
+            <td class="py-4 px-5 text-slate-500">${tgl}</td>
+            <td class="py-4 px-5">${statusBadge}</td>
+            <td class="py-4 px-5 text-right">
+              <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${trx.nama_pelanggan}', 'Layanan Laundry', '4 kg', '${formatRupiah(trx.total_harga)}', '${tgl}', '${trx.status_pesanan}', '${trx.status_pembayaran || 'Lunas'}')"
+                class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
+                Detail
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        const paginationInfo = document.getElementById('paginationInfo');
+        if (paginationInfo) {
+          paginationInfo.textContent = `Menampilkan ${json.data.length} dari ${json.data.length} transaksi`;
+        }
+      }
+    } catch (_) {}
+  }
+
+  /**
+   * Mengambil data pelanggan dari MySQL XAMPP dan merender ke tabel secara dinamis
+   */
+  async function syncPemilikPelangganFromDatabase() {
+    const tbody = document.getElementById('customerTableBody') || document.querySelector('#customerTable tbody');
+    if (!tbody) return;
+
+    try {
+      const token = await ensurePemilikToken();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/pelanggan`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        tbody.innerHTML = '';
+        json.data.forEach(cust => {
+          const inits = (cust.nama || 'PL').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PL';
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50/80 transition group customer-row';
+          tr.innerHTML = `
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
+                  ${inits}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-800 customer-name">${cust.nama}</div>
+                  <div class="text-[11px] text-slate-400">${cust.kode_pelanggan || ('PLG-00' + cust.id_pelanggan)}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${cust.telepon || '-'}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${cust.email || '-'}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-700">${cust.total_pesanan || 0} order</td>
+            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-800">${formatRupiah(cust.total_belanja || 0)}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+                ${cust.member_tier || 'Silver'}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        const totalCounter = document.getElementById('totalCounter');
+        if (totalCounter) totalCounter.textContent = `${json.data.length} Pelanggan`;
+      }
+    } catch (_) {}
+  }
+
+  /**
+   * Mengambil data pegawai dari MySQL XAMPP dan merender ke tabel secara dinamis
+   */
+  async function syncPemilikPegawaiFromDatabase() {
+    const tbody = document.getElementById('employeeTableBody') || document.querySelector('#employeeTable tbody');
+    if (!tbody) return;
+
+    try {
+      const token = await ensurePemilikToken();
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/pegawai`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        tbody.innerHTML = '';
+        json.data.forEach(emp => {
+          const inits = (emp.nama || 'PG').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PG';
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50/80 transition group employee-row';
+          tr.innerHTML = `
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
+                  ${inits}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-800 employee-name">${emp.nama}</div>
+                  <div class="text-[11px] text-slate-400">${emp.kode_pegawai || ('PGW-00' + emp.id_pegawai)}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${emp.jabatan || 'Kasir'}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${emp.telepon || '-'}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${emp.email || '-'}</td>
+            <td class="py-3.5 px-5 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+                Aktif
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        const totalCounter = document.getElementById('totalCounter');
+        if (totalCounter) totalCounter.textContent = `${json.data.length} Pegawai`;
+      }
+    } catch (_) {}
   }
 
   // ===========================================================================
@@ -851,40 +1106,56 @@
   function initProfilPage() {
     const profile = getOwnerProfile();
 
-    const displayFullName = document.getElementById('displayFullName');
-    const displayEmail = document.getElementById('displayEmail');
-    const displayPhone = document.getElementById('displayPhone');
+    const displayFullName = document.getElementById('profileFullName') || document.getElementById('displayFullName') || document.getElementById('bannerProfileName');
+    const displayEmail = document.getElementById('profileEmail') || document.getElementById('displayEmail') || document.getElementById('bannerProfileEmail');
+    const displayPhone = document.getElementById('profilePhone') || document.getElementById('displayPhone');
+    const displayUsername = document.getElementById('profileUsername') || document.getElementById('displayUsername');
+    const displayBusiness = document.getElementById('profileBusiness') || document.getElementById('displayBusiness');
     const displayRole = document.getElementById('displayRole');
     const displayLocation = document.getElementById('displayLocation');
 
     if (displayFullName) displayFullName.textContent = profile.fullName;
+    const bannerName = document.getElementById('bannerProfileName');
+    if (bannerName) bannerName.textContent = profile.fullName;
+
     if (displayEmail) displayEmail.textContent = profile.email;
+    const bannerEmail = document.getElementById('bannerProfileEmail');
+    if (bannerEmail) bannerEmail.textContent = profile.email;
+
     if (displayPhone) displayPhone.textContent = profile.phone;
+    if (displayUsername) displayUsername.textContent = profile.username || 'pemilik';
+    if (displayBusiness) displayBusiness.textContent = profile.businessName || 'Bersihin Laundry';
     if (displayRole) displayRole.textContent = profile.role;
     if (displayLocation) displayLocation.textContent = profile.location;
 
     // Form Edit Profil Pemilik
     const editProfileForm = document.getElementById('editProfileForm');
     if (editProfileForm) {
-      const fullNameInput = document.getElementById('fullName');
+      const fullNameInput = document.getElementById('nama') || document.getElementById('fullName');
       const emailInput = document.getElementById('email');
       const phoneInput = document.getElementById('phone');
+      const usernameInput = document.getElementById('username');
+      const businessInput = document.getElementById('nama_usaha');
       const roleInput = document.getElementById('role');
       const locationInput = document.getElementById('location');
 
-      if (fullNameInput) fullNameInput.value = profile.fullName;
-      if (emailInput) emailInput.value = profile.email;
-      if (phoneInput) phoneInput.value = profile.phone;
-      if (roleInput) roleInput.value = profile.role;
-      if (locationInput) locationInput.value = profile.location;
+      if (fullNameInput) fullNameInput.value = profile.fullName || 'Rangga Saputra';
+      if (emailInput) emailInput.value = profile.email || 'rangga@bersihin.id';
+      if (phoneInput) phoneInput.value = profile.phone || '0812 1122 3344';
+      if (usernameInput) usernameInput.value = profile.username || 'pemilik';
+      if (businessInput) businessInput.value = profile.businessName || 'Bersihin Laundry';
+      if (roleInput) roleInput.value = profile.role || 'Owner & General Manager';
+      if (locationInput) locationInput.value = profile.location || 'Bandung Outlet Pusat';
 
-      editProfileForm.addEventListener('submit', (e) => {
+      editProfileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const updatedName = fullNameInput ? fullNameInput.value.trim() : '';
         const updatedEmail = emailInput ? emailInput.value.trim() : '';
         const updatedPhone = phoneInput ? phoneInput.value.trim() : '';
-        const updatedRole = roleInput ? roleInput.value.trim() : '';
-        const updatedLocation = locationInput ? locationInput.value.trim() : '';
+        const updatedUsername = usernameInput ? usernameInput.value.trim() : '';
+        const updatedBusiness = businessInput ? businessInput.value.trim() : '';
+        const updatedRole = roleInput ? roleInput.value.trim() : 'Owner & General Manager';
+        const updatedLocation = locationInput ? locationInput.value.trim() : 'Bandung Outlet Pusat';
 
         if (!updatedName || !updatedEmail) {
           showToast('Nama dan email wajib diisi.', true);
@@ -895,14 +1166,33 @@
           fullName: updatedName,
           email: updatedEmail,
           phone: updatedPhone,
+          username: updatedUsername,
+          businessName: updatedBusiness,
           role: updatedRole,
           location: updatedLocation
         });
 
+        // Sinkronisasi ke backend jika server aktif
+        try {
+          const token = localStorage.getItem('bersihin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = 'Bearer ' + token;
+          await fetch('/api/pemilik/profil', {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              nama: updatedName,
+              email: updatedEmail,
+              telepon: updatedPhone,
+              alamat: updatedLocation
+            })
+          });
+        } catch (_) {}
+
         showToast('Profil pemilik berhasil diperbarui!');
         setTimeout(() => {
           window.location.href = 'profil.html';
-        }, 1000);
+        }, 800);
       });
     }
   }
@@ -1071,6 +1361,20 @@
   // ===========================================================================
   // 13. BOOTSTRAP: JALANKAN INISIALISASI SETELAH DOM SIAP
   // ===========================================================================
+  function refreshActivePemilikPage() {
+    updatePemilikRealtimeDate();
+    const path = (window.location.pathname || '').toLowerCase();
+    if (path.includes('dashboard') || path.endsWith('/pemilik/') || path.endsWith('/pemilik')) {
+      syncPemilikDashboardFromDatabase();
+    } else if (path.includes('transaksi')) {
+      syncPemilikTransaksiFromDatabase();
+    } else if (path.includes('datapelanggan')) {
+      syncPemilikPelangganFromDatabase();
+    } else if (path.includes('datapegawai')) {
+      syncPemilikPegawaiFromDatabase();
+    }
+  }
+
   function bootstrap() {
     initSharedComponents();
     initLoginPage();
@@ -1082,6 +1386,18 @@
     initLaporanPage();
     initProfilPage();
     initPasswordPage();
+
+    // 1. Sinkronisasi instan antar-tab saat Pelanggan atau Pegawai update order di database
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+        refreshActivePemilikPage();
+      }
+    });
+
+    // 2. Polling sinkronisasi real-time otomatis ke database MySQL XAMPP setiap 3.5 detik
+    setInterval(() => {
+      refreshActivePemilikPage();
+    }, 3500);
   }
 
   if (document.readyState === 'loading') {

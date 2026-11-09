@@ -109,16 +109,18 @@ function seed() {
 
   // Akun login bawaan demo: password123
   const users = [
-    { username: 'pemilik', email: 'rangga@bersihin.id', password: 'password123', role: 'PEMILIK' },
-    { username: 'dina.staff', email: 'dina.nurhaliza@bersihin.id', password: 'password123', role: 'PEGAWAI' },
-    { username: 'budi.operator', email: 'budi.operator@bersihin.id', password: 'password123', role: 'PEGAWAI' },
-    { username: 'andipratama', email: 'andi.pratama@email.com', password: 'password123', role: 'PELANGGAN' }
+    { username: 'pemilik', email: 'rangga@bersihin.id', no_telp: '081211223344', password: 'password123', role: 'PEMILIK' },
+    { username: 'dina.staff', email: 'dina.nurhaliza@bersihin.id', no_telp: '081298765432', password: 'password123', role: 'PEGAWAI' },
+    { username: 'budi.operator', email: 'budi.operator@bersihin.id', no_telp: '081377889900', password: 'password123', role: 'PEGAWAI' },
+    { username: 'andipratama', email: 'andi.pratama@email.com', no_telp: '081234567821', password: 'password123', role: 'PELANGGAN' }
   ];
 
   users.forEach(u => db.users.push({
     id_user: nextId('users'),
     username: u.username,
     email: u.email,
+    no_telp: u.no_telp,
+    telepon: u.no_telp,
     password: bcrypt.hashSync(u.password, 10),
     role: u.role,
     status: 'AKTIF',

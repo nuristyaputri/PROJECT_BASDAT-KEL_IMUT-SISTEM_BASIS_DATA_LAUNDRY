@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pesanan - Bersihin Staff Portal</title>
-    <!-- Google Fonts Poppins -->
+    <!-- Google Fonts: Poppins (sesuai desain Figma & Pelanggan) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +18,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -40,7 +41,7 @@
     </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
     <header
@@ -106,7 +107,7 @@
                 </div>
                 <div>
                     <div class="text-teal-700 text-[11px] font-bold leading-tight">Shift Aktif</div>
-                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 – 16.00 WIB</div>
+                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 - 16.00 WIB</div>
                 </div>
             </div>
 
@@ -230,41 +231,71 @@
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
         <header
-            class="h-24 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
-            <div>
-                <h1 class="text-lg md:text-xl font-normal text-slate-800 leading-8">Data Pesanan</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Pantau dan kelola seluruh pesanan laundry</p>
+            class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+            <!-- Kiri: Mobile Menu Toggle + Judul & Subtitle -->
+            <div class="flex items-center gap-3">
+                <button type="button" id="sidebarToggleBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+                    class="md:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="flex flex-col justify-start items-start">
+                    <h1 class="text-slate-800 text-base md:text-lg font-normal leading-6">Data Pesanan</h1>
+                    <p class="text-xs text-slate-400 mt-0.5">Pantau dan kelola seluruh pesanan laundry</p>
+                </div>
             </div>
 
+            <!-- Kanan: Tanggal Real-Time + Notifikasi + Avatar Profil Pegawai -->
             <div class="flex items-center gap-3">
-                <!-- Tanggal -->
+                <!-- Tanggal Real-Time -->
                 <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
-                    <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div class="leading-tight">
-                        <span class="block text-[10px] text-gray-400 font-normal">Senin</span>
-                        <span class="text-xs font-bold text-slate-500">20 Mei 2024</span>
+                        <span class="realtime-day block text-[10px] text-slate-400 font-normal" data-realtime-day>Senin</span>
+                        <span class="realtime-date text-xs font-bold text-slate-600" data-realtime-date>9 November 2026</span>
                     </div>
                 </div>
 
-                <!-- Notifikasi -->
-                <button
-                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition"
-                    aria-label="Notifikasi">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span
-                        class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
-                </button>
+                <!-- Tombol & Dropdown Notifikasi -->
+                <div class="relative">
+                    <button type="button" aria-label="Notifikasi" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+                    </button>
+                </div>
 
-                <!-- Avatar -->
-                <div
-                    class="w-9 h-9 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold">
-                    DN
+                <!-- Profil Pegawai & Dropdown Menu -->
+                <div class="relative">
+                    <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+                        aria-label="Profil Pegawai"
+                        class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        DN
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="profileDropdown" role="menu" aria-label="Menu Akun Pegawai"
+                        class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p id="dropdownStaffName" class="text-xs font-bold text-slate-800">Dina Nurhaliza</p>
+                            <p id="dropdownStaffEmail" class="text-[11px] text-slate-500 truncate">dina.nurhaliza@bersihin.id</p>
+                        </div>
+                        <a href="profil.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50 transition">
+                            <span>Profil Saya</span>
+                        </a>
+                        <a href="../login.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50 transition border-t border-slate-100 mt-1">
+                            <span>Keluar Akun</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </header>
@@ -334,26 +365,28 @@
                                     <th class="py-2.5 px-4 text-right"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100 text-xs">
-                                <!-- Row 1: ORD-0524-018 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-018'"
+                            <tbody id="pesananTableBody" class="divide-y divide-slate-100 text-xs">
+                                <!-- Row 1: Nuristya (TRX-261109-1275) -->
+                                <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('TRX-261109-1275'); else window.location.href='detailpesanan.html?id=TRX-261109-1275'"
                                     data-status="Dicuci"
                                     class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-018</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Andi Pratama</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">20 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci + Setrika</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">4.5 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp45.000</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
+                                        <span class="text-cyan-700 hover:underline font-mono">TRX-261109-1275</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">Nuristya</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Hari ini, 14.29 WIB</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Komplit (Cuci + Setrika)</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">4,0 kg</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp40.000</td>
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-100 text-cyan-600 rounded-full text-[11px] font-semibold">
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-50 text-cyan-700 border border-sky-100 rounded-full text-[11px] font-semibold">
                                             <span class="w-1.5 h-1.5 bg-cyan-600 rounded-full"></span>
                                             Dicuci
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-018" title="Lihat Detail Pesanan"
+                                        <a href="detailpesanan.html?id=TRX-261109-1275" title="Lihat Detail Pesanan"
                                             class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -363,25 +396,27 @@
                                     </td>
                                 </tr>
 
-                                <!-- Row 2: ORD-0524-017 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-017'"
-                                    data-status="Menunggu konfirmasi"
+                                <!-- Row 2: Nuristya (TRX-261109-0892) -->
+                                <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('TRX-261109-0892'); else window.location.href='detailpesanan.html?id=TRX-261109-0892'"
+                                    data-status="Dicuci"
                                     class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-017</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Siti Rahma</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">20 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Express</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">3 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp54.000</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
+                                        <span class="text-cyan-700 hover:underline font-mono">TRX-261109-0892</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">Nuristya</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Hari ini, 13.21 WIB</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Kering Lipat</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">3,5 kg</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp35.000</td>
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-50 text-red-500 rounded-full text-[11px] font-semibold">
-                                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                                            Menunggu konfirmasi
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-50 text-cyan-700 border border-sky-100 rounded-full text-[11px] font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-cyan-600 rounded-full"></span>
+                                            Dicuci
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-017" title="Lihat Detail Pesanan"
+                                        <a href="detailpesanan.html?id=TRX-261109-0892" title="Lihat Detail Pesanan"
                                             class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -391,25 +426,27 @@
                                     </td>
                                 </tr>
 
-                                <!-- Row 3: ORD-0524-016 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-016'"
+                                <!-- Row 3: Andi Pratama (TRX-261109-1324) -->
+                                <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('TRX-261109-1324'); else window.location.href='detailpesanan.html?id=TRX-261109-1324'"
                                     data-status="Diproses"
                                     class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-016</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Budi Santoso</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">19 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Kering</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">6 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp42.000</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
+                                        <span class="text-cyan-700 hover:underline font-mono">TRX-261109-1324</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">Andi Pratama</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Hari ini, 12.54 WIB</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Komplit (Cuci + Setrika)</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">4,0 kg</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp40.000</td>
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-600 rounded-full text-[11px] font-semibold">
-                                            <span class="w-1.5 h-1.5 bg-yellow-600 rounded-full"></span>
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-full text-[11px] font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
                                             Diproses
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-016" title="Lihat Detail Pesanan"
+                                        <a href="detailpesanan.html?id=TRX-261109-1324" title="Lihat Detail Pesanan"
                                             class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -419,25 +456,27 @@
                                     </td>
                                 </tr>
 
-                                <!-- Row 4: ORD-0524-015 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-015'"
-                                    data-status="Disetrika"
+                                <!-- Row 4: Maya Anggraini (TRX-240520-05) -->
+                                <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('TRX-240520-05'); else window.location.href='detailpesanan.html?id=TRX-240520-05'"
+                                    data-status="Diproses"
                                     class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-015</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Maya Lestari</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">19 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Setrika Saja</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">5 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp30.000</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
+                                        <span class="text-cyan-700 hover:underline font-mono">TRX-240520-05</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">Maya Anggraini</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">20 Mei 2024</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Komplit (Cuci + Setrika)</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">2,5 kg</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp22.500</td>
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-violet-100 text-slate-600 rounded-full text-[11px] font-semibold">
-                                            <span class="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
-                                            Disetrika
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200/60 rounded-full text-[11px] font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                                            Diproses
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-015" title="Lihat Detail Pesanan"
+                                        <a href="detailpesanan.html?id=TRX-240520-05" title="Lihat Detail Pesanan"
                                             class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -447,53 +486,27 @@
                                     </td>
                                 </tr>
 
-                                <!-- Row 5: ORD-0524-014 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-014'"
+                                <!-- Row 5: Andi Pratama (TRX-240510-04) -->
+                                <tr onclick="if (typeof openInvoiceModal === 'function') openInvoiceModal('TRX-240510-04'); else window.location.href='detailpesanan.html?id=TRX-240510-04'"
                                     data-status="Selesai"
                                     class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-014</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Rizky Maulana</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">18 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci + Setrika</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">3.5 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp35.000</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
+                                        <span class="text-cyan-700 hover:underline font-mono">TRX-240510-04</span>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-medium whitespace-nowrap">Andi Pratama</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">10 Mei 2024</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Komplit (Cuci + Setrika)</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">6,0 kg</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp54.000</td>
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-teal-700 rounded-full text-[11px] font-semibold">
-                                            <span class="w-1.5 h-1.5 bg-teal-700 rounded-full"></span>
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-teal-700 border border-emerald-200/60 rounded-full text-[11px] font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-teal-600 rounded-full"></span>
                                             Selesai
                                         </span>
                                     </td>
                                     <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-014" title="Lihat Detail Pesanan"
-                                            class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <!-- Row 6: ORD-0524-013 -->
-                                <tr onclick="window.location.href='detailpesanan.html?id=ORD-0524-013'"
-                                    data-status="Diambil"
-                                    class="hover:bg-slate-50/80 transition cursor-pointer order-row">
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">ORD-0524-013</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Nadia Putri</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">18 Mei 2024</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">Cuci Kering</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">4 kg</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">Rp28.000</td>
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
-                                        <span
-                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full text-[11px] font-semibold">
-                                            <span class="w-1.5 h-1.5 bg-slate-500 rounded-full"></span>
-                                            Diambil
-                                        </span>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpesanan.html?id=ORD-0524-013" title="Lihat Detail Pesanan"
+                                        <a href="detailpesanan.html?id=TRX-240510-04" title="Lihat Detail Pesanan"
                                             class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -510,7 +523,7 @@
                 <!-- PAGINATION FOOTER -->
                 <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div class="text-gray-400 text-xs font-normal" id="showingInfo">
-                        Menampilkan 6 dari 28 data
+                        Menampilkan 0 data
                     </div>
                     <div class="flex items-center gap-1">
                         <button type="button"
@@ -520,14 +533,6 @@
                         <button type="button"
                             class="w-7 h-7 rounded-md bg-blue-950 text-white text-xs font-medium flex items-center justify-center">
                             1
-                        </button>
-                        <button type="button"
-                            class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
-                            2
-                        </button>
-                        <button type="button"
-                            class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
-                            3
                         </button>
                         <button type="button"
                             class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
@@ -541,53 +546,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script>
-        // Mobile Sidebar Toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        }
-
-        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-
-        // Live Search & Status Filter
-        const searchInput = document.getElementById('searchInput');
-        const statusFilter = document.getElementById('statusFilter');
-        const rows = document.querySelectorAll('.order-row');
-        const showingInfo = document.getElementById('showingInfo');
-
-        function filterOrders() {
-            const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-            const status = statusFilter ? statusFilter.value : '';
-            let visibleCount = 0;
-
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                const rowStatus = row.getAttribute('data-status') || '';
-                const matchesQuery = text.includes(query);
-                const matchesStatus = !status || rowStatus === status;
-
-                if (matchesQuery && matchesStatus) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            if (showingInfo) {
-                showingInfo.innerText = `Menampilkan ${visibleCount} dari 28 data`;
-            }
-        }
-
-        if (searchInput) searchInput.addEventListener('input', filterOrders);
-        if (statusFilter) statusFilter.addEventListener('change', filterOrders);
-    </script>
+    <script src="../JS/pegawai.js?v=2.1"></script>
 </body>
 
 </html>

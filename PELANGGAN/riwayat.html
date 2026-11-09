@@ -221,34 +221,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -286,7 +260,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Riwayat Transaksi</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -531,215 +505,7 @@
               </tr>
             </thead>
             <tbody id="historyTableBody" class="divide-y divide-slate-100 text-xs font-['Poppins']">
-
-              <!-- Baris 1: TRX-240518-01 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240518-01" data-service="Cuci + Setrika" data-status="Diproses" data-amount="45000" data-timestamp="2024-05-18">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240518-01" class="hover:text-cyan-700 transition">TRX-240518-01</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">18 Mei 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
-                <td class="px-4 py-3.5 text-slate-600">4,5 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp45.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
-                    <span class="text-yellow-700 text-[10px] font-semibold leading-3">Diproses</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240518-01" aria-label="Lihat rincian transaksi TRX-240518-01"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 2: TRX-240512-08 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240512-08" data-service="Express" data-status="Selesai" data-amount="72000" data-timestamp="2024-05-12">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240512-08" class="hover:text-cyan-700 transition">TRX-240512-08</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">12 Mei 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Express</td>
-                <td class="px-4 py-3.5 text-slate-600">4,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp72.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240512-08" aria-label="Lihat rincian transaksi TRX-240512-08"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 3: TRX-240506-12 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240506-12" data-service="Cuci Kering" data-status="Selesai" data-amount="28000" data-timestamp="2024-05-06">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240506-12" class="hover:text-cyan-700 transition">TRX-240506-12</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">6 Mei 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci Kering</td>
-                <td class="px-4 py-3.5 text-slate-600">4,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp28.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240506-12" aria-label="Lihat rincian transaksi TRX-240506-12"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 4: TRX-240430-05 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240430-05" data-service="Setrika Saja" data-status="Selesai" data-amount="30000" data-timestamp="2024-04-30">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240430-05" class="hover:text-cyan-700 transition">TRX-240430-05</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">30 Apr 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Setrika Saja</td>
-                <td class="px-4 py-3.5 text-slate-600">5,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp30.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240430-05" aria-label="Lihat rincian transaksi TRX-240430-05"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 5: TRX-240422-09 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240422-09" data-service="Cuci + Setrika" data-status="Selesai" data-amount="60000" data-timestamp="2024-04-22">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240422-09" class="hover:text-cyan-700 transition">TRX-240422-09</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">22 Apr 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
-                <td class="px-4 py-3.5 text-slate-600">6,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp60.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240422-09" aria-label="Lihat rincian transaksi TRX-240422-09"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 6: TRX-240415-02 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240415-02" data-service="Express" data-status="Selesai" data-amount="54000" data-timestamp="2024-04-15">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240415-02" class="hover:text-cyan-700 transition">TRX-240415-02</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">15 Apr 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Express</td>
-                <td class="px-4 py-3.5 text-slate-600">3,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp54.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240415-02" aria-label="Lihat rincian transaksi TRX-240415-02"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 7: TRX-240408-07 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240408-07" data-service="Cuci Kering" data-status="Selesai" data-amount="24500" data-timestamp="2024-04-08">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240408-07" class="hover:text-cyan-700 transition">TRX-240408-07</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">8 Apr 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci Kering</td>
-                <td class="px-4 py-3.5 text-slate-600">3,5 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp24.500</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
-                    <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240408-07" aria-label="Lihat rincian transaksi TRX-240408-07"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
-              <!-- Baris 8: TRX-240328-04 -->
-              <tr class="trx-row hover:bg-slate-50/80 transition" data-code="TRX-240328-04" data-service="Cuci + Setrika" data-status="Dibatalkan" data-amount="30000" data-timestamp="2024-03-28">
-                <td class="px-4 py-3.5 font-bold text-slate-800">
-                  <a href="dtltransaksi.html?id=TRX-240328-04" class="hover:text-cyan-700 transition">TRX-240328-04</a>
-                </td>
-                <td class="px-4 py-3.5 text-slate-600">28 Mar 2024</td>
-                <td class="px-4 py-3.5 text-slate-700 font-medium">Cuci + Setrika</td>
-                <td class="px-4 py-3.5 text-slate-600">3,0 kg</td>
-                <td class="px-4 py-3.5 font-bold text-slate-800">Rp30.000</td>
-                <td class="px-4 py-3.5">
-                  <span class="px-2.5 py-1 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5">
-                    <span class="size-1.5 bg-slate-500 rounded-full" aria-hidden="true"></span>
-                    <span class="text-slate-600 text-[10px] font-semibold leading-3">Dibatalkan</span>
-                  </span>
-                </td>
-                <td class="px-4 py-2 text-right">
-                  <a href="dtltransaksi.html?id=TRX-240328-04" aria-label="Lihat rincian transaksi TRX-240328-04"
-                    class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                    <span>Detail</span>
-                    <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-
+              <!-- Baris transaksi akan dimuat secara dinamis murni dari database MySQL XAMPP -->
             </tbody>
           </table>
         </div>
@@ -825,6 +591,9 @@
     </div>
   </div>
 
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+
   <!-- ===================================================================== -->
   <!-- JAVASCRIPT RIWAYAT TRANSAKSI                                          -->
   <!-- ===================================================================== -->
@@ -881,8 +650,6 @@
       });
     });
   </script>
-  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
-  <script src="../JS/pelanggan.js"></script>
 </body>
 
 </html>

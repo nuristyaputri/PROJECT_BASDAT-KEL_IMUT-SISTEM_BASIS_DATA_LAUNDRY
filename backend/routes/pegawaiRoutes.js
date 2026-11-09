@@ -30,6 +30,8 @@ router.get('/pesanan', pegawai.daftarPesanan);
 router.get('/pesanan/:id', pegawai.detailPesanan);
 router.post('/pesanan', pegawai.tambahPesanan);
 router.patch('/pesanan/:id/status', pegawai.updateStatus);
+router.post('/pesanan/:id/konfirmasi-pembayaran', pegawai.konfirmasiPembayaran);
+router.post('/pesanan/:id/tolak', pegawai.tolakPesanan);
 
 // Transaksi & Pembayaran
 router.get('/transaksi', pegawai.daftarTransaksi);

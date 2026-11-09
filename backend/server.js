@@ -80,7 +80,7 @@ app.use((err, req, res, next) => {
 });
 
 // 8. Start Server & Test DB
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log('========================================================');
   console.log(`🚀 Server Backend BersihIn Laundry berjalan di:`);
   console.log(`   http://localhost:${PORT}`);
@@ -88,6 +88,16 @@ app.listen(PORT, async () => {
   console.log(`   API Health Check:     http://localhost:${PORT}/api/health`);
   console.log('========================================================');
   await testConnection();
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n[PERINGATAN] Port ${PORT} sedang digunakan oleh proses lain atau server sudah berjalan di tab lain.`);
+    console.error(`Gunakan perintah ini di PowerShell untuk mematikan proses lama:`);
+    console.error(`   Stop-Process -Name node -Force\n`);
+  } else {
+    console.error('Server error:', err.message);
+  }
 });
 
 module.exports = app;

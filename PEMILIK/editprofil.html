@@ -466,18 +466,7 @@
 
         if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
         if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-
-        // Simple Form Submission feedback
-        const editForm = document.getElementById('editProfileForm');
-        if (editForm) {
-            editForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Profil berhasil diperbarui!');
-                window.location.href = 'profil.html';
-            });
-        }
-
-        </script>
+    </script>
     <!-- Skrip Utama Pemilik (Vanilla JS) -->
     <script src="../JS/pemilik.js"></script>
 </body>

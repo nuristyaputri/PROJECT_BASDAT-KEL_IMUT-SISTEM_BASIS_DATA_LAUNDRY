@@ -233,34 +233,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -298,7 +272,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Detail Transaksi</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -626,10 +600,26 @@
     </div>
   </div>
 
+  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
+  <script src="../JS/pelanggan.js"></script>
+
   <!-- ===================================================================== -->
   <!-- JAVASCRIPT INTERAKTIVITAS DETAIL TRANSAKSI                            -->
   <!-- ===================================================================== -->
   <script>
+    // 0. Update Tanggal Real-Time Topbar Langsung
+    (function updateTopDate() {
+      const nowRealtime = new Date();
+      const dateFormatted = nowRealtime.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      const topbarDate = document.getElementById('topbarDateDisplay');
+      if (topbarDate) topbarDate.textContent = dateFormatted;
+    })();
+
     // 1. Toggle Sidebar Mobile
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -652,221 +642,124 @@
     if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
-    // 3. Data Transaksi Dinamis Berdasarkan Parameter URL (?id=TRX-...)
-    const transactionsCatalog = {
-      'TRX-240518-01': {
-        code: 'TRX-240518-01',
-        created: 'Dibuat pada 18 Mei 2024, 09.15 WIB',
-        status: 'Diproses',
-        service: 'Cuci + Setrika',
-        weight: '4,5 kg',
-        dateIn: '18 Mei 2024',
-        dateOut: '21 Mei 2024',
-        notes: 'Pisahkan pakaian putih, gunakan pewangi lembut.',
-        calcSub: '4,5 kg x Rp10.000',
-        total: 'Rp45.000',
-        paidDate: 'Dibayar 18 Mei 2024'
-      },
-      'TRX-240512-08': {
-        code: 'TRX-240512-08',
-        created: 'Dibuat pada 12 Mei 2024, 14.20 WIB',
-        status: 'Selesai',
-        service: 'Express',
-        weight: '4,0 kg',
-        dateIn: '12 Mei 2024',
-        dateOut: '13 Mei 2024',
-        notes: 'Lipat rapi sesuai kategori kemeja.',
-        calcSub: '4,0 kg x Rp18.000',
-        total: 'Rp72.000',
-        paidDate: 'Dibayar 12 Mei 2024'
-      },
-      'TRX-240506-12': {
-        code: 'TRX-240506-12',
-        created: 'Dibuat pada 6 Mei 2024, 10.15 WIB',
-        status: 'Selesai',
-        service: 'Cuci Kering',
-        weight: '4,0 kg',
-        dateIn: '6 Mei 2024',
-        dateOut: '8 Mei 2024',
-        notes: 'Pewangi reguler ocean breeze.',
-        calcSub: '4,0 kg x Rp7.000',
-        total: 'Rp28.000',
-        paidDate: 'Dibayar 6 Mei 2024'
-      },
-      'TRX-240430-05': {
-        code: 'TRX-240430-05',
-        created: 'Dibuat pada 30 Apr 2024, 08.45 WIB',
-        status: 'Selesai',
-        service: 'Setrika Saja',
-        weight: '5,0 kg',
-        dateIn: '30 Apr 2024',
-        dateOut: '1 Mei 2024',
-        notes: 'Kemeja kerja digantung.',
-        calcSub: '5,0 kg x Rp6.000',
-        total: 'Rp30.000',
-        paidDate: 'Dibayar 30 Apr 2024'
-      },
-      'TRX-240422-09': {
-        code: 'TRX-240422-09',
-        created: 'Dibuat pada 22 Apr 2024, 11.00 WIB',
-        status: 'Selesai',
-        service: 'Cuci + Setrika',
-        weight: '6,0 kg',
-        dateIn: '22 Apr 2024',
-        dateOut: '25 Apr 2024',
-        notes: 'Seprai dan selimut tebal.',
-        calcSub: '6,0 kg x Rp10.000',
-        total: 'Rp60.000',
-        paidDate: 'Dibayar 22 Apr 2024'
-      },
-      'TRX-240415-02': {
-        code: 'TRX-240415-02',
-        created: 'Dibuat pada 15 Apr 2024, 13.30 WIB',
-        status: 'Selesai',
-        service: 'Express',
-        weight: '3,0 kg',
-        dateIn: '15 Apr 2024',
-        dateOut: '16 Apr 2024',
-        notes: 'Butuh cepat untuk perjalanan dinas.',
-        calcSub: '3,0 kg x Rp18.000',
-        total: 'Rp54.000',
-        paidDate: 'Dibayar 15 Apr 2024'
-      },
-      'TRX-240408-07': {
-        code: 'TRX-240408-07',
-        created: 'Dibuat pada 8 Apr 2024, 09.00 WIB',
-        status: 'Selesai',
-        service: 'Cuci Kering',
-        weight: '3,5 kg',
-        dateIn: '8 Apr 2024',
-        dateOut: '10 Apr 2024',
-        notes: 'Pewangi lavender.',
-        calcSub: '3,5 kg x Rp7.000',
-        total: 'Rp24.500',
-        paidDate: 'Dibayar 8 Apr 2024'
-      },
-      'TRX-240328-04': {
-        code: 'TRX-240328-04',
-        created: 'Dibuat pada 28 Mar 2024, 16.10 WIB',
-        status: 'Dibatalkan',
-        service: 'Cuci + Setrika',
-        weight: '3,0 kg',
-        dateIn: '28 Mar 2024',
-        dateOut: '28 Mar 2024',
-        notes: 'Dibatalkan oleh pelanggan sebelum penjemputan.',
-        calcSub: '3,0 kg x Rp10.000',
-        total: 'Rp30.000',
-        paidDate: 'Dikembalikan (Refund)'
-      }
-    };
+    // 3. Data Transaksi Dinamis Murni Berdasarkan Database MySQL XAMPP
+    const transactionsCatalog = {};
 
-    // Muat semua transaksi yang tersimpan di localStorage
-    try {
-      const storedTrxRaw = localStorage.getItem('bersihin_transactions');
-      if (storedTrxRaw) {
-        const storedList = JSON.parse(storedTrxRaw);
-        if (Array.isArray(storedList)) {
-          storedList.forEach(item => {
-            const id = item.code || item.id;
-            if (id) {
-              transactionsCatalog[id] = {
-                code: id,
-                created: item.created || item.dateInTime || `Dibuat pada ${item.date || 'Hari ini'}`,
-                status: item.status || 'Menunggu konfirmasi',
-                service: item.service || 'Cuci + Setrika',
-                weight: item.weight || (item.weightKg ? `${item.weightKg},0 kg` : '4,0 kg'),
-                dateIn: item.date || item.dateIn || 'Hari ini',
-                dateOut: item.dateOut || item.estDone || '2 hari lagi',
-                notes: item.notes || 'Pakaian reguler',
-                calcSub: item.calcSub || `${item.weight || '4,0 kg'} (Estimasi)`,
-                total: item.totalFormatted || item.total || 'Rp45.000',
-                paidDate: item.paidDate || (item.status === 'Selesai' ? `Dibayar ${item.date}` : 'Belum dibayar')
-              };
-            }
-          });
-        }
+    async function loadTransactionDetail() {
+      // Sinkronkan data langsung dari database MySQL XAMPP jika terhubung
+      if (typeof syncAllCustomerDataWithBackend === 'function') {
+        try {
+          await syncAllCustomerDataWithBackend();
+        } catch (_) {}
       }
-    } catch (_) {}
 
-    // Muat pesanan aktif terbaru jika tersedia
-    const activeOrderRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
-    if (activeOrderRaw) {
+      // Muat semua transaksi yang tersimpan di localStorage
       try {
-        const activeOrder = JSON.parse(activeOrderRaw);
-        if (activeOrder && (activeOrder.code || activeOrder.orderId)) {
-          const id = activeOrder.code || activeOrder.orderId;
-          transactionsCatalog[id] = {
-            code: id,
-            created: activeOrder.dateInTime || 'Baru saja dibuat',
-            status: activeOrder.status || 'Menunggu konfirmasi',
-            service: activeOrder.service || 'Cuci + Setrika',
-            weight: activeOrder.weight || `${activeOrder.weightKg},0 kg`,
-            dateIn: activeOrder.dateIn || 'Hari ini',
-            dateOut: activeOrder.estDone || '2 hari lagi',
-            notes: activeOrder.notes || 'Pakaian reguler',
-            calcSub: `${activeOrder.weightKg || 4} kg (Estimasi)`,
-            total: activeOrder.totalFormatted || activeOrder.total || 'Rp45.000',
-            paidDate: 'Belum dibayar'
-          };
+        const storedTrxRaw = localStorage.getItem('bersihin_transactions');
+        if (storedTrxRaw) {
+          const storedList = JSON.parse(storedTrxRaw);
+          if (Array.isArray(storedList)) {
+            storedList.forEach(item => {
+              const id = item.code || item.id;
+              if (id) {
+                transactionsCatalog[id] = item;
+              }
+            });
+          }
         }
-      } catch (e) {}
-    }
+      } catch (_) {}
 
-    const params = new URLSearchParams(window.location.search);
-    let trxId = params.get('id');
-
-    if (!trxId || !transactionsCatalog[trxId]) {
+      // Muat pesanan aktif terbaru jika tersedia
+      const activeOrderRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
       if (activeOrderRaw) {
         try {
-          const act = JSON.parse(activeOrderRaw);
-          if (act && (act.code || act.orderId) && transactionsCatalog[act.code || act.orderId]) {
-            trxId = act.code || act.orderId;
+          const activeOrder = JSON.parse(activeOrderRaw);
+          if (activeOrder && (activeOrder.code || activeOrder.orderId)) {
+            const id = activeOrder.code || activeOrder.orderId;
+            if (!transactionsCatalog[id]) {
+              transactionsCatalog[id] = activeOrder;
+            }
+          }
+        } catch (e) {}
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      let trxId = params.get('id');
+
+      // Cek langsung ke database backend MySQL untuk data teraktual
+      if (trxId) {
+        try {
+          const apiBase = window.location.origin.includes(':5000') ? '' : 'http://localhost:5000';
+          const res = await fetch(`${apiBase}/api/pelanggan/status/${encodeURIComponent(trxId)}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+              const dbRow = json.data;
+              const mapped = typeof mapDbOrderToFrontend === 'function' ? mapDbOrderToFrontend(dbRow, 0) : null;
+              if (mapped) {
+                transactionsCatalog[trxId] = mapped;
+              }
+            }
           }
         } catch (_) {}
       }
+
       if (!trxId || !transactionsCatalog[trxId]) {
-        trxId = Object.keys(transactionsCatalog)[0];
+        if (activeOrderRaw) {
+          try {
+            const act = JSON.parse(activeOrderRaw);
+            if (act && (act.code || act.orderId) && transactionsCatalog[act.code || act.orderId]) {
+              trxId = act.code || act.orderId;
+            }
+          } catch (_) {}
+        }
+        if (!trxId || !transactionsCatalog[trxId]) {
+          trxId = Object.keys(transactionsCatalog)[0];
+        }
+      }
+
+      if (trxId && transactionsCatalog[trxId]) {
+        const item = transactionsCatalog[trxId];
+        document.getElementById('trxCodeDisplay').textContent = item.code;
+        document.getElementById('trxCreatedDisplay').textContent = item.created || `Dibuat pada ${item.date || 'Hari ini'}`;
+        document.getElementById('infoService').textContent = item.service;
+        document.getElementById('infoWeight').textContent = item.weight;
+        document.getElementById('infoDateIn').textContent = item.dateIn || item.date || 'Hari ini';
+        document.getElementById('infoDateOut').textContent = item.dateOut || item.estDone || '2 hari lagi';
+        document.getElementById('infoNotes').textContent = item.notes || 'Pakaian reguler';
+        document.getElementById('priceServiceTitle').textContent = item.service;
+        document.getElementById('priceCalcSub').textContent = item.calcSub || `${item.weight} (Estimasi)`;
+        document.getElementById('priceSubtotal').textContent = item.total;
+        document.getElementById('priceTotal').textContent = item.total;
+        document.getElementById('paymentAmount').textContent = item.total;
+        document.getElementById('paymentDate').textContent = item.paidDate || 'Belum dibayar';
+
+        const statusPill = document.getElementById('trxStatusPill');
+        const statusDot = document.getElementById('trxStatusDot');
+        const statusText = document.getElementById('trxStatusText');
+        statusText.textContent = item.status;
+        const s = String(item.status || '').toUpperCase();
+        if (s.includes('SELESAI')) {
+          statusPill.className = 'px-3 py-1.5 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          statusDot.className = 'size-1.5 bg-teal-700 rounded-full';
+          statusText.className = 'text-teal-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+        } else if (s.includes('BATAL')) {
+          statusPill.className = 'px-3 py-1.5 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          statusDot.className = 'size-1.5 bg-slate-500 rounded-full';
+          statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
+        } else if (s.includes('MENUNGGU')) {
+          statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
+          statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
+        } else {
+          statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
+          statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
+          statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+        }
       }
     }
 
-    if (trxId && transactionsCatalog[trxId]) {
-      const item = transactionsCatalog[trxId];
-      document.getElementById('trxCodeDisplay').textContent = item.code;
-      document.getElementById('trxCreatedDisplay').textContent = item.created;
-      document.getElementById('infoService').textContent = item.service;
-      document.getElementById('infoWeight').textContent = item.weight;
-      document.getElementById('infoDateIn').textContent = item.dateIn;
-      document.getElementById('infoDateOut').textContent = item.dateOut;
-      document.getElementById('infoNotes').textContent = item.notes;
-      document.getElementById('priceServiceTitle').textContent = item.service;
-      document.getElementById('priceCalcSub').textContent = item.calcSub;
-      document.getElementById('priceSubtotal').textContent = item.total;
-      document.getElementById('priceTotal').textContent = item.total;
-      document.getElementById('paymentAmount').textContent = item.total;
-      document.getElementById('paymentDate').textContent = item.paidDate;
-
-      const statusPill = document.getElementById('trxStatusPill');
-      const statusDot = document.getElementById('trxStatusDot');
-      const statusText = document.getElementById('trxStatusText');
-      statusText.textContent = item.status;
-      if (item.status === 'Selesai') {
-        statusPill.className = 'px-3 py-1.5 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-teal-700 rounded-full';
-        statusText.className = 'text-teal-700 text-[11px] font-semibold font-["Poppins"] leading-3';
-      } else if (item.status === 'Dibatalkan') {
-        statusPill.className = 'px-3 py-1.5 bg-slate-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-slate-500 rounded-full';
-        statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
-      } else if (item.status === 'Menunggu konfirmasi') {
-        statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
-        statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
-      } else {
-        statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
-        statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
-      }
-    }
+    loadTransactionDetail();
 
     // 4. Tombol Unduh Invoice (Cetak / Simpan PDF)
     const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
@@ -892,8 +785,6 @@
       okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
     }
   </script>
-  <!-- Skrip Utama Pelanggan (Vanilla JS) -->
-  <script src="../JS/pelanggan.js"></script>
 </body>
 
 </html>

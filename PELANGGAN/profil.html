@@ -221,34 +221,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -286,7 +260,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Profil Saya</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -377,7 +351,7 @@
         <div class="relative z-10 flex items-center gap-4 sm:gap-5">
           <!-- Avatar dengan Badge Edit Foto -->
           <div class="relative shrink-0">
-            <div
+            <div id="bannerProfileAvatar"
               class="size-16 sm:size-20 bg-sky-100 rounded-2xl text-cyan-800 text-2xl font-bold font-['Poppins'] flex items-center justify-center shadow-md">
               AP
             </div>
@@ -401,7 +375,7 @@
             </p>
             <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-xs rounded-full border border-white/20">
               <span class="size-1.5 bg-emerald-300 rounded-full"></span>
-              <span class="text-white text-[11px] font-medium leading-none">Pelanggan sejak Januari 2024</span>
+              <span id="bannerMemberSince" class="banner-member-since text-white text-[11px] font-medium leading-none">Bergabung sejak November 2026</span>
             </div>
           </div>
         </div>
@@ -890,7 +864,7 @@
         </button>
       </div>
       <div class="p-6 space-y-3 text-xs text-slate-600">
-        <p>Butuh bantuan seputar data akun, alamat penjemputan, atau kendala pemesanan?</p>
+        <p>Pusat layanan seputar data akun, alamat penjemputan, atau kendala pemesanan:</p>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
           <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
           <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
@@ -974,47 +948,190 @@
     if (closeEditModalBtn) closeEditModalBtn.addEventListener('click', closeEditModal);
     if (cancelEditBtn) cancelEditBtn.addEventListener('click', closeEditModal);
 
-    // Muat data profil tersimpan dari localStorage jika ada
-    try {
-      const savedProfile = localStorage.getItem('bersihin_customer_profile');
-      if (savedProfile) {
-        const parsed = JSON.parse(savedProfile);
-        if (parsed.fullName) {
-          const fn = document.getElementById('displayFullName');
-          if (fn) fn.textContent = parsed.fullName;
-          const bn = document.getElementById('bannerProfileName');
-          if (bn) bn.textContent = parsed.fullName;
-          const dn = document.getElementById('dropdownUserName');
-          if (dn) dn.textContent = parsed.fullName;
-        }
-        if (parsed.phone) {
-          const dp = document.getElementById('displayPhone');
-          if (dp) dp.textContent = parsed.phone;
-        }
-        if (parsed.email) {
-          const de = document.getElementById('displayEmail');
-          if (de) de.textContent = parsed.email;
-          const be = document.getElementById('bannerProfileEmail');
-          if (be) be.textContent = parsed.email;
-          const dme = document.getElementById('dropdownUserEmail');
-          if (dme) dme.textContent = parsed.email;
-        }
-        if (parsed.address) {
-          const da = document.getElementById('displayAddress');
-          if (da) da.textContent = parsed.address;
-        }
-      }
-    } catch (err) {
-      console.warn('Storage sync error:', err);
+    function getApiBaseUrl() {
+      if (window.location.origin.includes(':5000')) return '';
+      return 'http://localhost:5000';
     }
 
+    // Muat data profil langsung dari Database Backend MySQL
+    async function loadCustomerProfile() {
+      try {
+        const uRaw = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+        const u = uRaw ? JSON.parse(uRaw) : null;
+        const pRaw = sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile');
+        const p = pRaw ? JSON.parse(pRaw) : null;
+
+        const custId = (u && u.id_pelanggan) || (p && p.id_pelanggan) || ((u && u.username === 'nuristya') ? 5 : null);
+        const userId = (u && u.id_user) || (p && p.id_user) || ((u && u.username === 'nuristya') ? 7 : null);
+        const uname = (u && u.username) || (p && p.username) || '';
+
+        const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+        const headers = {};
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        let profUrl = `${getApiBaseUrl()}/api/pelanggan/profil`;
+        const q = [];
+        if (custId) q.push(`id_pelanggan=${custId}`);
+        if (userId) q.push(`id_user=${userId}`);
+        if (uname) q.push(`username=${encodeURIComponent(uname)}`);
+        if (q.length > 0) profUrl += `?${q.join('&')}`;
+
+        const res = await fetch(profUrl, { headers });
+        const result = await res.json();
+        if (result && result.success && result.data) {
+          const p = result.data;
+          if (p.nama) {
+            const fn = document.getElementById('displayFullName');
+            if (fn) fn.textContent = p.nama;
+            const bn = document.getElementById('bannerProfileName');
+            if (bn) bn.textContent = p.nama;
+            const dn = document.getElementById('dropdownUserName');
+            if (dn) dn.textContent = p.nama;
+            const topName = document.getElementById('topbarUserName');
+            if (topName) topName.textContent = p.nama;
+            const editName = document.getElementById('editNameInput');
+            if (editName) editName.value = p.nama;
+          }
+          if (p.telepon) {
+            const dp = document.getElementById('displayPhone');
+            if (dp) dp.textContent = p.telepon;
+            const editPhone = document.getElementById('editPhoneInput');
+            if (editPhone) editPhone.value = p.telepon;
+          }
+          if (p.email) {
+            const de = document.getElementById('displayEmail');
+            if (de) de.textContent = p.email;
+            const be = document.getElementById('bannerProfileEmail');
+            if (be) be.textContent = p.email;
+            const dme = document.getElementById('dropdownUserEmail');
+            if (dme) dme.textContent = p.email;
+            const editEmail = document.getElementById('editEmailInput');
+            if (editEmail) editEmail.value = p.email;
+          }
+          if (p.alamat) {
+            const da = document.getElementById('displayAddress');
+            if (da) da.textContent = p.alamat;
+            const editAddr = document.getElementById('editAddressInput');
+            if (editAddr) editAddr.value = p.alamat;
+          }
+          if (p.created_at) {
+            const ms = document.getElementById('bannerMemberSince');
+            if (ms) {
+              const d = new Date(p.created_at);
+              const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+              const mName = !isNaN(d.getTime()) ? months[d.getMonth()] : 'November';
+              const yr = !isNaN(d.getTime()) ? d.getFullYear() : new Date().getFullYear();
+              ms.textContent = `Bergabung sejak ${mName} ${yr}`;
+            }
+          }
+          return;
+        }
+      } catch (_) {}
+
+      // Fallback ke localStorage jika server belum merespon
+      try {
+        const savedProfile = localStorage.getItem('bersihin_customer_profile');
+        if (savedProfile) {
+          const parsed = JSON.parse(savedProfile);
+          if (parsed.fullName) {
+            const fn = document.getElementById('displayFullName');
+            if (fn) fn.textContent = parsed.fullName;
+            const bn = document.getElementById('bannerProfileName');
+            if (bn) bn.textContent = parsed.fullName;
+            const dn = document.getElementById('dropdownUserName');
+            if (dn) dn.textContent = parsed.fullName;
+          }
+          if (parsed.phone) {
+            const dp = document.getElementById('displayPhone');
+            if (dp) dp.textContent = parsed.phone;
+          }
+          if (parsed.email) {
+            const de = document.getElementById('displayEmail');
+            if (de) de.textContent = parsed.email;
+            const be = document.getElementById('bannerProfileEmail');
+            if (be) be.textContent = parsed.email;
+            const dme = document.getElementById('dropdownUserEmail');
+            if (dme) dme.textContent = parsed.email;
+          }
+          if (parsed.address) {
+            const da = document.getElementById('displayAddress');
+            if (da) da.textContent = parsed.address;
+          }
+          const rawCreated = parsed.created_at || parsed.createdAt || (localStorage.getItem('bersihin_user') ? JSON.parse(localStorage.getItem('bersihin_user')).created_at : null);
+          const ms = document.getElementById('bannerMemberSince');
+          if (ms) {
+            const d = rawCreated ? new Date(rawCreated) : new Date();
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const mName = !isNaN(d.getTime()) ? months[d.getMonth()] : 'November';
+            const yr = !isNaN(d.getTime()) ? d.getFullYear() : new Date().getFullYear();
+            ms.textContent = `Bergabung sejak ${mName} ${yr}`;
+          }
+        }
+      } catch (err) {
+        console.warn('Storage sync error:', err);
+      }
+    }
+
+    loadCustomerProfile();
+
     if (editProfileForm) {
-      editProfileForm.addEventListener('submit', (e) => {
+      editProfileForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const newName = document.getElementById('editNameInput').value;
-        const newPhone = document.getElementById('editPhoneInput').value;
-        const newEmail = document.getElementById('editEmailInput').value;
-        const newAddress = document.getElementById('editAddressInput').value;
+        const newName = document.getElementById('editNameInput').value.trim();
+        const newPhone = document.getElementById('editPhoneInput').value.trim();
+        const newEmail = document.getElementById('editEmailInput').value.trim();
+        const newAddress = document.getElementById('editAddressInput').value.trim();
+
+        // 1. Simpan perubahan ke Database Backend MySQL
+        const uRaw = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+        const u = uRaw ? JSON.parse(uRaw) : null;
+        const pRaw = sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile');
+        const p = pRaw ? JSON.parse(pRaw) : null;
+        const custId = (u && u.id_pelanggan) || (p && p.id_pelanggan) || ((u && u.username === 'nuristya') ? 5 : null);
+        const userId = (u && u.id_user) || (p && p.id_user) || ((u && u.username === 'nuristya') ? 7 : null);
+
+        try {
+          const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = 'Bearer ' + token;
+
+          await fetch(`${getApiBaseUrl()}/api/pelanggan/profil`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              id_pelanggan: custId,
+              id_user: userId,
+              nama: newName,
+              telepon: newPhone,
+              email: newEmail,
+              alamat: newAddress
+            })
+          });
+        } catch (apiErr) {
+          console.warn('Gagal sync profil ke database:', apiErr.message);
+        }
+
+        // 2. Simpan ke sessionStorage & localStorage
+        try {
+          const profileData = {
+            id_user: userId,
+            id_pelanggan: custId,
+            fullName: newName,
+            phone: newPhone,
+            email: newEmail,
+            address: newAddress
+          };
+          sessionStorage.setItem('bersihin_customer_profile', JSON.stringify(profileData));
+          localStorage.setItem('bersihin_customer_profile', JSON.stringify(profileData));
+          if (u) {
+            u.nama = newName;
+            u.telepon = newPhone;
+            u.email = newEmail;
+            u.alamat = newAddress;
+            sessionStorage.setItem('bersihin_user', JSON.stringify(u));
+            localStorage.setItem('bersihin_user', JSON.stringify(u));
+          }
+        } catch (_) {}
 
         // Update di halaman
         document.getElementById('displayFullName').textContent = newName;
@@ -1049,23 +1166,56 @@
       cancelPasswordBtn.addEventListener('click', () => passwordModal.classList.add('hidden'));
     }
     if (passwordForm) {
-      passwordForm.addEventListener('submit', (e) => {
+      passwordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const newPass = document.getElementById('newPassInput').value;
-        const confirmPass = document.getElementById('confirmPassInput').value;
+        const oldPass = document.getElementById('oldPassInput') ? document.getElementById('oldPassInput').value.trim() : '';
+        const newPass = document.getElementById('newPassInput').value.trim();
+        const confirmPass = document.getElementById('confirmPassInput').value.trim();
+
+        if (!oldPass) {
+          showToast('Silakan masukkan password lama.', true);
+          return;
+        }
+
+        if (newPass.length < 8) {
+          showToast('Password baru minimal 8 karakter!', true);
+          return;
+        }
 
         if (newPass !== confirmPass) {
-          if (typeof showToast === 'function') {
-            showToast('Konfirmasi password tidak cocok dengan password baru!', true);
-          } else if (typeof window.showBersihinToast === 'function') {
-            window.showBersihinToast('Konfirmasi password tidak cocok dengan password baru!', true);
-          }
+          showToast('Konfirmasi password tidak cocok dengan password baru!', true);
           return;
+        }
+
+        // Kirim update kata sandi ke Backend MySQL
+        try {
+          const token = localStorage.getItem('bersihin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = 'Bearer ' + token;
+
+          const resp = await fetch(`${getApiBaseUrl()}/api/pelanggan/password`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({
+              password_lama: oldPass,
+              password_baru: newPass
+            })
+          });
+
+          const result = await resp.json();
+          if (!resp.ok || !result.success) {
+            showToast(result.message || 'Gagal mengubah password.', true);
+            return;
+          }
+        } catch (err) {
+          console.warn('Gagal mengubah password di server:', err.message);
         }
 
         passwordModal.classList.add('hidden');
         passwordForm.reset();
         showToast('Password akun Anda berhasil diganti!');
+      });
+    }
       });
     }
 

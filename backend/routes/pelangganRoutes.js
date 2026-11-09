@@ -15,12 +15,23 @@ const { requireCustomerAuth } = require('../middleware/authMiddleware');
 // Profil Pelanggan
 router.get('/profil', requireCustomerAuth, pelanggan.getPelanggan);
 router.put('/profil', requireCustomerAuth, pelanggan.updatePelanggan);
+router.post('/profil', requireCustomerAuth, pelanggan.updatePelanggan);
 router.get('/profile', requireCustomerAuth, pelanggan.getPelanggan);
 router.put('/profile', requireCustomerAuth, pelanggan.updatePelanggan);
+router.post('/profile', requireCustomerAuth, pelanggan.updatePelanggan);
 
-// Riwayat Pesanan
+// Ubah Password Pelanggan
+router.put('/password', requireCustomerAuth, pelanggan.updatePasswordPelanggan);
+router.post('/password', requireCustomerAuth, pelanggan.updatePasswordPelanggan);
+
+// Riwayat & Buat Pesanan
 router.get('/pesanan', requireCustomerAuth, pelanggan.getPesanan);
 router.get('/orders', requireCustomerAuth, pelanggan.getPesanan);
+router.post('/pesanan', pelanggan.createPesanan);
+router.post('/orders', pelanggan.createPesanan);
+router.get('/pesanan/:idOrCode', pelanggan.getPesananDetail);
+router.get('/orders/:idOrCode', pelanggan.getPesananDetail);
+router.get('/status/:idOrCode', pelanggan.getPesananDetail);
 
 // Katalog Layanan (Bisa dilihat publik maupun pelanggan)
 router.get('/layanan', pelanggan.getLayanan);

@@ -44,13 +44,35 @@
       phone: '0812 3456 7890',
       address: 'Jl. Cempaka Indah No. 12, Coblong, Bandung, Jawa Barat 40132',
       memberTier: 'Silver Member',
-      joinDate: 'Januari 2024'
+      joinDate: 'November 2026'
     }
   };
 
   // ===========================================================================
   // 2. UTILITAS GLOBAL
   // ===========================================================================
+
+  /**
+   * Format teks tanggal bergabung pelanggan real-time (contoh: Bergabung sejak November 2026)
+   */
+  function formatMemberSince(dateInput) {
+    let d;
+    if (!dateInput) {
+      d = new Date();
+    } else if (dateInput instanceof Date) {
+      d = dateInput;
+    } else {
+      d = new Date(dateInput);
+      if (isNaN(d.getTime())) {
+        d = new Date();
+      }
+    }
+    const months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return `Bergabung sejak ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
 
   /**
    * Format angka menjadi representasi Rupiah (contoh: Rp45.000)
@@ -123,9 +145,44 @@
    */
   function getCustomerProfile() {
     try {
-      const stored = localStorage.getItem(BersihinConfig.storageKeys.profile);
-      if (stored) {
-        return Object.assign({}, BersihinConfig.defaultProfile, JSON.parse(stored));
+      let userObj = null;
+      try {
+        const userRaw = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+        if (userRaw) userObj = JSON.parse(userRaw);
+      } catch (_) {}
+
+      let storedProfile = null;
+      try {
+        const stored = sessionStorage.getItem(BersihinConfig.storageKeys.profile) || localStorage.getItem(BersihinConfig.storageKeys.profile);
+        if (stored) storedProfile = JSON.parse(stored);
+      } catch (_) {}
+
+      // Jika userObj aktif login, pastikan profil 100% selaras dengan akun tersebut!
+      if (userObj) {
+        const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Pelanggan';
+        const activeEmail = userObj.email || (storedProfile && storedProfile.email) || '';
+        const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '';
+        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Margonda Raya No. 45, Beji, Kota Depok';
+        const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || null;
+        const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || null;
+        const activeJoined = userObj.created_at || userObj.createdAt || (storedProfile && (storedProfile.created_at || storedProfile.createdAt)) || new Date().toISOString();
+
+        return {
+          id_user: activeIdUser,
+          id_pelanggan: activeIdCust,
+          username: userObj.username || '',
+          fullName: activeName,
+          email: activeEmail,
+          phone: activePhone,
+          address: activeAddress,
+          memberTier: (storedProfile && storedProfile.memberTier) || 'Silver Member',
+          created_at: activeJoined,
+          createdAt: activeJoined
+        };
+      }
+
+      if (storedProfile) {
+        return Object.assign({}, BersihinConfig.defaultProfile, storedProfile);
       }
     } catch (e) {
       console.warn('Gagal memuat profil pelanggan dari storage:', e);
@@ -134,12 +191,13 @@
   }
 
   /**
-   * Menyimpan data profil pelanggan ke localStorage
+   * Menyimpan data profil pelanggan ke storage (session & local)
    */
   function saveCustomerProfile(data) {
     try {
       const current = getCustomerProfile();
       const updated = Object.assign({}, current, data);
+      sessionStorage.setItem(BersihinConfig.storageKeys.profile, JSON.stringify(updated));
       localStorage.setItem(BersihinConfig.storageKeys.profile, JSON.stringify(updated));
       return updated;
     } catch (e) {
@@ -148,14 +206,79 @@
     }
   }
 
+  /**
+   * Menghasilkan inisial nama akun pengguna (1-2 huruf kapital) untuk avatar profil
+   */
+  function getInitials(name) {
+    if (!name || typeof name !== 'string') return 'PL';
+    const clean = name.trim().replace(/[^a-zA-Z0-9\s]/g, '');
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    if (parts.length === 1 && parts[0].length >= 2) {
+      return parts[0].slice(0, 2).toUpperCase();
+    }
+    if (parts.length === 1 && parts[0].length === 1) {
+      return parts[0].toUpperCase();
+    }
+    return 'PL';
+  }
+
   // ===========================================================================
   // 3. INISIALISASI KOMPONEN BERSAMA (SHARED) PADA SELURUH HALAMAN
   // ===========================================================================
   function initSharedComponents() {
-    // 3.1 Sinkronisasi Nama & Email di Topbar / Sidebar
     const profile = getCustomerProfile();
-    const topbarNames = document.querySelectorAll('#topbarUserName, #bannerProfileName, #dropdownUserName');
-    const topbarEmails = document.querySelectorAll('#dropdownUserEmail, #bannerProfileEmail');
+    const initials = getInitials(profile.fullName || profile.username || 'Pelanggan');
+
+    // 3.1 Sinkronisasi Avatar Pengguna Mengikuti Nama Akun
+    const profileMenuBtns = document.querySelectorAll('#profileMenuBtn, .customer-avatar-btn');
+    profileMenuBtns.forEach(btn => {
+      if (btn && !btn.querySelector('img')) {
+        btn.textContent = initials;
+        btn.setAttribute('title', profile.fullName || 'Profil Pengguna');
+      }
+    });
+
+    const bannerAvatars = document.querySelectorAll('#bannerProfileAvatar, #modalPhotoPreviewAvatar, .customer-avatar-badge, [data-user-avatar]');
+    bannerAvatars.forEach(el => {
+      if (el && !el.querySelector('img')) {
+        el.textContent = initials;
+      }
+    });
+
+    // Fallback: deteksi elemen avatar div dengan inisial default 'AP'
+    document.querySelectorAll('div').forEach(el => {
+      if ((el.classList.contains('size-16') || el.classList.contains('size-20')) &&
+          el.classList.contains('font-bold') &&
+          !el.querySelector('*') &&
+          el.textContent.trim() === 'AP') {
+        el.textContent = initials;
+      }
+    });
+
+    // 3.1b Pembaruan Hari & Tanggal Topbar Real-Time di Seluruh Halaman
+    const nowRealtime = new Date();
+    const dateFormatted = nowRealtime.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const isoDateStr = nowRealtime.toISOString().slice(0, 10);
+    document.querySelectorAll('header time, [data-realtime-date], time#topbarDateDisplay').forEach(el => {
+      el.textContent = dateFormatted;
+      el.setAttribute('datetime', isoDateStr);
+    });
+
+    // 3.2 Sinkronisasi Nama & Email di Seluruh Tampilan Web
+    const topbarNames = document.querySelectorAll(
+      '#topbarUserName, #bannerProfileName, #dropdownUserName, #passwordOverviewName, #statusCustomerName, #loggedAsName, #modalCustomerName'
+    );
+    const topbarEmails = document.querySelectorAll(
+      '#dropdownUserEmail, #bannerProfileEmail, #passwordOverviewEmail'
+    );
 
     topbarNames.forEach(el => {
       if (el) el.textContent = profile.fullName;
@@ -163,6 +286,31 @@
     topbarEmails.forEach(el => {
       if (el) el.textContent = profile.email;
     });
+
+    const overviewPhone = document.getElementById('passwordOverviewPhone');
+    if (overviewPhone) overviewPhone.textContent = profile.phone || '-';
+
+    // 3.3 Sinkronisasi Tanggal Bergabung Pelanggan Real-Time Sesuai Akun
+    const memberSinceStr = formatMemberSince(profile.created_at || profile.createdAt || profile.joinedAt || profile.joinDate);
+    document.querySelectorAll('#bannerMemberSince, .banner-member-since').forEach(el => {
+      if (el) el.textContent = memberSinceStr;
+    });
+
+    const expSub = document.getElementById('statTotalPengeluaranSub');
+    if (expSub) {
+      const d = (profile.created_at || profile.createdAt) ? new Date(profile.created_at || profile.createdAt) : new Date();
+      const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const mShort = !isNaN(d.getTime()) ? shortMonths[d.getMonth()] : 'Nov';
+      const y = !isNaN(d.getTime()) ? d.getFullYear() : new Date().getFullYear();
+      expSub.textContent = `Sejak ${mShort} ${y}`;
+    }
+
+    // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna
+    const greetingHeading = document.getElementById('greetingHeading');
+    if (greetingHeading) {
+      const firstName = (profile.fullName || profile.username || 'Pelanggan').trim().split(/\s+/)[0];
+      greetingHeading.textContent = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+    }
 
     // 3.2 Sidebar Drawer Mobile
     const sidebar = document.getElementById('sidebar');
@@ -190,27 +338,117 @@
     const notifToggleBtn = document.getElementById('notifToggleBtn');
     const notifDropdown = document.getElementById('notifDropdown');
     const notifDot = document.getElementById('notifDot');
-    const markNotifReadBtn = document.getElementById('markNotifReadBtn');
     const profileMenuBtn = document.getElementById('profileMenuBtn');
     const profileDropdown = document.getElementById('profileDropdown');
+
+    // Render notifikasi pesanan terbaru secara dinamis
+    function renderCustomerNotifications() {
+      const notifDrop = document.getElementById('notifDropdown');
+      const dot = document.getElementById('notifDot');
+      if (!notifDrop) return;
+
+      let transactions = [];
+      try {
+        const raw = localStorage.getItem('bersihin_transactions');
+        if (raw) transactions = JSON.parse(raw);
+      } catch (_) {}
+
+      let activeOrder = null;
+      try {
+        const activeRaw = localStorage.getItem('bersihin_active_order');
+        if (activeRaw) activeOrder = JSON.parse(activeRaw);
+      } catch (_) {}
+
+      const latestOrder = activeOrder || (transactions.length > 0 ? transactions[0] : null);
+
+      if (!latestOrder) {
+        notifDrop.innerHTML = `
+          <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+          </div>
+          <div class="py-6 text-center text-xs text-slate-400">
+            Belum ada notifikasi pesanan baru.
+          </div>
+        `;
+        if (dot) dot.classList.add('hidden');
+        return;
+      }
+
+      const orderCode = latestOrder.code || latestOrder.id || latestOrder.orderId || latestOrder.kode_pesanan || 'TRX-BARU';
+      const rawStatus = String(latestOrder.status || 'MENUNGGU').toUpperCase();
+      const serviceName = latestOrder.service || latestOrder.layanan || 'Cuci + Setrika';
+      const weight = latestOrder.weight || (latestOrder.weightKg ? `${latestOrder.weightKg},0 kg` : '3,0 kg');
+
+      let title = `Pesanan ${orderCode} Menunggu Konfirmasi`;
+      let desc = `Pakaian Anda (${serviceName} &bull; ${weight}) berhasil dibuat dan sedang menunggu pengecekan pegawai outlet.`;
+      let badgeBg = 'bg-amber-100 text-amber-800';
+
+      if (rawStatus.includes('DIPROSES') || rawStatus.includes('TERKONFIRMASI')) {
+        title = `Pesanan ${orderCode} Dikonfirmasi`;
+        desc = `Pesanan Anda (${serviceName}) telah dikonfirmasi oleh pegawai outlet dan siap dicuci.`;
+        badgeBg = 'bg-emerald-100 text-emerald-800';
+      } else if (rawStatus.includes('DICUCI') || rawStatus.includes('CUCI')) {
+        title = `Pesanan ${orderCode} Sedang Dicuci`;
+        desc = `Pakaian Anda (${weight}) sedang dalam tahap pencucian. Estimasi selesai ${latestOrder.estDone || '2 hari lagi'}.`;
+        badgeBg = 'bg-orange-100 text-amber-800';
+      } else if (rawStatus.includes('DISETRIKA') || rawStatus.includes('SETRIKA')) {
+        title = `Pesanan ${orderCode} Sedang Disetrika`;
+        desc = `Pakaian Anda telah selesai dicuci dan sedang dirapikan dalam proses setrika uap.`;
+        badgeBg = 'bg-indigo-100 text-indigo-800';
+      } else if (rawStatus.includes('SELESAI') || rawStatus.includes('SIAP')) {
+        title = `Pesanan ${orderCode} Selesai & Siap Diambil`;
+        desc = `Cucian Anda telah bersih, rapi, dan harum. Siap untuk diambil di outlet BersihIn!`;
+        badgeBg = 'bg-emerald-100 text-emerald-800';
+      }
+
+      notifDrop.innerHTML = `
+        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+          <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+          <button type="button" id="markNotifReadBtn"
+            class="min-h-[36px] px-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50">
+            Tandai dibaca
+          </button>
+        </div>
+        <div class="py-3 flex items-start gap-3">
+          <div class="size-8 rounded-lg ${badgeBg} flex items-center justify-center shrink-0 mt-0.5">
+            <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+              <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="text-xs leading-4">
+            <p class="font-bold text-slate-800">${title}</p>
+            <p class="text-slate-600 text-[11px] mt-1">${desc}</p>
+            <span class="block text-[10px] text-slate-400 mt-1.5">Baru saja</span>
+          </div>
+        </div>
+      `;
+
+      if (dot) dot.classList.remove('hidden');
+
+      const markBtn = document.getElementById('markNotifReadBtn');
+      if (markBtn) {
+        markBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (dot) dot.classList.add('hidden');
+          markBtn.textContent = 'Semua dibaca';
+          showToast('Notifikasi ditandai telah dibaca.');
+        };
+      }
+    }
+
+    renderCustomerNotifications();
+    window.renderCustomerNotifications = renderCustomerNotifications;
 
     if (notifToggleBtn && notifDropdown && !notifToggleBtn.dataset.hasNotifListener) {
       notifToggleBtn.dataset.hasNotifListener = 'true';
       notifToggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        renderCustomerNotifications();
         const willOpen = notifDropdown.classList.contains('hidden');
         notifDropdown.classList.toggle('hidden', !willOpen);
         if (profileDropdown) profileDropdown.classList.add('hidden');
         notifToggleBtn.setAttribute('aria-expanded', String(willOpen));
-      });
-    }
-
-    if (markNotifReadBtn && !markNotifReadBtn.dataset.hasReadListener) {
-      markNotifReadBtn.dataset.hasReadListener = 'true';
-      markNotifReadBtn.addEventListener('click', () => {
-        if (notifDot) notifDot.classList.add('hidden');
-        markNotifReadBtn.textContent = 'Semua dibaca';
-        showToast('Semua notifikasi ditandai telah dibaca.');
       });
     }
 
@@ -542,170 +780,361 @@
   // ===========================================================================
   // 4. PENGELOLAAN DATA TRANSAKSI PELANGGAN (CENTRAL TRANSACTIONS STORE)
   // ===========================================================================
-  const DEFAULT_CUSTOMER_TRANSACTIONS = [
-    {
-      code: 'TRX-240518-01',
-      date: '18 Mei 2024',
-      timestamp: '2024-05-18T09:15:00',
-      service: 'Cuci + Setrika',
-      weight: '4,5 kg',
-      weightKg: 4.5,
-      amount: 45000,
-      total: 'Rp45.000',
-      status: 'Diproses',
-      dateIn: '18 Mei 2024',
-      dateOut: '21 Mei 2024',
-      notes: 'Pisahkan pakaian putih, gunakan pewangi lembut.',
-      calcSub: '4,5 kg x Rp10.000',
-      paidDate: 'Dibayar 18 Mei 2024 (Lunas - QRIS)',
-      created: 'Dibuat pada 18 Mei 2024, 09.15 WIB'
-    },
-    {
-      code: 'TRX-240512-08',
-      date: '12 Mei 2024',
-      timestamp: '2024-05-12T14:20:00',
-      service: 'Express',
-      weight: '4,0 kg',
-      weightKg: 4.0,
-      amount: 72000,
-      total: 'Rp72.000',
-      status: 'Selesai',
-      dateIn: '12 Mei 2024',
-      dateOut: '13 Mei 2024',
-      notes: 'Lipat rapi sesuai kategori kemeja.',
-      calcSub: '4,0 kg x Rp18.000',
-      paidDate: 'Dibayar 12 Mei 2024 (Lunas - Tunai)',
-      created: 'Dibuat pada 12 Mei 2024, 14.20 WIB'
-    },
-    {
-      code: 'TRX-240506-12',
-      date: '6 Mei 2024',
-      timestamp: '2024-05-06T10:15:00',
-      service: 'Cuci Kering',
-      weight: '4,0 kg',
-      weightKg: 4.0,
-      amount: 28000,
-      total: 'Rp28.000',
-      status: 'Selesai',
-      dateIn: '6 Mei 2024',
-      dateOut: '8 Mei 2024',
-      notes: 'Gunakan deterjen hypoallergenic.',
-      calcSub: '4,0 kg x Rp7.000',
-      paidDate: 'Dibayar 6 Mei 2024 (Lunas - QRIS)',
-      created: 'Dibuat pada 6 Mei 2024, 10.15 WIB'
-    },
-    {
-      code: 'TRX-240430-05',
-      date: '30 Apr 2024',
-      timestamp: '2024-04-30T08:45:00',
-      service: 'Setrika Saja',
-      weight: '5,0 kg',
-      weightKg: 5.0,
-      amount: 30000,
-      total: 'Rp30.000',
-      status: 'Selesai',
-      dateIn: '30 Apr 2024',
-      dateOut: '1 Mei 2024',
-      notes: 'Setrika rapi licin dengan pewangi.',
-      calcSub: '5,0 kg x Rp6.000',
-      paidDate: 'Dibayar 30 Apr 2024 (Lunas - Tunai)',
-      created: 'Dibuat pada 30 Apr 2024, 08.45 WIB'
-    },
-    {
-      code: 'TRX-240422-09',
-      date: '22 Apr 2024',
-      timestamp: '2024-04-22T10:00:00',
-      service: 'Cuci + Setrika',
-      weight: '6,0 kg',
-      weightKg: 6.0,
-      amount: 60000,
-      total: 'Rp60.000',
-      status: 'Selesai',
-      dateIn: '22 Apr 2024',
-      dateOut: '25 Apr 2024',
-      notes: 'Termasuk selimut tipis.',
-      calcSub: '6,0 kg x Rp10.000',
-      paidDate: 'Dibayar 22 Apr 2024 (Lunas - Transfer Bank)',
-      created: 'Dibuat pada 22 Apr 2024, 10.00 WIB'
-    },
-    {
-      code: 'TRX-240415-02',
-      date: '15 Apr 2024',
-      timestamp: '2024-04-15T08:45:00',
-      service: 'Express',
-      weight: '3,0 kg',
-      weightKg: 3.0,
-      amount: 54000,
-      total: 'Rp54.000',
-      status: 'Selesai',
-      dateIn: '15 Apr 2024',
-      dateOut: '16 Apr 2024',
-      notes: 'Paket kilat.',
-      calcSub: '3,0 kg x Rp18.000',
-      paidDate: 'Dibayar 15 Apr 2024 (Lunas - QRIS)',
-      created: 'Dibuat pada 15 Apr 2024, 08.45 WIB'
-    },
-    {
-      code: 'TRX-240408-07',
-      date: '8 Apr 2024',
-      timestamp: '2024-04-08T15:00:00',
-      service: 'Cuci Kering',
-      weight: '3,5 kg',
-      weightKg: 3.5,
-      amount: 24500,
-      total: 'Rp24.500',
-      status: 'Selesai',
-      dateIn: '8 Apr 2024',
-      dateOut: '10 Apr 2024',
-      notes: 'Pewangi Ocean Fresh.',
-      calcSub: '3,5 kg x Rp7.000',
-      paidDate: 'Dibayar 8 Apr 2024 (Lunas - QRIS)',
-      created: 'Dibuat pada 8 Apr 2024, 15.00 WIB'
-    },
-    {
-      code: 'TRX-240328-04',
-      date: '28 Mar 2024',
-      timestamp: '2024-03-28T11:30:00',
-      service: 'Cuci + Setrika',
-      weight: '3,0 kg',
-      weightKg: 3.0,
-      amount: 30000,
-      total: 'Rp30.000',
-      status: 'Dibatalkan',
-      dateIn: '28 Mar 2024',
-      dateOut: '31 Mar 2024',
-      notes: 'Dibatalkan oleh pelanggan sebelum penjemputan.',
-      calcSub: '3,0 kg x Rp10.000',
-      paidDate: 'Dikembalikan (Refund)',
-      created: 'Dibuat pada 28 Mar 2024, 11.30 WIB'
+  // Data transaksi bawaan kosong agar seluruh pesanan 100% bersumber murni dari database MySQL XAMPP
+  const DEFAULT_CUSTOMER_TRANSACTIONS = [];
+
+  /**
+   * Konversi satu baris pesanan dari database MySQL ke format data frontend
+   */
+  function mapDbOrderToFrontend(dbRow, idx) {
+    const code = dbRow.kode_pesanan || dbRow.nomor_pesanan || `TRX-${dbRow.id_pesanan}`;
+    const amountNum = Number(dbRow.total_harga) || 0;
+    const beratVal = Number(dbRow.total_berat) || 4;
+    const rawDate = dbRow.tanggal_pesanan || dbRow.created_at;
+    let dateStr = 'Hari ini';
+    let timeIso = new Date().toISOString();
+    if (rawDate) {
+      const d = new Date(rawDate);
+      if (!isNaN(d.getTime())) {
+        timeIso = d.toISOString();
+        dateStr = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      }
     }
-  ];
+
+    const srvCheck = String(dbRow.layanan || '').toLowerCase();
+    const isExpress = srvCheck.includes('express') || srvCheck.includes('kilat') || srvCheck.includes('4 jam') || srvCheck.includes('cepat');
+    let estStr = '2 hari lagi';
+    if (dbRow.tanggal_selesai) {
+      const es = new Date(dbRow.tanggal_selesai);
+      if (!isNaN(es.getTime())) {
+        if (isExpress) {
+          let expressEst = es;
+          if (es.getTime() - new Date(timeIso).getTime() > 12 * 60 * 60 * 1000) {
+            expressEst = new Date(new Date(timeIso).getTime() + 4 * 60 * 60 * 1000);
+          }
+          const tStr = `${String(expressEst.getHours()).padStart(2, '0')}:${String(expressEst.getMinutes()).padStart(2, '0')} WIB`;
+          const isToday = expressEst.toDateString() === new Date(timeIso).toDateString();
+          estStr = isToday ? `Hari ini, ${tStr} (4 Jam)` : `Besok, ${tStr} (4 Jam)`;
+        } else {
+          const tStr = `${String(es.getHours()).padStart(2, '0')}:${String(es.getMinutes()).padStart(2, '0')} WIB`;
+          estStr = `${es.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}, ${tStr} (2 Hari)`;
+        }
+      }
+    } else {
+      estStr = formatEstimatedDone({ service: dbRow.layanan, timestamp: timeIso });
+    }
+
+    let statusText = 'Menunggu konfirmasi';
+    const st = String(dbRow.status || '').toUpperCase().trim();
+    if (st === 'MENUNGGU') statusText = 'Menunggu konfirmasi';
+    else if (st === 'DIPROSES') statusText = 'Terkonfirmasi \u2022 Diproses';
+    else if (st === 'DICUCI') statusText = 'Sedang dicuci';
+    else if (st === 'DISETRIKA') statusText = 'Sedang disetrika';
+    else if (st === 'SIAP_DIAMBIL') statusText = 'Siap diambil';
+    else if (st === 'SELESAI') statusText = 'Selesai';
+    else if (st === 'DIBATALKAN') statusText = 'Dibatalkan';
+    else statusText = dbRow.status;
+
+    return {
+      code: code,
+      id: code,
+      id_pesanan: dbRow.id_pesanan,
+      id_pelanggan: dbRow.id_pelanggan,
+      orderSeq: idx,
+      date: dateStr,
+      timestamp: timeIso,
+      service: dbRow.layanan || 'Cuci + Setrika',
+      weight: `${beratVal.toLocaleString('id-ID')} kg`,
+      weightKg: beratVal,
+      amount: amountNum,
+      total: `Rp${amountNum.toLocaleString('id-ID')}`,
+      totalFormatted: `Rp${amountNum.toLocaleString('id-ID')}`,
+      status: statusText,
+      statusCode: st,
+      dateIn: dateStr,
+      dateOut: estStr,
+      estDone: estStr,
+      notes: dbRow.catatan || 'Pakaian reguler',
+      calcSub: `${beratVal.toLocaleString('id-ID')} kg (Estimasi)`,
+      paidDate: dbRow.status_pembayaran === 'BERHASIL' ? 'Lunas' : 'Belum dibayar',
+      created: `Dibuat pada ${dateStr}`
+    };
+  }
+
+  /**
+   * Mengambil seluruh data pesanan milik pelanggan langsung dari database MySQL XAMPP
+   */
+  async function syncAllCustomerDataWithBackend() {
+    try {
+      let activeUserId = null;
+      let activeCustId = null;
+      let activeUsername = null;
+      try {
+        const u = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+        if (u) {
+          const up = JSON.parse(u);
+          activeUserId = up.id_user;
+          activeCustId = up.id_pelanggan;
+          activeUsername = (up.username || '').toLowerCase();
+        }
+      } catch (_) {}
+
+      try {
+        const p = sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile');
+        if (p) {
+          const pp = JSON.parse(p);
+          if (!activeCustId && pp.id_pelanggan) activeCustId = pp.id_pelanggan;
+          if (!activeUserId && pp.id_user) activeUserId = pp.id_user;
+          if (!activeUsername && pp.username) activeUsername = pp.username.toLowerCase();
+        }
+      } catch (_) {}
+
+      // Fallback ID pelanggan jika username diketahui di database
+      if (!activeCustId) {
+        if (activeUsername === 'nuristya' || activeUserId === 7) {
+          activeCustId = 5;
+          activeUserId = 7;
+        } else if (activeUsername === 'andipratama' || activeUserId === 4) {
+          activeCustId = 1;
+          activeUserId = 4;
+        } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
+          activeCustId = 2;
+          activeUserId = 5;
+        } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
+          activeCustId = 3;
+          activeUserId = 6;
+        }
+      }
+
+      const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      // Ambil profil paling segar langsung dari MySQL jika backend tersedia
+      try {
+        const profUrl = `${getBackendBaseUrl()}/api/pelanggan/profil?id_pelanggan=${activeCustId || ''}&id_user=${activeUserId || ''}`;
+        const profRes = await fetch(profUrl, { headers });
+        if (profRes.ok) {
+          const profJson = await profRes.json();
+          if (profJson.success && profJson.data) {
+            const d = profJson.data;
+            saveCustomerProfile({
+              id_user: d.id_user || activeUserId,
+              id_pelanggan: d.id_pelanggan || activeCustId,
+              fullName: d.nama || d.fullName,
+              phone: d.telepon || d.phone,
+              email: d.email,
+              address: d.alamat || d.address,
+              created_at: d.created_at
+            });
+            initSharedComponents();
+          }
+        }
+      } catch (_) {}
+
+      let url = `${getBackendBaseUrl()}/api/pelanggan/pesanan`;
+      const queryParts = [];
+      if (activeCustId) queryParts.push(`id_pelanggan=${encodeURIComponent(activeCustId)}`);
+      if (activeUserId) queryParts.push(`id_user=${encodeURIComponent(activeUserId)}`);
+      if (activeUsername) queryParts.push(`username=${encodeURIComponent(activeUsername)}`);
+      if (queryParts.length > 0) url += `?${queryParts.join('&')}`;
+
+      const res = await fetch(url, { headers });
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (!json.success || !Array.isArray(json.data)) return null;
+
+      const dbRows = json.data;
+      const mappedList = dbRows.map((r, idx) => mapDbOrderToFrontend(r, idx));
+
+      // Urutkan pesanan dari yang paling baru ke yang lama (id_pesanan DESC atau timestamp DESC)
+      mappedList.sort((a, b) => {
+        const idA = Number(a.id_pesanan) || 0;
+        const idB = Number(b.id_pesanan) || 0;
+        if (idA && idB && idA !== idB) return idB - idA;
+        return (new Date(b.timestamp).getTime() || 0) - (new Date(a.timestamp).getTime() || 0);
+      });
+
+      // 1. Simpan daftar pesanan murni dari database MySQL XAMPP (ke sessionStorage & localStorage)
+      sessionStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
+      localStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
+
+      // 2. Selaraskan pesanan aktif teratas yang belum selesai (prioritaskan Express atau pesanan terbaru)
+      let activeFromDb = mappedList.find(x => {
+        const s = String(x.status || x.statusCode || '').toUpperCase();
+        const srv = String(x.service || x.layanan || '').toLowerCase();
+        const isExp = srv.includes('express') || srv.includes('kilat') || srv.includes('4 jam');
+        return isExp && !s.includes('SELESAI') && !s.includes('BATAL') && !s.includes('DIAMBIL');
+      });
+
+      if (!activeFromDb) {
+        activeFromDb = mappedList.find(x => {
+          const s = String(x.status || x.statusCode || '').toUpperCase();
+          return !s.includes('SELESAI') && !s.includes('BATAL') && !s.includes('DIAMBIL');
+        });
+      }
+
+      if (activeFromDb) {
+        sessionStorage.setItem('bersihin_active_order', JSON.stringify(activeFromDb));
+        localStorage.setItem('bersihin_active_order', JSON.stringify(activeFromDb));
+      } else {
+        sessionStorage.removeItem('bersihin_active_order');
+        localStorage.removeItem('bersihin_active_order');
+      }
+
+      return mappedList;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    window.syncAllCustomerDataWithBackend = syncAllCustomerDataWithBackend;
+  }
+
+  function formatEstimatedDone(raw) {
+    if (!raw) return '2 hari lagi';
+    const srv = String(raw.service || raw.layanan || '').toLowerCase();
+    const isExpress = srv.includes('express') || srv.includes('kilat') || srv.includes('4 jam') || srv.includes('cepat');
+    let base = new Date();
+    if (raw.timestamp || raw.createdAt) {
+      const p = new Date(raw.timestamp || raw.createdAt);
+      if (!isNaN(p.getTime())) base = p;
+    }
+
+    if (isExpress) {
+      const est = new Date(base.getTime() + 4 * 60 * 60 * 1000);
+      const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+      const isToday = est.toDateString() === base.toDateString();
+      return isToday ? `Hari ini, ${timeStr} (4 Jam)` : `Besok, ${timeStr} (4 Jam)`;
+    }
+
+    // Reguler (48 jam)
+    const est = new Date(base.getTime() + 48 * 60 * 60 * 1000);
+    const timeStr = `${String(est.getHours()).padStart(2, '0')}:${String(est.getMinutes()).padStart(2, '0')} WIB`;
+    const dateStr = est.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `${dateStr}, ${timeStr} (2 Hari)`;
+  }
+
+  function isCustomerOrderActive(order) {
+    if (!order) return false;
+    const s = String(order.status || order.statusCode || '').toUpperCase().trim();
+    if (s.includes('SELESAI') || s.includes('BATAL') || s === 'TELAH DIAMBIL' || s === 'SUDAH DIAMBIL') {
+      return false;
+    }
+    return true;
+  }
+
+  function getActiveCustomerOrder() {
+    const allTrx = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+    let order = null;
+
+    if (Array.isArray(allTrx) && allTrx.length > 0) {
+      // 1. Prioritaskan pesanan Express yang sedang aktif berjalan
+      order = allTrx.find(x => {
+        const srv = String(x.service || x.layanan || '').toLowerCase();
+        const isExp = srv.includes('express') || srv.includes('kilat') || srv.includes('4 jam') || srv.includes('cepat');
+        return isExp && isCustomerOrderActive(x);
+      }) || allTrx.find(x => isCustomerOrderActive(x));
+    }
+
+    // 2. Fallback ke bersihin_active_order jika masih aktif dan milik pelanggan aktif
+    if (!order) {
+      try {
+        const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
+        if (activeRaw) {
+          const parsed = JSON.parse(activeRaw);
+          let currentCustId = null;
+          try {
+            const u = JSON.parse(localStorage.getItem('bersihin_user') || '{}');
+            currentCustId = u.id_pelanggan;
+          } catch (_) {}
+          if ((!currentCustId || !parsed.id_pelanggan || Number(parsed.id_pelanggan) === Number(currentCustId)) && isCustomerOrderActive(parsed)) {
+            order = parsed;
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Selaraskan storage bersihin_active_order secara otomatis
+    try {
+      if (order) {
+        localStorage.setItem('bersihin_active_order', JSON.stringify(order));
+      } else {
+        localStorage.removeItem('bersihin_active_order');
+      }
+    } catch (_) {}
+
+    return order;
+  }
+
+  function normalizeStatusCategory(rawStatus) {
+    const s = String(rawStatus || '').toUpperCase().trim();
+    if (s.includes('BATAL')) return 'Dibatalkan';
+    if (s.includes('SELESAI') || s === 'TELAH DIAMBIL' || s === 'SUDAH DIAMBIL') return 'Selesai';
+    return 'Diproses'; // MENUNGGU, TERKONFIRMASI, DIPROSES, DICUCI, DISETRIKA, SIAP_DIAMBIL
+  }
 
   function getAllCustomerTransactions() {
     let customList = [];
     try {
-      const stored = localStorage.getItem('bersihin_transactions');
+      const stored = sessionStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_transactions');
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) customList = parsed;
       }
     } catch (_) {}
 
+    // Identifikasi data akun pelanggan aktif yang sedang login
+    let activeCustId = null;
+    let activeUserId = null;
+    let activeUsername = '';
+
     try {
-      const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
-      if (activeRaw) {
-        const active = JSON.parse(activeRaw);
-        const code = active.code || active.orderId;
-        if (code && !customList.some(item => (item.code || item.id) === code)) {
-          customList.unshift(active);
-        }
+      const uRaw = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+      if (uRaw) {
+        const u = JSON.parse(uRaw);
+        activeCustId = u.id_pelanggan || null;
+        activeUserId = u.id_user || null;
+        activeUsername = (u.username || '').toLowerCase();
       }
     } catch (_) {}
+
+    try {
+      const pRaw = sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile');
+      if (pRaw) {
+        const p = JSON.parse(pRaw);
+        if (!activeCustId && p.id_pelanggan) activeCustId = p.id_pelanggan;
+        if (!activeUserId && p.id_user) activeUserId = p.id_user;
+        if (!activeUsername && p.username) activeUsername = p.username.toLowerCase();
+      }
+    } catch (_) {}
+
+    if (!activeCustId) {
+      if (activeUsername === 'nuristya' || activeUserId === 7) {
+        activeCustId = 5;
+        activeUserId = 7;
+      } else if (activeUsername === 'andipratama' || activeUserId === 4) {
+        activeCustId = 1;
+        activeUserId = 4;
+      } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
+        activeCustId = 2;
+        activeUserId = 5;
+      } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
+        activeCustId = 3;
+        activeUserId = 6;
+      }
+    }
 
     const result = [];
     const seen = new Set();
 
-    customList.forEach(raw => {
+    customList.forEach((raw, idx) => {
+      // 1. Isolasi transaksi per id_pelanggan: jangan tampilkan pesanan milik akun lain
+      if (activeCustId && raw.id_pelanggan && Number(raw.id_pelanggan) !== Number(activeCustId)) {
+        return;
+      }
+
       const code = raw.code || raw.id || raw.orderId;
       if (code && !seen.has(code)) {
         seen.add(code);
@@ -715,19 +1144,27 @@
             ? raw.total
             : parseInt(String(raw.total || raw.totalFormatted || '0').replace(/[^0-9]/g, ''), 10) || 45000);
 
+        const estDoneComputed = formatEstimatedDone(raw);
+        const fallbackTime = new Date(Date.now() - idx * 60000).toISOString();
+
         result.push({
           code: code,
+          id: code,
+          id_pesanan: raw.id_pesanan,
+          id_pelanggan: raw.id_pelanggan,
+          orderSeq: idx,
           date: raw.date || raw.dateIn || 'Hari ini',
-          timestamp: raw.createdAt || raw.timestamp || new Date().toISOString(),
-          service: raw.service || 'Cuci + Setrika',
+          timestamp: raw.createdAt || raw.timestamp || fallbackTime,
+          service: raw.service || raw.layanan || 'Cuci + Setrika',
           weight: raw.weight || (raw.weightKg ? `${raw.weightKg},0 kg` : '4,0 kg'),
           weightKg: parseFloat(raw.weightKg) || 4.0,
           amount: amountNum,
           total: raw.totalFormatted || (typeof raw.total === 'string' && raw.total.startsWith('Rp') ? raw.total : formatRupiah(amountNum)),
           status: raw.status || 'Menunggu konfirmasi',
           dateIn: raw.dateIn || raw.date || 'Hari ini',
-          dateOut: raw.estDone || raw.dateOut || '2 hari lagi',
-          notes: raw.notes || 'Pakaian reguler',
+          dateOut: raw.dateOut || estDoneComputed,
+          estDone: raw.estDone || estDoneComputed,
+          notes: raw.notes || raw.catatan || 'Pakaian reguler',
           calcSub: raw.calcSub || `${raw.weight || '4,0 kg'} (Estimasi)`,
           paidDate: raw.paidDate || (raw.status === 'Selesai' ? `Dibayar ${raw.date || 'kemarin'}` : 'Belum dibayar'),
           created: raw.created || raw.dateInTime || `Dibuat pada ${raw.date || 'Hari ini'}`
@@ -735,12 +1172,60 @@
       }
     });
 
-    DEFAULT_CUSTOMER_TRANSACTIONS.forEach(def => {
-      if (!seen.has(def.code)) {
-        seen.add(def.code);
-        result.push(def);
-      }
+    // Masukkan data demo bawaan HANYA jika akun yang aktif adalah akun demo Andi Pratama
+    if (activeUsername === 'andipratama' || (!activeUsername && !activeCustId)) {
+      DEFAULT_CUSTOMER_TRANSACTIONS.forEach((def, defIdx) => {
+        if (!seen.has(def.code)) {
+          seen.add(def.code);
+          result.push({
+            ...def,
+            orderSeq: 9999 + defIdx
+          });
+        }
+      });
+    }
+
+    // Urutkan transaksi dari yang paling baru ke paling lama (Newest First)
+    result.sort((a, b) => {
+      const idA = Number(a.id_pesanan) || 0;
+      const idB = Number(b.id_pesanan) || 0;
+      if (idA && idB && idA !== idB) return idB - idA;
+      const parseTime = (item) => {
+        if (!item) return 0;
+        if (item.timestamp) {
+          const t = new Date(item.timestamp).getTime();
+          if (!isNaN(t)) return t;
+        }
+        if (item.createdAt) {
+          const t = new Date(item.createdAt).getTime();
+          if (!isNaN(t)) return t;
+        }
+        return 0;
+      };
+      const tA = parseTime(a);
+      const tB = parseTime(b);
+      if (tA && tB && tA !== tB) return tB - tA;
+      return (a.orderSeq || 0) - (b.orderSeq || 0);
     });
+
+    // Selaraskan active order di localStorage agar sesuai pesanan teranyar
+    if (result.length > 0) {
+      try {
+        const topOrder = result.find(x => {
+          const s = String(x.status || '').toUpperCase();
+          return !s.includes('SELESAI') && !s.includes('BATAL') && !s.includes('DIAMBIL');
+        });
+        if (topOrder) {
+          localStorage.setItem('bersihin_active_order', JSON.stringify(topOrder));
+        } else {
+          localStorage.removeItem('bersihin_active_order');
+        }
+      } catch (_) {}
+    } else {
+      try {
+        localStorage.removeItem('bersihin_active_order');
+      } catch (_) {}
+    }
 
     return result;
   }
@@ -748,12 +1233,26 @@
   function getCustomerStats(transactions) {
     const list = transactions || getAllCustomerTransactions();
     const totalOrders = list.length;
-    const processing = list.filter(t => t.status === 'Diproses' || t.status === 'Menunggu konfirmasi').length;
-    const completed = list.filter(t => t.status === 'Selesai' || t.status === 'Diambil').length;
-    const canceled = list.filter(t => t.status === 'Dibatalkan').length;
-    const totalExpense = list
-      .filter(t => t.status !== 'Dibatalkan')
-      .reduce((sum, t) => sum + (t.amount || 0), 0);
+    let processing = 0;
+    let completed = 0;
+    let canceled = 0;
+    let totalExpense = 0;
+
+    list.forEach(t => {
+      const cat = normalizeStatusCategory(t.status);
+      if (cat === 'Diproses') processing++;
+      else if (cat === 'Selesai') completed++;
+      else if (cat === 'Dibatalkan') canceled++;
+
+      if (cat !== 'Dibatalkan') {
+        const amt = typeof t.amount === 'number' && !isNaN(t.amount)
+          ? t.amount
+          : (typeof t.total === 'number'
+            ? t.total
+            : parseInt(String(t.total || t.totalFormatted || '0').replace(/[^0-9]/g, ''), 10) || 0);
+        totalExpense += amt;
+      }
+    });
 
     return {
       total: totalOrders,
@@ -766,7 +1265,24 @@
   }
 
   function getStatusBadgeHtml(status, isSmall) {
-    if (status === 'Menunggu konfirmasi') {
+    const s = String(status || '').toUpperCase().trim();
+    if (s.includes('BATAL')) {
+      return `
+        <span class="px-2.5 py-1 bg-red-50 border border-red-200 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-red-500 rounded-full" aria-hidden="true"></span>
+          <span class="text-red-700 text-[10px] font-semibold leading-3">Dibatalkan</span>
+        </span>
+      `;
+    }
+    if (s.includes('SELESAI') || s.includes('DIAMBIL')) {
+      return `
+        <span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
+          <span class="text-teal-700 text-[10px] font-semibold leading-3">Selesai</span>
+        </span>
+      `;
+    }
+    if (s.includes('MENUNGGU')) {
       return `
         <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5">
           <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
@@ -774,15 +1290,29 @@
         </span>
       `;
     }
-    if (status === 'Diproses') {
+    return `
+      <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-[20px] inline-flex items-center gap-1.5 shadow-2xs">
+        <span class="size-1.5 bg-blue-600 rounded-full animate-pulse" aria-hidden="true"></span>
+        <span class="text-blue-800 text-[10px] font-semibold leading-3">Terkonfirmasi &bull; Diproses</span>
+      </span>
+    `;
+    if (s === 'DICUCI' || s.includes('CUCI')) {
       return `
-        <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5">
-          <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
-          <span class="text-yellow-700 text-[10px] font-semibold leading-3">Diproses</span>
+        <span class="px-2.5 py-1 bg-sky-50 border border-sky-200 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-cyan-600 rounded-full" aria-hidden="true"></span>
+          <span class="text-cyan-800 text-[10px] font-semibold leading-3">Sedang dicuci</span>
         </span>
       `;
     }
-    if (status === 'Selesai') {
+    if (s === 'DISETRIKA' || s.includes('SETRIKA')) {
+      return `
+        <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-[20px] inline-flex items-center gap-1.5">
+          <span class="size-1.5 bg-indigo-600 rounded-full" aria-hidden="true"></span>
+          <span class="text-indigo-800 text-[10px] font-semibold leading-3">Sedang disetrika</span>
+        </span>
+      `;
+    }
+    if (s === 'SELESAI') {
       return `
         <span class="px-2.5 py-1 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5">
           <span class="size-1.5 bg-teal-700 rounded-full" aria-hidden="true"></span>
@@ -790,11 +1320,11 @@
         </span>
       `;
     }
-    if (status === 'Diambil') {
+    if (s === 'DIAMBIL' || s.includes('SIAP')) {
       return `
         <span class="px-2.5 py-1 bg-indigo-50 rounded-[20px] inline-flex items-center gap-1.5">
           <span class="size-1.5 bg-cyan-700 rounded-full" aria-hidden="true"></span>
-          <span class="text-cyan-800 text-[10px] font-semibold leading-3">Diambil</span>
+          <span class="text-cyan-800 text-[10px] font-semibold leading-3">${status}</span>
         </span>
       `;
     }
@@ -807,11 +1337,19 @@
   }
 
   // Ekspor BersihinTrx ke window global
-  window.BersihinTrx = {
-    getAll: getAllCustomerTransactions,
-    getStats: getCustomerStats,
-    getStatusBadgeHtml: getStatusBadgeHtml
-  };
+  if (typeof window !== 'undefined') {
+    window.BersihinTrx = {
+      getAll: getAllCustomerTransactions,
+      getStats: getCustomerStats,
+      getStatusBadgeHtml: getStatusBadgeHtml,
+      getActiveOrder: getActiveCustomerOrder,
+      isActive: isCustomerOrderActive
+    };
+    window.getAllCustomerTransactions = getAllCustomerTransactions;
+    window.getCustomerStats = getCustomerStats;
+    window.getActiveCustomerOrder = getActiveCustomerOrder;
+    window.isCustomerOrderActive = isCustomerOrderActive;
+  }
 
   // ===========================================================================
   // 5. MODUL DASHBOARD PELANGGAN (PELANGGAN/dashboard.html)
@@ -852,11 +1390,17 @@
     const statSedangEl = document.getElementById('statSedangDiproses');
     if (statSedangEl) statSedangEl.textContent = stats.processing;
 
+    const statProcessSub = document.getElementById('statSedangDiprosesSub');
+    if (statProcessSub) statProcessSub.textContent = `${stats.processing} pesanan berjalan`;
+
     const statSelesaiEl = document.getElementById('statPesananSelesai');
     if (statSelesaiEl) statSelesaiEl.textContent = stats.completed;
 
     const statExpenseEl = document.getElementById('statTotalPengeluaran');
     if (statExpenseEl) statExpenseEl.textContent = stats.totalExpenseFormatted;
+
+    const statExpenseSub = document.getElementById('statTotalPengeluaranSub');
+    if (statExpenseSub) statExpenseSub.textContent = 'Akumulasi pengeluaran';
 
     // 5.3 Render Tabel Riwayat Transaksi Terbaru (Dinamis dari Storage)
     const recentBody = document.getElementById('recentTransactionsBody');
@@ -1149,64 +1693,7 @@
       });
     });
 
-    // Submit Buat Pesanan
-    createOrderForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const deliveryDateInput = document.getElementById('deliveryDateInput');
-      const laundryNotesInput = document.getElementById('laundryNotesInput');
-
-      const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
-      const now = new Date();
-      const deliveryDate = deliveryDateInput && deliveryDateInput.value ? deliveryDateInput.value : now.toLocaleDateString('id-ID', dateOptions);
-      const notes = laundryNotesInput ? laundryNotesInput.value.trim() : '';
-
-      const total = (currentWeightKg * selectedPricePerKg) + selectedDeliveryFee;
-
-      // Simpan riwayat pesanan ke localStorage agar tersinkronisasi ke status.html dan riwayat.html
-      const y = String(now.getFullYear()).slice(2);
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      const randomNum = Math.floor(10 + Math.random() * 90);
-      const newOrderId = `TRX-${y}${m}${d}-${randomNum}`;
-
-      const estDate = new Date(now);
-      estDate.setDate(now.getDate() + 2);
-      const estDoneFormatted = estDate.toLocaleDateString('id-ID', dateOptions);
-
-      const newOrder = {
-        orderId: newOrderId,
-        code: newOrderId,
-        created: 'Baru saja dibuat',
-        status: 'Menunggu konfirmasi',
-        statusCode: 'MENUNGGU',
-        step: 1,
-        service: selectedService,
-        weight: currentWeightKg + ',0 kg',
-        weightKg: currentWeightKg,
-        deliveryMethod: selectedDeliveryMethod,
-        dateIn: deliveryDate,
-        dateInTime: `${deliveryDate}, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')} WIB`,
-        dateOut: estDoneFormatted,
-        estDone: estDoneFormatted,
-        notes: notes || 'Pakaian reguler',
-        calcSub: `${currentWeightKg} kg x ${formatRupiah(selectedPricePerKg)}`,
-        total: formatRupiah(total),
-        totalFormatted: formatRupiah(total),
-        paidDate: 'Belum dibayar'
-      };
-
-      try {
-        sessionStorage.setItem(BersihinConfig.storageKeys.lastOrder, JSON.stringify(newOrder));
-        localStorage.setItem('bersihin_active_order', JSON.stringify(newOrder));
-
-        const existingRaw = localStorage.getItem(BersihinConfig.storageKeys.transactions);
-        const trxList = existingRaw ? JSON.parse(existingRaw) : [];
-        trxList.unshift(newOrder);
-        localStorage.setItem(BersihinConfig.storageKeys.transactions, JSON.stringify(trxList));
-      } catch (err) { }
-    });
-
-    // Inisialisasi awal kalkulasi
+    // Inisialisasi awal kalkulasi (submit form dikelola secara komprehensif bersama modal invoice di pesanan.html)
     updateOrderSummary();
   }
 
@@ -1308,18 +1795,40 @@
     let currentSearch = '';
     let currentSort = 'newest';
 
+    // Sinkronisasi pesanan langsung dari database MySQL XAMPP secara real-time
+    (async function syncWithDatabase() {
+      const freshList = await syncAllCustomerDataWithBackend();
+      if (freshList) {
+        allTrx.length = 0;
+        freshList.forEach(t => allTrx.push(t));
+        const refreshedStats = getCustomerStats(allTrx);
+        if (statTotalEl) statTotalEl.textContent = refreshedStats.total;
+        if (statProcessEl) statProcessEl.textContent = refreshedStats.processing;
+        if (statProcessSub) statProcessSub.textContent = `${refreshedStats.processing} pesanan berjalan`;
+        if (statDoneEl) statDoneEl.textContent = refreshedStats.completed;
+        if (statExpenseEl) statExpenseEl.textContent = refreshedStats.totalExpenseFormatted;
+        if (badgeAll) badgeAll.textContent = refreshedStats.total;
+        if (badgeProcess) badgeProcess.textContent = refreshedStats.processing;
+        if (badgeDone) badgeDone.textContent = refreshedStats.completed;
+        if (badgeCanceled) badgeCanceled.textContent = refreshedStats.canceled;
+        if (totalCountEl) totalCountEl.textContent = refreshedStats.total;
+        renderRows();
+      }
+    })();
+
     function renderRows() {
       if (!tableBody) return;
 
       // 1. Filter data
       let filtered = allTrx.filter(trx => {
         let matchFilter = true;
+        const cat = normalizeStatusCategory(trx.status);
         if (currentFilter === 'Diproses') {
-          matchFilter = (trx.status === 'Diproses' || trx.status === 'Menunggu konfirmasi');
+          matchFilter = (cat === 'Diproses');
         } else if (currentFilter === 'Selesai') {
-          matchFilter = (trx.status === 'Selesai' || trx.status === 'Diambil');
+          matchFilter = (cat === 'Selesai');
         } else if (currentFilter === 'Dibatalkan') {
-          matchFilter = (trx.status === 'Dibatalkan');
+          matchFilter = (cat === 'Dibatalkan');
         }
 
         const q = currentSearch.toLowerCase();
@@ -1334,13 +1843,52 @@
 
       // 2. Sort data
       filtered.sort((a, b) => {
-        const timeA = new Date(a.timestamp).getTime() || 0;
-        const timeB = new Date(b.timestamp).getTime() || 0;
+        const parseTime = (item) => {
+          if (!item) return 0;
+          if (item.timestamp) {
+            const t = new Date(item.timestamp).getTime();
+            if (!isNaN(t)) return t;
+          }
+          if (item.createdAt) {
+            const t = new Date(item.createdAt).getTime();
+            if (!isNaN(t)) return t;
+          }
+          if (item.dateInTime) {
+            const t = new Date(item.dateInTime).getTime();
+            if (!isNaN(t)) return t;
+          }
+          if (item.date) {
+            const t = new Date(item.date).getTime();
+            if (!isNaN(t)) return t;
+          }
+          return 0;
+        };
+
+        const timeA = parseTime(a);
+        const timeB = parseTime(b);
         const amtA = a.amount || 0;
         const amtB = b.amount || 0;
 
-        if (currentSort === 'newest') return timeB - timeA;
-        if (currentSort === 'oldest') return timeA - timeB;
+        if (currentSort === 'newest') {
+          const idA = Number(a.id_pesanan) || 0;
+          const idB = Number(b.id_pesanan) || 0;
+          if (idA && idB && idA !== idB) return idB - idA;
+          if (timeA && timeB && timeA !== timeB) return timeB - timeA;
+          if (typeof a.orderSeq === 'number' && typeof b.orderSeq === 'number') {
+            return a.orderSeq - b.orderSeq;
+          }
+          return 0;
+        }
+        if (currentSort === 'oldest') {
+          const idA = Number(a.id_pesanan) || 0;
+          const idB = Number(b.id_pesanan) || 0;
+          if (idA && idB && idA !== idB) return idA - idB;
+          if (timeA && timeB && timeA !== timeB) return timeA - timeB;
+          if (typeof a.orderSeq === 'number' && typeof b.orderSeq === 'number') {
+            return b.orderSeq - a.orderSeq;
+          }
+          return 0;
+        }
         if (currentSort === 'highest') return amtB - amtA;
         if (currentSort === 'lowest') return amtA - amtB;
         return 0;
@@ -1572,14 +2120,41 @@
     }
   }
 
+  function getBackendBaseUrl() {
+    if (typeof window !== 'undefined' && window.location.origin && window.location.origin.includes(':5000')) {
+      return '';
+    }
+    return 'http://localhost:5000';
+  }
+
   // ===========================================================================
   // 11. MODUL PROFIL PELANGGAN (PELANGGAN/profil.html)
   // ===========================================================================
-  function initProfilPage() {
+  async function initProfilPage() {
     const displayFullName = document.getElementById('displayFullName');
     if (!displayFullName) return;
 
-    const profile = getCustomerProfile();
+    let profile = getCustomerProfile();
+
+    // Coba ambil data terbaru langsung dari Database MySQL Backend
+    try {
+      const token = localStorage.getItem('bersihin_token');
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const result = await res.json();
+      if (result && result.success && result.data) {
+        const d = result.data;
+        profile = saveCustomerProfile({
+          fullName: d.nama || profile.fullName,
+          phone: d.telepon || profile.phone,
+          email: d.email || profile.email,
+          address: d.alamat || profile.address,
+          created_at: d.created_at || profile.created_at
+        });
+      }
+    } catch (_) {}
 
     // Render kontak pelanggan
     const displayPhone = document.getElementById('displayPhone');
@@ -1594,6 +2169,17 @@
     if (displayAddress) displayAddress.textContent = profile.address;
     if (bannerProfileName) bannerProfileName.textContent = profile.fullName;
     if (bannerProfileEmail) bannerProfileEmail.textContent = profile.email;
+
+    const memberSinceStr = formatMemberSince(profile.created_at || profile.createdAt || profile.joinedAt || profile.joinDate);
+    document.querySelectorAll('#bannerMemberSince, .banner-member-since').forEach(el => {
+      if (el) el.textContent = memberSinceStr;
+    });
+
+    // Sinkronisasi inisial avatar pengguna
+    const initials = getInitials(profile.fullName || 'Pelanggan');
+    document.querySelectorAll('#bannerProfileAvatar, #modalPhotoPreviewAvatar, .customer-avatar-btn').forEach(el => {
+      if (el) el.textContent = initials;
+    });
 
     // Modal Ubah Foto Profil jika ada
     const changePhotoBtn = document.getElementById('changePhotoBtn');
@@ -1618,11 +2204,11 @@
   // ===========================================================================
   // 12. MODUL EDIT PROFIL (PELANGGAN/editprofil.html)
   // ===========================================================================
-  function initEditProfilPage() {
+  async function initEditProfilPage() {
     const editProfileForm = document.getElementById('editProfileForm');
     if (!editProfileForm) return;
 
-    const profile = getCustomerProfile();
+    let profile = getCustomerProfile();
 
     const fullNameInput = document.getElementById('fullNameInput');
     const phoneInput = document.getElementById('phoneInput');
@@ -1631,6 +2217,29 @@
     const saveProfileBtn = document.getElementById('saveProfileBtn');
     const editProfileAlert = document.getElementById('editProfileAlert');
     const editProfileErrorMessage = document.getElementById('editProfileErrorMessage');
+
+    // Coba ambil data teraktual dari database MySQL
+    try {
+      const token = localStorage.getItem('bersihin_token');
+      const headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const result = await res.json();
+      if (result && result.success && result.data) {
+        const d = result.data;
+        if (d.nama) profile.fullName = d.nama;
+        if (d.telepon) profile.phone = d.telepon;
+        if (d.email) profile.email = d.email;
+        if (d.alamat) profile.address = d.alamat;
+        if (d.created_at) profile.created_at = d.created_at;
+      }
+    } catch (_) {}
+
+    const memberSinceStr = formatMemberSince(profile.created_at || profile.createdAt || profile.joinedAt || profile.joinDate);
+    document.querySelectorAll('#bannerMemberSince, .banner-member-since').forEach(el => {
+      if (el) el.textContent = memberSinceStr;
+    });
 
     // Isi input awal dengan data profil
     if (fullNameInput) fullNameInput.value = profile.fullName;
@@ -1651,7 +2260,7 @@
       editProfileAlert.classList.remove('flex');
     }
 
-    editProfileForm.addEventListener('submit', (e) => {
+    editProfileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideEditError();
 
@@ -1684,14 +2293,6 @@
         return;
       }
 
-      // Simpan perubahan ke storage
-      saveCustomerProfile({
-        fullName: fullName,
-        phone: phone,
-        email: email,
-        address: address
-      });
-
       if (saveProfileBtn) {
         saveProfileBtn.disabled = true;
         saveProfileBtn.innerHTML = `
@@ -1703,7 +2304,42 @@
         `;
       }
 
-      showToast('Perubahan profil berhasil disimpan! Mengalihkan ke profil...');
+      // 1. Simpan perubahan ke Database MySQL Backend
+      const currentProf = getCustomerProfile();
+      let activeUserId = currentProf.id_user;
+      let activeCustId = currentProf.id_pelanggan;
+
+      try {
+        const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({
+            id_user: activeUserId,
+            id_pelanggan: activeCustId,
+            nama: fullName,
+            telepon: phone,
+            phone: phone,
+            email: email,
+            alamat: address
+          })
+        });
+      } catch (err) {
+        console.warn('Gagal update profil MySQL:', err.message);
+      }
+
+      // 2. Simpan perubahan ke storage
+      saveCustomerProfile({
+        fullName: fullName,
+        phone: phone,
+        email: email,
+        address: address
+      });
+
+      showToast('Profil berhasil diperbarui! Mengalihkan ke profil...');
 
       setTimeout(() => {
         window.location.href = 'profil.html';
@@ -1717,6 +2353,12 @@
   function initPasswordPage() {
     const changePasswordForm = document.getElementById('changePasswordForm');
     if (!changePasswordForm) return;
+
+    const profile = getCustomerProfile();
+    const memberSinceStr = formatMemberSince(profile.created_at || profile.createdAt || profile.joinedAt || profile.joinDate);
+    document.querySelectorAll('#bannerMemberSince, .banner-member-since').forEach(el => {
+      if (el) el.textContent = memberSinceStr;
+    });
 
     // Toggle Tampilkan / Sembunyikan Password pada 3 Input
     document.querySelectorAll('.toggle-pass-btn').forEach(btn => {
@@ -1808,7 +2450,7 @@
       passwordErrorAlert.classList.remove('flex');
     }
 
-    changePasswordForm.addEventListener('submit', (e) => {
+    changePasswordForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       hidePassError();
 
@@ -1855,12 +2497,55 @@
         `;
       }
 
-      showToast('Password berhasil diperbarui! Mengalihkan ke profil...');
-      changePasswordForm.reset();
+      // Kirim pembaruan password ke Backend MySQL
+      try {
+        const token = localStorage.getItem('bersihin_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      setTimeout(() => {
-        window.location.href = 'profil.html';
-      }, 1500);
+        const resp = await fetch(`${getBackendBaseUrl()}/api/pelanggan/password`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({
+            password_lama: currentPass,
+            password_baru: newPass
+          })
+        });
+
+        const resData = await resp.json();
+        if (!resp.ok || !resData.success) {
+          showPassError(resData.message || 'Gagal mengubah kata sandi.');
+          if (submitPasswordBtn) {
+            submitPasswordBtn.disabled = false;
+            submitPasswordBtn.innerHTML = `
+              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>Simpan Password Baru</span>
+            `;
+          }
+          return;
+        }
+
+        showToast('Password berhasil diperbarui! Mengalihkan ke profil...');
+        changePasswordForm.reset();
+
+        setTimeout(() => {
+          window.location.href = 'profil.html';
+        }, 1500);
+
+      } catch (err) {
+        showPassError('Gagal terhubung ke server: ' + err.message);
+        if (submitPasswordBtn) {
+          submitPasswordBtn.disabled = false;
+          submitPasswordBtn.innerHTML = `
+            <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Simpan Password Baru</span>
+          `;
+        }
+      }
     });
   }
 
@@ -1879,6 +2564,50 @@
     initProfilPage();
     initEditProfilPage();
     initPasswordPage();
+
+    // Otomatis sinkronisasi profil dan pesanan langsung dari database MySQL XAMPP jika backend aktif
+    if (typeof syncAllCustomerDataWithBackend === 'function') {
+      syncAllCustomerDataWithBackend().then(() => {
+        initSharedComponents();
+        initDashboardPage();
+        initStatusPage();
+        initRiwayatPage();
+        initProfilPage();
+      }).catch(() => {});
+    }
+
+    // Dengarkan pembaruan status real-time dari portal Pegawai
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+        if (typeof syncAllCustomerDataWithBackend === 'function') {
+          syncAllCustomerDataWithBackend().then(() => {
+            initSharedComponents();
+            initDashboardPage();
+            initStatusPage();
+            initRiwayatPage();
+            initProfilPage();
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Polling sinkronisasi real-time berkala ke database MySQL XAMPP setiap 3.5 detik
+    setInterval(() => {
+      if (typeof syncAllCustomerDataWithBackend === 'function') {
+        syncAllCustomerDataWithBackend().then(() => {
+          const path = (window.location.pathname || '').toLowerCase();
+          if (path.includes('dashboard.html') || path.endsWith('/pelanggan/') || path.endsWith('/pelanggan')) {
+            initDashboardPage();
+          } else if (path.includes('status.html')) {
+            if (typeof loadActiveOrderStatus === 'function') loadActiveOrderStatus();
+          } else if (path.includes('riwayat.html')) {
+            initRiwayatPage();
+          } else if (path.includes('profil.html')) {
+            initProfilPage();
+          }
+        }).catch(() => {});
+      }
+    }, 3500);
   }
 
   if (document.readyState === 'loading') {

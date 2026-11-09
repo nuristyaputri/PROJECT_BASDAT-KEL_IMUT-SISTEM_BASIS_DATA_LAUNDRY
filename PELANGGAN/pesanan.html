@@ -221,34 +221,8 @@
       </nav>
     </div>
 
-    <!-- Bagian Bawah Sidebar: Kartu Bantuan & Tombol Keluar -->
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
     <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
-
-      <!-- Kartu Butuh Bantuan (Sesuai Figma) -->
-      <div
-        class="w-full p-3.5 bg-figma-help rounded-xl outline outline-1 outline-offset-[-1px] outline-blue-100 flex flex-col justify-start items-start">
-        <div class="size-8 bg-white rounded-lg inline-flex justify-center items-center shadow-2xs">
-          <svg class="size-4 text-blue-600" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path
-              d="M4 11V9C4 5.69 6.69 3 10 3C13.31 3 16 5.69 16 9V11M4 11C3.17 11 2.5 11.67 2.5 12.5V14C2.5 14.83 3.17 15.5 4 15.5H5.5V11H4ZM16 11C16.83 11 17.5 11.67 17.5 12.5V14C17.5 14.83 16.83 15.5 16 15.5H14.5V11H16ZM14.5 15.5C14.5 16.88 13.38 18 12 18H9.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div class="pt-2.5 text-slate-800 text-[11px] font-bold font-['Poppins'] leading-4">
-          Butuh bantuan?
-        </div>
-        <p class="pt-0.5 text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3.5">
-          Tim kami siap membantu Anda.
-        </p>
-        <button type="button" id="openHelpModalBtn"
-          class="min-h-[44px] -ml-1.5 px-1.5 mt-0.5 rounded-lg inline-flex items-center gap-1 text-cyan-700 hover:text-cyan-900 hover:bg-blue-100/60 active:bg-blue-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-          <span>Hubungi Kami</span>
-          <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
 
       <!-- Tombol Keluar -->
       <a href="../login.html"
@@ -286,7 +260,7 @@
         <div class="flex flex-col justify-start items-start">
           <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Buat Pesanan</h1>
           <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
           </p>
         </div>
       </div>
@@ -462,7 +436,7 @@
                 </button>
 
                 <!-- Opsi 4: Express -->
-                <button type="button" data-service-option="Express" data-price="18000" data-est="Estimasi 6 jam"
+                <button type="button" data-service-option="Express" data-price="18000" data-est="Estimasi 4 jam"
                   aria-checked="false" role="radio"
                   class="service-option-btn w-full p-3 rounded-[10px] border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-3 text-left transition">
                   <div class="size-9 bg-slate-100 rounded-lg flex justify-center items-center text-cyan-600 shrink-0">
@@ -733,6 +707,157 @@
   </div>
 
   <!-- ===================================================================== -->
+  <!-- MODAL INVOICE RESMI TRANSAKSI LAUNDRY (SETELAH BUAT PESANAN)          -->
+  <!-- ===================================================================== -->
+  <div id="orderInvoiceModal" role="dialog" aria-modal="true" aria-labelledby="invoiceModalTitle"
+    class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden my-6 transform transition-all">
+      
+      <!-- Header Invoice Biru Gradien Elegan -->
+      <div class="px-6 py-5 bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-900 text-white flex justify-between items-start">
+        <div class="flex items-center gap-3">
+          <div class="size-11 rounded-2xl bg-white/10 backdrop-blur-md p-1.5 flex items-center justify-center border border-white/20 shadow-inner">
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Bersihin" class="size-8">
+          </div>
+          <div>
+            <h3 id="invoiceModalTitle" class="text-base font-bold tracking-tight">INVOICE PESANAN LAUNDRY</h3>
+            <p class="text-[11px] text-sky-100/90 font-medium">Bersihin Laundry - Solusi Cuci Bersih &amp; Rapi</p>
+          </div>
+        </div>
+        <button type="button" id="closeInvoiceModalBtn" aria-label="Tutup invoice"
+          class="size-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <svg class="size-4" viewBox="0 0 16 16" fill="none">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Isi Invoice / Struk -->
+      <div class="p-6 space-y-4 text-xs text-slate-700" id="printableInvoiceArea">
+        
+        <!-- Status & Kode Pesanan Real-Time -->
+        <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-amber-700 tracking-wider">Status Transaksi</span>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span class="size-2 rounded-full bg-amber-500 animate-pulse"></span>
+              <span id="invStatusLabel" class="text-xs font-bold text-amber-900">Menunggu Konfirmasi Pegawai</span>
+            </div>
+            <p class="text-[11px] text-amber-800/80 mt-0.5">Pesanan tersimpan di database dan menunggu verifikasi pegawai.</p>
+          </div>
+          <div class="sm:text-right">
+            <span class="text-[10px] text-slate-500">Kode Transaksi</span>
+            <p id="invOrderCode" class="text-sm font-extrabold text-cyan-800 font-mono tracking-tight">TRX-...</p>
+          </div>
+        </div>
+
+        <!-- Meta Informasi Tanggal & Jam Real-Time + Pelanggan -->
+        <div class="grid grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-[11px]">
+          <div>
+            <span class="text-slate-400 block">Waktu Transaksi (Real-Time):</span>
+            <span id="invDateTime" class="font-bold text-slate-800 block mt-0.5">-</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block">Estimasi Selesai:</span>
+            <span id="invEstDate" class="font-bold text-slate-800 block mt-0.5">-</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block">Nama Pemesan:</span>
+            <span id="invCustomerName" class="font-bold text-slate-800 block mt-0.5">-</span>
+          </div>
+          <div>
+            <span class="text-slate-400 block">Nomor HP / WhatsApp:</span>
+            <span id="invCustomerPhone" class="font-bold text-slate-800 block mt-0.5">-</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-slate-400 block">Alamat / Lokasi Pengambilan:</span>
+            <span id="invCustomerAddress" class="font-semibold text-slate-700 block mt-0.5">-</span>
+          </div>
+        </div>
+
+        <!-- Tabel Rincian Biaya Transaksi -->
+        <div class="border border-slate-200 rounded-2xl overflow-hidden">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100/80 text-slate-600 text-[11px] font-semibold">
+                <th class="py-2.5 px-3">Rincian Item</th>
+                <th class="py-2.5 px-3 text-center">Jumlah / Berat</th>
+                <th class="py-2.5 px-3 text-right">Tarif</th>
+                <th class="py-2.5 px-3 text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="py-3 px-3">
+                  <span id="invServiceName" class="font-bold text-slate-800 block">Cuci + Setrika</span>
+                  <span class="text-[10px] text-slate-400">Paket reguler higienis</span>
+                </td>
+                <td id="invWeight" class="py-3 px-3 text-center font-semibold text-slate-700">4,0 kg</td>
+                <td id="invUnitPrice" class="py-3 px-3 text-right font-medium text-slate-600">Rp10.000</td>
+                <td id="invServiceSubtotal" class="py-3 px-3 text-right font-bold text-slate-800">Rp40.000</td>
+              </tr>
+              <tr id="invDeliveryRow">
+                <td class="py-2.5 px-3">
+                  <span id="invDeliveryName" class="font-medium text-slate-700">Metode Pengantaran</span>
+                </td>
+                <td class="py-2.5 px-3 text-center text-slate-400">-</td>
+                <td class="py-2.5 px-3 text-right text-slate-400">-</td>
+                <td id="invDeliveryFee" class="py-2.5 px-3 text-right font-semibold text-teal-700">+Rp0</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-sky-50/70 border-t-2 border-sky-100">
+                <td colspan="3" class="py-3 px-3 text-right font-bold text-slate-800 text-xs">TOTAL TRANSAKSI</td>
+                <td id="invTotalCost" class="py-3 px-3 text-right font-extrabold text-blue-950 text-sm">Rp40.000</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Catatan Khusus Pelanggan (Masuk Database) -->
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+          <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700">
+            <svg class="size-3.5 text-cyan-600" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M2 3.75A.75.75 0 012.75 3h10.5a.75.75 0 010 1.5H2.75A.75.75 0 012 3.75zM2 8a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H2.75A.75.75 0 012 8zm0 4.25a.75.75 0 01.75-.75h6.5a.75.75 0 010 1.5h-6.5a.75.75 0 01-.75-.75z" />
+            </svg>
+            <span>Catatan untuk Laundry:</span>
+          </div>
+          <p id="invCustomerNotes" class="mt-1 text-slate-600 text-[11px] italic bg-white p-2 rounded-lg border border-slate-100">
+            -
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Footer Tombol Aksi Modal -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <button type="button" id="printInvoiceBtn"
+          class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 active:bg-slate-200 text-slate-700 text-xs font-semibold inline-flex items-center justify-center gap-2 transition">
+          <svg class="size-4 text-slate-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+          </svg>
+          <span>Cetak / Simpan Invoice</span>
+        </button>
+
+        <div class="w-full sm:w-auto flex items-center gap-2">
+          <button type="button" id="closeInvoiceBtn"
+            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition">
+            Tutup
+          </button>
+          <a href="status.html" id="trackOrderInvoiceBtn"
+            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm transition">
+            <span>Pantau Status Cucian</span>
+            <svg class="size-3.5" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
   <!-- JAVASCRIPT INTERAKTIVITAS BUAT PESANAN                                -->
   <!-- ===================================================================== -->
   <script>
@@ -829,15 +954,28 @@
       btn.addEventListener('click', () => selectServiceOption(btn));
     });
 
-    // Cek parameter URL jika pengguna datang dari halaman Layanan
+    // Cek parameter URL jika pengguna datang dari halaman Layanan atau rekomendasi Express
     const params = new URLSearchParams(window.location.search);
     const serviceFromUrl = params.get('service');
     if (serviceFromUrl) {
+      const cleanUrl = serviceFromUrl.toLowerCase().trim();
+      let matched = false;
       serviceOptionBtns.forEach((btn) => {
-        if (btn.getAttribute('data-service-option') === serviceFromUrl) {
+        const opt = (btn.getAttribute('data-service-option') || '').toLowerCase().trim();
+        if (
+          opt === cleanUrl ||
+          cleanUrl.includes(opt) ||
+          opt.includes(cleanUrl) ||
+          ((cleanUrl.includes('express') || cleanUrl.includes('kilat') || cleanUrl.includes('4 jam')) && opt.includes('express'))
+        ) {
           selectServiceOption(btn);
+          matched = true;
         }
       });
+      if (!matched && (cleanUrl.includes('express') || cleanUrl.includes('kilat') || cleanUrl.includes('4 jam'))) {
+        const expressBtn = Array.from(serviceOptionBtns).find(b => (b.getAttribute('data-service-option') || '').toLowerCase().includes('express'));
+        if (expressBtn) selectServiceOption(expressBtn);
+      }
     }
 
     // Stepper Berat (Minimal 3 kg sesuai ketentuan Figma)
@@ -958,81 +1096,292 @@
       }, 2800);
     }
 
-    // Submit Buat Pesanan
+    function getApiBaseUrl() {
+      if (window.location.origin.includes(':5000')) {
+        return '';
+      }
+      return 'http://localhost:5000';
+    }
+
+    // Modal Invoice Elemen & Fungsi Tampil
+    const orderInvoiceModal = document.getElementById('orderInvoiceModal');
+    const closeInvoiceModalBtn = document.getElementById('closeInvoiceModalBtn');
+    const closeInvoiceBtn = document.getElementById('closeInvoiceBtn');
+    const printInvoiceBtn = document.getElementById('printInvoiceBtn');
+    const trackOrderInvoiceBtn = document.getElementById('trackOrderInvoiceBtn');
+
+    function closeInvoice() {
+      if (orderInvoiceModal) orderInvoiceModal.classList.add('hidden');
+    }
+
+    if (closeInvoiceModalBtn) closeInvoiceModalBtn.addEventListener('click', closeInvoice);
+    if (closeInvoiceBtn) closeInvoiceBtn.addEventListener('click', closeInvoice);
+    if (printInvoiceBtn) {
+      printInvoiceBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+
+    function showOrderInvoice(inv) {
+      const setEl = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setEl('invOrderCode', inv.kode_pesanan || inv.orderId || 'TRX-BARU');
+      setEl('invDateTime', inv.tanggal_realtime || inv.dateInTime || '-');
+      setEl('invEstDate', inv.estimasi_selesai || inv.estDone || '2 hari lagi');
+      setEl('invCustomerName', inv.nama_pelanggan || inv.customerName || (typeof getCustomerProfile === 'function' ? getCustomerProfile().fullName : 'Pelanggan'));
+      setEl('invCustomerPhone', inv.telepon || inv.customerPhone || (typeof getCustomerProfile === 'function' ? getCustomerProfile().phone : ''));
+      setEl('invCustomerAddress', inv.alamat || inv.customerAddress || (typeof getCustomerProfile === 'function' ? getCustomerProfile().address : ''));
+      setEl('invServiceName', inv.layanan || inv.service || 'Cuci + Setrika');
+      setEl('invWeight', inv.berat_formatted || `${inv.berat || inv.weightKg},0 kg`);
+      setEl('invUnitPrice', inv.tarif_per_kg_formatted || formatRupiah(inv.tarif_per_kg || 10000));
+      setEl('invServiceSubtotal', inv.subtotal_layanan_formatted || formatRupiah((inv.berat || inv.weightKg || 4) * (inv.tarif_per_kg || 10000)));
+      setEl('invDeliveryName', inv.metode_pengantaran || inv.deliveryMethod || 'Antar sendiri');
+      setEl('invDeliveryFee', inv.biaya_pengantaran_formatted || (inv.biaya_pengantaran > 0 ? `+${formatRupiah(inv.biaya_pengantaran)}` : 'Gratis'));
+      setEl('invTotalCost', inv.total_harga_formatted || inv.totalFormatted || formatRupiah(inv.total_harga || inv.total || 40000));
+      setEl('invCustomerNotes', inv.catatan || inv.notes || 'Pakaian reguler');
+      setEl('invStatusLabel', inv.status_label || 'Menunggu Konfirmasi Pegawai');
+
+      if (trackOrderInvoiceBtn) {
+        trackOrderInvoiceBtn.href = `status.html?id=${encodeURIComponent(inv.kode_pesanan || inv.orderId)}`;
+      }
+
+      if (orderInvoiceModal) {
+        orderInvoiceModal.classList.remove('hidden');
+      }
+    }
+
+    // Submit Buat Pesanan Terintegrasi ke Backend MySQL & Modal Invoice
     if (createOrderForm) {
-      createOrderForm.addEventListener('submit', (e) => {
+      createOrderForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = createOrderForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Buat Pesanan Sekarang';
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = `
+            <span class="inline-flex items-center gap-2">
+              <svg class="size-4 animate-spin text-white" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span>Menyimpan ke Database...</span>
+            </span>
+          `;
+        }
+
         const notesInput = document.getElementById('laundryNotesInput');
         const notes = notesInput ? notesInput.value.trim() : '';
         const total = (currentWeightKg * selectedPricePerKg) + selectedDeliveryFee;
 
-        // Generate ID transaksi baru yang unik dan tanggal saat ini
+        // Ambil profil pelanggan aktif
+        let custProfile = typeof getCustomerProfile === 'function' ? getCustomerProfile() : {
+          fullName: 'Pelanggan',
+          phone: '',
+          email: '',
+          address: 'Jl. Margonda Raya No. 45, Beji, Depok'
+        };
+        try {
+          const rawP = localStorage.getItem('bersihin_customer_profile');
+          if (rawP) custProfile = Object.assign(custProfile, JSON.parse(rawP));
+        } catch (_) {}
+
+        // Format tanggal real-time
         const now = new Date();
+        const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const dateRealtime = now.toLocaleDateString('id-ID', dateOptions);
+        const timeRealtime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+        const fullDateTime = `${dateRealtime}, ${timeRealtime}`;
+
+        // Hitung estimasi selesai cerdas berdasarkan jenis layanan
+        let durationHours = 48; // Default layanan reguler 2 hari
+        const srvCheck = String(selectedService || '').toLowerCase();
+        if (srvCheck.includes('express') || srvCheck.includes('kilat') || srvCheck.includes('4 jam') || srvCheck.includes('cepat')) {
+          durationHours = 4;
+        } else if (srvCheck.includes('setrika saja') || srvCheck.includes('kering')) {
+          durationHours = 24;
+        }
+
+        const estDate = new Date(now.getTime() + durationHours * 60 * 60 * 1000);
+        let estDoneFormatted = '';
+        if (durationHours <= 12) {
+          const isSameDay = estDate.getDate() === now.getDate();
+          const timeStr = `${String(estDate.getHours()).padStart(2, '0')}:${String(estDate.getMinutes()).padStart(2, '0')} WIB`;
+          estDoneFormatted = isSameDay ? `Hari ini, ${timeStr} (4 Jam)` : `Besok, ${timeStr} (4 Jam)`;
+        } else if (durationHours <= 24) {
+          const isTomorrow = estDate.getDate() !== now.getDate();
+          const dateStr = estDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          estDoneFormatted = isTomorrow ? `Besok (${dateStr})` : `Hari ini (${dateStr})`;
+        } else {
+          const timeStr = `${String(estDate.getHours()).padStart(2, '0')}:${String(estDate.getMinutes()).padStart(2, '0')} WIB`;
+          const dateStr = estDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          estDoneFormatted = `${dateStr}, ${timeStr} (2 Hari)`;
+        }
+
         const y = String(now.getFullYear()).slice(2);
         const m = String(now.getMonth() + 1).padStart(2, '0');
         const d = String(now.getDate()).padStart(2, '0');
-        const randomNum = Math.floor(10 + Math.random() * 90);
-        const newOrderId = `TRX-${y}${m}${d}-${randomNum}`;
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const generatedOrderId = `TRX-${y}${m}${d}-${randomNum}`;
 
-        const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
-        const dateInFormatted = now.toLocaleDateString('id-ID', dateOptions);
+        let currentUserId = null;
+        let currentCustId = null;
+        try {
+          const userRaw = localStorage.getItem('bersihin_user');
+          if (userRaw) {
+            const u = JSON.parse(userRaw);
+            currentUserId = u.id_user;
+            currentCustId = u.id_pelanggan;
+          }
+        } catch (_) {}
+        try {
+          const profRaw = localStorage.getItem('bersihin_customer_profile');
+          if (profRaw) {
+            const p = JSON.parse(profRaw);
+            if (!currentCustId && p.id_pelanggan) currentCustId = p.id_pelanggan;
+            if (!currentUserId && p.id_user) currentUserId = p.id_user;
+          }
+        } catch (_) {}
 
-        const estDate = new Date(now);
-        estDate.setDate(now.getDate() + 2);
-        const estDoneFormatted = estDate.toLocaleDateString('id-ID', dateOptions);
+        const payload = {
+          kode_pesanan: generatedOrderId,
+          id_user: currentUserId,
+          id_pelanggan: currentCustId,
+          layanan: selectedService,
+          berat: currentWeightKg,
+          tarif_per_kg: selectedPricePerKg,
+          metode_pengantaran: selectedDeliveryMethod,
+          biaya_pengantaran: selectedDeliveryFee,
+          catatan: notes || 'Pakaian reguler',
+          total_harga: total,
+          nama: custProfile.fullName,
+          telepon: custProfile.phone,
+          email: custProfile.email,
+          alamat: custProfile.address
+        };
 
-        const orderData = {
-          orderId: newOrderId,
-          code: newOrderId,
-          service: selectedService,
-          weightKg: currentWeightKg,
-          weight: `${currentWeightKg},0 kg`,
-          deliveryMethod: selectedDeliveryMethod,
-          notes: notes || 'Pakaian reguler',
-          total: total,
-          totalFormatted: formatRupiah(total),
+        let invoiceData = null;
+
+        // 1. Kirim request ke backend MySQL
+        try {
+          const token = localStorage.getItem('bersihin_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) headers['Authorization'] = `Bearer ${token}`;
+
+          const res = await fetch(`${getApiBaseUrl()}/api/pelanggan/pesanan`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+          });
+
+          if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data) {
+              invoiceData = json.data;
+            }
+          }
+        } catch (netErr) {
+          console.warn('Backend API tidak merespons, beralih ke sinkronisasi data lokal:', netErr.message);
+        }
+
+        // 2. Fallback data jika backend offline
+        if (!invoiceData) {
+          invoiceData = {
+            id_pesanan: Date.now(),
+            kode_pesanan: generatedOrderId,
+            tanggal_realtime: fullDateTime,
+            tanggal_iso: now.toISOString(),
+            estimasi_selesai: estDoneFormatted,
+            nama_pelanggan: custProfile.fullName,
+            telepon: custProfile.phone,
+            alamat: custProfile.address,
+            layanan: selectedService,
+            berat: currentWeightKg,
+            berat_formatted: `${currentWeightKg},0 kg`,
+            tarif_per_kg: selectedPricePerKg,
+            tarif_per_kg_formatted: formatRupiah(selectedPricePerKg),
+            subtotal_layanan: currentWeightKg * selectedPricePerKg,
+            subtotal_layanan_formatted: formatRupiah(currentWeightKg * selectedPricePerKg),
+            metode_pengantaran: selectedDeliveryMethod,
+            biaya_pengantaran: selectedDeliveryFee,
+            biaya_pengantaran_formatted: selectedDeliveryFee > 0 ? `+${formatRupiah(selectedDeliveryFee)}` : 'Gratis',
+            total_harga: total,
+            total_harga_formatted: formatRupiah(total),
+            catatan: notes || 'Pakaian reguler',
+            status: 'MENUNGGU',
+            status_label: 'Menunggu Konfirmasi Pegawai'
+          };
+        }
+
+        // 3. Simpan ke sessionStorage & localStorage agar halaman Status & Riwayat sinkron
+        const orderRecord = {
+          orderId: invoiceData.kode_pesanan,
+          code: invoiceData.kode_pesanan,
+          id_pelanggan: invoiceData.id_pelanggan || currentCustId,
+          service: invoiceData.layanan,
+          weightKg: invoiceData.berat,
+          weight: invoiceData.berat_formatted || `${invoiceData.berat},0 kg`,
+          deliveryMethod: invoiceData.metode_pengantaran,
+          notes: invoiceData.catatan,
+          total: invoiceData.total_harga,
+          totalFormatted: invoiceData.total_harga_formatted,
           status: 'Menunggu konfirmasi',
           statusCode: 'MENUNGGU',
           step: 1,
-          dateIn: dateInFormatted,
-          dateInTime: `${dateInFormatted}, ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')} WIB`,
-          estDone: estDoneFormatted,
-          createdAt: now.toISOString()
+          dateIn: dateRealtime,
+          dateInTime: fullDateTime,
+          estDone: invoiceData.estimasi_selesai,
+          createdAt: invoiceData.tanggal_iso || now.toISOString(),
+          customerName: invoiceData.nama_pelanggan,
+          customerPhone: invoiceData.telepon,
+          customerAddress: invoiceData.alamat
         };
 
         try {
-          sessionStorage.setItem('bersihin_last_order', JSON.stringify(orderData));
-          localStorage.setItem('bersihin_active_order', JSON.stringify(orderData));
+          sessionStorage.setItem('bersihin_last_order', JSON.stringify(orderRecord));
+          localStorage.setItem('bersihin_active_order', JSON.stringify(orderRecord));
 
-          // Simpan juga ke daftar riwayat transaksi pelanggan
           const existingTrxRaw = localStorage.getItem('bersihin_transactions');
           const trxList = existingTrxRaw ? JSON.parse(existingTrxRaw) : [];
           trxList.unshift({
-            id: newOrderId,
-            code: newOrderId,
-            date: dateInFormatted,
+            id: orderRecord.code,
+            code: orderRecord.code,
+            id_pelanggan: orderRecord.id_pelanggan,
+            date: dateRealtime,
             timestamp: now.toISOString(),
-            service: selectedService,
-            weight: `${currentWeightKg},0 kg`,
-            weightKg: currentWeightKg,
-            amount: total,
-            total: formatRupiah(total),
-            totalFormatted: formatRupiah(total),
+            service: orderRecord.service,
+            weight: orderRecord.weight,
+            weightKg: orderRecord.weightKg,
+            amount: orderRecord.total,
+            total: orderRecord.totalFormatted,
+            totalFormatted: orderRecord.totalFormatted,
             status: 'Menunggu konfirmasi',
-            deliveryMethod: selectedDeliveryMethod,
-            notes: notes || 'Pakaian reguler',
-            calcSub: `${currentWeightKg},0 kg (Estimasi)`,
+            deliveryMethod: orderRecord.deliveryMethod,
+            notes: orderRecord.notes,
+            calcSub: `${orderRecord.weight} (Estimasi)`,
             paidDate: 'Belum dibayar',
-            dateInTime: orderData.dateInTime,
-            estDone: estDoneFormatted
+            dateInTime: fullDateTime,
+            estDone: orderRecord.estDone,
+            customerName: orderRecord.customerName,
+            customerPhone: orderRecord.customerPhone,
+            customerAddress: orderRecord.customerAddress
           });
           localStorage.setItem('bersihin_transactions', JSON.stringify(trxList));
-        } catch (err) {
-          // Abaikan jika storage dibatasi
+          localStorage.setItem('bersihin_order_updated', Date.now().toString());
+          if (typeof renderCustomerNotifications === 'function') renderCustomerNotifications();
+          if (window.renderCustomerNotifications) window.renderCustomerNotifications();
+        } catch (_) {}
+
+        // 4. Pulihkan tombol submit dan tampilkan Modal Invoice
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
         }
 
-        // Tampilkan Toast Notifikasi Elegan Menggantikan Alert Bawaan Browser
-        showOrderSuccessToast(orderData);
+        showOrderInvoice(invoiceData);
       });
     }
 
