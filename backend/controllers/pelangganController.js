@@ -150,7 +150,7 @@ async function getPelanggan(req, res) {
  */
 async function updatePelanggan(req, res) {
   try {
-    const idPelanggan = await getCustomerId(req);
+    let idPelanggan = await getCustomerId(req);
     if (!idPelanggan) {
       return res.status(401).json({
         success: false,
@@ -311,7 +311,10 @@ async function updatePasswordPelanggan(req, res) {
     }
 
     if (!targetUserId) {
-      targetUserId = 4; // Akun pelanggan demo default (Andi Pratama)
+      return res.status(401).json({
+        success: false,
+        message: 'Sesi pengguna tidak ditemukan. Silakan login ulang untuk mengubah kata sandi.'
+      });
     }
 
     let userRow = null;
@@ -378,10 +381,12 @@ async function getPesanan(req, res) {
 
     try {
       let querySql = `
-        SELECT p.id_pesanan, p.kode_pesanan, p.id_pelanggan, p.tanggal_pesanan, p.tanggal_selesai,
+        SELECT p.id_pesanan, p.kode_pesanan, p.id_pelanggan, p.id_pegawai, p.tanggal_pesanan, p.tanggal_selesai,
                p.total_berat, p.total_harga, p.status, p.catatan, p.created_at,
-               COALESCE(pem.status, 'MENUNGGU') AS status_pembayaran,
-               COALESCE(MAX(l.nama_layanan), 'Cuci + Setrika') AS layanan,
+               COALESCE(MAX(pem.status), 'MENUNGGU') AS status_pembayaran,
+               MAX(pem.metode) AS metode_pembayaran,
+               MAX(pem.referensi_bayar) AS referensi_bayar,
+               COALESCE(GROUP_CONCAT(DISTINCT l.nama_layanan ORDER BY dp.id_detail SEPARATOR ', '), 'Cuci Komplit (Cuci + Setrika)') AS layanan,
                MAX(dp.harga_satuan) AS harga_satuan,
                SUM(dp.subtotal) AS subtotal
         FROM pesanan p
@@ -389,7 +394,7 @@ async function getPesanan(req, res) {
         LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
         LEFT JOIN layanan l ON l.id_layanan = dp.id_layanan
         WHERE p.id_pelanggan = ?
-        GROUP BY p.id_pesanan, pem.status
+        GROUP BY p.id_pesanan
         ORDER BY p.id_pesanan DESC
       `;
       const [rows] = await pool.query(querySql, [idPelanggan]);
@@ -408,18 +413,30 @@ async function getPesanan(req, res) {
     } catch (_) {
       const mockOrders = (mockDb.pesanan || [])
         .filter(p => p.id_pelanggan === idPelanggan)
-        .map(p => ({
-          id_pesanan: p.id_pesanan,
-          kode_pesanan: p.kode_pesanan || p.nomor_pesanan,
-          tanggal_pesanan: p.tanggal_pesanan || p.tanggal_masuk,
-          tanggal_selesai: p.tanggal_selesai || p.tanggal_estimasi_selesai,
-          total_berat: p.total_berat,
-          total_harga: p.total_harga,
-          status: p.status,
-          status_pembayaran: p.status_pembayaran || 'MENUNGGU',
-          catatan: p.catatan,
-          layanan: 'Cuci + Setrika'
-        }));
+        .map(p => {
+          const dets = (mockDb.detail_pesanan || []).filter(d => d.id_pesanan === p.id_pesanan);
+          const srvNames = dets
+            .map(d => {
+              const l = (mockDb.layanan || []).find(srv => srv.id_layanan === d.id_layanan);
+              return l ? l.nama_layanan : null;
+            })
+            .filter(Boolean);
+          const pay = (mockDb.pembayaran || []).find(pb => pb.id_pesanan === p.id_pesanan);
+          return {
+            id_pesanan: p.id_pesanan,
+            kode_pesanan: p.kode_pesanan || p.nomor_pesanan,
+            tanggal_pesanan: p.tanggal_pesanan || p.tanggal_masuk,
+            tanggal_selesai: p.tanggal_selesai || p.tanggal_estimasi_selesai,
+            total_berat: p.total_berat,
+            total_harga: p.total_harga,
+            status: p.status,
+            status_pembayaran: (pay && pay.status) || p.status_pembayaran || 'MENUNGGU',
+            metode_pembayaran: (pay && pay.metode) || null,
+            referensi_bayar: (pay && pay.referensi_bayar) || null,
+            catatan: p.catatan,
+            layanan: srvNames.length ? srvNames.join(', ') : 'Cuci Komplit (Cuci + Setrika)'
+          };
+        });
       return res.json({ success: true, data: mockOrders });
     }
   } catch (error) {
@@ -429,19 +446,28 @@ async function getPesanan(req, res) {
 
 /**
  * GET /api/pelanggan/layanan
- * Mengambil daftar layanan laundry aktif
+ * Mengambil daftar 4 layanan laundry aktif untuk portal pelanggan
  */
 async function getLayanan(req, res) {
   try {
+    const showAll = req.query && (req.query.all === '1' || req.query.all === 'true');
     try {
-      const [rows] = await pool.query(
-        `SELECT id_layanan, nama_layanan, jenis, tarif_per_satuan, estimasi_durasi_jam, satuan, deskripsi
-         FROM layanan
-         WHERE status = 'AKTIF'`
-      );
+      const sql = showAll
+        ? `SELECT id_layanan, nama_layanan, kategori, satuan, harga, estimasi_waktu, status, deskripsi
+           FROM layanan
+           WHERE status = 'AKTIF'
+           ORDER BY id_layanan ASC`
+        : `SELECT id_layanan, nama_layanan, kategori, satuan, harga, estimasi_waktu, status, deskripsi
+           FROM layanan
+           WHERE status = 'AKTIF' AND satuan = 'kg'
+           ORDER BY FIELD(id_layanan, 1, 2, 3, 5), id_layanan ASC
+           LIMIT 4`;
+      const [rows] = await pool.query(sql);
       return res.json({ success: true, data: rows });
     } catch (_) {
-      const activeServices = mockDb.layanan.filter(l => l.status === 'AKTIF');
+      const activeServices = showAll
+        ? mockDb.layanan.filter(l => l.status === 'AKTIF')
+        : mockDb.layanan.filter(l => l.status === 'AKTIF' && l.satuan === 'kg').slice(0, 4);
       return res.json({ success: true, data: activeServices });
     }
   } catch (error) {
@@ -528,12 +554,20 @@ async function createPesanan(req, res) {
     } = req.body || {};
 
     const beratVal = Number(berat || total_berat || 3);
+    if (!Number.isFinite(beratVal) || beratVal <= 0) {
+      return res.status(400).json({ success: false, message: 'Berat/jumlah cucian harus lebih dari 0' });
+    }
     const deliveryFee = Number(biaya_pengantaran || (metode_pengantaran === 'Jemput ke rumah' ? 5000 : 0));
     const customerNotes = catatan ? String(catatan).trim() : 'Pakaian reguler';
 
-    // 1. Tentukan id_pelanggan
+    // 1. Tentukan id_pelanggan dari sesi/token atau body eksplisit
     let idPelanggan = await getCustomerId(req);
-    if (!idPelanggan) idPelanggan = 1;
+    if (!idPelanggan) {
+      return res.status(401).json({
+        success: false,
+        message: 'Sesi pelanggan tidak ditemukan. Silakan login terlebih dahulu.'
+      });
+    }
 
     // 2. Generate kode pesanan unik real-time
     const now = new Date();
@@ -543,61 +577,95 @@ async function createPesanan(req, res) {
     const randomHex = Math.floor(1000 + Math.random() * 9000);
     const orderCode = kode_pesanan || `TRX-${yy}${mm}${dd}-${randomHex}`;
 
-    // 3. Tentukan layanan dan tarif
-    let serviceId = Number(id_layanan) || 2; // Default 2: Cuci + Setrika
-    let serviceName = layanan || 'Cuci + Setrika';
-    let unitPrice = 10000;
+    // 3. Tentukan layanan dan tarif default sesuai bersihinlaundry.sql sebelum lookup DB
+    let serviceId = Number(id_layanan) || 2;
+    let serviceName = layanan || 'Cuci Komplit (Cuci + Setrika)';
+    let unitPrice = 9000;
 
-    if (serviceName.toLowerCase().includes('kering')) {
-      unitPrice = 7000;
-      serviceId = 1;
-    } else if (serviceName.toLowerCase().includes('setrika saja')) {
-      unitPrice = 6000;
-      serviceId = 3;
-    } else if (serviceName.toLowerCase().includes('express')) {
-      unitPrice = 18000;
-      serviceId = 4;
+    const svcLowerInput = String(serviceName).toLowerCase();
+    if (!id_layanan) {
+      if (svcLowerInput.includes('kering')) {
+        unitPrice = 7000;
+        serviceId = 1;
+        serviceName = 'Cuci Kering Lipat';
+      } else if (svcLowerInput.includes('setrika') && !svcLowerInput.includes('cuci')) {
+        unitPrice = 6000;
+        serviceId = 3;
+        serviceName = 'Setrika Uap Saja';
+      } else if (svcLowerInput.includes('bedcover')) {
+        unitPrice = 25000;
+        serviceId = 4;
+        serviceName = 'Cuci Bedcover Besar';
+      } else if (svcLowerInput.includes('express') || svcLowerInput.includes('kilat') || svcLowerInput.includes('4 jam')) {
+        unitPrice = 16000;
+        serviceId = 5;
+        serviceName = 'Cuci Kilat Express (4 Jam)';
+      } else if (svcLowerInput.includes('sepatu')) {
+        unitPrice = 30000;
+        serviceId = 6;
+        serviceName = 'Cuci Sepatu Premium';
+      }
     }
 
-    let calculatedTotal = Number(total_harga) || (beratVal * unitPrice + deliveryFee);
+    const round2 = (v) => Math.round((v + Number.EPSILON) * 100) / 100;
+    let serviceSubtotal = round2(beratVal * unitPrice);
+    let calculatedTotal = round2(serviceSubtotal + deliveryFee);
     let dbSaved = false;
     let newOrderId = null;
+    let resolvedCust = { nama, telepon, alamat };
 
     // 4. Simpan ke database MySQL
     try {
       connection = await pool.getConnection();
       await connection.beginTransaction();
 
-      // Cek apakah ada layanan yang cocok di tabel layanan (prioritaskan Express/Kilat jika dipesan)
-      if (layanan) {
-        let srvRows = [];
-        const isExp = String(layanan).toLowerCase().includes('express') || String(layanan).toLowerCase().includes('kilat') || String(layanan).toLowerCase().includes('4 jam');
+      // Prioritaskan lookup berdasarkan id_layanan, lalu nama layanan di tabel layanan MySQL
+      let srvRows = [];
+      if (id_layanan && Number(id_layanan) > 0) {
+        [srvRows] = await connection.query(
+          "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = ? LIMIT 1",
+          [Number(id_layanan)]
+        );
+      }
+      if ((!srvRows || srvRows.length === 0) && layanan) {
+        const isExp = svcLowerInput.includes('express') || svcLowerInput.includes('kilat') || svcLowerInput.includes('4 jam');
         if (isExp) {
           [srvRows] = await connection.query(
-            "SELECT id_layanan, nama_layanan, harga FROM layanan WHERE nama_layanan LIKE '%Express%' OR nama_layanan LIKE '%Kilat%' LIMIT 1"
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE nama_layanan LIKE '%Express%' OR nama_layanan LIKE '%Kilat%' LIMIT 1"
+          );
+        } else if (svcLowerInput.includes('komplit') || (svcLowerInput.includes('cuci') && svcLowerInput.includes('setrika'))) {
+          [srvRows] = await connection.query(
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 2 OR nama_layanan LIKE '%Komplit%' LIMIT 1"
+          );
+        } else if (svcLowerInput.includes('kering')) {
+          [srvRows] = await connection.query(
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 1 OR nama_layanan LIKE '%Kering%' LIMIT 1"
+          );
+        } else if (svcLowerInput.includes('setrika')) {
+          [srvRows] = await connection.query(
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 3 OR nama_layanan LIKE 'Setrika%' LIMIT 1"
           );
         }
         if (!srvRows || srvRows.length === 0) {
           [srvRows] = await connection.query(
-            "SELECT id_layanan, nama_layanan, harga FROM layanan WHERE nama_layanan = ? OR nama_layanan LIKE ? LIMIT 1",
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE nama_layanan = ? OR nama_layanan LIKE ? LIMIT 1",
             [layanan, `%${layanan}%`]
           );
         }
-        if (srvRows && srvRows.length > 0) {
-          serviceId = srvRows[0].id_layanan;
-          serviceName = srvRows[0].nama_layanan;
-          unitPrice = Number(srvRows[0].harga) || unitPrice;
-          if (!total_harga) {
-            calculatedTotal = beratVal * unitPrice + deliveryFee;
-          }
-        }
+      }
+      if (srvRows && srvRows.length > 0) {
+        serviceId = srvRows[0].id_layanan;
+        serviceName = srvRows[0].nama_layanan;
+        unitPrice = Number(srvRows[0].harga);
+        serviceSubtotal = round2(beratVal * unitPrice);
+        calculatedTotal = round2(serviceSubtotal + deliveryFee);
       }
 
       // Pastikan ID pelanggan valid di tabel pelanggan agar Foreign Key aman
       let validCust = null;
       const reqUserId = (req.body && req.body.id_user) || (req.user && req.user.id_user);
-      if (reqUserId) {
-        const [cByU] = await connection.query("SELECT id_pelanggan FROM pelanggan WHERE id_user = ? LIMIT 1", [reqUserId]);
+      if (reqUserId && !(req.body && req.body.id_pelanggan)) {
+        const [cByU] = await connection.query("SELECT id_pelanggan, nama, telepon, alamat FROM pelanggan WHERE id_user = ? LIMIT 1", [reqUserId]);
         if (cByU && cByU.length > 0) {
           idPelanggan = cByU[0].id_pelanggan;
           validCust = cByU[0];
@@ -614,26 +682,21 @@ async function createPesanan(req, res) {
         }
       }
 
-      if (!validCust && (telepon || email)) {
-        const [byTelp] = await connection.query(
-          "SELECT id_pelanggan FROM pelanggan WHERE (telepon = ? AND telepon != '') OR (email = ? AND email != '') LIMIT 1",
-          [telepon || '', email || '']
-        );
-        if (byTelp && byTelp.length > 0) {
-          idPelanggan = byTelp[0].id_pelanggan;
-          validCust = byTelp[0];
-        }
-      }
-
       if (!validCust) {
-        const [anyCust] = await connection.query("SELECT id_pelanggan FROM pelanggan ORDER BY id_pelanggan ASC LIMIT 1");
-        if (anyCust && anyCust.length > 0) {
-          idPelanggan = anyCust[0].id_pelanggan;
-          validCust = anyCust[0];
-        }
+        await connection.rollback();
+        return res.status(404).json({
+          success: false,
+          message: 'Data profil pelanggan tidak ditemukan di database.'
+        });
       }
 
-      // Update nomor telepon dan alamat pelanggan terkini di MySQL jika disertakan
+      resolvedCust = {
+        nama: nama || validCust.nama,
+        telepon: telepon || validCust.telepon,
+        alamat: alamat || validCust.alamat
+      };
+
+      // Perbarui telepon dan alamat pelanggan terkini hanya jika dikirim eksplisit
       if (idPelanggan && (telepon || alamat || nama)) {
         await connection.query(
           "UPDATE pelanggan SET telepon = COALESCE(?, telepon), alamat = COALESCE(?, alamat), nama = COALESCE(?, nama) WHERE id_pelanggan = ?",
@@ -646,7 +709,9 @@ async function createPesanan(req, res) {
       const srvCheck = String(serviceName || layanan || '').toLowerCase();
       if (srvCheck.includes('express') || srvCheck.includes('kilat') || srvCheck.includes('4 jam') || srvCheck.includes('cepat')) {
         durationHours = 4;
-      } else if (srvCheck.includes('setrika saja') || srvCheck.includes('kering')) {
+      } else if (srvCheck.includes('bedcover')) {
+        durationHours = 72;
+      } else if (srvCheck.includes('setrika')) {
         durationHours = 24;
       }
 
@@ -664,7 +729,7 @@ async function createPesanan(req, res) {
       await connection.execute(
         `INSERT INTO detail_pesanan (id_pesanan, id_layanan, jumlah, harga_satuan, subtotal)
          VALUES (?, ?, ?, ?, ?)`,
-        [newOrderId, serviceId, beratVal, unitPrice, beratVal * unitPrice]
+        [newOrderId, serviceId, beratVal, unitPrice, serviceSubtotal]
       );
 
       // C. Insert ke tabel riwayat_status
@@ -718,7 +783,7 @@ async function createPesanan(req, res) {
       estDateFormatted = `${dateStr}, ${timeStr} (2 Hari)`;
     }
 
-    if (!newOrderId) newOrderId = nextId(mockDb.pesanan, 'id_pesanan');
+    if (!newOrderId) newOrderId = nextId('pesanan');
     const mockOrder = {
       id_pesanan: newOrderId,
       kode_pesanan: orderCode,
@@ -754,16 +819,17 @@ async function createPesanan(req, res) {
       tanggal_iso: now.toISOString(),
       estimasi_selesai: estDateFormatted,
       id_pelanggan: idPelanggan,
-      nama_pelanggan: nama || 'Andi Pratama',
-      telepon: telepon || '081234567821',
-      alamat: alamat || 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Depok',
+      id_layanan: serviceId,
+      nama_pelanggan: resolvedCust.nama || 'Pelanggan',
+      telepon: resolvedCust.telepon || '',
+      alamat: resolvedCust.alamat || '',
       layanan: serviceName,
       berat: beratVal,
       berat_formatted: `${beratVal},0 kg`,
       tarif_per_kg: unitPrice,
       tarif_per_kg_formatted: `Rp${Number(unitPrice).toLocaleString('id-ID')}`,
-      subtotal_layanan: beratVal * unitPrice,
-      subtotal_layanan_formatted: `Rp${Number(beratVal * unitPrice).toLocaleString('id-ID')}`,
+      subtotal_layanan: serviceSubtotal,
+      subtotal_layanan_formatted: `Rp${Number(serviceSubtotal).toLocaleString('id-ID')}`,
       metode_pengantaran: metode_pengantaran || 'Antar sendiri',
       biaya_pengantaran: deliveryFee,
       biaya_pengantaran_formatted: deliveryFee > 0 ? `+Rp${Number(deliveryFee).toLocaleString('id-ID')}` : 'Gratis',
@@ -828,15 +894,29 @@ async function getPesananDetail(req, res) {
            ORDER BY r.waktu_perubahan ASC`,
           [order.id_pesanan]
         );
-        const serviceTitle = (details && details[0] && details[0].nama_layanan) ||
-                             (String(order.catatan || '').toLowerCase().includes('express') ? 'Cuci Kilat Express (4 Jam)' : 'Cuci + Setrika');
+        const [pembayaran] = await pool.query(
+          `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
+           FROM pembayaran
+           WHERE id_pesanan = ?
+           ORDER BY id_pembayaran DESC`,
+          [order.id_pesanan]
+        );
+        const serviceNames = (details || []).map(d => d.nama_layanan).filter(Boolean);
+        const serviceTitle = serviceNames.length > 0
+          ? serviceNames.join(', ')
+          : (String(order.catatan || '').toLowerCase().includes('express') ? 'Cuci Kilat Express (4 Jam)' : 'Cuci Komplit (Cuci + Setrika)');
+        const latestPay = pembayaran && pembayaran[0] ? pembayaran[0] : null;
         return res.json({
           success: true,
           data: {
             ...order,
             layanan: serviceTitle,
             service: serviceTitle,
+            status_pembayaran: latestPay ? latestPay.status : 'MENUNGGU',
+            metode_pembayaran: latestPay ? latestPay.metode : null,
+            referensi_bayar: latestPay ? latestPay.referensi_bayar : null,
             detail: details,
+            pembayaran: pembayaran,
             riwayat: riwayat
           }
         });

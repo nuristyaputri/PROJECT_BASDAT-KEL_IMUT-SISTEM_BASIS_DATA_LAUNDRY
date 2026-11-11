@@ -116,15 +116,8 @@ async function login(req, res) {
     if (!passwordValid) {
       if (password === foundUser.password) {
         passwordValid = true;
-      } else if (password === 'password123' || (foundUser.username === 'nuristya' && password === 'nuristya123')) {
-        passwordValid = true;
       } else if (password === 'password123' && (foundUser.password === DEMO_SEEDED_HASH || !foundUser.password)) {
         passwordValid = true;
-        // Secara otomatis mutakhirkan hash ke format bcrypt valid di MySQL
-        try {
-          const freshHash = await bcrypt.hash('password123', 10);
-          await db.execute('UPDATE users SET password = ? WHERE id_user = ?', [freshHash, foundUser.id_user]);
-        } catch (_) {}
       }
     }
 
@@ -132,18 +125,53 @@ async function login(req, res) {
       return sendJSONResponse(res, false, 'Password yang Anda masukkan salah.', null, 401);
     }
 
-    // Ambil data profil tambahan sesuai peran
+    // Ambil data profil tambahan sesuai peran langsung dari tabel relasi MySQL
     let profileData = {};
     let idPelanggan = null;
+    let idPegawai = null;
+    let idPemilik = null;
+
     if (foundUser.role === 'PEMILIK') {
-      profileData = mockDb.pemilik.find(p => p.id_user === foundUser.id_user) || { nama: 'Rangga Saputra' };
+      try {
+        const [ownerRows] = await db.query(
+          'SELECT * FROM pemilik WHERE id_user = ? LIMIT 1',
+          [foundUser.id_user]
+        );
+        if (ownerRows && ownerRows.length > 0) {
+          profileData = ownerRows[0];
+          idPemilik = ownerRows[0].id_pemilik;
+        }
+      } catch (_) {}
+      if (!idPemilik) {
+        const mOwner = mockDb.pemilik.find(p => p.id_user === foundUser.id_user);
+        if (mOwner) {
+          profileData = mOwner;
+          idPemilik = mOwner.id_pemilik || null;
+        }
+      }
     } else if (foundUser.role === 'PEGAWAI') {
-      profileData = mockDb.pegawai.find(p => p.id_user === foundUser.id_user) || { nama: 'Dina Nurhaliza' };
+      try {
+        const [staffRows] = await db.query(
+          'SELECT * FROM pegawai WHERE id_user = ? LIMIT 1',
+          [foundUser.id_user]
+        );
+        if (staffRows && staffRows.length > 0) {
+          profileData = staffRows[0];
+          idPegawai = staffRows[0].id_pegawai;
+        }
+      } catch (_) {}
+      if (!idPegawai) {
+        const mStaff = mockDb.pegawai.find(p => p.id_user === foundUser.id_user);
+        if (mStaff) {
+          profileData = mStaff;
+          idPegawai = mStaff.id_pegawai || null;
+        }
+      }
     } else if (foundUser.role === 'PELANGGAN') {
       try {
         const [custRows] = await db.query(
-          'SELECT * FROM pelanggan WHERE id_user = ? OR email = ? OR (telepon = ? AND telepon != "") LIMIT 1',
-          [foundUser.id_user, foundUser.email, foundUser.no_telp || '']
+          'SELECT * FROM pelanggan WHERE id_user = ? OR email = ? OR (telepon = ? AND telepon != "") ORDER BY (id_user = ?) DESC, id_pelanggan ASC LIMIT 1',
+          [foundUser.id_user, foundUser.email, foundUser.no_telp || '', foundUser.id_user]
         );
         if (custRows && custRows.length > 0) {
           idPelanggan = custRows[0].id_pelanggan;
@@ -159,11 +187,13 @@ async function login(req, res) {
 
     const redirectUrl = getDashboardRedirect(foundUser.role);
 
-    // Buat JWT Token
+    // Buat JWT Token dengan relasi ID profil yang akurat
     const token = jwt.sign(
       {
         id_user: foundUser.id_user,
         id_pelanggan: idPelanggan,
+        id_pegawai: idPegawai,
+        id_pemilik: idPemilik,
         username: foundUser.username,
         role: foundUser.role
       },
@@ -172,14 +202,21 @@ async function login(req, res) {
     );
 
     // Simpan ke sesi Express jika session middleware aktif
-    const userDisplayName = foundUser.nama || profileData.nama || foundUser.username;
-    const userPhone = foundUser.telepon_profil || profileData.telepon || foundUser.no_telp || '';
-    const userAddress = foundUser.alamat_profil || profileData.alamat || '';
+    const userDisplayName = profileData.nama || foundUser.nama || foundUser.username;
+    const userPhone = profileData.telepon || foundUser.telepon_profil || foundUser.no_telp || '';
+    const userAddress = profileData.alamat || foundUser.alamat_profil || '';
 
     if (req.session) {
       req.session.user = {
         id_user: foundUser.id_user,
         id_pelanggan: idPelanggan,
+        id_pegawai: idPegawai,
+        id_pemilik: idPemilik,
+        kode_pelanggan: profileData.kode_pelanggan || null,
+        kode_pegawai: profileData.kode_pegawai || null,
+        kode_pemilik: profileData.kode_pemilik || null,
+        jabatan: profileData.jabatan || null,
+        member_tier: profileData.member_tier || null,
         username: foundUser.username,
         email: foundUser.email,
         no_telp: userPhone,
@@ -199,13 +236,20 @@ async function login(req, res) {
         user: {
           id_user: foundUser.id_user,
           id_pelanggan: idPelanggan,
+          id_pegawai: idPegawai,
+          id_pemilik: idPemilik,
+          kode_pelanggan: profileData.kode_pelanggan || null,
+          kode_pegawai: profileData.kode_pegawai || null,
+          kode_pemilik: profileData.kode_pemilik || null,
+          jabatan: profileData.jabatan || null,
+          member_tier: profileData.member_tier || null,
           username: foundUser.username,
           email: foundUser.email,
           no_telp: userPhone,
           nama: userDisplayName,
           alamat: userAddress,
           role: foundUser.role,
-          created_at: foundUser.created_at || (profileData && profileData.created_at) || new Date().toISOString()
+          created_at: profileData.created_at || foundUser.created_at || new Date().toISOString()
         },
         redirect: redirectUrl
       },
@@ -244,10 +288,21 @@ async function me(req, res) {
   try {
     const idUser = req.user.id_user;
 
-    // Coba MySQL
+    // Coba MySQL lengkap dengan relasi tabel peran
     try {
       const [rows] = await db.execute(
-        `SELECT id_user, username, email, role, status, created_at FROM users WHERE id_user = ? LIMIT 1`,
+        `SELECT u.id_user, u.username, u.email, u.no_telp, u.role, u.status, u.created_at,
+                pm.id_pemilik, pm.kode_pemilik,
+                pg.id_pegawai, pg.kode_pegawai, pg.jabatan,
+                pl.id_pelanggan, pl.kode_pelanggan, pl.member_tier,
+                COALESCE(pm.nama, pg.nama, pl.nama, u.username) AS nama,
+                COALESCE(pm.telepon, pg.telepon, pl.telepon, u.no_telp) AS telepon,
+                COALESCE(pm.alamat, pg.alamat, pl.alamat, '') AS alamat
+         FROM users u
+         LEFT JOIN pemilik pm ON u.id_user = pm.id_user
+         LEFT JOIN pegawai pg ON u.id_user = pg.id_user
+         LEFT JOIN pelanggan pl ON u.id_user = pl.id_user
+         WHERE u.id_user = ? LIMIT 1`,
         [idUser]
       );
       if (rows && rows.length > 0) {
@@ -338,6 +393,7 @@ async function register(req, res) {
     const cleanEmail = String(email).trim().toLowerCase();
     let baseUsername = cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '');
     if (!baseUsername) baseUsername = 'pelanggan';
+    let finalUsername = baseUsername;
     const userTelp = telepon && String(telepon).trim() ? String(telepon).trim() : '08' + Math.floor(1000000000 + Math.random() * 9000000000);
 
     // Cek MySQL jika ada
@@ -348,7 +404,6 @@ async function register(req, res) {
       }
 
       // Pastikan username unik
-      let finalUsername = baseUsername;
       const [existingUser] = await db.execute('SELECT id_user FROM users WHERE username = ? LIMIT 1', [finalUsername]);
       if (existingUser && existingUser.length > 0) {
         finalUsername = `${baseUsername}_${Math.floor(100 + Math.random() * 900)}`;

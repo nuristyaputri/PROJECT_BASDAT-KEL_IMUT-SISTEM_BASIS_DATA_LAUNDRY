@@ -16,7 +16,7 @@ const STATUS_PESANAN = [
     "SIAP_DIAMBIL", "SELESAI", "DIBATALKAN"
 ];
 const STATUS_AKUN = ["AKTIF", "NONAKTIF"];
-const SATUAN_LAYANAN = ["kg", "pcs", "meter"];
+const SATUAN_LAYANAN = ["kg", "pcs", "meter", "pasang"];
 
 function sendError(res, status, message) {
     return res.status(status).json({ success: false, message, data: null });
@@ -534,7 +534,7 @@ exports.tambahLayanan = async (req, res) => {
         const katVal = (kategori && ["KILOAN", "SATUAN", "EXPRESS", "SPECIAL"].includes(String(kategori).toUpperCase()))
             ? String(kategori).toUpperCase()
             : "KILOAN";
-        const estimasiVal = estimasi_waktu || "2-3 hari";
+        const estimasiVal = estimasi_waktu || "2 Hari";
         const deskripsiVal = deskripsi || "Layanan laundry higienis dan wangi.";
 
         let id_layanan = null;
@@ -582,7 +582,7 @@ exports.updateLayanan = async (req, res) => {
         const katVal = (kategori && ["KILOAN", "SATUAN", "EXPRESS", "SPECIAL"].includes(String(kategori).toUpperCase()))
             ? String(kategori).toUpperCase()
             : "KILOAN";
-        const estimasiVal = estimasi_waktu || "2-3 hari";
+        const estimasiVal = estimasi_waktu || "2 Hari";
 
         try {
             await pool.query(
@@ -596,9 +596,11 @@ exports.updateLayanan = async (req, res) => {
         const l = db.layanan.find(x => x.id_layanan === id);
         if (l) {
             l.nama_layanan = nama_layanan.trim();
+            l.kategori = katVal;
             l.satuan = satuanVal;
             l.harga = round2(hargaNum);
             l.estimasi_waktu = estimasiVal;
+            l.deskripsi = deskripsi || '';
         }
 
         return res.json({ success: true, message: "Layanan berhasil diperbarui di database XAMPP", data: null });
@@ -734,7 +736,11 @@ exports.daftarPesanan = async (req, res) => {
                        pb.metode AS metode_bayar, pb.status AS status_bayar
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
-                LEFT JOIN pembayaran pb ON pb.id_pesanan = p.id_pesanan
+                LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
+                    SELECT pb2.id_pembayaran FROM pembayaran pb2
+                    WHERE pb2.id_pesanan = p.id_pesanan
+                    ORDER BY pb2.id_pembayaran DESC LIMIT 1
+                )
             `;
             const params = [];
             if (status) {
@@ -874,7 +880,11 @@ exports.daftarTransaksi = async (req, res) => {
                        pb.id_pembayaran, pb.jumlah_bayar, pb.metode, pb.tanggal_bayar, pb.status AS status_pembayaran
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
-                LEFT JOIN pembayaran pb ON pb.id_pesanan = p.id_pesanan
+                LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
+                    SELECT pb2.id_pembayaran FROM pembayaran pb2
+                    WHERE pb2.id_pesanan = p.id_pesanan
+                    ORDER BY pb2.id_pembayaran DESC LIMIT 1
+                )
                 ORDER BY p.id_pesanan DESC
             `;
             const [rows] = await pool.query(sql);

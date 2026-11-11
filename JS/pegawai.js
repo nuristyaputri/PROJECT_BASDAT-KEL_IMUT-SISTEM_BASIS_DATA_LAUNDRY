@@ -14,16 +14,21 @@
     // 1. DATA DEFAULT & SINKRONISASI PEGAWAI
     // ==========================================
     const DEFAULT_STAFF_PROFILE = {
+        id_user: 2,
+        id_pegawai: 1,
+        username: 'dina.staff',
         nama: 'Dina Nurhaliza',
         inisial: 'DN',
-        idPegawai: 'PGW-0017',
-        nomorHp: '0812 9876 5432',
+        idPegawai: 'PGW-001',
+        kode: 'PGW-001',
+        nomorHp: '081298765432',
         email: 'dina.nurhaliza@bersihin.id',
-        alamat: 'Jl. Dago Asri No. 42, Coblong, Bandung',
+        alamat: 'Jl. Sawo Manila No. 15, Pasar Minggu, Jakarta Selatan',
         posisi: 'Kasir Utama',
+        jabatan: 'Kasir Utama',
         jadwal: 'Shift Pagi (08.00 - 16.00 WIB)',
-        cabang: 'Cabang Dago',
-        aktifSejak: '15 Januari 2023',
+        cabang: 'Outlet Depok Pusat',
+        aktifSejak: '15 Januari 2024',
         notifikasiAktif: true
     };
 
@@ -31,13 +36,33 @@
 
     function getStaffProfile() {
         try {
+            const rawUser = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+            const parsedUser = rawUser ? JSON.parse(rawUser) : null;
             const raw = sessionStorage.getItem(STORAGE_KEY) || localStorage.getItem(STORAGE_KEY);
-            if (!raw) {
-                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_STAFF_PROFILE));
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_STAFF_PROFILE));
-                return { ...DEFAULT_STAFF_PROFILE };
+            let prof = raw ? { ...DEFAULT_STAFF_PROFILE, ...JSON.parse(raw) } : { ...DEFAULT_STAFF_PROFILE };
+
+            // Sinkronkan identitas staf agar profil tab aktif tidak tertukar antara Budi & Dina
+            if (parsedUser && parsedUser.role === 'PEGAWAI') {
+                const userNama = parsedUser.nama || prof.nama;
+                const inits = userNama.trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PG';
+                prof = {
+                    ...prof,
+                    id_user: parsedUser.id_user || prof.id_user,
+                    id_pegawai: parsedUser.id_pegawai || prof.id_pegawai,
+                    username: parsedUser.username || prof.username,
+                    nama: userNama,
+                    inisial: inits,
+                    idPegawai: parsedUser.kode_pegawai || prof.idPegawai,
+                    kode: parsedUser.kode_pegawai || prof.kode,
+                    email: parsedUser.email || prof.email,
+                    nomorHp: parsedUser.no_telp || parsedUser.telepon || prof.nomorHp,
+                    telepon: parsedUser.no_telp || parsedUser.telepon || prof.telepon,
+                    alamat: parsedUser.alamat || prof.alamat,
+                    posisi: parsedUser.jabatan || prof.posisi,
+                    jabatan: parsedUser.jabatan || prof.jabatan
+                };
             }
-            return { ...DEFAULT_STAFF_PROFILE, ...JSON.parse(raw) };
+            return prof;
         } catch (e) {
             return { ...DEFAULT_STAFF_PROFILE };
         }
@@ -71,18 +96,22 @@
                     const staffName = d.nama || 'Pegawai Bersihin';
                     const inits = staffName.trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'ST';
                     const updated = {
+                        id_user: d.id_user,
+                        id_pegawai: d.id_pegawai,
+                        username: d.username,
                         nama: staffName,
                         inisial: inits,
-                        idPegawai: d.kode_pegawai || 'PGW-002',
-                        kode: d.kode_pegawai || 'PGW-002',
-                        nomorHp: d.telepon || '0813 7788 9900',
-                        telepon: d.telepon || '0813 7788 9900',
-                        email: d.email || 'pegawai@bersihin.id',
-                        alamat: d.alamat || 'Jakarta Selatan',
-                        posisi: d.jabatan || 'Operator Cuci & Setrika',
-                        jabatan: d.jabatan || 'Operator Cuci & Setrika',
+                        idPegawai: d.kode_pegawai || 'PGW-001',
+                        kode: d.kode_pegawai || 'PGW-001',
+                        nomorHp: d.telepon || d.no_telp || '',
+                        telepon: d.telepon || d.no_telp || '',
+                        email: d.email || '',
+                        alamat: d.alamat || '',
+                        posisi: d.jabatan || 'Staff Operasional',
+                        jabatan: d.jabatan || 'Staff Operasional',
                         jadwal: 'Shift Pagi (08.00 - 16.00 WIB)',
-                        cabang: 'Cabang Dago'
+                        cabang: 'Outlet Depok Pusat',
+                        created_at: d.created_at
                     };
                     saveStaffProfile(updated);
                 }
@@ -93,7 +122,7 @@
     function applyStaffProfileToDOM(profile = getStaffProfile()) {
         const inits = profile.inisial || (profile.nama ? profile.nama.trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() : 'DN');
 
-        document.querySelectorAll('.staff-avatar-initials, aside .w-8.h-8, header .w-9.h-9.bg-sky-100, #profileMenuBtn, #pegawaiAvatarBtn').forEach(el => {
+        document.querySelectorAll('.staff-avatar-initials, #staffSidebarInitials, aside .w-8.h-8, aside .w-9.h-9, header .w-9.h-9.bg-sky-100, #profileMenuBtn, #pegawaiAvatarBtn').forEach(el => {
             if (el && (!el.children.length || el.tagName === 'DIV' || el.tagName === 'A' || el.tagName === 'BUTTON')) {
                 if (el.textContent.trim().length <= 3) {
                     el.textContent = inits;
@@ -106,12 +135,17 @@
         if (dropdownStaffName) dropdownStaffName.textContent = profile.nama;
         if (dropdownStaffEmail) dropdownStaffEmail.textContent = profile.email || `${profile.posisi || profile.jabatan || 'Kasir'} • Shift Pagi`;
 
-        const sidebarNameEl = document.querySelector('aside .text-slate-800.text-xs.font-bold, aside .text-\\[11px\\].font-bold');
+        const sidebarNameEl = document.getElementById('staffSidebarName') || document.querySelector('aside .text-slate-800.text-xs.font-bold, aside .text-\\[11px\\].font-bold');
         if (sidebarNameEl) sidebarNameEl.textContent = profile.nama;
 
-        const sidebarRoleEl = document.querySelector('aside .text-slate-400.text-\\[10px\\].font-normal, aside .text-\\[9px\\].text-slate-400');
+        const sidebarRoleEl = document.getElementById('staffSidebarRole') || document.querySelector('aside .text-slate-400.text-\\[10px\\], aside .text-\\[9px\\].text-slate-400');
         if (sidebarRoleEl) {
-            sidebarRoleEl.textContent = `${profile.posisi || profile.jabatan || 'Kasir'} • Shift Pagi`;
+            sidebarRoleEl.textContent = profile.posisi || profile.jabatan || 'Pegawai';
+        }
+
+        const staffInvoiceName = document.getElementById('staffStaffName');
+        if (staffInvoiceName && !staffInvoiceName.dataset.orderBound) {
+            staffInvoiceName.textContent = `${profile.nama} (${profile.posisi || profile.jabatan || 'Pegawai'})`;
         }
 
         const candidateH2 = document.querySelector('main h2');
@@ -423,42 +457,46 @@
         return 'http://localhost:5000';
     }
 
-    function isStaffToken(token) {
+    function isStaffToken(token, allowOwnerFallback = false) {
         if (!token || typeof token !== 'string') return false;
         try {
             const parts = token.split('.');
             if (parts.length < 2) return false;
             const payload = JSON.parse(atob(parts[1]));
-            return payload && (payload.role === 'PEGAWAI' || payload.role === 'PEMILIK');
+            if (!payload) return false;
+            if (payload.role === 'PEGAWAI') return true;
+            return Boolean(allowOwnerFallback && payload.role === 'PEMILIK');
         } catch (_) {
             return false;
         }
     }
 
     async function ensureStaffToken() {
-        // Prioritaskan token aktif pada session tab browser ini (agar tab Budi dan tab Dina tidak bentrok)
+        // Prioritaskan token PEGAWAI aktif pada session tab browser ini (agar tab Budi, Dina, dan Pemilik tidak bentrok)
         const sessionStaff = sessionStorage.getItem('bersihin_staff_token');
-        if (isStaffToken(sessionStaff)) return sessionStaff;
+        if (isStaffToken(sessionStaff, false)) return sessionStaff;
 
         const sessionGeneric = sessionStorage.getItem('bersihin_token');
-        if (isStaffToken(sessionGeneric)) {
+        if (isStaffToken(sessionGeneric, false)) {
             sessionStorage.setItem('bersihin_staff_token', sessionGeneric);
             return sessionGeneric;
         }
 
         const localStaff = localStorage.getItem('bersihin_staff_token');
-        if (isStaffToken(localStaff)) return localStaff;
+        if (isStaffToken(localStaff, false)) return localStaff;
 
         const genericToken = localStorage.getItem('bersihin_token');
-        if (isStaffToken(genericToken)) {
+        if (isStaffToken(genericToken, false)) {
             return genericToken;
         }
 
         // Cek profil tab ini untuk mengetahui identifier staf mana yang sedang login
         const profile = getStaffProfile();
-        const staffLoginId = (profile.email && profile.email.includes('@')) 
-            ? profile.email 
-            : (profile.nama && profile.nama.toLowerCase().includes('budi') ? 'budi.operator' : 'dina.staff');
+        const staffLoginId = profile.username
+            ? profile.username
+            : ((profile.email && profile.email.includes('@'))
+                ? profile.email
+                : (profile.nama && profile.nama.toLowerCase().includes('budi') ? 'budi.operator' : 'dina.staff'));
 
         try {
             const res = await fetch(`${getBackendBaseUrl()}/api/auth/login`, {
@@ -587,10 +625,12 @@
             const code = o.kode_pesanan || `ORD-${String(o.id_pesanan).padStart(4, '0')}`;
             const st = normalizeOrderStatus(o.status);
             const beratNum = Number(o.total_berat) || 3.5;
-            const totalNum = Number(o.total_harga) || (beratNum * 10000);
+            const totalNum = Number(o.total_harga) || (beratNum * 9000);
             const dateObj = new Date(o.tanggal_pesanan || Date.now());
             const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
             const timeStr = `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')} WIB`;
+            const payRaw = String(o.status_pembayaran || '').toUpperCase();
+            const isPaid = payRaw === 'BERHASIL' || (st !== 'Menunggu konfirmasi' && st !== 'Dibatalkan' && !payRaw);
 
             mapById.set(code, {
                 id: code,
@@ -598,17 +638,19 @@
                 dbId: o.id_pesanan,
                 id_pelanggan: o.id_pelanggan,
                 customerName: o.nama_pelanggan || 'Pelanggan Bersihin',
-                customerPhone: o.telepon || o.customerPhone || '0889 8080 8098',
-                customerAddress: o.alamat || o.customerAddress || 'Jl. Dago Asri No. 42, Bandung',
-                service: o.layanan || 'Cuci + Setrika',
+                customerPhone: o.telepon || o.customerPhone || '',
+                customerAddress: o.alamat || o.customerAddress || '',
+                service: o.layanan || 'Cuci Komplit (Cuci + Setrika)',
                 weight: `${beratNum.toFixed(1).replace('.', ',')} kg`,
                 weightKg: beratNum,
                 total: totalNum,
                 totalFormatted: formatRupiah(totalNum),
                 status: st,
                 rawStatus: o.status,
-                paymentMethod: 'QRIS',
-                paymentStatus: (st === 'Menunggu konfirmasi') ? 'Menunggu' : 'Lunas',
+                paymentMethod: o.metode_pembayaran || 'TUNAI',
+                paymentStatus: isPaid ? 'Lunas' : 'Menunggu',
+                rawPaymentStatus: o.status_pembayaran || (isPaid ? 'BERHASIL' : 'MENUNGGU'),
+                referensi_bayar: o.referensi_bayar || null,
                 date: dateStr,
                 time: timeStr,
                 rawDate: dateObj,
@@ -1194,14 +1236,13 @@
             }
         } catch (_) {}
 
-        // Fallback jika backend offline
+        // Fallback sesuai bersihinlaundry.sql jika backend offline
         if (!customers.length) {
             customers = [
-                { id_pelanggan: 5, kode_pelanggan: 'PLG-08133', nama: 'Nuristya', telepon: '0889 8080 8098', email: 'nuristya@gmail.com', alamat: 'Jl. Margonda Raya No. 45, Beji, Depok', created_at: '2026-11-08' },
-                { id_pelanggan: 4, kode_pelanggan: 'PLG-08132', nama: 'Maya Anggraini', telepon: '0833 3333 3333', email: 'maya@example.com', alamat: 'Jl. Pondok Cina No. 7, Beji, Depok', created_at: '2024-04-01' },
-                { id_pelanggan: 3, kode_pelanggan: 'PLG-08131', nama: 'Dedi Kurniawan', telepon: '0822 2222 2222', email: 'dedi.kurniawan@example.com', alamat: 'Jl. Beji Timur No. 12, Depok', created_at: '2024-03-15' },
-                { id_pelanggan: 2, kode_pelanggan: 'PLG-08130', nama: 'Rina Marlina', telepon: '0811 1111 1111', email: 'rina.marlina@example.com', alamat: 'Jl. Kukusan Raya No. 5, Beji, Depok', created_at: '2024-03-10' },
-                { id_pelanggan: 1, kode_pelanggan: 'PLG-08129', nama: 'Andi Pratama', telepon: '0812 3456 7821', email: 'andi.pratama@email.com', alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan', created_at: '2024-03-01' }
+                { id_pelanggan: 4, kode_pelanggan: 'PLG-08132', nama: 'Maya Anggraini', telepon: '083333333333', email: 'maya@example.com', alamat: 'Jl. Pondok Cina No. 7, Beji, Depok', member_tier: 'REGULER', created_at: '2024-04-01' },
+                { id_pelanggan: 3, kode_pelanggan: 'PLG-08131', nama: 'Dedi Kurniawan', telepon: '082222222222', email: 'dedi.kurniawan@example.com', alamat: 'Jl. Beji Timur No. 12, Depok', member_tier: 'REGULER', created_at: '2024-03-15' },
+                { id_pelanggan: 2, kode_pelanggan: 'PLG-08130', nama: 'Rina Marlina', telepon: '081111111111', email: 'rina.marlina@example.com', alamat: 'Jl. Kukusan Raya No. 5, Beji, Depok', member_tier: 'GOLD', created_at: '2024-03-10' },
+                { id_pelanggan: 1, kode_pelanggan: 'PLG-08129', nama: 'Andi Pratama', telepon: '081234567821', email: 'andi.pratama@email.com', alamat: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan', member_tier: 'SILVER', created_at: '2024-03-01' }
             ];
         }
 
@@ -2059,15 +2100,14 @@
             recentTbody.innerHTML = '';
             
             const fallbackRows = [
-                { id: 'ORD-0524-018', code: 'ORD-0524-018', customerName: 'Andi Pratama', service: 'Cuci + Setrika', totalFormatted: 'Rp45.000', status: 'Dicuci' },
-                { id: 'ORD-0524-017', code: 'ORD-0524-017', customerName: 'Siti Rahma', service: 'Express', totalFormatted: 'Rp54.000', status: 'Menunggu konfirmasi' },
-                { id: 'ORD-0524-016', code: 'ORD-0524-016', customerName: 'Budi Santoso', service: 'Cuci Kering', totalFormatted: 'Rp42.000', status: 'Diproses' },
-                { id: 'ORD-0524-015', code: 'ORD-0524-015', customerName: 'Maya Lestari', service: 'Setrika Saja', totalFormatted: 'Rp30.000', status: 'Disetrika' },
-                { id: 'ORD-0524-014', code: 'ORD-0524-014', customerName: 'Rizky Maulana', service: 'Cuci + Setrika', totalFormatted: 'Rp35.000', status: 'Selesai' }
+                { id: 'TRX-240520-05', code: 'TRX-240520-05', customerName: 'Maya Anggraini', service: 'Cuci Komplit (Cuci + Setrika)', totalFormatted: 'Rp22.500', status: 'Menunggu konfirmasi' },
+                { id: 'TRX-240519-02', code: 'TRX-240519-02', customerName: 'Rina Marlina', service: 'Cuci Komplit (Cuci + Setrika), Cuci Bedcover Besar', totalFormatted: 'Rp52.000', status: 'Disetrika' },
+                { id: 'TRX-240518-01', code: 'TRX-240518-01', customerName: 'Andi Pratama', service: 'Cuci Komplit (Cuci + Setrika)', totalFormatted: 'Rp40.500', status: 'Dicuci' },
+                { id: 'TRX-240517-03', code: 'TRX-240517-03', customerName: 'Dedi Kurniawan', service: 'Cuci Komplit (Cuci + Setrika)', totalFormatted: 'Rp45.000', status: 'Siap Diambil' },
+                { id: 'TRX-240510-04', code: 'TRX-240510-04', customerName: 'Andi Pratama', service: 'Cuci Komplit (Cuci + Setrika)', totalFormatted: 'Rp54.000', status: 'Selesai' }
             ];
 
-            const combined = orders.length > 0 ? [...orders, ...fallbackRows.filter(f => !orders.some(o => o.code === f.code))] : fallbackRows;
-            const top5 = combined.slice(0, 5);
+            const top5 = (orders.length > 0 ? orders : fallbackRows).slice(0, 5);
 
             top5.forEach(o => {
                 const badgeCfg = getStatusBadgeConfig(o.status);
@@ -2190,7 +2230,7 @@
         if (bannerAvatar) bannerAvatar.textContent = profile.inisial || 'ST';
 
         const bannerRole = document.getElementById('bannerProfileRoleBadge') || document.querySelector('main .bg-white\\/15 span.text-\\[11px\\]');
-        if (bannerRole) bannerRole.textContent = `${profile.posisi || profile.jabatan} &bull; ID: ${profile.idPegawai || profile.kode}`;
+        if (bannerRole) bannerRole.textContent = `${profile.posisi || profile.jabatan} • ID: ${profile.idPegawai || profile.kode}`;
 
         const viewName = document.getElementById('profileViewName');
         if (viewName) viewName.textContent = profile.nama;
@@ -2202,7 +2242,7 @@
         if (viewEmail) viewEmail.textContent = profile.email;
 
         const viewRole = document.getElementById('profileViewRole');
-        if (viewRole) viewRole.textContent = `${profile.posisi || profile.jabatan} &bull; ${profile.cabang || 'Cabang Dago'}`;
+        if (viewRole) viewRole.textContent = `${profile.posisi || profile.jabatan} • ${profile.cabang || 'Outlet Bersihin'}`;
 
         const viewBadgeId = document.getElementById('profileViewBadgeId');
         if (viewBadgeId) viewBadgeId.textContent = profile.idPegawai || profile.kode;
@@ -2232,7 +2272,7 @@
 
         const form = document.getElementById('editProfileForm') || document.querySelector('form');
         if (form) {
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 const updatedName = namaInput ? namaInput.value.trim() : profile.nama;
@@ -2244,15 +2284,33 @@
                     return;
                 }
 
+                try {
+                    const token = await ensureStaffToken();
+                    if (token) {
+                        await fetch(`${getBackendBaseUrl()}/api/pegawai/profil`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                nama: updatedName,
+                                telepon: updatedPhone
+                            })
+                        });
+                    }
+                } catch (_) {}
+
                 const parts = updatedName.split(' ').filter(Boolean);
                 const initials = parts.length > 1
                     ? (parts[0][0] + parts[1][0]).toUpperCase()
-                    : (parts[0] ? parts[0].substring(0, 2).toUpperCase() : 'DN');
+                    : (parts[0] ? parts[0].substring(0, 2).toUpperCase() : 'PG');
 
                 saveStaffProfile({
                     nama: updatedName,
                     inisial: initials,
                     nomorHp: updatedPhone,
+                    telepon: updatedPhone,
                     email: updatedEmail
                 });
 
@@ -2425,6 +2483,7 @@
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         applyStaffProfileToDOM();
+        syncStaffProfileFromBackend();
         updateRealtimeDate();
         setInterval(updateRealtimeDate, 30000);
         initSidebar();
