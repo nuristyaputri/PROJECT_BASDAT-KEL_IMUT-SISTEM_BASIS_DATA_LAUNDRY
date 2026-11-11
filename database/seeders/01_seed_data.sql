@@ -2,7 +2,7 @@
 -- SISTEM BASIS DATA LAUNDRY (BERSIHIN LAUNDRY)
 -- SEEDER: DML INSERT DATA AWAL (DEMO & TESTING LENGKAP)
 -- Catatan Password: Seluruh akun demo menggunakan kata sandi: password123
--- Hash Bcrypt: $2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW
+-- Hash Bcrypt: $2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG
 -- =============================================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -10,16 +10,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- -----------------------------------------------------------------------------
 -- 1. SEED: users (Akun Login Pemilik, Pegawai, Pelanggan)
 -- -----------------------------------------------------------------------------
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `role`, `status`, `created_at`) VALUES
+INSERT INTO `users` (`id_user`, `username`, `email`, `no_telp`, `password`, `role`, `status`, `created_at`) VALUES
 -- 1: Pemilik
-(1, 'pemilik', 'rangga@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEMILIK', 'AKTIF', '2024-01-01 08:00:00'),
+(1, 'pemilik', 'rangga@bersihin.id', '081211223344', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PEMILIK', 'AKTIF', '2024-01-01 08:00:00'),
 -- 2-3: Pegawai
-(2, 'dina.staff', 'dina.nurhaliza@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-01-15 08:00:00'),
-(3, 'budi.operator', 'budi.operator@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-02-01 08:00:00'),
+(2, 'dina.staff', 'dina.nurhaliza@bersihin.id', '081298765432', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PEGAWAI', 'AKTIF', '2024-01-15 08:00:00'),
+(3, 'budi.operator', 'budi.operator@bersihin.id', '081377889900', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PEGAWAI', 'AKTIF', '2024-02-01 08:00:00'),
 -- 4-6: Pelanggan
-(4, 'andipratama', 'andi.pratama@email.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-01 09:00:00'),
-(5, 'rinamarlina', 'rina.marlina@example.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-10 10:00:00'),
-(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00');
+(4, 'andipratama', 'andi.pratama@email.com', '081234567821', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PELANGGAN', 'AKTIF', '2024-03-01 09:00:00'),
+(5, 'rinamarlina', 'rina.marlina@example.com', '081111111111', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PELANGGAN', 'AKTIF', '2024-03-10 10:00:00'),
+(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '082222222222', '$2b$10$iICWhh6WnOyszRoHVAMWve1fBa6A920IUljkjqcWZ0h0vbGhWlyTG', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00');
 
 -- -----------------------------------------------------------------------------
 -- 2. SEED: pemilik (Profil Pemilik Usaha)

@@ -25,6 +25,7 @@ const DEMO_USERS = [
     id_user: 1,
     username: 'pemilik',
     email: 'rangga@bersihin.id',
+    no_telp: '081211223344',
     telepon: '081211223344',
     nama: 'Rangga Saputra',
     password: 'password123',
@@ -36,6 +37,7 @@ const DEMO_USERS = [
     id_user: 2,
     username: 'dina.staff',
     email: 'dina.nurhaliza@bersihin.id',
+    no_telp: '081298765432',
     telepon: '081298765432',
     nama: 'Dina Nurhaliza',
     password: 'password123',
@@ -47,6 +49,7 @@ const DEMO_USERS = [
     id_user: 3,
     username: 'budi.operator',
     email: 'budi.operator@bersihin.id',
+    no_telp: '081377889900',
     telepon: '081377889900',
     nama: 'Budi Santoso',
     password: 'password123',
@@ -58,6 +61,7 @@ const DEMO_USERS = [
     id_user: 4,
     username: 'andipratama',
     email: 'andi.pratama@email.com',
+    no_telp: '081234567821',
     telepon: '081234567821',
     nama: 'Andi Pratama',
     password: 'password123',
@@ -108,12 +112,18 @@ router.post('/login', async (req, res) => {
     if (pool) {
       try {
         const query = `
-          SELECT id_user, username, email, password, role, status
-          FROM users
-          WHERE (username = ? OR email = ?) AND status = 'AKTIF'
+          SELECT u.id_user, u.username, u.email, u.no_telp, u.password, u.role, u.status,
+                 COALESCE(p.nama, pg.nama, pm.nama, u.username) AS nama,
+                 COALESCE(p.telepon, pg.telepon, pm.telepon, u.no_telp, '') AS telepon_profil,
+                 COALESCE(p.alamat, pg.alamat, pm.alamat, '') AS alamat_profil
+          FROM users u
+          LEFT JOIN pelanggan p ON p.id_user = u.id_user
+          LEFT JOIN pegawai pg ON pg.id_user = u.id_user
+          LEFT JOIN pemilik pm ON pm.id_user = u.id_user
+          WHERE (u.username = ? OR u.email = ? OR u.no_telp = ?) AND u.status = 'AKTIF'
           LIMIT 1
         `;
-        const [rows] = await pool.query(query, [identifier, identifier]);
+        const [rows] = await pool.query(query, [identifier, identifier, identifier]);
 
         if (rows && rows.length > 0) {
           const user = rows[0];
@@ -148,6 +158,10 @@ router.post('/login', async (req, res) => {
                 id_user: user.id_user,
                 username: user.username,
                 email: user.email,
+                no_telp: user.no_telp,
+                nama: user.nama,
+                telepon: user.telepon_profil || user.no_telp || '',
+                alamat: user.alamat_profil || '',
                 role: user.role,
                 redirect: redirectUrl
               }
@@ -199,6 +213,130 @@ router.post('/login', async (req, res) => {
       success: false,
       message: 'Terjadi gangguan internal server: ' + err.message,
       data: null
+    });
+  }
+});
+
+/**
+ * POST /api/auth/register
+ * Pendaftaran akun pelanggan baru
+ */
+router.post('/register', async (req, res) => {
+  try {
+    const { nama, email, telepon, password } = req.body;
+
+    if (!email || !password || !nama) {
+      return res.status(400).json({
+        success: false,
+        message: 'Nama lengkap, email, dan kata sandi wajib diisi.'
+      });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanUsername = cleanEmail.split('@')[0];
+
+    // Simpan ke pool MySQL jika aktif
+    if (pool) {
+      try {
+        const [existing] = await pool.query('SELECT id_user FROM users WHERE email = ? LIMIT 1', [cleanEmail]);
+        if (existing && existing.length > 0) {
+          return res.status(409).json({
+            success: false,
+            message: 'Email ini sudah terdaftar dalam sistem.'
+          });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const [result] = await pool.query(
+          "INSERT INTO users (username, email, no_telp, password, role, status) VALUES (?, ?, ?, ?, 'PELANGGAN', 'AKTIF')",
+          [cleanUsername, cleanEmail, telepon || null, hashedPassword]
+        );
+
+        if (result && result.insertId) {
+          const kodePelanggan = 'PLG-' + String(result.insertId).padStart(5, '0');
+          await pool.query(
+            "INSERT INTO pelanggan (id_user, kode_pelanggan, nama, telepon, email, member_tier) VALUES (?, ?, ?, ?, ?, 'REGULER')",
+            [result.insertId, kodePelanggan, nama, telepon || '-', cleanEmail]
+          ).catch(pErr => {
+            console.error('Peringatan: Gagal insert profil pelanggan:', pErr.message);
+          });
+        }
+      } catch (dbErr) {
+        console.error('Peringatan: Gagal registrasi MySQL:', dbErr.message);
+      }
+    }
+
+    // Tambahkan juga ke DEMO_USERS memori
+    DEMO_USERS.push({
+      id_user: DEMO_USERS.length + 1,
+      username: cleanUsername,
+      email: cleanEmail,
+      telepon: telepon || '',
+      nama: nama,
+      password: password,
+      role: 'PELANGGAN',
+      status: 'AKTIF',
+      redirect: '/PELANGGAN/dashboard.html'
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Pendaftaran akun pelanggan baru berhasil.',
+      data: {
+        username: cleanUsername,
+        email: cleanEmail,
+        nama: nama,
+        role: 'PELANGGAN',
+        redirect: 'PELANGGAN/dashboard.html'
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Gagal mendaftarkan akun: ' + err.message
+    });
+  }
+});
+
+/**
+ * POST /api/auth/reset-password
+ * Pengaturan ulang kata sandi pengguna
+ */
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email dan kata sandi baru wajib diisi.'
+      });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    if (pool) {
+      try {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, cleanEmail]);
+      } catch (dbErr) {
+        console.warn('Peringatan: Gagal update password MySQL:', dbErr.message);
+      }
+    }
+
+    const demoUser = DEMO_USERS.find(u => u.email.toLowerCase() === cleanEmail);
+    if (demoUser) {
+      demoUser.password = newPassword;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Kata sandi berhasil diperbarui.'
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Gagal mengatur ulang kata sandi: ' + err.message
     });
   }
 });

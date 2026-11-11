@@ -68,7 +68,7 @@ Basis data ini terdiri dari 9 tabel relasional yang saling terhubung dengan inte
 
 | No | Nama Tabel | Deskripsi | Kunci Utama (*Primary Key*) | Relasi Kunci Tamu (*Foreign Key*) |
 |---|---|---|---|---|
-| 1 | `users` | Akun autentikasi pengguna terpusat untuk semua aktor | `id_user` | - |
+| 1 | `users` | Akun autentikasi pengguna terpusat untuk semua aktor (memiliki kolom `no_telp`, `username`, `email`) | `id_user` | - |
 | 2 | `pemilik` | Profil data pemilik / super administrator | `id_pemilik` | `id_user` -> `users.id_user` |
 | 3 | `pegawai` | Profil data staf kasir dan operator laundry | `id_pegawai` | `id_user` -> `users.id_user` |
 | 4 | `pelanggan` | Data profil dan kontak pelanggan | `id_pelanggan` | `id_user` -> `users.id_user` |
@@ -82,15 +82,15 @@ Basis data ini terdiri dari 9 tabel relasional yang saling terhubung dengan inte
 
 ## 3. Akun Login Bawaan (Demo & Pengujian)
 
-Seluruh akun demo telah di-hash menggunakan algoritma Bcrypt yang kompatibel dengan PHP maupun Node.js.
+Seluruh akun demo telah di-hash menggunakan algoritma Bcrypt yang kompatibel dengan PHP maupun Node.js. Pengguna dapat login menggunakan **Username**, **Email**, maupun **Nomor Telepon**.
 
-| Peran (*Role*) | Username | Email / No. HP | Password | Hak Akses Dashboard |
-|---|---|---|---|---|
-| **PEMILIK** | `pemilik` | `rangga@bersihin.id` | `password123` | Laporan Keuangan, Data Staf, Tarif Layanan |
-| **PEGAWAI** | `dina.staff` | `dina.nurhaliza@bersihin.id` | `password123` | POS Kasir, Input Pesanan, Update Cucian |
-| **PEGAWAI** | `budi.operator` | `budi.operator@bersihin.id` | `password123` | Antrean Mesin Cuci & Setrika |
-| **PELANGGAN** | `andipratama` | `andi.pratama@email.com` / `081234567821` | `password123` | Tracking Pesanan Real-time, Riwayat, Profil |
-| **PELANGGAN** | `rinamarlina` | `rina.marlina@example.com` / `081111111111` | `password123` | Akun Pelanggan Gold Member |
+| Peran (*Role*) | Username | Email | Nomor Telepon | Password | Hak Akses Dashboard |
+|---|---|---|---|---|---|
+| **PEMILIK** | `pemilik` | `rangga@bersihin.id` | `081211223344` | `password123` | Laporan Keuangan, Data Staf, Tarif Layanan |
+| **PEGAWAI** | `dina.staff` | `dina.nurhaliza@bersihin.id` | `081298765432` | `password123` | POS Kasir, Input Pesanan, Update Cucian |
+| **PEGAWAI** | `budi.operator` | `budi.operator@bersihin.id` | `081377889900` | `password123` | Antrean Mesin Cuci & Setrika |
+| **PELANGGAN** | `andipratama` | `andi.pratama@email.com` | `081234567821` | `password123` | Tracking Pesanan Real-time, Riwayat, Profil |
+| **PELANGGAN** | `rinamarlina` | `rina.marlina@example.com` | `081111111111` | `password123` | Akun Pelanggan Gold Member |
 
 ---
 

@@ -56,7 +56,18 @@ app.use('/api', apiRoutes);
 // Alias kompatibilitas jika frontend memanggil rute langsung tanpa prefix /api
 app.use('/auth', require('./routes/authRoutes'));
 
-// 5. Default Route (Forward ke Login)
+// 5. Default Route & Pengalihan Login Terpadu
+app.get([
+  '/login',
+  '/logout',
+  '/PEGAWAI/login.html',
+  '/PELANGGAN/login.html',
+  '/PEMILIK/login.html',
+  '*/login.html'
+], (req, res) => {
+  res.redirect('/login.html');
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(rootDir, 'login.html'));
 });
@@ -80,34 +91,25 @@ app.use((err, req, res, next) => {
 });
 
 // 8. Start Server & Test DB
-function startServer(portToTry) {
-  const server = app.listen(portToTry, async () => {
-    console.log('========================================================');
-    console.log(`🚀 Server Backend BersihIn Laundry berjalan di:`);
-    console.log(`   http://localhost:${portToTry}`);
-    console.log(`   Portal Login Terpadu: http://localhost:${portToTry}/login.html`);
-    console.log(`   API Health Check:     http://localhost:${portToTry}/api/health`);
-    console.log('========================================================');
-    await testConnection();
-  });
+const server = app.listen(PORT, async () => {
+  console.log('========================================================');
+  console.log(`🚀 Server Backend BersihIn Laundry berjalan di:`);
+  console.log(`   http://localhost:${PORT}`);
+  console.log(`   Portal Login Terpadu: http://localhost:${PORT}/login.html`);
+  console.log(`   API Health Check:     http://localhost:${PORT}/api/health`);
+  console.log('========================================================');
+  await testConnection();
+});
 
-  server.on('error', (err) => {
-    if (err.code === 'EACCES' || err.code === 'EADDRINUSE') {
-      const fallbackPort = portToTry === 3000 ? 3001 : (portToTry === 3001 ? 8080 : 8000);
-      console.warn(`[PERINGATAN] Port ${portToTry} tidak dapat digunakan (${err.code}).`);
-      console.warn(`[OTOMATIS] Beralih ke port alternatif ${fallbackPort}...`);
-      startServer(fallbackPort);
-    } else {
-      console.error('SERVER ERROR:', err.message);
-    }
-  });
-
-  return server;
-}
-
-if (require.main === module) {
-  startServer(PORT);
-}
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n[PERINGATAN] Port ${PORT} sedang digunakan oleh proses lain atau server sudah berjalan di tab lain.`);
+    console.error(`Gunakan perintah ini di PowerShell untuk mematikan proses lama:`);
+    console.error(`   Stop-Process -Name node -Force\n`);
+  } else {
+    console.error('Server error:', err.message);
+  }
+});
 
 module.exports = app;
 

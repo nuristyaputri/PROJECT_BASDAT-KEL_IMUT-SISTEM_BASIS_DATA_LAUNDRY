@@ -41,6 +41,5 @@ async function testConnection() {
 }
 
 pool.testConnection = testConnection;
-
 module.exports = pool;
 

@@ -26,6 +26,7 @@ CREATE TABLE `users` (
   `id_user` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
   `email` VARCHAR(100) DEFAULT NULL,
+  `no_telp` VARCHAR(20) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('PEMILIK', 'PEGAWAI', 'PELANGGAN') NOT NULL,
   `status` ENUM('AKTIF', 'NONAKTIF') NOT NULL DEFAULT 'AKTIF',
@@ -34,6 +35,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `idx_users_username` (`username`),
   UNIQUE KEY `idx_users_email` (`email`),
+  KEY `idx_users_no_telp` (`no_telp`),
   KEY `idx_users_role_status` (`role`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

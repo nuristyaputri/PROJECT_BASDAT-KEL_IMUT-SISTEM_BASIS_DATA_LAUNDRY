@@ -38,6 +38,7 @@ CREATE TABLE `users` (
   `id_user` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
   `email` VARCHAR(100) DEFAULT NULL,
+  `no_telp` VARCHAR(20) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('PEMILIK', 'PEGAWAI', 'PELANGGAN') NOT NULL,
   `status` ENUM('AKTIF', 'NONAKTIF') NOT NULL DEFAULT 'AKTIF',
@@ -46,6 +47,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `idx_users_username` (`username`),
   UNIQUE KEY `idx_users_email` (`email`),
+  KEY `idx_users_no_telp` (`no_telp`),
   KEY `idx_users_role_status` (`role`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -203,13 +205,13 @@ CREATE TABLE `pembayaran` (
 -- =============================================================================
 
 -- 1. users
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `role`, `status`, `created_at`) VALUES
-(1, 'pemilik', 'rangga@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEMILIK', 'AKTIF', '2024-01-01 08:00:00'),
-(2, 'dina.staff', 'dina.nurhaliza@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-01-15 08:00:00'),
-(3, 'budi.operator', 'budi.operator@bersihin.id', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-02-01 08:00:00'),
-(4, 'andipratama', 'andi.pratama@email.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-01 09:00:00'),
-(5, 'rinamarlina', 'rina.marlina@example.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-10 10:00:00'),
-(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00');
+INSERT INTO `users` (`id_user`, `username`, `email`, `no_telp`, `password`, `role`, `status`, `created_at`) VALUES
+(1, 'pemilik', 'rangga@bersihin.id', '081211223344', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEMILIK', 'AKTIF', '2024-01-01 08:00:00'),
+(2, 'dina.staff', 'dina.nurhaliza@bersihin.id', '081298765432', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-01-15 08:00:00'),
+(3, 'budi.operator', 'budi.operator@bersihin.id', '081377889900', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-02-01 08:00:00'),
+(4, 'andipratama', 'andi.pratama@email.com', '081234567821', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-01 09:00:00'),
+(5, 'rinamarlina', 'rina.marlina@example.com', '081111111111', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-10 10:00:00'),
+(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '082222222222', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00');
 
 -- 2. pemilik
 INSERT INTO `pemilik` (`id_pemilik`, `id_user`, `kode_pemilik`, `nama`, `telepon`, `alamat`, `created_at`) VALUES

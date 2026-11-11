@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Pelanggan - Bersihin Staff Portal</title>
-    <!-- Google Fonts Poppins -->
+    <!-- Google Fonts: Poppins (sesuai desain Figma & Pelanggan) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,6 +18,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -40,7 +41,7 @@
     </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
     <header
@@ -106,7 +107,7 @@
                 </div>
                 <div>
                     <div class="text-teal-700 text-[11px] font-bold leading-tight">Shift Aktif</div>
-                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 – 16.00 WIB</div>
+                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 - 16.00 WIB</div>
                 </div>
             </div>
 
@@ -230,41 +231,71 @@
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
         <header
-            class="h-24 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
-            <div>
-                <h1 class="text-lg md:text-xl font-normal text-slate-800 leading-8">Data Pelanggan</h1>
-                <p class="text-xs text-slate-400 mt-0.5">Kelola informasi pelanggan terdaftar</p>
+            class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+            <!-- Kiri: Mobile Menu Toggle + Judul & Subtitle -->
+            <div class="flex items-center gap-3">
+                <button type="button" id="sidebarToggleBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+                    class="md:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <div class="flex flex-col justify-start items-start">
+                    <h1 class="text-slate-800 text-base md:text-lg font-normal leading-6">Data Pelanggan</h1>
+                    <p class="text-xs text-slate-400 mt-0.5">Kelola informasi pelanggan terdaftar</p>
+                </div>
             </div>
 
+            <!-- Kanan: Tanggal Real-Time + Notifikasi + Avatar Profil Pegawai -->
             <div class="flex items-center gap-3">
-                <!-- Tanggal -->
+                <!-- Tanggal Real-Time -->
                 <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
-                    <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div class="leading-tight">
-                        <span class="block text-[10px] text-gray-400 font-normal">Senin</span>
-                        <span class="text-xs font-bold text-slate-500">20 Mei 2024</span>
+                        <span class="realtime-day block text-[10px] text-slate-400 font-normal" data-realtime-day>Senin</span>
+                        <span class="realtime-date text-xs font-bold text-slate-600" data-realtime-date>9 November 2026</span>
                     </div>
                 </div>
 
-                <!-- Notifikasi -->
-                <button
-                    class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition"
-                    aria-label="Notifikasi">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                    <span
-                        class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
-                </button>
+                <!-- Tombol & Dropdown Notifikasi -->
+                <div class="relative">
+                    <button type="button" aria-label="Notifikasi" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+                    </button>
+                </div>
 
-                <!-- Avatar -->
-                <div
-                    class="w-9 h-9 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold">
-                    DN
+                <!-- Profil Pegawai & Dropdown Menu -->
+                <div class="relative">
+                    <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+                        aria-label="Profil Pegawai"
+                        class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        DN
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="profileDropdown" role="menu" aria-label="Menu Akun Pegawai"
+                        class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p id="dropdownStaffName" class="text-xs font-bold text-slate-800">Dina Nurhaliza</p>
+                            <p id="dropdownStaffEmail" class="text-[11px] text-slate-500 truncate">dina.nurhaliza@bersihin.id</p>
+                        </div>
+                        <a href="profil.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50 transition">
+                            <span>Profil Saya</span>
+                        </a>
+                        <a href="../login.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50 transition border-t border-slate-100 mt-1">
+                            <span>Keluar Akun</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </header>
@@ -300,7 +331,7 @@
                             </svg>
                             <div class="leading-tight">
                                 <span class="block text-[10px] text-gray-400 font-normal">Total Pelanggan</span>
-                                <span class="text-xs font-bold text-cyan-600" id="totalPelangganText">124 orang</span>
+                                <span class="text-xs font-bold text-cyan-600" id="totalPelangganText">5 orang</span>
                             </div>
                         </div>
 
@@ -331,9 +362,125 @@
                                     <th class="py-2.5 px-4 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100 text-xs">
-                                <!-- Row 1: Andi Pratama -->
-                                <tr class="hover:bg-slate-50/70 transition customer-row">
+                            <tbody id="pelangganTableBody" class="divide-y divide-slate-100 text-xs">
+                                <!-- Row 1: Nuristya -->
+                                <tr class="hover:bg-slate-50/70 transition customer-row cursor-pointer" onclick="window.location.href='detailpelanggan.html?id=PLG-08133'">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2.5">
+                                            <div
+                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
+                                                NU
+                                            </div>
+                                            <div>
+                                                <div class="text-slate-700 font-bold leading-tight">Nuristya</div>
+                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-08133</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0889 8080 8098</td>
+                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
+                                        title="Jl. Margonda Raya No. 45, Beji, Depok">
+                                        Jl. Margonda Raya No. 45, Beji, Depok
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">2 pesanan</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">8 November 2026</td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                                        <a href="detailpelanggan.html?id=PLG-08133"
+                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 2: Maya Anggraini -->
+                                <tr class="hover:bg-slate-50/70 transition customer-row cursor-pointer" onclick="window.location.href='detailpelanggan.html?id=PLG-08132'">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2.5">
+                                            <div
+                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
+                                                MA
+                                            </div>
+                                            <div>
+                                                <div class="text-slate-700 font-bold leading-tight">Maya Anggraini</div>
+                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-08132</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0833 3333 3333</td>
+                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
+                                        title="Jl. Pondok Cina No. 7, Beji, Depok">
+                                        Jl. Pondok Cina No. 7, Beji, Depok
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">1 pesanan</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">1 April 2024</td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                                        <a href="detailpelanggan.html?id=PLG-08132"
+                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 3: Dedi Kurniawan -->
+                                <tr class="hover:bg-slate-50/70 transition customer-row cursor-pointer" onclick="window.location.href='detailpelanggan.html?id=PLG-08131'">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2.5">
+                                            <div
+                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
+                                                DK
+                                            </div>
+                                            <div>
+                                                <div class="text-slate-700 font-bold leading-tight">Dedi Kurniawan</div>
+                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-08131</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0822 2222 2222</td>
+                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
+                                        title="Jl. Beji Timur No. 12, Depok">
+                                        Jl. Beji Timur No. 12, Depok
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">1 pesanan</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">15 Maret 2024</td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                                        <a href="detailpelanggan.html?id=PLG-08131"
+                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 4: Rina Marlina -->
+                                <tr class="hover:bg-slate-50/70 transition customer-row cursor-pointer" onclick="window.location.href='detailpelanggan.html?id=PLG-08130'">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2.5">
+                                            <div
+                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
+                                                RM
+                                            </div>
+                                            <div>
+                                                <div class="text-slate-700 font-bold leading-tight">Rina Marlina</div>
+                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-08130</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0811 1111 1111</td>
+                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
+                                        title="Jl. Kukusan Raya No. 5, Beji, Depok">
+                                        Jl. Kukusan Raya No. 5, Beji, Depok
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">1 pesanan</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">10 Maret 2024</td>
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                                        <a href="detailpelanggan.html?id=PLG-08130"
+                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Row 5: Andi Pratama -->
+                                <tr class="hover:bg-slate-50/70 transition customer-row cursor-pointer" onclick="window.location.href='detailpelanggan.html?id=PLG-08129'">
                                     <td class="py-3.5 px-4 whitespace-nowrap">
                                         <div class="flex items-center gap-2.5">
                                             <div
@@ -342,140 +489,19 @@
                                             </div>
                                             <div>
                                                 <div class="text-slate-700 font-bold leading-tight">Andi Pratama</div>
-                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-00124
-                                                </div>
+                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-08129</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0812 3456 7890</td>
+                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0812 3456 7821</td>
                                     <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
-                                        title="Jl. Cempaka Indah No. 12, Bandung">
-                                        Jl. Cempaka Indah No. 12, Bandung
+                                        title="Jl. Kemang Raya No. 45, Jakarta Selatan">
+                                        Jl. Kemang Raya No. 45, Jakarta Selatan
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">24 pesanan</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">12 Januari 2024</td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpelanggan.html?id=PLG-00124"
-                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <!-- Row 2: Siti Rahma -->
-                                <tr class="hover:bg-slate-50/70 transition customer-row">
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2.5">
-                                            <div
-                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
-                                                SR
-                                            </div>
-                                            <div>
-                                                <div class="text-slate-700 font-bold leading-tight">Siti Rahma</div>
-                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-00123
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0813 8890 1122</td>
-                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
-                                        title="Jl. Ir. H. Juanda No. 84, Bandung">
-                                        Jl. Ir. H. Juanda No. 84, Bandung
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">18 pesanan</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">20 Januari 2024</td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpelanggan.html?id=PLG-00123"
-                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <!-- Row 3: Budi Santoso -->
-                                <tr class="hover:bg-slate-50/70 transition customer-row">
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2.5">
-                                            <div
-                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
-                                                BS
-                                            </div>
-                                            <div>
-                                                <div class="text-slate-700 font-bold leading-tight">Budi Santoso</div>
-                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-00119
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0857 2020 3344</td>
-                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
-                                        title="Jl. Tubagus Ismail No. 7, Bandung">
-                                        Jl. Tubagus Ismail No. 7, Bandung
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">15 pesanan</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">2 Februari 2024</td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpelanggan.html?id=PLG-00119"
-                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <!-- Row 4: Maya Lestari -->
-                                <tr class="hover:bg-slate-50/70 transition customer-row">
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2.5">
-                                            <div
-                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
-                                                ML
-                                            </div>
-                                            <div>
-                                                <div class="text-slate-700 font-bold leading-tight">Maya Lestari</div>
-                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-00112
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0821 4466 7733</td>
-                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
-                                        title="Jl. Sekeloa Selatan No. 21, Bandung">
-                                        Jl. Sekeloa Selatan No. 21, Bandung
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">11 pesanan</td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">14 Februari 2024</td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpelanggan.html?id=PLG-00112"
-                                            class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-
-                                <!-- Row 5: Rizky Maulana -->
-                                <tr class="hover:bg-slate-50/70 transition customer-row">
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2.5">
-                                            <div
-                                                class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-[11px] font-bold shrink-0">
-                                                RM
-                                            </div>
-                                            <div>
-                                                <div class="text-slate-700 font-bold leading-tight">Rizky Maulana</div>
-                                                <div class="text-gray-400 text-[10px] font-normal mt-0.5">PLG-00108
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">0819 7788 2211</td>
-                                    <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate"
-                                        title="Jl. Dipatiukur No. 36, Bandung">
-                                        Jl. Dipatiukur No. 36, Bandung
-                                    </td>
-                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">9 pesanan</td>
+                                    <td class="py-3.5 px-4 text-slate-700 font-bold whitespace-nowrap">3 pesanan</td>
                                     <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">1 Maret 2024</td>
-                                    <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                        <a href="detailpelanggan.html?id=PLG-00108"
+                                    <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                                        <a href="detailpelanggan.html?id=PLG-08129"
                                             class="inline-block px-3 py-1.5 rounded-md border border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-cyan-700 text-xs font-semibold transition">
                                             Detail
                                         </a>
@@ -489,7 +515,7 @@
                 <!-- PAGINATION FOOTER -->
                 <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div class="text-gray-400 text-xs font-normal" id="showingInfo">
-                        Menampilkan 5 dari 124 data
+                        Menampilkan 5 dari 5 data
                     </div>
                     <div class="flex items-center gap-1">
                         <button type="button"
@@ -499,14 +525,6 @@
                         <button type="button"
                             class="w-7 h-7 rounded-md bg-blue-950 text-white text-xs font-medium flex items-center justify-center">
                             1
-                        </button>
-                        <button type="button"
-                            class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
-                            2
-                        </button>
-                        <button type="button"
-                            class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
-                            3
                         </button>
                         <button type="button"
                             class="w-7 h-7 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-center transition">
@@ -520,69 +538,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script>
-        // Mobile Sidebar Toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        }
-
-        if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-
-        // Live Search Filter
-        const searchInput = document.getElementById('searchInput');
-        const rows = document.querySelectorAll('.customer-row');
-        const showingInfo = document.getElementById('showingInfo');
-
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                let visibleCount = 0;
-
-                rows.forEach(row => {
-                    const text = row.innerText.toLowerCase();
-                    if (text.includes(query)) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                if (showingInfo) {
-                    showingInfo.innerText = `Menampilkan ${visibleCount} dari 124 data`;
-                }
-            });
-        }
-
-        // Ekspor Data ke CSV
-        const btnExport = document.getElementById('btnExport');
-        if (btnExport) {
-            btnExport.addEventListener('click', () => {
-                const csvRows = [
-                    ['ID Pelanggan', 'Nama Pelanggan', 'Nomor HP', 'Alamat', 'Total Pesanan', 'Bergabung'],
-                    ['PLG-00124', 'Andi Pratama', '0812 3456 7890', 'Jl. Cempaka Indah No. 12, Bandung', '24 pesanan', '12 Januari 2024'],
-                    ['PLG-00123', 'Siti Rahma', '0813 8890 1122', 'Jl. Ir. H. Juanda No. 84, Bandung', '18 pesanan', '20 Januari 2024'],
-                    ['PLG-00119', 'Budi Santoso', '0857 2020 3344', 'Jl. Tubagus Ismail No. 7, Bandung', '15 pesanan', '2 Februari 2024'],
-                    ['PLG-00112', 'Maya Lestari', '0821 4466 7733', 'Jl. Sekeloa Selatan No. 21, Bandung', '11 pesanan', '14 Februari 2024'],
-                    ['PLG-00108', 'Rizky Maulana', '0819 7788 2211', 'Jl. Dipatiukur No. 36, Bandung', '9 pesanan', '1 Maret 2024']
-                ];
-                const csvContent = 'data:text/csv;charset=utf-8,' + csvRows.map(e => e.map(v => `"${v}"`).join(',')).join('\n');
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement('a');
-                link.setAttribute('href', encodedUri);
-                link.setAttribute('download', 'data-pelanggan-bersihin.csv');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-        }
-    </script>
+    <script src="../JS/pegawai.js?v=2.1"></script>
 </body>
 
 </html>
