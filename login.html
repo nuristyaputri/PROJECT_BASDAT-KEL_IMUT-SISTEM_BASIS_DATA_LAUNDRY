@@ -335,40 +335,87 @@
     (function () {
       'use strict';
 
-      // 1. Data Akun Bawaan Sistem (Demo & Seeder Basis Data)
+      // 1. Data Akun Bawaan Sistem (Sesuai bersihinlaundry.sql)
       const BUILTIN_USERS = [
         {
+          id_user: 1,
+          id_pemilik: 1,
+          kode_pemilik: 'OWN-001',
           username: 'pemilik',
           email: 'rangga@bersihin.id',
           telepon: '081211223344',
           nama: 'Rangga Saputra',
+          alamat: 'Jl. Margonda Raya No. 10, Depok, Jawa Barat',
           password: 'password123',
           role: 'PEMILIK',
           redirect: 'PEMILIK/dashboard.html'
         },
         {
+          id_user: 2,
+          id_pegawai: 1,
+          kode_pegawai: 'PGW-001',
+          jabatan: 'Kasir Utama',
           username: 'dina.staff',
           email: 'dina.nurhaliza@bersihin.id',
           telepon: '081298765432',
           nama: 'Dina Nurhaliza',
+          alamat: 'Jl. Sawo Manila No. 15, Pasar Minggu, Jakarta Selatan',
           password: 'password123',
           role: 'PEGAWAI',
           redirect: 'PEGAWAI/dashboard.html'
         },
         {
+          id_user: 3,
+          id_pegawai: 2,
+          kode_pegawai: 'PGW-002',
+          jabatan: 'Operator Cuci & Setrika',
           username: 'budi.operator',
           email: 'budi.operator@bersihin.id',
           telepon: '081377889900',
           nama: 'Budi Santoso',
+          alamat: 'Jl. Lenteng Agung Timur No. 22, Jakarta Selatan',
           password: 'password123',
           role: 'PEGAWAI',
           redirect: 'PEGAWAI/dashboard.html'
         },
         {
+          id_user: 4,
+          id_pelanggan: 1,
+          kode_pelanggan: 'PLG-08129',
+          member_tier: 'SILVER',
           username: 'andipratama',
           email: 'andi.pratama@email.com',
           telepon: '081234567821',
           nama: 'Andi Pratama',
+          alamat: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
+          password: 'password123',
+          role: 'PELANGGAN',
+          redirect: 'PELANGGAN/dashboard.html'
+        },
+        {
+          id_user: 5,
+          id_pelanggan: 2,
+          kode_pelanggan: 'PLG-08130',
+          member_tier: 'GOLD',
+          username: 'rinamarlina',
+          email: 'rina.marlina@example.com',
+          telepon: '081111111111',
+          nama: 'Rina Marlina',
+          alamat: 'Jl. Kukusan Raya No. 5, Beji, Depok',
+          password: 'password123',
+          role: 'PELANGGAN',
+          redirect: 'PELANGGAN/dashboard.html'
+        },
+        {
+          id_user: 6,
+          id_pelanggan: 3,
+          kode_pelanggan: 'PLG-08131',
+          member_tier: 'REGULER',
+          username: 'dedikurniawan',
+          email: 'dedi.kurniawan@example.com',
+          telepon: '082222222222',
+          nama: 'Dedi Kurniawan',
+          alamat: 'Jl. Beji Timur No. 12, Depok',
           password: 'password123',
           role: 'PELANGGAN',
           redirect: 'PELANGGAN/dashboard.html'
@@ -641,8 +688,7 @@
             let userId = verifiedUser.id_user;
             const uname = (verifiedUser.username || '').toLowerCase();
             if (!custId) {
-              if (uname === 'nuristya' || userId === 7) { custId = 5; userId = 7; }
-              else if (uname === 'andipratama' || userId === 4) { custId = 1; userId = 4; }
+              if (uname === 'andipratama' || userId === 4) { custId = 1; userId = 4; }
               else if (uname === 'rinamarlina' || userId === 5) { custId = 2; userId = 5; }
               else if (uname === 'dedikurniawan' || userId === 6) { custId = 3; userId = 6; }
             }
@@ -651,52 +697,63 @@
             sessionStorage.setItem('bersihin_user', JSON.stringify(verifiedUser));
             localStorage.setItem('bersihin_user', JSON.stringify(verifiedUser));
 
+            const rawTier = String(verifiedUser.member_tier || 'REGULER').toUpperCase();
+            const formattedTier = rawTier === 'GOLD'
+              ? 'Gold Member'
+              : (rawTier === 'SILVER' ? 'Silver Member' : 'Reguler Member');
+
             const custName = verifiedUser.nama || verifiedUser.username || 'Pelanggan Bersihin';
             const custEmail = verifiedUser.email || '';
             const custPhone = verifiedUser.telepon || verifiedUser.no_telp || '';
-            const custAddress = verifiedUser.alamat || 'Jl. Margonda Raya No. 45, Beji, Kota Depok';
+            const custAddress = verifiedUser.alamat || '';
             const userJoinedDate = verifiedUser.created_at || verifiedUser.createdAt || new Date().toISOString();
             const custProfile = {
               id_user: userId,
               id_pelanggan: custId,
+              kode_pelanggan: verifiedUser.kode_pelanggan || null,
               username: verifiedUser.username,
               fullName: custName,
               email: custEmail,
               phone: custPhone,
               address: custAddress,
-              memberTier: 'Silver Member',
+              member_tier: rawTier,
+              memberTier: formattedTier,
               created_at: userJoinedDate,
               createdAt: userJoinedDate
             };
             sessionStorage.setItem('bersihin_customer_profile', JSON.stringify(custProfile));
             localStorage.setItem('bersihin_customer_profile', JSON.stringify(custProfile));
 
-            // Bersihkan data transaksi dan pesanan aktif lama agar otomatis tersinkronisasi murni dari database MySQL XAMPP
+            // Bersihkan data transaksi dan pesanan aktif lama agar otomatis tersinkronisasi murni dari database MySQL
             sessionStorage.removeItem('bersihin_active_order');
             sessionStorage.removeItem('bersihin_transactions');
             localStorage.removeItem('bersihin_active_order');
             localStorage.removeItem('bersihin_transactions');
           } else if (targetRole === 'PEGAWAI') {
-            const isBudi = (verifiedUser.username || '').toLowerCase().includes('budi') || (verifiedUser.nama || '').toLowerCase().includes('budi');
+            const isBudi = Number(verifiedUser.id_user) === 3 || (verifiedUser.username || '').toLowerCase().includes('budi') || (verifiedUser.nama || '').toLowerCase().includes('budi');
             const staffName = verifiedUser.nama || (isBudi ? 'Budi Santoso' : 'Dina Nurhaliza');
             const inits = staffName.trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || (isBudi ? 'BS' : 'DN');
             const staffJabatan = verifiedUser.jabatan || (isBudi ? 'Operator Cuci & Setrika' : 'Kasir Utama');
-            const staffKode = verifiedUser.kode || verifiedUser.kode_pegawai || (isBudi ? 'PGW-002' : 'PGW-001');
+            const staffKode = verifiedUser.kode_pegawai || verifiedUser.kode || (isBudi ? 'PGW-002' : 'PGW-001');
             const staffEmail = verifiedUser.email || (isBudi ? 'budi.operator@bersihin.id' : 'dina.nurhaliza@bersihin.id');
-            const staffPhone = verifiedUser.telepon || verifiedUser.no_telp || (isBudi ? '0813 7788 9900' : '0812 9876 5432');
+            const staffPhone = verifiedUser.telepon || verifiedUser.no_telp || (isBudi ? '081377889900' : '081298765432');
 
             const staffProfile = {
+              id_user: verifiedUser.id_user || (isBudi ? 3 : 2),
+              id_pegawai: verifiedUser.id_pegawai || (isBudi ? 2 : 1),
+              username: verifiedUser.username || (isBudi ? 'budi.operator' : 'dina.staff'),
               nama: staffName,
               inisial: inits,
               posisi: staffJabatan,
               jabatan: staffJabatan,
               kode: staffKode,
+              kode_pegawai: staffKode,
               idPegawai: staffKode,
               email: staffEmail,
               nomorHp: staffPhone,
               telepon: staffPhone,
-              alamat: verifiedUser.alamat || (isBudi ? 'Jl. Lenteng Agung Timur No. 22, Jakarta Selatan' : 'Jl. Dago Asri No. 42, Coblong, Bandung'),
-              cabang: 'Cabang Dago',
+              alamat: verifiedUser.alamat || (isBudi ? 'Jl. Lenteng Agung Timur No. 22, Jakarta Selatan' : 'Jl. Sawo Manila No. 15, Pasar Minggu, Jakarta Selatan'),
+              cabang: 'Outlet Depok Pusat',
               jadwal: 'Shift Pagi (08.00 - 16.00 WIB)'
             };
 
@@ -710,11 +767,31 @@
               localStorage.setItem('bersihin_token', verifiedUser.token);
             }
           } else if (targetRole === 'PEMILIK') {
-            localStorage.setItem('bersihin_pemilik_profile', JSON.stringify({
+            const ownerProfile = {
+              id_user: verifiedUser.id_user || 1,
+              id_pemilik: verifiedUser.id_pemilik || 1,
+              kode: verifiedUser.kode_pemilik || 'OWN-001',
+              kode_pemilik: verifiedUser.kode_pemilik || 'OWN-001',
+              username: verifiedUser.username || 'pemilik',
               nama: verifiedUser.nama || 'Rangga Saputra',
-              jabatan: 'Pemilik Usaha',
-              kode: 'OWN-001'
-            }));
+              fullName: verifiedUser.nama || 'Rangga Saputra',
+              email: verifiedUser.email || 'rangga@bersihin.id',
+              phone: verifiedUser.telepon || verifiedUser.no_telp || '081211223344',
+              telepon: verifiedUser.telepon || verifiedUser.no_telp || '081211223344',
+              location: verifiedUser.alamat || 'Jl. Margonda Raya No. 10, Depok, Jawa Barat',
+              alamat: verifiedUser.alamat || 'Jl. Margonda Raya No. 10, Depok, Jawa Barat',
+              jabatan: 'Pemilik Usaha'
+            };
+            sessionStorage.setItem('bersihin_pemilik_profile', JSON.stringify(ownerProfile));
+            localStorage.setItem('bersihin_pemilik_profile', JSON.stringify(ownerProfile));
+            sessionStorage.setItem('bersihin_owner_profile', JSON.stringify(ownerProfile));
+            localStorage.setItem('bersihin_owner_profile', JSON.stringify(ownerProfile));
+            if (verifiedUser.token) {
+              sessionStorage.setItem('bersihin_owner_token', verifiedUser.token);
+              localStorage.setItem('bersihin_owner_token', verifiedUser.token);
+              sessionStorage.setItem('bersihin_token', verifiedUser.token);
+              localStorage.setItem('bersihin_token', verifiedUser.token);
+            }
           }
         } catch (_) {}
 

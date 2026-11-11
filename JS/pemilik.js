@@ -48,11 +48,11 @@
     },
     defaultProfile: {
       fullName: 'Rangga Saputra',
-      email: 'rangga.saputra@bersihin.id',
-      phone: '0811 2345 6789',
+      email: 'rangga@bersihin.id',
+      phone: '081211223344',
       role: 'Owner & General Manager',
-      location: 'Bandung Outlet Pusat',
-      joinDate: 'Januari 2023'
+      location: 'Jl. Margonda Raya No. 10, Depok, Jawa Barat',
+      joinDate: 'Januari 2024'
     }
   };
 
@@ -181,10 +181,23 @@
    */
   function getOwnerProfile() {
     try {
-      const stored = localStorage.getItem(PemilikConfig.storageKeys.profile);
-      if (stored) {
-        return Object.assign({}, PemilikConfig.defaultProfile, JSON.parse(stored));
+      const rawUser = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+      const parsedUser = rawUser ? JSON.parse(rawUser) : null;
+      const stored = sessionStorage.getItem(PemilikConfig.storageKeys.profile) || localStorage.getItem(PemilikConfig.storageKeys.profile);
+      let prof = stored
+        ? Object.assign({}, PemilikConfig.defaultProfile, JSON.parse(stored))
+        : Object.assign({}, PemilikConfig.defaultProfile);
+
+      if (parsedUser && parsedUser.role === 'PEMILIK') {
+        prof = Object.assign(prof, {
+          fullName: parsedUser.nama || prof.fullName,
+          email: parsedUser.email || prof.email,
+          phone: parsedUser.no_telp || parsedUser.telepon || prof.phone,
+          location: parsedUser.alamat || prof.location,
+          username: parsedUser.username || prof.username
+        });
       }
+      return prof;
     } catch (e) {
       console.warn('Gagal membaca storage profil pemilik:', e);
     }
@@ -198,6 +211,7 @@
     try {
       const current = getOwnerProfile();
       const updated = Object.assign({}, current, data);
+      sessionStorage.setItem(PemilikConfig.storageKeys.profile, JSON.stringify(updated));
       localStorage.setItem(PemilikConfig.storageKeys.profile, JSON.stringify(updated));
       return updated;
     } catch (e) {
@@ -210,9 +224,9 @@
   // 3. INISIALISASI KOMPONEN BERSAMA (SIDEBAR & TOPBAR DROPDOWNS)
   // ===========================================================================
   function initSharedComponents() {
-    // 3.1 Sinkronisasi Profil Pemilik di Header / Topbar
+    // 3.1 Sinkronisasi Profil Pemilik di Header / Topbar & Sidebar
     const profile = getOwnerProfile();
-    const ownerNameEls = document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName');
+    const ownerNameEls = document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName, #sidebarOwnerName');
     const ownerEmailEls = document.querySelectorAll('#topbarOwnerEmail, #profileOwnerEmail, #bannerOwnerEmail, #dropdownOwnerEmail');
 
     ownerNameEls.forEach(el => {
@@ -844,10 +858,11 @@
         json.data.forEach((lay, idx) => {
           const card = document.createElement('div');
           card.className = 'bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group';
-          const kode = lay.kode_layanan || ('LYN-00' + (lay.id_layanan || (idx + 1)));
+          const kode = lay.kode_layanan || ('LYN-' + String(lay.id_layanan || (idx + 1)).padStart(3, '0'));
           const satuan = lay.satuan || 'kg';
           const hargaFmt = formatRupiah(lay.harga);
-          const estimasi = lay.estimasi_waktu || '2-3 hari';
+          const estimasi = lay.estimasi_waktu || '2 Hari';
+          const kategori = lay.kategori || 'KILOAN';
           const deskripsi = lay.deskripsi || 'Layanan laundry higienis dan wangi.';
           const isActive = lay.status === 'AKTIF';
 
@@ -864,8 +879,11 @@
                   ${isActive ? 'Aktif' : 'Nonaktif'}
                 </span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 tracking-wider">${kode}</span>
-              <h3 class="text-base font-bold text-slate-800 mt-0.5">${lay.nama_layanan}</h3>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] font-bold text-slate-400 tracking-wider">${kode}</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200/70 uppercase">${kategori}</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-800 mt-1">${lay.nama_layanan}</h3>
               <p class="text-xs text-slate-500 mt-1 leading-relaxed">${deskripsi}</p>
               <div class="flex items-center justify-between py-3 my-3 border-y border-slate-100 text-xs text-slate-600 font-medium">
                 <div class="flex items-center gap-1.5">
@@ -892,8 +910,8 @@
                 </svg>
                 <span>Edit</span>
               </a>
-              <button onclick="toggleServiceStatus(${lay.id_layanan}, '${lay.nama_layanan}', '${isActive ? 'NONAKTIF' : 'AKTIF'}')"
-                class="p-2 ${isActive ? 'bg-rose-50 hover:bg-rose-100 text-rose-500' : 'bg-emerald-50 hover:bg-emerald-100 text-teal-600'} rounded-xl transition" title="${isActive ? 'Nonaktifkan' : 'Aktifkan'}">
+              <button type="button" data-toggle-layanan-id="${lay.id_layanan}" data-toggle-layanan-name="${String(lay.nama_layanan || '').replace(/"/g, '&quot;')}" data-toggle-layanan-status="${isActive ? 'NONAKTIF' : 'AKTIF'}"
+                class="toggle-layanan-btn p-2 ${isActive ? 'bg-rose-50 hover:bg-rose-100 text-rose-500' : 'bg-emerald-50 hover:bg-emerald-100 text-teal-600'} rounded-xl transition" title="${isActive ? 'Nonaktifkan' : 'Aktifkan'}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -901,6 +919,15 @@
             </div>
           `;
           grid.appendChild(card);
+        });
+        grid.querySelectorAll('.toggle-layanan-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.toggleServiceStatus(
+              btn.getAttribute('data-toggle-layanan-id'),
+              btn.getAttribute('data-toggle-layanan-name'),
+              btn.getAttribute('data-toggle-layanan-status')
+            );
+          });
         });
       }
     } catch (_) {}
@@ -927,6 +954,7 @@
           username: p.username || 'pemilik',
           location: p.alamat || 'Jl. Margonda Raya No. 10, Depok, Jawa Barat'
         });
+        initSharedComponents();
 
         document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName, #profileFullName, #displayFullName').forEach(el => {
           if (el) el.textContent = profile.fullName;
@@ -1253,13 +1281,44 @@
     // Form Tambah / Edit Layanan mandiri di tambahlayanan.html atau editlayanan.html
     const formLayanan = document.querySelector('form[action*="layananpegawai.html"]') || document.getElementById('formLayanan');
     if (formLayanan) {
+      const namaInput = formLayanan.querySelector('[name="nama_layanan"], [name="nama"], #nama_layanan, #nama');
+      const hargaInput = formLayanan.querySelector('[name="harga"], #harga');
+      const satuanInput = formLayanan.querySelector('[name="satuan"], #satuan');
+      const estimasiInput = formLayanan.querySelector('[name="durasi"], [name="estimasi"], #durasi, #estimasi_waktu');
+      const kategoriInput = formLayanan.querySelector('[name="kategori"], #kategori');
+      const deskripsiInput = formLayanan.querySelector('[name="deskripsi"], #deskripsi');
+      const statusInput = formLayanan.querySelector('[name="status"], #status');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('id');
+
+      if (editId) {
+        (async () => {
+          try {
+            const token = await ensurePemilikToken();
+            const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/layanan`, {
+              headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (!res.ok) return;
+            const json = await res.json();
+            if (json && json.success && Array.isArray(json.data)) {
+              const target = json.data.find(l => Number(l.id_layanan) === Number(editId));
+              if (target) {
+                if (namaInput) namaInput.value = target.nama_layanan || '';
+                if (hargaInput) hargaInput.value = Number(target.harga) || 0;
+                if (satuanInput && target.satuan) satuanInput.value = target.satuan;
+                if (estimasiInput) estimasiInput.value = target.estimasi_waktu || '2 Hari';
+                if (kategoriInput && target.kategori) kategoriInput.value = target.kategori;
+                if (deskripsiInput) deskripsiInput.value = target.deskripsi || '';
+                if (statusInput && target.status) statusInput.value = target.status;
+              }
+            }
+          } catch (_) {}
+        })();
+      }
+
       formLayanan.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const namaInput = formLayanan.querySelector('[name="nama"]') || formLayanan.querySelector('#nama');
-        const hargaInput = formLayanan.querySelector('[name="harga"]') || formLayanan.querySelector('#harga');
-        const satuanInput = formLayanan.querySelector('[name="satuan"]') || formLayanan.querySelector('#satuan');
-        const estimasiInput = formLayanan.querySelector('[name="estimasi"]') || formLayanan.querySelector('#estimasi_waktu');
-        const deskripsiInput = formLayanan.querySelector('[name="deskripsi"]') || formLayanan.querySelector('#deskripsi');
 
         const nama = namaInput ? namaInput.value.trim() : '';
         if (!nama) {
@@ -1269,18 +1328,18 @@
 
         const harga = hargaInput ? Number(hargaInput.value) : 7000;
         const satuan = satuanInput ? satuanInput.value : 'kg';
-        const estimasi = estimasiInput ? estimasiInput.value : '2-3 hari';
-        const deskripsi = deskripsiInput ? deskripsiInput.value : 'Layanan laundry higienis';
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const editId = urlParams.get('id');
+        const estimasi = estimasiInput ? estimasiInput.value.trim() : '2 Hari';
+        const kategori = kategoriInput ? kategoriInput.value : 'KILOAN';
+        const deskripsi = deskripsiInput ? deskripsiInput.value.trim() : 'Layanan laundry higienis';
+        const statusRaw = statusInput ? String(statusInput.value).toUpperCase() : 'AKTIF';
+        const statusVal = statusRaw === 'NONAKTIF' ? 'NONAKTIF' : 'AKTIF';
 
         try {
           const token = await ensurePemilikToken();
           const endpoint = editId ? `${getBackendBaseUrl()}/api/pemilik/layanan/${editId}` : `${getBackendBaseUrl()}/api/pemilik/layanan`;
           const method = editId ? 'PUT' : 'POST';
 
-          await fetch(endpoint, {
+          const saveRes = await fetch(endpoint, {
             method,
             headers: {
               'Content-Type': 'application/json',
@@ -1292,14 +1351,29 @@
               satuan,
               estimasi_waktu: estimasi,
               deskripsi,
-              kategori: 'KILOAN'
+              kategori
             })
           });
+          if (!saveRes.ok) {
+            const errJson = await saveRes.json().catch(() => ({}));
+            showToast(errJson.message || 'Gagal menyimpan layanan.', true);
+            return;
+          }
+          if (editId) {
+            await fetch(`${getBackendBaseUrl()}/api/pemilik/layanan/${editId}/status`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({ status: statusVal })
+            });
+          }
           showToast(`Data layanan "${nama}" berhasil disimpan ke database MySQL!`);
-          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 1000);
+          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 800);
         } catch (_) {
           showToast('Data layanan ' + nama + ' berhasil disimpan.');
-          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 1000);
+          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 800);
         }
       });
     }
@@ -1801,6 +1875,7 @@
 
   function bootstrap() {
     initSharedComponents();
+    syncPemilikProfilFromDatabase();
     initLoginPage();
     initDashboardPage();
     initPegawaiPage();

@@ -350,18 +350,18 @@
               <tbody id="invItemsBody" class="divide-y divide-slate-100">
                 <tr>
                   <td class="py-3.5 px-4">
-                    <span id="invServiceName" class="font-bold text-slate-900 text-sm block">Cuci + Setrika Reguler</span>
+                    <span id="invServiceName" class="font-bold text-slate-900 text-sm block">Cuci Komplit (Cuci + Setrika)</span>
                     <span class="text-[11px] text-slate-500">Pakaian bersih, wangi, higienis & rapi terlipat</span>
                   </td>
-                  <td id="invWeight" class="py-3.5 px-4 text-center font-semibold text-slate-800">4,0 kg</td>
-                  <td id="invUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">Rp10.000 / kg</td>
-                  <td id="invServiceSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">Rp40.000</td>
+                  <td id="invWeight" class="py-3.5 px-4 text-center font-semibold text-slate-800">4,5 kg</td>
+                  <td id="invUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
+                  <td id="invServiceSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">Rp40.500</td>
                 </tr>
               </tbody>
               <tfoot class="border-t-2 border-slate-200 bg-slate-50">
                 <tr>
                   <td colspan="3" class="py-2.5 px-4 text-right text-xs font-medium text-slate-600">Subtotal Layanan:</td>
-                  <td id="invSummarySubtotal" class="py-2.5 px-4 text-right font-semibold text-slate-800">Rp40.000</td>
+                  <td id="invSummarySubtotal" class="py-2.5 px-4 text-right font-semibold text-slate-800">Rp40.500</td>
                 </tr>
                 <tr>
                   <td colspan="3" class="py-2 px-4 text-right text-xs font-medium text-slate-600">Biaya Antar / Jemput:</td>
@@ -369,7 +369,7 @@
                 </tr>
                 <tr class="bg-sky-50/70 border-t border-sky-100">
                   <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-sm">TOTAL PEMBAYARAN:</td>
-                  <td id="invGrandTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base sm:text-lg">Rp40.000</td>
+                  <td id="invGrandTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base sm:text-lg">Rp40.500</td>
                 </tr>
               </tfoot>
             </table>
@@ -507,98 +507,242 @@
       }
     }
 
-    // Kumpulan seluruh order aktif pelanggan dari storage
-    function getAllCustomerOrders() {
+    function getApiBaseUrl() {
+      const origin = window.location.origin;
+      if (origin && origin !== 'null' && !origin.startsWith('file:')) {
+        if (window.location.port === '5000') return origin;
+      }
+      return 'http://localhost:5000';
+    }
+
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function mapDbStatusToLabel(rawStatus) {
+      const s = String(rawStatus || '').toUpperCase();
+      if (s === 'MENUNGGU') return 'Menunggu konfirmasi';
+      if (s === 'ANTRIAN') return 'Dalam Antrian';
+      if (s === 'DICUCI') return 'Sedang Dicuci';
+      if (s === 'DISETRIKA') return 'Sedang Disetrika';
+      if (s === 'SIAP_DIAMBIL') return 'Siap Diambil';
+      if (s === 'SELESAI') return 'Selesai';
+      if (s === 'DIBATALKAN') return 'Dibatalkan';
+      return rawStatus || 'Menunggu konfirmasi';
+    }
+
+    function normalizeInvoiceOrder(row) {
+      if (!row) return null;
+      const weightNum = parseFloat(row.total_berat || row.weightKg || row.berat || 0) || 0;
+      const totalNum = Number(row.total_harga != null ? row.total_harga : (row.amount != null ? row.amount : row.total)) || 0;
+      const dateRaw = row.tanggal_masuk || row.created_at || row.timestamp || row.date;
+      let dateText = row.date || 'Hari ini';
+      if (dateRaw && !isNaN(new Date(dateRaw).getTime())) {
+        dateText = new Date(dateRaw).toLocaleString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) + ' WIB';
+      }
+      const payStatusRaw = String(row.status_pembayaran || row.paymentStatus || 'MENUNGGU').toUpperCase();
+      const payLabel = (payStatusRaw.includes('LUNAS') || payStatusRaw.includes('BERHASIL'))
+        ? 'Lunas'
+        : (payStatusRaw.includes('GAGAL') || payStatusRaw.includes('TOLAK') ? 'Ditolak' : 'Menunggu konfirmasi');
+
+      return {
+        id: row.kode_pesanan || row.code || row.id,
+        code: row.kode_pesanan || row.code || row.id,
+        id_pesanan: row.id_pesanan || null,
+        id_pelanggan: row.id_pelanggan || null,
+        customerName: row.nama_pelanggan || row.customerName || 'Pelanggan Bersihin',
+        customerPhone: row.telepon || row.customerPhone || '0812-3456-7890',
+        customerAddress: row.alamat || row.customerAddress || 'Jakarta Selatan',
+        service: row.layanan || row.service || 'Cuci Komplit (Cuci + Setrika)',
+        weightKg: weightNum,
+        weight: row.weight || row.berat_formatted || (weightNum ? `${weightNum.toString().replace('.', ',')} kg` : '1,0 kg'),
+        total: totalNum,
+        totalFormatted: row.total_harga_formatted || row.totalFormatted || formatRupiah(totalNum),
+        status: mapDbStatusToLabel(row.status || row.status_pesanan),
+        paymentStatus: payLabel,
+        paymentMethod: row.metode_pembayaran || row.paymentMethod || '-',
+        referensiBayar: row.referensi_bayar || '-',
+        date: dateText,
+        estDate: row.estimasi_selesai
+          ? new Date(row.estimasi_selesai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+          : (row.estDate || row.estDone || '2 Hari Kerja'),
+        notes: row.catatan || row.notes || 'Tidak ada catatan khusus',
+        details: Array.isArray(row.details) ? row.details : null
+      };
+    }
+
+    let cachedCustomerOrders = [];
+
+    // Kumpulan seluruh order aktif pelanggan: prioritas Database MySQL -> fallback storage
+    async function loadAllCustomerOrders() {
       const allOrders = [];
+      let activeCustId = null;
+      let activeUserId = null;
+      let activeUsername = '';
       try {
-        const uOrders = JSON.parse(localStorage.getItem('bersihin_unified_orders') || '[]');
-        if (Array.isArray(uOrders)) allOrders.push(...uOrders);
-      } catch (e) {}
-
-      try {
-        const pOrders = JSON.parse(localStorage.getItem('bersihin_orders') || '[]');
-        if (Array.isArray(pOrders)) {
-          pOrders.forEach(po => {
-            if (!allOrders.some(ao => (ao.code === po.code || ao.id === po.id))) {
-              allOrders.push(po);
-            }
-          });
+        const u = JSON.parse(sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user') || 'null');
+        if (u) {
+          activeCustId = u.id_pelanggan || null;
+          activeUserId = u.id_user || null;
+          activeUsername = u.username || '';
         }
-      } catch (e) {}
+        const p = JSON.parse(sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile') || 'null');
+        if (p) {
+          if (!activeCustId && p.id_pelanggan) activeCustId = p.id_pelanggan;
+          if (!activeUserId && p.id_user) activeUserId = p.id_user;
+          if (!activeUsername && p.username) activeUsername = p.username;
+        }
+      } catch (_) {}
 
       try {
-        const invs = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
-        if (Array.isArray(invs)) {
-          invs.forEach(inv => {
-            const code = inv.kode_pesanan || inv.orderId || inv.code;
-            if (!allOrders.some(ao => (ao.code === code || ao.id === code))) {
-              allOrders.push({
-                id: code,
-                code: code,
-                customerName: inv.nama_pelanggan || inv.customerName,
-                customerPhone: inv.telepon || inv.customerPhone,
-                customerAddress: inv.alamat || inv.customerAddress,
-                service: inv.layanan || inv.service,
-                weight: inv.berat_formatted || `${inv.berat || inv.weightKg || 4},0 kg`,
-                total: inv.total_harga || inv.total || 40000,
-                totalFormatted: inv.total_harga_formatted || inv.totalFormatted || formatRupiah(inv.total_harga || 40000),
-                status: inv.status_pesanan || inv.status || 'Menunggu konfirmasi',
-                paymentStatus: inv.status_pembayaran || inv.paymentStatus || 'Menunggu konfirmasi',
-                date: inv.tanggal_realtime || inv.date || 'Hari ini',
-                notes: inv.catatan || inv.notes || 'Pakaian reguler'
-              });
-            }
-          });
+        const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+        const headers = token ? { Authorization: 'Bearer ' + token } : {};
+        const q = [];
+        if (activeCustId) q.push(`id_pelanggan=${encodeURIComponent(activeCustId)}`);
+        if (activeUserId) q.push(`id_user=${encodeURIComponent(activeUserId)}`);
+        if (activeUsername) q.push(`username=${encodeURIComponent(activeUsername)}`);
+        const res = await fetch(`${getApiBaseUrl()}/api/pelanggan/pesanan${q.length ? '?' + q.join('&') : ''}`, { headers });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && Array.isArray(json.data)) {
+            json.data.forEach(r => {
+              const norm = normalizeInvoiceOrder(r);
+              if (norm && !allOrders.some(ao => ao.code === norm.code)) {
+                allOrders.push(norm);
+              }
+            });
+          }
         }
-      } catch (e) {}
+      } catch (_) {}
 
-      // Jika kosong, sediakan demo order agar tampilan tetap prima
       if (allOrders.length === 0) {
-        allOrders.push({
-          id: 'TRX-2026-0042',
-          code: 'TRX-2026-0042',
-          customerName: 'Andi Pratama',
-          customerPhone: '0812-3456-7821',
-          customerAddress: 'Jl. Margonda Raya No. 45, Beji, Depok',
-          service: 'Cuci + Setrika Reguler',
-          weight: '4,0 kg',
-          total: 40000,
-          totalFormatted: 'Rp40.000',
-          status: 'Sedang Dicuci',
-          paymentStatus: 'Lunas',
-          date: '10 November 2026, 14:30 WIB',
-          notes: 'Seragam kerja dipisah dari pakaian warna luntur'
-        });
+        try {
+          const uOrders = JSON.parse(localStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_unified_orders') || '[]');
+          if (Array.isArray(uOrders)) {
+            uOrders.forEach(r => {
+              if (activeCustId && r.id_pelanggan && Number(r.id_pelanggan) !== Number(activeCustId)) return;
+              const norm = normalizeInvoiceOrder(r);
+              if (norm && !allOrders.some(ao => ao.code === norm.code)) allOrders.push(norm);
+            });
+          }
+        } catch (_) {}
       }
 
+      if (allOrders.length === 0) {
+        allOrders.push(normalizeInvoiceOrder({
+          kode_pesanan: 'TRX-240518-01',
+          nama_pelanggan: 'Andi Pratama',
+          telepon: '081290123456',
+          alamat: 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan',
+          layanan: 'Cuci Komplit (Cuci + Setrika)',
+          total_berat: 4.5,
+          total_harga: 40500,
+          status: 'SELESAI',
+          status_pembayaran: 'BERHASIL',
+          metode_pembayaran: 'QRIS',
+          catatan: 'Tolong lipat rapi kemeja kerja.'
+        }));
+      }
+
+      cachedCustomerOrders = allOrders;
       return allOrders;
     }
 
-    // Render data invoice terpilih ke DOM
+    async function enrichOrderDetails(order) {
+      if (!order) return order;
+      const idOrCode = order.id_pesanan || order.code || order.id;
+      if (!idOrCode) return order;
+      try {
+        const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+        const headers = token ? { Authorization: 'Bearer ' + token } : {};
+        const res = await fetch(`${getApiBaseUrl()}/api/pelanggan/pesanan/${encodeURIComponent(idOrCode)}`, { headers });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            const d = json.data;
+            order.details = Array.isArray(d.detail) ? d.detail : order.details;
+            order.customerName = d.nama_pelanggan || order.customerName;
+            order.customerPhone = d.telepon || order.customerPhone;
+            order.customerAddress = d.alamat || order.customerAddress;
+            order.paymentStatus = d.status_pembayaran
+              ? (String(d.status_pembayaran).toUpperCase().includes('BERHASIL') ? 'Lunas' : d.status_pembayaran)
+              : order.paymentStatus;
+            order.paymentMethod = d.metode_pembayaran || order.paymentMethod;
+            order.notes = d.catatan != null ? (d.catatan || 'Tidak ada catatan khusus') : order.notes;
+          }
+        }
+      } catch (_) {}
+      return order;
+    }
+
+    // Render data invoice terpilih ke DOM (mendukung multi detail_pesanan)
     function renderInvoice(order) {
       if (!order) return;
 
-      const code = order.code || order.id || order.kode_pesanan || 'TRX-0000';
-      const orderDate = order.date || order.tanggal_realtime || order.createdAt || '10 November 2026';
-      const custName = order.customerName || order.nama_pelanggan || 'Pelanggan Bersihin';
-      const custPhone = order.customerPhone || order.telepon || '0812-3456-7890';
-      const custAddress = order.customerAddress || order.alamat || 'Jl. Margonda Raya No. 45, Beji, Depok';
-      const serviceName = order.service || order.layanan || 'Cuci + Setrika Reguler';
-      const weightText = order.weight || order.berat_formatted || '4,0 kg';
-      const totalFormatted = order.totalFormatted || order.total_harga_formatted || formatRupiah(order.total || 40000);
-      const notes = order.notes || order.catatan || 'Tidak ada catatan khusus';
-      const stage = order.status || order.status_pesanan || 'Menunggu konfirmasi';
-      const payStatus = order.paymentStatus || order.status_pembayaran || 'Menunggu konfirmasi';
+      const code = order.code || order.id || 'TRX-0000';
+      const orderDate = order.date || 'Hari ini';
+      const custName = order.customerName || 'Pelanggan Bersihin';
+      const custPhone = order.customerPhone || '0812-3456-7890';
+      const custAddress = order.customerAddress || 'Jakarta Selatan';
+      const totalNum = Number(order.total) || 0;
+      const totalFormatted = order.totalFormatted || formatRupiah(totalNum);
+      const notes = order.notes || 'Tidak ada catatan khusus';
+      const stage = order.status || 'Menunggu konfirmasi';
+      const payStatus = order.paymentStatus || 'Menunggu konfirmasi';
 
       document.getElementById('invDisplayCode').textContent = code;
       document.getElementById('invDisplayDate').textContent = orderDate;
       document.getElementById('invCustName').textContent = custName;
       document.getElementById('invCustPhone').textContent = custPhone;
       document.getElementById('invCustAddress').textContent = custAddress;
-      document.getElementById('invServiceName').textContent = serviceName;
-      document.getElementById('invWeight').textContent = weightText;
-      document.getElementById('invServiceSubtotal').textContent = totalFormatted;
-      document.getElementById('invSummarySubtotal').textContent = totalFormatted;
+      const estEl = document.getElementById('invEstDate');
+      if (estEl && order.estDate) estEl.textContent = order.estDate;
+
+      const itemsBody = document.getElementById('invItemsBody');
+      const details = Array.isArray(order.details) && order.details.length > 0 ? order.details : null;
+      if (itemsBody && details) {
+        itemsBody.innerHTML = details.map(item => {
+          const unit = item.satuan || 'kg';
+          const qty = parseFloat(item.jumlah || 0);
+          const qtyFormatted = Number.isInteger(qty) ? `${qty} ${unit}` : `${qty.toString().replace('.', ',')} ${unit}`;
+          const unitPrice = formatRupiah(item.harga_satuan || 0);
+          const sub = formatRupiah(item.subtotal || 0);
+          return `
+            <tr>
+              <td class="py-3.5 px-4">
+                <span class="font-bold text-slate-900 text-sm block">${escapeHtml(item.nama_layanan || 'Layanan Laundry')}</span>
+                <span class="text-[11px] text-slate-500">Kategori: ${escapeHtml(item.kategori || 'LAUNDRY')}</span>
+              </td>
+              <td class="py-3.5 px-4 text-center font-semibold text-slate-800">${escapeHtml(qtyFormatted)}</td>
+              <td class="py-3.5 px-4 text-right font-medium text-slate-600">${unitPrice} / ${escapeHtml(unit)}</td>
+              <td class="py-3.5 px-4 text-right font-bold text-slate-900">${sub}</td>
+            </tr>
+          `;
+        }).join('');
+      } else if (itemsBody) {
+        const wNum = parseFloat(order.weightKg || 0);
+        const unitP = wNum > 0 ? Math.round(totalNum / wNum) : 9000;
+        itemsBody.innerHTML = `
+          <tr>
+            <td class="py-3.5 px-4">
+              <span id="invServiceName" class="font-bold text-slate-900 text-sm block">${escapeHtml(order.service || 'Cuci Komplit (Cuci + Setrika)')}</span>
+              <span class="text-[11px] text-slate-500">Pakaian bersih, wangi, higienis & rapi</span>
+            </td>
+            <td id="invWeight" class="py-3.5 px-4 text-center font-semibold text-slate-800">${escapeHtml(order.weight || '4,0 kg')}</td>
+            <td id="invUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">${formatRupiah(unitP)} / kg</td>
+            <td id="invServiceSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">${totalFormatted}</td>
+          </tr>
+        `;
+      }
+
+      const subSumNum = details ? details.reduce((acc, it) => acc + (Number(it.subtotal) || 0), 0) : totalNum;
+      document.getElementById('invSummarySubtotal').textContent = formatRupiah(subSumNum);
       document.getElementById('invGrandTotal').textContent = totalFormatted;
       document.getElementById('invNotes').textContent = notes;
       document.getElementById('invStageBadge').textContent = stage;
@@ -611,8 +755,7 @@
 
       // Badge status pembayaran
       const payBadge = document.getElementById('invPaymentStatusBadge');
-      const payText = document.getElementById('invPaymentStatusText');
-      if (payBadge && payText) {
+      if (payBadge) {
         if (payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil')) {
           payBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5';
           payBadge.innerHTML = '<svg class="size-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Lunas Terverifikasi Kasir</span>';
@@ -624,8 +767,8 @@
     }
 
     // Inisialisasi halaman & pemilihan invoice
-    function initInvoicePage() {
-      const orders = getAllCustomerOrders();
+    async function initInvoicePage() {
+      const orders = await loadAllCustomerOrders();
       const params = new URLSearchParams(window.location.search);
       const paramId = params.get('id') || params.get('code');
 
@@ -644,7 +787,7 @@
       // Cari order yang sesuai parameter URL atau pilih order paling mutakhir
       let selectedOrder = null;
       if (paramId) {
-        selectedOrder = orders.find(o => (o.code === paramId || o.id === paramId));
+        selectedOrder = orders.find(o => (o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId)));
       }
       if (!selectedOrder && orders.length > 0) {
         selectedOrder = orders[0];
@@ -652,17 +795,21 @@
 
       if (selectedOrder) {
         if (selector) selector.value = selectedOrder.code || selectedOrder.id;
+        await enrichOrderDetails(selectedOrder);
         renderInvoice(selectedOrder);
       }
     }
 
     // Pindah invoice lewat dropdown selector
-    function switchInvoice(orderCode) {
+    async function switchInvoice(orderCode) {
       if (!orderCode) return;
       window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(orderCode)}`);
-      const orders = getAllCustomerOrders();
+      const orders = cachedCustomerOrders.length ? cachedCustomerOrders : await loadAllCustomerOrders();
       const match = orders.find(o => (o.code === orderCode || o.id === orderCode));
-      if (match) renderInvoice(match);
+      if (match) {
+        await enrichOrderDetails(match);
+        renderInvoice(match);
+      }
     }
 
     // Jalankan saat halaman dimuat

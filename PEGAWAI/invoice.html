@@ -170,12 +170,12 @@
         <!-- Profil Singkat Pegawai -->
         <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-cyan-700 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+                <div id="staffSidebarInitials" class="staff-avatar-initials w-9 h-9 rounded-full bg-cyan-700 text-white font-bold flex items-center justify-center text-xs shadow-xs">
                     DN
                 </div>
                 <div>
-                    <span class="block text-xs font-bold text-slate-800">Dina Nurhaliza</span>
-                    <span class="block text-[10px] text-slate-400">Kasir Utama</span>
+                    <span id="staffSidebarName" class="block text-xs font-bold text-slate-800">Dina Nurhaliza</span>
+                    <span id="staffSidebarRole" class="block text-[10px] text-slate-400">Kasir Utama</span>
                 </div>
             </div>
             <a href="../login.html" onclick="if(window.logoutStaff){logoutStaff(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}" class="text-slate-400 hover:text-rose-600 transition" title="Keluar">
@@ -319,15 +319,15 @@
                                     <th class="py-3 px-4 text-right">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
+                            <tbody id="staffItemsBody" class="divide-y divide-slate-100">
                                 <tr>
                                     <td class="py-3 px-4">
-                                        <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci + Setrika Reguler</span>
+                                        <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci Komplit (Cuci + Setrika)</span>
                                         <span class="text-[10px] text-slate-400">Pakaian harian &amp; seragam</span>
                                     </td>
-                                    <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">4.0 kg</td>
-                                    <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">Rp10.000 / kg</td>
-                                    <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">Rp40.000</td>
+                                    <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">4,5 kg</td>
+                                    <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
+                                    <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">Rp40.500</td>
                                 </tr>
                             </tbody>
                             <tfoot class="border-t-2 border-slate-200 bg-sky-50/70">
@@ -422,40 +422,168 @@
             return 'Rp' + Number(num).toLocaleString('id-ID');
         }
 
-        function getUnifiedOrders() {
-            let list = [];
+        function getApiBaseUrl() {
+            const origin = window.location.origin;
+            if (origin && origin !== 'null' && !origin.startsWith('file:')) {
+                if (window.location.port === '5000') return origin;
+            }
+            return 'http://localhost:5000';
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function mapStageFromDb(rawStatus) {
+            const s = String(rawStatus || '').toUpperCase();
+            if (s === 'MENUNGGU') return 'Menunggu konfirmasi';
+            if (s === 'ANTRIAN') return 'Dalam Antrian';
+            if (s === 'DICUCI') return 'Sedang Dicuci';
+            if (s === 'DISETRIKA') return 'Sedang Disetrika';
+            if (s === 'SIAP_DIAMBIL') return 'Siap Diambil';
+            if (s === 'SELESAI') return 'Selesai';
+            if (s === 'DIBATALKAN') return 'Dibatalkan';
+            return rawStatus || 'Menunggu konfirmasi';
+        }
+
+        function mapStageToDb(label) {
+            const s = String(label || '').toLowerCase();
+            if (s.includes('menunggu')) return 'MENUNGGU';
+            if (s.includes('antrian')) return 'ANTRIAN';
+            if (s.includes('cuci')) return 'DICUCI';
+            if (s.includes('setrika')) return 'DISETRIKA';
+            if (s.includes('siap')) return 'SIAP_DIAMBIL';
+            if (s.includes('selesai')) return 'SELESAI';
+            if (s.includes('batal')) return 'DIBATALKAN';
+            return 'DIPROSES';
+        }
+
+        function getActiveStaffInfo() {
             try {
-                const u = JSON.parse(localStorage.getItem('bersihin_unified_orders') || '[]');
-                if (Array.isArray(u)) list.push(...u);
-            } catch (e) {}
+                const u = JSON.parse(sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user') || 'null');
+                if (u && u.nama) return { nama: u.nama, jabatan: u.jabatan || 'Pegawai', id_pegawai: u.id_pegawai || null };
+            } catch (_) {}
+            return { nama: 'Dina Nurhaliza', jabatan: 'Kasir Utama', id_pegawai: 1 };
+        }
+
+        function normalizeStaffOrder(row) {
+            if (!row) return null;
+            const totalNum = Number(row.total_harga != null ? row.total_harga : row.total) || 0;
+            const wNum = parseFloat(row.total_berat || row.weightKg || row.berat || 0) || 0;
+            const dateRaw = row.tanggal_masuk || row.created_at || row.date;
+            let dateText = row.date || 'Hari ini';
+            if (dateRaw && !isNaN(new Date(dateRaw).getTime())) {
+                dateText = new Date(dateRaw).toLocaleString('id-ID', {
+                    day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                }) + ' WIB';
+            }
+            const payRaw = String(row.status_pembayaran || row.paymentStatus || 'MENUNGGU').toUpperCase();
+            const payStatus = (payRaw.includes('BERHASIL') || payRaw.includes('LUNAS'))
+                ? 'Lunas'
+                : (payRaw.includes('GAGAL') || payRaw.includes('TOLAK') ? 'Ditolak' : 'Menunggu konfirmasi');
+
+            return {
+                id: row.kode_pesanan || row.code || row.id,
+                code: row.kode_pesanan || row.code || row.id,
+                id_pesanan: row.id_pesanan || null,
+                customerName: row.nama_pelanggan || row.customerName || 'Pelanggan',
+                customerPhone: row.telepon_pelanggan || row.telepon || row.customerPhone || '0812-3456-7890',
+                customerAddress: row.alamat_pelanggan || row.alamat || row.customerAddress || 'Jakarta Selatan',
+                staffName: row.nama_pegawai || '',
+                service: row.daftar_layanan || row.layanan || row.service || 'Cuci Komplit (Cuci + Setrika)',
+                weightKg: wNum,
+                weight: row.weight || (wNum ? `${wNum.toString().replace('.', ',')} kg` : '1,0 kg'),
+                total: totalNum,
+                totalFormatted: row.totalFormatted || formatRupiah(totalNum),
+                status: mapStageFromDb(row.status),
+                paymentStatus: payStatus,
+                paymentMethod: row.metode_pembayaran || row.paymentMethod || '-',
+                date: dateText,
+                notes: row.catatan || row.notes || 'Tidak ada catatan khusus',
+                details: Array.isArray(row.items) ? row.items : (Array.isArray(row.detail) ? row.detail : null)
+            };
+        }
+
+        let cachedStaffOrders = [];
+
+        async function loadUnifiedOrders() {
+            const list = [];
             try {
-                const s = JSON.parse(localStorage.getItem('bersihin_orders') || '[]');
-                if (Array.isArray(s)) {
-                    s.forEach(so => {
-                        if (!list.some(lo => lo.code === so.code || lo.id === so.id)) list.push(so);
-                    });
+                const token = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_staff_token') || localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_staff_token');
+                const headers = token ? { Authorization: 'Bearer ' + token } : {};
+                const res = await fetch(`${getApiBaseUrl()}/api/pegawai/pesanan`, { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && Array.isArray(json.data)) {
+                        json.data.forEach(r => {
+                            const norm = normalizeStaffOrder(r);
+                            if (norm && !list.some(lo => lo.code === norm.code)) list.push(norm);
+                        });
+                    }
                 }
-            } catch (e) {}
+            } catch (_) {}
 
             if (list.length === 0) {
-                list.push({
-                    id: 'TRX-2026-0042',
-                    code: 'TRX-2026-0042',
-                    customerName: 'Andi Pratama',
-                    customerPhone: '081234567821',
-                    customerAddress: 'Jl. Margonda Raya No. 45, Beji, Depok',
-                    service: 'Cuci + Setrika Reguler',
-                    weight: '4.0 kg',
-                    total: 40000,
-                    totalFormatted: 'Rp40.000',
-                    status: 'Diproses',
-                    paymentStatus: 'Menunggu konfirmasi',
-                    paymentMethod: 'QRIS',
-                    date: '10 November 2026',
-                    notes: 'Pisahkan pakaian putih'
-                });
+                try {
+                    const u = JSON.parse(localStorage.getItem('bersihin_unified_orders') || localStorage.getItem('bersihin_orders') || '[]');
+                    if (Array.isArray(u)) u.forEach(r => {
+                        const norm = normalizeStaffOrder(r);
+                        if (norm && !list.some(lo => lo.code === norm.code)) list.push(norm);
+                    });
+                } catch (_) {}
             }
+
+            if (list.length === 0) {
+                list.push(normalizeStaffOrder({
+                    id_pesanan: 2,
+                    kode_pesanan: 'TRX-240519-02',
+                    nama_pelanggan: 'Rina Marlina',
+                    telepon_pelanggan: '081345678901',
+                    alamat_pelanggan: 'Jl. Kemang Timur No. 45, Jakarta Selatan',
+                    daftar_layanan: 'Cuci Komplit (Cuci + Setrika), Cuci Bedcover Besar',
+                    total_berat: 3,
+                    total_harga: 52000,
+                    status: 'DICUCI',
+                    status_pembayaran: 'BERHASIL',
+                    metode_pembayaran: 'TRANSFER',
+                    catatan: 'Bedcover jangan dikeringkan terlalu panas.'
+                }));
+            }
+
+            cachedStaffOrders = list;
             return list;
+        }
+
+        async function enrichStaffOrderDetail(order) {
+            if (!order || !order.id_pesanan) return order;
+            try {
+                const token = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_staff_token') || localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_staff_token');
+                const headers = token ? { Authorization: 'Bearer ' + token } : {};
+                const res = await fetch(`${getApiBaseUrl()}/api/pegawai/pesanan/${encodeURIComponent(order.id_pesanan)}`, { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && json.data) {
+                        const d = json.data;
+                        const items = Array.isArray(d.items) ? d.items : (Array.isArray(d.detail) ? d.detail : null);
+                        if (items) order.details = items;
+                        const p = d.pesanan || d;
+                        if (p.nama_pegawai) order.staffName = p.nama_pegawai;
+                        if (p.alamat_pelanggan) order.customerAddress = p.alamat_pelanggan;
+                        if (p.telepon_pelanggan) order.customerPhone = p.telepon_pelanggan;
+                        if (Array.isArray(d.pembayaran) && d.pembayaran.length > 0) {
+                            const pay = d.pembayaran[0];
+                            order.paymentMethod = pay.metode || order.paymentMethod;
+                            const st = String(pay.status || '').toUpperCase();
+                            order.paymentStatus = (st === 'BERHASIL' || st === 'LUNAS') ? 'Lunas' : (st === 'GAGAL' ? 'Ditolak' : 'Menunggu konfirmasi');
+                        }
+                    }
+                }
+            } catch (_) {}
+            return order;
         }
 
         let currentActiveOrder = null;
@@ -465,26 +593,70 @@
             currentActiveOrder = order;
 
             const code = order.code || order.id || 'TRX-0000';
-            const date = order.date || '10 November 2026';
+            const date = order.date || 'Hari ini';
             const custName = order.customerName || 'Pelanggan';
             const custPhone = order.customerPhone || '0812-3456-7890';
-            const custAddress = order.customerAddress || 'Jl. Margonda Raya, Depok';
-            const service = order.service || 'Cuci + Setrika';
-            const weight = order.weight || '4.0 kg';
-            const totalFormatted = order.totalFormatted || formatRupiah(order.total || 40000);
-            const notes = order.notes || 'Tidak ada catatan';
+            const custAddress = order.customerAddress || 'Jakarta Selatan';
+            const service = order.service || 'Cuci Komplit (Cuci + Setrika)';
+            const weight = order.weight || '1,0 kg';
+            const totalNum = Number(order.total) || 0;
+            const totalFormatted = order.totalFormatted || formatRupiah(totalNum);
+            const notes = order.notes || 'Tidak ada catatan khusus';
             const stage = order.status || 'Menunggu konfirmasi';
             const payStatus = order.paymentStatus || 'Menunggu konfirmasi';
-            const payMethod = order.paymentMethod || 'QRIS';
+            const payMethod = order.paymentMethod || '-';
+
+            const activeStaff = getActiveStaffInfo();
+            const staffLabel = order.staffName
+                ? `${order.staffName} (Petugas Pesanan)`
+                : `${activeStaff.nama} (${activeStaff.jabatan})`;
+            const staffEl = document.getElementById('staffStaffName');
+            if (staffEl) {
+                staffEl.dataset.orderBound = 'true';
+                staffEl.textContent = staffLabel;
+            }
 
             document.getElementById('staffInvCode').textContent = code;
             document.getElementById('staffInvDate').textContent = date;
             document.getElementById('staffCustName').textContent = custName;
             document.getElementById('staffCustPhone').textContent = custPhone;
             document.getElementById('staffCustAddress').textContent = custAddress;
-            document.getElementById('staffServiceName').textContent = service;
-            document.getElementById('staffWeight').textContent = weight;
-            document.getElementById('staffSubtotal').textContent = totalFormatted;
+
+            const itemsBody = document.getElementById('staffItemsBody');
+            const details = Array.isArray(order.details) && order.details.length > 0 ? order.details : null;
+            if (itemsBody && details) {
+                itemsBody.innerHTML = details.map(item => {
+                    const unit = item.satuan || 'kg';
+                    const qty = parseFloat(item.jumlah || 0);
+                    const qtyFormatted = Number.isInteger(qty) ? `${qty} ${unit}` : `${qty.toString().replace('.', ',')} ${unit}`;
+                    return `
+                        <tr>
+                            <td class="py-3 px-4">
+                                <span class="font-bold text-slate-900 block">${escapeHtml(item.nama_layanan || 'Layanan Laundry')}</span>
+                                <span class="text-[10px] text-slate-400">Kategori: ${escapeHtml(item.kategori || 'LAUNDRY')}</span>
+                            </td>
+                            <td class="py-3 px-4 text-center font-medium text-slate-700">${escapeHtml(qtyFormatted)}</td>
+                            <td class="py-3 px-4 text-right font-medium text-slate-600">${formatRupiah(item.harga_satuan || 0)} / ${escapeHtml(unit)}</td>
+                            <td class="py-3 px-4 text-right font-bold text-slate-800">${formatRupiah(item.subtotal || 0)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else if (itemsBody) {
+                const wNum = parseFloat(order.weightKg || 0);
+                const unitPrice = wNum > 0 ? Math.round(totalNum / wNum) : 9000;
+                itemsBody.innerHTML = `
+                    <tr>
+                        <td class="py-3 px-4">
+                            <span id="staffServiceName" class="font-bold text-slate-900 block">${escapeHtml(service)}</span>
+                            <span class="text-[10px] text-slate-400">Layanan Bersihin Laundry</span>
+                        </td>
+                        <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">${escapeHtml(weight)}</td>
+                        <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">${formatRupiah(unitPrice)} / kg</td>
+                        <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">${totalFormatted}</td>
+                    </tr>
+                `;
+            }
+
             document.getElementById('staffTotal').textContent = totalFormatted;
             document.getElementById('staffNotes').textContent = notes;
             document.getElementById('staffPayMethod').textContent = payMethod;
@@ -508,7 +680,6 @@
 
             // Payment badge
             const payBadge = document.getElementById('staffPaymentBadge');
-            const payText = document.getElementById('staffPaymentText');
             const confirmBtn = document.getElementById('confirmStaffOrderBtn');
             const verifyHint = document.getElementById('cashierVerifyHint');
 
@@ -533,8 +704,8 @@
             }
         }
 
-        function initStaffInvoice() {
-            const orders = getUnifiedOrders();
+        async function initStaffInvoice() {
+            const orders = await loadUnifiedOrders();
             const params = new URLSearchParams(window.location.search);
             const paramId = params.get('id') || params.get('code');
 
@@ -551,7 +722,7 @@
 
             let found = null;
             if (paramId) {
-                found = orders.find(o => o.code === paramId || o.id === paramId);
+                found = orders.find(o => o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId));
             }
             if (!found && orders.length > 0) {
                 found = orders[0];
@@ -559,84 +730,109 @@
 
             if (found) {
                 if (selector) selector.value = found.code || found.id;
+                await enrichStaffOrderDetail(found);
                 renderStaffInvoice(found);
             }
         }
 
-        function switchStaffInvoice(code) {
+        async function switchStaffInvoice(code) {
             if (!code) return;
             window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(code)}`);
-            const orders = getUnifiedOrders();
+            const orders = cachedStaffOrders.length ? cachedStaffOrders : await loadUnifiedOrders();
             const match = orders.find(o => o.code === code || o.id === code);
-            if (match) renderStaffInvoice(match);
+            if (match) {
+                await enrichStaffOrderDetail(match);
+                renderStaffInvoice(match);
+            }
         }
 
-        // Aksi Kasir: Konfirmasi Pembayaran Lunas
-        function confirmStaffOrderPayment() {
+        // Aksi Kasir: Konfirmasi Pembayaran Lunas ke Database MySQL
+        async function confirmStaffOrderPayment() {
             if (!currentActiveOrder) return;
             if (!confirm(`Konfirmasi pembayaran lunas untuk pesanan ${currentActiveOrder.code || currentActiveOrder.id}?`)) return;
 
-            currentActiveOrder.paymentStatus = 'Lunas';
-            if (currentActiveOrder.status === 'Menunggu konfirmasi') {
-                currentActiveOrder.status = 'Diproses';
+            if (currentActiveOrder.id_pesanan) {
+                try {
+                    const token = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_staff_token') || localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_staff_token');
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) headers.Authorization = 'Bearer ' + token;
+                    const res = await fetch(`${getApiBaseUrl()}/api/pegawai/pesanan/${encodeURIComponent(currentActiveOrder.id_pesanan)}/konfirmasi-pembayaran`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({ metode: currentActiveOrder.paymentMethod !== '-' ? currentActiveOrder.paymentMethod : 'TUNAI' })
+                    });
+                    const json = await res.json();
+                    if (!res.ok) throw new Error(json.message || 'Gagal konfirmasi pembayaran');
+                } catch (err) {
+                    alert('Gagal menyimpan konfirmasi pembayaran: ' + err.message);
+                    return;
+                }
             }
 
-            // Simpan ke localStorage
-            try {
-                const u = getUnifiedOrders();
-                const idx = u.findIndex(o => o.code === currentActiveOrder.code || o.id === currentActiveOrder.id);
-                if (idx !== -1) {
-                    u[idx].paymentStatus = 'Lunas';
-                    u[idx].status = currentActiveOrder.status;
-                    localStorage.setItem('bersihin_unified_orders', JSON.stringify(u));
-                    localStorage.setItem('bersihin_orders', JSON.stringify(u));
-                }
-            } catch (e) {}
+            currentActiveOrder.paymentStatus = 'Lunas';
+            if (currentActiveOrder.status === 'Menunggu konfirmasi') {
+                currentActiveOrder.status = 'Dalam Antrian';
+            }
 
             alert('Pembayaran BERHASIL dikonfirmasi sebagai LUNAS!');
+            await enrichStaffOrderDetail(currentActiveOrder);
             renderStaffInvoice(currentActiveOrder);
         }
 
-        // Aksi Kasir: Ubah Tahap Cucian
-        function applyStaffStageUpdate() {
+        // Aksi Kasir: Ubah Tahap Cucian ke Database MySQL
+        async function applyStaffStageUpdate() {
             if (!currentActiveOrder) return;
             const newStage = document.getElementById('staffStageSelect').value;
-            currentActiveOrder.status = newStage;
 
-            try {
-                const u = getUnifiedOrders();
-                const idx = u.findIndex(o => o.code === currentActiveOrder.code || o.id === currentActiveOrder.id);
-                if (idx !== -1) {
-                    u[idx].status = newStage;
-                    localStorage.setItem('bersihin_unified_orders', JSON.stringify(u));
-                    localStorage.setItem('bersihin_orders', JSON.stringify(u));
+            if (currentActiveOrder.id_pesanan) {
+                try {
+                    const token = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_staff_token') || localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_staff_token');
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) headers.Authorization = 'Bearer ' + token;
+                    const res = await fetch(`${getApiBaseUrl()}/api/pegawai/pesanan/${encodeURIComponent(currentActiveOrder.id_pesanan)}/status`, {
+                        method: 'PATCH',
+                        headers,
+                        body: JSON.stringify({ status: mapStageToDb(newStage), catatan: `Status diperbarui menjadi ${newStage}` })
+                    });
+                    const json = await res.json();
+                    if (!res.ok) throw new Error(json.message || 'Gagal mengubah status');
+                } catch (err) {
+                    alert('Gagal memperbarui status pesanan: ' + err.message);
+                    return;
                 }
-            } catch (e) {}
+            }
 
+            currentActiveOrder.status = newStage;
             alert(`Tahap pengerjaan pesanan ${currentActiveOrder.code || currentActiveOrder.id} diperbarui menjadi: ${newStage}`);
             renderStaffInvoice(currentActiveOrder);
         }
 
-        // Aksi Kasir: Tolak Pesanan
-        function rejectStaffOrder() {
+        // Aksi Kasir: Tolak Pesanan ke Database MySQL
+        async function rejectStaffOrder() {
             if (!currentActiveOrder) return;
             const alasan = prompt('Alasan pembatalan/penolakan pesanan:', 'Pakaian melebihi kapasitas outlet');
             if (alasan === null) return;
 
+            if (currentActiveOrder.id_pesanan) {
+                try {
+                    const token = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_staff_token') || localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_staff_token');
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) headers.Authorization = 'Bearer ' + token;
+                    const res = await fetch(`${getApiBaseUrl()}/api/pegawai/pesanan/${encodeURIComponent(currentActiveOrder.id_pesanan)}/tolak`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({ catatan: alasan })
+                    });
+                    const json = await res.json();
+                    if (!res.ok) throw new Error(json.message || 'Gagal menolak pesanan');
+                } catch (err) {
+                    alert('Gagal menolak pesanan: ' + err.message);
+                    return;
+                }
+            }
+
             currentActiveOrder.status = 'Dibatalkan';
             currentActiveOrder.paymentStatus = 'Ditolak';
-
-            try {
-                const u = getUnifiedOrders();
-                const idx = u.findIndex(o => o.code === currentActiveOrder.code || o.id === currentActiveOrder.id);
-                if (idx !== -1) {
-                    u[idx].status = 'Dibatalkan';
-                    u[idx].paymentStatus = 'Ditolak';
-                    localStorage.setItem('bersihin_unified_orders', JSON.stringify(u));
-                    localStorage.setItem('bersihin_orders', JSON.stringify(u));
-                }
-            } catch (e) {}
-
             alert(`Pesanan ${currentActiveOrder.code || currentActiveOrder.id} telah dibatalkan.`);
             renderStaffInvoice(currentActiveOrder);
         }

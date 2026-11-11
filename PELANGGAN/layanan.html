@@ -383,9 +383,9 @@
       <!-- GRID 4 KARTU LAYANAN LAUNDRY (Sesuai Figma) -->
       <div id="pilihLayananGrid" class="w-full pt-7 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
-        <!-- KARTU 1: Cuci Kering -->
-        <article
-          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+        <!-- KARTU 1: Cuci Kering Lipat (ID 1) -->
+        <article data-layanan-id="1"
+          class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
           <div class="w-full flex flex-col items-start">
             <!-- Icon Box -->
             <div class="size-12 bg-blue-50 rounded-xl flex justify-center items-center text-cyan-600">
@@ -398,13 +398,13 @@
             </div>
 
             <!-- Nama Layanan -->
-            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
-              Cuci Kering
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Kering Lipat
             </h3>
 
             <!-- Deskripsi -->
-            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
-              Pakaian dicuci bersih dan dikeringkan sempurna.
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Cuci bersih, kering wangi, dan dilipat rapi higienis.
             </p>
 
             <!-- Spesifikasi Waktu & Berat Minimal -->
@@ -415,7 +415,7 @@
                     <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
                     <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                   </svg>
-                  <span>2-3 hari</span>
+                  <span data-service-est>2 Hari</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
                   <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -435,12 +435,12 @@
             <div class="flex flex-col items-start">
               <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
               <div class="pt-0.5">
-                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp7.000</span><span
-                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp7.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
               </div>
             </div>
-            <button type="button"
-              onclick="openServiceOrderModal('Cuci Kering', 7000, '2-3 hari', 'Minimal 3 kg', 'Pakaian dicuci bersih dan dikeringkan sempurna.')"
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Cuci Kering Lipat', 7000, '2 Hari', 'Minimal 3 kg', 'Cuci bersih, kering wangi, dan dilipat rapi higienis.', 1)"
               class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
               <span>Pilih</span>
               <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -451,9 +451,9 @@
           </div>
         </article>
 
-        <!-- KARTU 2: Cuci + Setrika (PALING POPULER - Sesuai Figma) -->
-        <article
-          class="p-5 relative bg-white rounded-2xl shadow-[0px_10px_30px_0px_rgba(76,167,206,0.07)] border border-sky-300 hover:shadow-lg transition flex flex-col justify-between items-start">
+        <!-- KARTU 2: Cuci Komplit (Cuci + Setrika) (ID 2 - PALING POPULER) -->
+        <article data-layanan-id="2"
+          class="service-card-item p-5 relative bg-white rounded-2xl shadow-[0px_10px_30px_0px_rgba(76,167,206,0.07)] border border-sky-300 hover:shadow-lg transition flex flex-col justify-between items-start">
           <!-- Badge PALING POPULER -->
           <div
             class="px-2.5 py-1 right-4 -top-2.5 absolute bg-blue-400 rounded-[20px] inline-flex justify-center items-center shadow-2xs">
@@ -473,13 +473,13 @@
             </div>
 
             <!-- Nama Layanan -->
-            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
-              Cuci + Setrika
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Komplit (Cuci + Setrika)
             </h3>
 
             <!-- Deskripsi -->
-            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
-              Paket lengkap, pakaian bersih, wangi, dan rapi.
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Paket favorit: cuci bersih anti bakteri plus setrika uap rapi.
             </p>
 
             <!-- Spesifikasi Waktu & Berat Minimal -->
@@ -490,7 +490,7 @@
                     <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
                     <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                   </svg>
-                  <span>2-3 hari</span>
+                  <span data-service-est>2 Hari</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
                   <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -510,12 +510,12 @@
             <div class="flex flex-col items-start">
               <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
               <div class="pt-0.5">
-                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp10.000</span><span
-                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp9.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
               </div>
             </div>
-            <button type="button"
-              onclick="openServiceOrderModal('Cuci + Setrika', 10000, '2-3 hari', 'Minimal 3 kg', 'Paket lengkap, pakaian bersih, wangi, dan rapi.')"
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Cuci Komplit (Cuci + Setrika)', 9000, '2 Hari', 'Minimal 3 kg', 'Paket favorit: cuci bersih anti bakteri plus setrika uap rapi.', 2)"
               class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
               <span>Pilih</span>
               <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -526,9 +526,9 @@
           </div>
         </article>
 
-        <!-- KARTU 3: Setrika Saja -->
-        <article
-          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+        <!-- KARTU 3: Setrika Uap Saja (ID 3) -->
+        <article data-layanan-id="3"
+          class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
           <div class="w-full flex flex-col items-start">
             <!-- Icon Box -->
             <div class="size-12 bg-orange-50 rounded-xl flex justify-center items-center text-orange-400">
@@ -539,13 +539,13 @@
             </div>
 
             <!-- Nama Layanan -->
-            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
-              Setrika Saja
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Setrika Uap Saja
             </h3>
 
             <!-- Deskripsi -->
-            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
-              Pakaian disetrika rapi dengan pewangi premium.
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Pakaian disetrika menggunakan setrika uap profesional bebas kusut.
             </p>
 
             <!-- Spesifikasi Waktu & Berat Minimal -->
@@ -556,7 +556,7 @@
                     <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
                     <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                   </svg>
-                  <span>1-2 hari</span>
+                  <span data-service-est>1 Hari</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
                   <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -576,12 +576,12 @@
             <div class="flex flex-col items-start">
               <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
               <div class="pt-0.5">
-                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp6.000</span><span
-                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp6.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
               </div>
             </div>
-            <button type="button"
-              onclick="openServiceOrderModal('Setrika Saja', 6000, '1-2 hari', 'Minimal 3 kg', 'Pakaian disetrika rapi dengan pewangi premium.')"
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Setrika Uap Saja', 6000, '1 Hari', 'Minimal 3 kg', 'Pakaian disetrika menggunakan setrika uap profesional bebas kusut.', 3)"
               class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
               <span>Pilih</span>
               <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -592,9 +592,9 @@
           </div>
         </article>
 
-        <!-- KARTU 4: Express -->
-        <article
-          class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+        <!-- KARTU 4: Cuci Kilat Express (4 Jam) (ID 5) -->
+        <article data-layanan-id="5"
+          class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
           <div class="w-full flex flex-col items-start">
             <!-- Icon Box -->
             <div class="size-12 bg-orange-50 rounded-xl flex justify-center items-center text-red-400">
@@ -605,13 +605,13 @@
             </div>
 
             <!-- Nama Layanan -->
-            <h3 class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
-              Express
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Kilat Express (4 Jam)
             </h3>
 
             <!-- Deskripsi -->
-            <p class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
-              Solusi cepat untuk kebutuhan laundry di hari yang sama.
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Solusi pakaian darurat cepat kering dan bersih dalam 4 jam.
             </p>
 
             <!-- Spesifikasi Waktu & Berat Minimal -->
@@ -622,7 +622,7 @@
                     <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
                     <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                   </svg>
-                  <span>4 jam</span>
+                  <span data-service-est>4 Jam</span>
                 </div>
                 <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
                   <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -642,12 +642,12 @@
             <div class="flex flex-col items-start">
               <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
               <div class="pt-0.5">
-                <span class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp18.000</span><span
-                  class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp16.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/kg</span>
               </div>
             </div>
-            <button type="button"
-              onclick="openServiceOrderModal('Express', 18000, '6 jam', 'Minimal 3 kg', 'Solusi cepat untuk kebutuhan laundry di hari yang sama.')"
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Cuci Kilat Express (4 Jam)', 16000, '4 Jam', 'Minimal 3 kg', 'Solusi pakaian darurat cepat kering dan bersih dalam 4 jam.', 5)"
               class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
               <span>Pilih</span>
               <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -721,11 +721,11 @@
         <div class="grid grid-cols-3 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
           <div>
             <span class="block text-[10px] text-slate-400">Harga / kg</span>
-            <span id="serviceModalPrice" class="text-xs font-bold text-slate-800">Rp10.000</span>
+            <span id="serviceModalPrice" class="text-xs font-bold text-slate-800">Rp9.000</span>
           </div>
           <div class="border-x border-slate-200/80">
             <span class="block text-[10px] text-slate-400">Estimasi</span>
-            <span id="serviceModalDuration" class="text-xs font-bold text-slate-800">2-3 hari</span>
+            <span id="serviceModalDuration" class="text-xs font-bold text-slate-800">2 Hari</span>
           </div>
           <div>
             <span class="block text-[10px] text-slate-400">Ketentuan</span>
@@ -884,8 +884,8 @@
     const cancelServiceModalBtn = document.getElementById('cancelServiceModalBtn');
     const navBuatPesananLink = document.getElementById('navBuatPesananLink');
 
-    let currentServicePricePerKg = 10000;
-    let currentServiceName = 'Cuci + Setrika';
+    let currentServicePricePerKg = 9000;
+    let currentServiceName = 'Cuci Komplit (Cuci + Setrika)';
 
     function formatRupiah(num) {
       return 'Rp' + Number(num).toLocaleString('id-ID');
@@ -897,8 +897,10 @@
       serviceModalTotalCost.textContent = formatRupiah(total);
     }
 
-    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description) {
-      window.location.href = 'pesanan.html?service=' + encodeURIComponent(name);
+    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description, idLayanan) {
+      let url = 'pesanan.html?service=' + encodeURIComponent(name);
+      if (idLayanan) url += '&id_layanan=' + encodeURIComponent(idLayanan);
+      window.location.href = url;
     };
 
     function closeServiceOrderModal() {
@@ -916,11 +918,12 @@
         e.preventDefault();
         closeSidebar();
         window.openServiceOrderModal(
-          'Cuci + Setrika',
-          10000,
-          '2-3 hari',
+          'Cuci Komplit (Cuci + Setrika)',
+          9000,
+          '2 Hari',
           'Minimal 3 kg',
-          'Paket lengkap, pakaian bersih, wangi, dan rapi.'
+          'Paket favorit: cuci bersih anti bakteri plus setrika uap rapi.',
+          2
         );
       });
     }

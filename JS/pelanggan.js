@@ -40,11 +40,13 @@
     },
     defaultProfile: {
       fullName: 'Andi Pratama',
-      email: 'andi.pratama@email.com',
-      phone: '0812 3456 7890',
-      address: 'Jl. Cempaka Indah No. 12, Coblong, Bandung, Jawa Barat 40132',
+      email: 'andi.pratama@gmail.com',
+      phone: '081290123456',
+      address: 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan',
       memberTier: 'Silver Member',
-      joinDate: 'November 2026'
+      member_tier: 'SILVER',
+      kode_pelanggan: 'PLG-08129',
+      joinDate: 'Mei 2024'
     }
   };
 
@@ -162,20 +164,29 @@
         const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Pelanggan';
         const activeEmail = userObj.email || (storedProfile && storedProfile.email) || '';
         const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '';
-        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Margonda Raya No. 45, Beji, Kota Depok';
+        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan';
         const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || null;
         const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || null;
+        const activeKode = userObj.kode_pelanggan || (storedProfile && storedProfile.kode_pelanggan) || '';
+        const rawTier = String(userObj.member_tier || (storedProfile && (storedProfile.member_tier || storedProfile.memberTier)) || 'REGULER').toUpperCase();
+        const activeTierLabel = rawTier.includes('GOLD')
+          ? 'Gold Member'
+          : rawTier.includes('SILVER')
+            ? 'Silver Member'
+            : 'Reguler Member';
         const activeJoined = userObj.created_at || userObj.createdAt || (storedProfile && (storedProfile.created_at || storedProfile.createdAt)) || new Date().toISOString();
 
         return {
           id_user: activeIdUser,
           id_pelanggan: activeIdCust,
+          kode_pelanggan: activeKode,
           username: userObj.username || '',
           fullName: activeName,
           email: activeEmail,
           phone: activePhone,
           address: activeAddress,
-          memberTier: (storedProfile && storedProfile.memberTier) || 'Silver Member',
+          member_tier: rawTier.includes('GOLD') ? 'GOLD' : (rawTier.includes('SILVER') ? 'SILVER' : 'REGULER'),
+          memberTier: activeTierLabel,
           created_at: activeJoined,
           createdAt: activeJoined
         };
@@ -401,7 +412,7 @@
 
       const orderCode = latestOrder.code || latestOrder.id || latestOrder.orderId || latestOrder.kode_pesanan || 'TRX-BARU';
       const rawStatus = String(latestOrder.status || 'MENUNGGU').toUpperCase();
-      const serviceName = latestOrder.service || latestOrder.layanan || 'Cuci + Setrika';
+      const serviceName = latestOrder.service || latestOrder.layanan || 'Cuci Komplit (Cuci + Setrika)';
       const weight = latestOrder.weight || (latestOrder.weightKg ? `${latestOrder.weightKg},0 kg` : '3,0 kg');
 
       let title = `Pesanan ${orderCode} Menunggu Konfirmasi`;
@@ -868,7 +879,7 @@
       orderSeq: idx,
       date: dateStr,
       timestamp: timeIso,
-      service: dbRow.layanan || 'Cuci + Setrika',
+      service: dbRow.layanan || 'Cuci Komplit (Cuci + Setrika)',
       weight: `${beratVal.toLocaleString('id-ID')} kg`,
       weightKg: beratVal,
       amount: amountNum,
@@ -914,12 +925,9 @@
         }
       } catch (_) {}
 
-      // Fallback ID pelanggan jika username diketahui di database
+      // Fallback ID pelanggan jika username diketahui di database bersihinlaundry
       if (!activeCustId) {
-        if (activeUsername === 'nuristya' || activeUserId === 7) {
-          activeCustId = 5;
-          activeUserId = 7;
-        } else if (activeUsername === 'andipratama' || activeUserId === 4) {
+        if (activeUsername === 'andipratama' || activeUserId === 4) {
           activeCustId = 1;
           activeUserId = 4;
         } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
@@ -943,13 +951,18 @@
           const profJson = await profRes.json();
           if (profJson.success && profJson.data) {
             const d = profJson.data;
+            const tierRaw = String(d.member_tier || 'REGULER').toUpperCase();
             saveCustomerProfile({
               id_user: d.id_user || activeUserId,
               id_pelanggan: d.id_pelanggan || activeCustId,
+              kode_pelanggan: d.kode_pelanggan || '',
+              username: d.username || activeUsername,
               fullName: d.nama || d.fullName,
               phone: d.telepon || d.phone,
               email: d.email,
               address: d.alamat || d.address,
+              member_tier: tierRaw,
+              memberTier: tierRaw === 'GOLD' ? 'Gold Member' : (tierRaw === 'SILVER' ? 'Silver Member' : 'Reguler Member'),
               created_at: d.created_at
             });
             initSharedComponents();
@@ -1136,10 +1149,7 @@
     } catch (_) {}
 
     if (!activeCustId) {
-      if (activeUsername === 'nuristya' || activeUserId === 7) {
-        activeCustId = 5;
-        activeUserId = 7;
-      } else if (activeUsername === 'andipratama' || activeUserId === 4) {
+      if (activeUsername === 'andipratama' || activeUserId === 4) {
         activeCustId = 1;
         activeUserId = 4;
       } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
@@ -1180,7 +1190,7 @@
           orderSeq: idx,
           date: raw.date || raw.dateIn || 'Hari ini',
           timestamp: raw.createdAt || raw.timestamp || fallbackTime,
-          service: raw.service || raw.layanan || 'Cuci + Setrika',
+          service: raw.service || raw.layanan || 'Cuci Komplit (Cuci + Setrika)',
           weight: raw.weight || (raw.weightKg ? `${raw.weightKg},0 kg` : '4,0 kg'),
           weightKg: parseFloat(raw.weightKg) || 4.0,
           amount: amountNum,
@@ -1509,8 +1519,36 @@
     const closeServiceModalBtn = document.getElementById('closeServiceModalBtn');
     const cancelServiceModalBtn = document.getElementById('cancelServiceModalBtn');
 
-    let currentPricePerKg = 10000;
-    let currentServiceName = 'Cuci + Setrika';
+    let currentPricePerKg = 9000;
+    let currentServiceName = 'Cuci Komplit (Cuci + Setrika)';
+    let currentServiceId = 2;
+
+    // Sinkronisasi 4 layanan aktif pelanggan langsung dari MySQL (GET /api/pelanggan/layanan)
+    (async function hydrateCustomerServiceCards() {
+      try {
+        const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/layanan`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        if (rows.length === 0) return;
+
+        rows.forEach((svc) => {
+          const card = document.querySelector(`[data-layanan-id="${svc.id_layanan}"]`);
+          if (!card) return;
+          card.setAttribute('data-service-name', svc.nama_layanan);
+          card.setAttribute('data-service-price', String(Number(svc.harga) || 0));
+          card.setAttribute('data-service-est', svc.estimasi_waktu || '');
+          const titleEl = card.querySelector('[data-service-title]');
+          const descEl = card.querySelector('[data-service-desc]');
+          const priceEl = card.querySelector('[data-service-price-label]');
+          const estEl = card.querySelector('[data-service-est-label]');
+          if (titleEl) titleEl.textContent = svc.nama_layanan;
+          if (descEl && svc.deskripsi) descEl.textContent = svc.deskripsi;
+          if (priceEl) priceEl.textContent = formatRupiah(svc.harga);
+          if (estEl && svc.estimasi_waktu) estEl.textContent = `Estimasi ${svc.estimasi_waktu}`;
+        });
+      } catch (_) {}
+    })();
 
     function updateEstimatedTotal() {
       if (!orderWeightInput || !serviceModalTotalCost) return;
@@ -1524,16 +1562,17 @@
     }
 
     // Expose openServiceOrderModal ke global window untuk kompatibilitas onclick di HTML
-    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description) {
-      currentServiceName = name || 'Cuci + Setrika';
-      currentPricePerKg = Number(pricePerKg) || 10000;
+    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description, idLayanan) {
+      currentServiceName = name || 'Cuci Komplit (Cuci + Setrika)';
+      currentPricePerKg = Number(pricePerKg) || 9000;
+      currentServiceId = Number(idLayanan) || 2;
 
       // Navigasi langsung ke pesanan.html dengan parameter layanan terpilih
       try {
         sessionStorage.setItem(BersihinConfig.storageKeys.cartService, currentServiceName);
       } catch (e) { }
 
-      window.location.href = 'pesanan.html?service=' + encodeURIComponent(currentServiceName);
+      window.location.href = `pesanan.html?id_layanan=${encodeURIComponent(currentServiceId)}&service=${encodeURIComponent(currentServiceName)}`;
     };
 
     if (closeServiceModalBtn && serviceOrderModal) {
@@ -1600,10 +1639,10 @@
     const createOrderForm = document.getElementById('createOrderForm');
     if (!createOrderForm) return;
 
-    let selectedService = 'Cuci + Setrika';
-    let selectedPricePerKg = 10000;
-    let selectedEst = 'Estimasi 2-3 hari';
-    let currentWeightKg = 4; // Default Figma: 4 kg
+    let selectedService = 'Cuci Komplit (Cuci + Setrika)';
+    let selectedPricePerKg = 9000;
+    let selectedEst = 'Estimasi 2 Hari';
+    let currentWeightKg = 4; // Default: 4 kg
     let selectedDeliveryMethod = 'Antar sendiri';
     let selectedDeliveryFee = 0;
 
@@ -1641,9 +1680,9 @@
 
     function selectServiceOption(btn) {
       if (!btn) return;
-      selectedService = btn.getAttribute('data-service-option') || 'Cuci + Setrika';
-      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 10000;
-      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2-3 hari';
+      selectedService = btn.getAttribute('data-service-option') || 'Cuci Komplit (Cuci + Setrika)';
+      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 9000;
+      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2 Hari';
 
       serviceOptionBtns.forEach((b) => {
         const checkBox = b.querySelector('.service-check-box');
@@ -1727,6 +1766,33 @@
 
     // Inisialisasi awal kalkulasi (submit form dikelola secara komprehensif bersama modal invoice di pesanan.html)
     updateOrderSummary();
+
+    // Sinkronisasi 4 pilihan layanan pelanggan dari MySQL (GET /api/pelanggan/layanan)
+    (async function hydrateOrderServiceOptions() {
+      try {
+        const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/layanan`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        if (rows.length === 0) return;
+
+        rows.forEach((svc) => {
+          const btn = document.querySelector(`.service-option-btn[data-layanan-id="${svc.id_layanan}"]`);
+          if (!btn) return;
+          const priceNum = Number(svc.harga) || 0;
+          const estText = svc.estimasi_waktu ? `Estimasi ${svc.estimasi_waktu}` : 'Estimasi 2 Hari';
+          btn.setAttribute('data-service-option', svc.nama_layanan);
+          btn.setAttribute('data-price', String(priceNum));
+          btn.setAttribute('data-est', estText);
+          const nameEl = btn.querySelector('.font-semibold');
+          const subEl = btn.querySelector('.text-\\[11px\\]');
+          if (nameEl) nameEl.textContent = svc.nama_layanan;
+          if (subEl) subEl.textContent = `${svc.estimasi_waktu || '2 Hari'} • ${formatRupiah(priceNum)}/${svc.satuan || 'kg'}`;
+        });
+        const activeBtn = document.querySelector('.service-option-btn[aria-checked="true"]');
+        if (activeBtn) selectServiceOption(activeBtn);
+      } catch (_) {}
+    })();
   }
 
   // ===========================================================================

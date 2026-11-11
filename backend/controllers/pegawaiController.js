@@ -108,7 +108,7 @@ exports.updateProfil = async (req, res) => {
 exports.daftarPelanggan = async (req, res) => {
     try {
         const [rows] = await db.query(
-            `SELECT id_pelanggan, kode_pelanggan, nama, telepon, email, alamat, created_at
+            `SELECT id_pelanggan, id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier, created_at
              FROM pelanggan ORDER BY id_pelanggan DESC`
         );
         return res.json({ success: true, message: "Data pelanggan berhasil diambil", data: rows });
@@ -123,7 +123,7 @@ exports.detailPelanggan = async (req, res) => {
     try {
         if (!validId(req.params.id)) return sendError(res, 400, "ID pelanggan tidak valid");
         const [rows] = await db.execute(
-            `SELECT id_pelanggan, kode_pelanggan, nama, telepon, email, alamat, created_at
+            `SELECT id_pelanggan, id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier, created_at
              FROM pelanggan WHERE id_pelanggan = ? LIMIT 1`, [Number(req.params.id)]
         );
         if (!rows.length) return sendError(res, 404, "Pelanggan tidak ditemukan");
@@ -137,17 +137,20 @@ exports.detailPelanggan = async (req, res) => {
 // 6. Tambah pelanggan (akun login pelanggan tidak dibuat otomatis)
 exports.tambahPelanggan = async (req, res) => {
     try {
-        const { nama, telepon, email, alamat } = req.body || {};
+        const { nama, telepon, email, alamat, member_tier } = req.body || {};
         if (typeof nama !== "string" || !nama.trim()) return sendError(res, 400, "Nama pelanggan wajib diisi");
-        const kode = `PLG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const tierVal = ['REGULER', 'SILVER', 'GOLD'].includes(String(member_tier || '').toUpperCase())
+            ? String(member_tier).toUpperCase()
+            : 'REGULER';
+        const kode = `PLG-${String(Date.now()).slice(-8)}${Math.floor(10 + Math.random() * 90)}`;
         const [result] = await db.execute(
-            `INSERT INTO pelanggan (kode_pelanggan, nama, telepon, email, alamat)
-             VALUES (?, ?, ?, ?, ?)`,
-            [kode, nama.trim(), telepon || null, email || null, alamat || null]
+            `INSERT INTO pelanggan (kode_pelanggan, nama, telepon, email, alamat, member_tier)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [kode, nama.trim(), telepon || null, email || null, alamat || null, tierVal]
         );
         return res.status(201).json({
             success: true, message: "Pelanggan berhasil ditambahkan",
-            data: { id_pelanggan: result.insertId, kode_pelanggan: kode }
+            data: { id_pelanggan: result.insertId, kode_pelanggan: kode, member_tier: tierVal }
         });
     } catch (error) {
         console.error("TAMBAH PELANGGAN ERROR:", error);
@@ -188,13 +191,17 @@ exports.daftarPesanan = async (req, res) => {
                     p.total_harga, p.status, p.catatan, pl.nama AS nama_pelanggan,
                     pl.telepon, pl.alamat,
                     COALESCE((
-                        SELECT l2.nama_layanan 
-                        FROM detail_pesanan dp2 
-                        JOIN layanan l2 ON l2.id_layanan = dp2.id_layanan 
-                        WHERE dp2.id_pesanan = p.id_pesanan 
-                        LIMIT 1
-                    ), 'Cuci + Setrika') AS layanan
-             FROM pesanan p 
+                        SELECT GROUP_CONCAT(l2.nama_layanan ORDER BY dp2.id_detail SEPARATOR ', ')
+                        FROM detail_pesanan dp2
+                        JOIN layanan l2 ON l2.id_layanan = dp2.id_layanan
+                        WHERE dp2.id_pesanan = p.id_pesanan
+                    ), 'Cuci Komplit (Cuci + Setrika)') AS layanan,
+                    COALESCE((
+                        SELECT pb.status FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1
+                    ), 'MENUNGGU') AS status_pembayaran,
+                    (SELECT pb.metode FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1) AS metode_pembayaran,
+                    (SELECT pb.referensi_bayar FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1) AS referensi_bayar
+             FROM pesanan p
              INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
              ORDER BY p.id_pesanan DESC`
         );
@@ -205,22 +212,26 @@ exports.daftarPesanan = async (req, res) => {
     }
 };
 
-// 9. Detail pesanan beserta detail layanan dan riwayat status
+// 9. Detail pesanan beserta detail layanan, pembayaran, dan riwayat status
 exports.detailPesanan = async (req, res) => {
     try {
         if (!validId(req.params.id)) return sendError(res, 400, "ID pesanan tidak valid");
         const id = Number(req.params.id);
         const [pesanan] = await db.execute(
-            `SELECT p.*, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan
+            `SELECT p.*, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan, pl.alamat AS alamat_pelanggan
              FROM pesanan p INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
              WHERE p.id_pesanan = ? LIMIT 1`, [id]
         );
         if (!pesanan.length) return sendError(res, 404, "Pesanan tidak ditemukan");
         const [detail] = await db.execute(
-            `SELECT d.id_detail, d.id_layanan, l.nama_layanan, l.satuan,
+            `SELECT d.id_detail, d.id_layanan, l.nama_layanan, l.kategori, l.satuan,
                     d.jumlah, d.harga_satuan, d.subtotal
              FROM detail_pesanan d INNER JOIN layanan l ON l.id_layanan = d.id_layanan
              WHERE d.id_pesanan = ? ORDER BY d.id_detail`, [id]
+        );
+        const [pembayaran] = await db.execute(
+            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
+             FROM pembayaran WHERE id_pesanan = ? ORDER BY id_pembayaran DESC`, [id]
         );
         const [riwayat] = await db.execute(
             `SELECT r.id_riwayat, r.status, r.catatan, r.waktu_perubahan,
@@ -228,7 +239,7 @@ exports.detailPesanan = async (req, res) => {
              FROM riwayat_status r LEFT JOIN pegawai pg ON pg.id_pegawai = r.id_pegawai
              WHERE r.id_pesanan = ? ORDER BY r.waktu_perubahan ASC, r.id_riwayat ASC`, [id]
         );
-        return res.json({ success: true, message: "Detail pesanan berhasil diambil", data: { pesanan: pesanan[0], detail, riwayat } });
+        return res.json({ success: true, message: "Detail pesanan berhasil diambil", data: { pesanan: pesanan[0], detail, pembayaran, riwayat } });
     } catch (error) {
         console.error("DETAIL PESANAN ERROR:", error);
         return sendError(res, 500, "Gagal mengambil detail pesanan");
@@ -425,9 +436,13 @@ exports.daftarTransaksi = async (req, res) => {
             `SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan,
                     p.total_harga, p.status AS status_pesanan,
                     pb.id_pembayaran, pb.jumlah_bayar, pb.metode,
-                    pb.tanggal_bayar, pb.status AS status_pembayaran
+                    pb.tanggal_bayar, pb.status AS status_pembayaran, pb.referensi_bayar
              FROM pesanan p INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
-             LEFT JOIN pembayaran pb ON pb.id_pesanan = p.id_pesanan
+             LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
+                 SELECT pb2.id_pembayaran FROM pembayaran pb2
+                 WHERE pb2.id_pesanan = p.id_pesanan
+                 ORDER BY pb2.id_pembayaran DESC LIMIT 1
+             )
              ORDER BY p.id_pesanan DESC, pb.id_pembayaran DESC`
         );
         return res.json({ success: true, message: "Data transaksi berhasil diambil", data: rows });
@@ -449,7 +464,7 @@ exports.detailTransaksi = async (req, res) => {
         );
         if (!orders.length) return sendError(res, 404, "Pesanan tidak ditemukan");
         const [payments] = await db.execute(
-            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status
+            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
              FROM pembayaran WHERE id_pesanan = ? ORDER BY id_pembayaran DESC`, [Number(req.params.id)]
         );
         return res.json({ success: true, message: "Detail transaksi berhasil diambil", data: { pesanan: orders[0], pembayaran: payments } });

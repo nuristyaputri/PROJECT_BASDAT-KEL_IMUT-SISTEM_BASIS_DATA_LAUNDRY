@@ -396,11 +396,11 @@
                 Layanan apa yang Anda butuhkan?
               </p>
 
-              <!-- Pilihan 4 Layanan (Grid 2x2 sesuai desain Figma) -->
-              <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Pilih paket layanan">
+              <!-- Pilihan 4 Layanan (Grid 2x2 sesuai Database bersihinlaundry) -->
+              <div id="serviceOptionsGrid" class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Pilih paket layanan">
 
-                <!-- Opsi 1: Cuci Kering -->
-                <button type="button" data-service-option="Cuci Kering" data-price="7000" data-est="Estimasi 2-3 hari"
+                <!-- Opsi 1: Cuci Kering Lipat (ID 1) -->
+                <button type="button" data-layanan-id="1" data-service-option="Cuci Kering Lipat" data-price="7000" data-est="Estimasi 2 Hari"
                   aria-checked="false" role="radio"
                   class="service-option-btn w-full p-3 rounded-[10px] border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-3 text-left transition">
                   <div class="size-9 bg-slate-100 rounded-lg flex justify-center items-center text-cyan-600 shrink-0">
@@ -410,8 +410,8 @@
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Cuci Kering</span>
-                    <span class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp7.000/kg</span>
+                    <span data-opt-name class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Cuci Kering Lipat</span>
+                    <span data-opt-price class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp7.000/kg</span>
                   </div>
                   <div
                     class="service-check-box size-4 rounded-md border border-slate-300 bg-white flex items-center justify-center shrink-0">
@@ -422,8 +422,8 @@
                   </div>
                 </button>
 
-                <!-- Opsi 2: Cuci + Setrika (Default terpilih sesuai Figma) -->
-                <button type="button" data-service-option="Cuci + Setrika" data-price="10000" data-est="Estimasi 2-3 hari"
+                <!-- Opsi 2: Cuci Komplit (Cuci + Setrika) (ID 2 - Default terpilih) -->
+                <button type="button" data-layanan-id="2" data-service-option="Cuci Komplit (Cuci + Setrika)" data-price="9000" data-est="Estimasi 2 Hari"
                   aria-checked="true" role="radio"
                   class="service-option-btn w-full p-3 rounded-[10px] border border-blue-400 bg-sky-50 shadow-[0px_0px_0px_1px_rgba(87,173,212,1.00)] flex items-center gap-3 text-left transition">
                   <div class="size-9 bg-white rounded-lg flex justify-center items-center text-cyan-600 shrink-0">
@@ -434,8 +434,8 @@
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Cuci + Setrika</span>
-                    <span class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp10.000/kg</span>
+                    <span data-opt-name class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Cuci Komplit (Cuci + Setrika)</span>
+                    <span data-opt-price class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp9.000/kg</span>
                   </div>
                   <div
                     class="service-check-box size-4 rounded-md bg-blue-400 border border-blue-400 flex items-center justify-center shrink-0">
@@ -446,8 +446,8 @@
                   </div>
                 </button>
 
-                <!-- Opsi 3: Setrika Saja -->
-                <button type="button" data-service-option="Setrika Saja" data-price="6000" data-est="Estimasi 1-2 hari"
+                <!-- Opsi 3: Setrika Uap Saja (ID 3) -->
+                <button type="button" data-layanan-id="3" data-service-option="Setrika Uap Saja" data-price="6000" data-est="Estimasi 1 Hari"
                   aria-checked="false" role="radio"
                   class="service-option-btn w-full p-3 rounded-[10px] border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-3 text-left transition">
                   <div class="size-9 bg-slate-100 rounded-lg flex justify-center items-center text-cyan-600 shrink-0">
@@ -457,8 +457,8 @@
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Setrika Saja</span>
-                    <span class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp6.000/kg</span>
+                    <span data-opt-name class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Setrika Uap Saja</span>
+                    <span data-opt-price class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp6.000/kg</span>
                   </div>
                   <div
                     class="service-check-box size-4 rounded-md border border-slate-300 bg-white flex items-center justify-center shrink-0">
@@ -469,8 +469,8 @@
                   </div>
                 </button>
 
-                <!-- Opsi 4: Express -->
-                <button type="button" data-service-option="Express" data-price="18000" data-est="Estimasi 4 jam"
+                <!-- Opsi 4: Cuci Kilat Express (4 Jam) (ID 5) -->
+                <button type="button" data-layanan-id="5" data-service-option="Cuci Kilat Express (4 Jam)" data-price="16000" data-est="Estimasi 4 Jam"
                   aria-checked="false" role="radio"
                   class="service-option-btn w-full p-3 rounded-[10px] border border-slate-200 bg-white hover:bg-slate-50 flex items-center gap-3 text-left transition">
                   <div class="size-9 bg-slate-100 rounded-lg flex justify-center items-center text-cyan-600 shrink-0">
@@ -480,8 +480,8 @@
                     </svg>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <span class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Express</span>
-                    <span class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp18.000/kg</span>
+                    <span data-opt-name class="block text-slate-800 text-xs font-bold font-['Poppins'] leading-4">Cuci Kilat Express (4 Jam)</span>
+                    <span data-opt-price class="block pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Rp16.000/kg</span>
                   </div>
                   <div
                     class="service-check-box size-4 rounded-md border border-slate-300 bg-white flex items-center justify-center shrink-0">
@@ -648,10 +648,10 @@
               </div>
               <div class="flex flex-col">
                 <span id="summaryServiceName" class="text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
-                  Cuci + Setrika
+                  Cuci Komplit (Cuci + Setrika)
                 </span>
                 <span id="summaryServiceEst" class="pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">
-                  Estimasi 2-3 hari
+                  Estimasi 2 Hari
                 </span>
               </div>
             </div>
@@ -661,7 +661,7 @@
           <div class="w-full px-0.5 py-4 space-y-2.5">
             <div class="w-full flex justify-between items-center text-xs">
               <span class="text-slate-500 text-[11px] font-normal font-['Poppins'] leading-4">Harga per kg</span>
-              <span id="summaryPricePerKg" class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">Rp10.000</span>
+              <span id="summaryPricePerKg" class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">Rp9.000</span>
             </div>
 
             <div class="w-full flex justify-between items-center text-xs">
@@ -676,7 +676,7 @@
 
             <div class="w-full pt-2.5 border-t border-slate-100 flex justify-between items-center">
               <span class="text-slate-700 text-xs font-semibold font-['Poppins'] leading-4">Total estimasi</span>
-              <span id="summaryTotal" class="text-blue-950 text-base font-bold font-['Poppins'] leading-6">Rp40.000</span>
+              <span id="summaryTotal" class="text-blue-950 text-base font-bold font-['Poppins'] leading-6">Rp36.000</span>
             </div>
           </div>
 
@@ -823,12 +823,12 @@
             <tbody class="divide-y divide-slate-100">
               <tr>
                 <td class="py-3 px-3">
-                  <span id="invServiceName" class="font-bold text-slate-800 block">Cuci + Setrika</span>
+                  <span id="invServiceName" class="font-bold text-slate-800 block">Cuci Komplit (Cuci + Setrika)</span>
                   <span class="text-[10px] text-slate-400">Paket reguler higienis</span>
                 </td>
                 <td id="invWeight" class="py-3 px-3 text-center font-semibold text-slate-700">4,0 kg</td>
-                <td id="invUnitPrice" class="py-3 px-3 text-right font-medium text-slate-600">Rp10.000</td>
-                <td id="invServiceSubtotal" class="py-3 px-3 text-right font-bold text-slate-800">Rp40.000</td>
+                <td id="invUnitPrice" class="py-3 px-3 text-right font-medium text-slate-600">Rp9.000</td>
+                <td id="invServiceSubtotal" class="py-3 px-3 text-right font-bold text-slate-800">Rp36.000</td>
               </tr>
               <tr id="invDeliveryRow">
                 <td class="py-2.5 px-3">
@@ -842,7 +842,7 @@
             <tfoot>
               <tr class="bg-sky-50/70 border-t-2 border-sky-100">
                 <td colspan="3" class="py-3 px-3 text-right font-bold text-slate-800 text-xs">TOTAL TRANSAKSI</td>
-                <td id="invTotalCost" class="py-3 px-3 text-right font-extrabold text-blue-950 text-sm">Rp40.000</td>
+                <td id="invTotalCost" class="py-3 px-3 text-right font-extrabold text-blue-950 text-sm">Rp36.000</td>
               </tr>
             </tfoot>
           </table>
@@ -905,10 +905,11 @@
     // 1. Toggle Sidebar Mobile dikelola terpusat oleh ../JS/pelanggan.js
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
     // 3. Logika Interaktif Kalkulasi Buat Pesanan
-    let selectedService = 'Cuci + Setrika';
-    let selectedPricePerKg = 10000;
-    let selectedEst = 'Estimasi 2-3 hari';
-    let currentWeightKg = 4; // Default sesuai Figma: 4 kg
+    let selectedServiceId = 2;
+    let selectedService = 'Cuci Komplit (Cuci + Setrika)';
+    let selectedPricePerKg = 9000;
+    let selectedEst = 'Estimasi 2 Hari';
+    let currentWeightKg = 4; // Default: 4 kg
     let selectedDeliveryMethod = 'Antar sendiri';
     let selectedDeliveryFee = 0;
 
@@ -948,9 +949,10 @@
     }
 
     function selectServiceOption(btn) {
+      selectedServiceId = Number(btn.getAttribute('data-layanan-id')) || selectedServiceId || 2;
       selectedService = btn.getAttribute('data-service-option');
-      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 10000;
-      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2-3 hari';
+      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 9000;
+      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2 Hari';
 
       serviceOptionBtns.forEach((b) => {
         const checkBox = b.querySelector('.service-check-box');
@@ -1302,6 +1304,7 @@
           kode_pesanan: generatedOrderId,
           id_user: currentUserId,
           id_pelanggan: currentCustId,
+          id_layanan: selectedServiceId,
           layanan: selectedService,
           berat: currentWeightKg,
           tarif_per_kg: selectedPricePerKg,
