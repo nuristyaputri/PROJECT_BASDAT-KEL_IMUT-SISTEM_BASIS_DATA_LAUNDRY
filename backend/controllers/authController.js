@@ -231,7 +231,7 @@ function logout(req, res) {
     res,
     true,
     'Logout berhasil. Sesi telah diakhiri.',
-    { redirect: 'login.html' },
+    { redirect: '/login.html' },
     200
   );
 }

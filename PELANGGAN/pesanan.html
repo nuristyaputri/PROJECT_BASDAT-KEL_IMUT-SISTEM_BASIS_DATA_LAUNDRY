@@ -195,6 +195,17 @@
               <span>Riwayat</span>
             </a>
           </li>
+
+          <!-- Item 6: Pemeriksaan Invoice -->
+          <li>
+            <a href="invoice.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Pemeriksaan Invoice</span>
+            </a>
+          </li>
         </ul>
 
         <!-- Kelompok: AKUN -->
@@ -337,7 +348,30 @@
     <!-- =================================================================== -->
     <!-- KONTEN UTAMA BUAT PESANAN (Acuan Figma: 3 langkah di kiri + Ringkasan di kanan) -->
     <!-- =================================================================== -->
-    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-7 pb-14">
+    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-7 pb-14 space-y-5">
+
+      <!-- BANNER NOTIFIKASI INVOICE AKTIF (TETAP TAMPIL SAAT MODAL DITUTUP) -->
+      <div id="orderSuccessBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="size-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-bold block">Pesanan <span id="bannerOrderCode" class="font-mono text-cyan-800 font-extrabold">TRX-...</span> Berhasil Dibuat &amp; Tersimpan!</span>
+            <span class="text-[11px] text-emerald-700">Invoice dan status verifikasi pembayaran Anda tersimpan permanen dan dapat diperiksa kapan saja.</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a id="bannerInvoiceLink" href="invoice.html" class="px-4 py-2 bg-gradient-to-r from-cyan-700 to-blue-900 hover:brightness-110 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center gap-1.5">
+            <svg class="size-3.5 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span>Buka Halaman Invoice Penuh</span>
+          </a>
+        </div>
+      </div>
 
       <form id="createOrderForm" class="w-full flex flex-col xl:flex-row justify-start items-start gap-6">
 
@@ -839,13 +873,20 @@
           <span>Cetak / Simpan Invoice</span>
         </button>
 
-        <div class="w-full sm:w-auto flex items-center gap-2">
+        <div class="w-full sm:w-auto flex flex-wrap items-center gap-2">
           <button type="button" id="closeInvoiceBtn"
-            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition">
+            class="px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition">
             Tutup
           </button>
+          <a href="invoice.html" id="openFullInvoiceBtn"
+            class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-700 to-blue-900 hover:brightness-110 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-md transition">
+            <svg class="size-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Buka Halaman Invoice Penuh</span>
+          </a>
           <a href="status.html" id="trackOrderInvoiceBtn"
-            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm transition">
+            class="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-sm transition">
             <span>Pantau Status Cucian</span>
             <svg class="size-3.5" viewBox="0 0 16 16" fill="none">
               <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -1128,7 +1169,9 @@
         if (el) el.textContent = val;
       };
 
-      setEl('invOrderCode', inv.kode_pesanan || inv.orderId || 'TRX-BARU');
+      const orderCodeVal = inv.kode_pesanan || inv.orderId || 'TRX-BARU';
+
+      setEl('invOrderCode', orderCodeVal);
       setEl('invDateTime', inv.tanggal_realtime || inv.dateInTime || '-');
       setEl('invEstDate', inv.estimasi_selesai || inv.estDone || '2 hari lagi');
       setEl('invCustomerName', inv.nama_pelanggan || inv.customerName || (typeof getCustomerProfile === 'function' ? getCustomerProfile().fullName : 'Pelanggan'));
@@ -1144,8 +1187,37 @@
       setEl('invCustomerNotes', inv.catatan || inv.notes || 'Pakaian reguler');
       setEl('invStatusLabel', inv.status_label || 'Menunggu Konfirmasi Pegawai');
 
+      const openFullBtn = document.getElementById('openFullInvoiceBtn');
+      if (openFullBtn) {
+        openFullBtn.href = `invoice.html?id=${encodeURIComponent(orderCodeVal)}`;
+      }
+
       if (trackOrderInvoiceBtn) {
-        trackOrderInvoiceBtn.href = `status.html?id=${encodeURIComponent(inv.kode_pesanan || inv.orderId)}`;
+        trackOrderInvoiceBtn.href = `status.html?id=${encodeURIComponent(orderCodeVal)}`;
+      }
+
+      // Simpan data invoice ke storage agar bisa dibuka berulang kali kapan pun
+      try {
+        let invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+        if (!Array.isArray(invList)) invList = [];
+        const idx = invList.findIndex(x => (x.kode_pesanan === orderCodeVal || x.orderId === orderCodeVal));
+        if (idx !== -1) {
+          invList[idx] = inv;
+        } else {
+          invList.unshift(inv);
+        }
+        localStorage.setItem('bersihin_invoices', JSON.stringify(invList));
+        localStorage.setItem('last_active_invoice', JSON.stringify(inv));
+      } catch (e) {}
+
+      // Tampilkan persistent banner di halaman
+      const banner = document.getElementById('orderSuccessBanner');
+      const bannerCode = document.getElementById('bannerOrderCode');
+      const bannerLink = document.getElementById('bannerInvoiceLink');
+      if (banner && bannerCode && bannerLink) {
+        bannerCode.textContent = orderCodeVal;
+        bannerLink.href = `invoice.html?id=${encodeURIComponent(orderCodeVal)}`;
+        banner.classList.remove('hidden');
       }
 
       if (orderInvoiceModal) {
@@ -1400,6 +1472,23 @@
     if (okHelpModalBtn && helpModal) {
       okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
     }
+
+    // Tampilkan banner invoice jika sebelumnya sudah ada transaksi dibuat
+    try {
+      const lastInvRaw = localStorage.getItem('last_active_invoice');
+      if (lastInvRaw) {
+        const lastInv = JSON.parse(lastInvRaw);
+        const code = lastInv.kode_pesanan || lastInv.orderId || lastInv.code || 'TRX-BARU';
+        const banner = document.getElementById('orderSuccessBanner');
+        const bannerCode = document.getElementById('bannerOrderCode');
+        const bannerLink = document.getElementById('bannerInvoiceLink');
+        if (banner && bannerCode && bannerLink) {
+          bannerCode.textContent = code;
+          bannerLink.href = `invoice.html?id=${encodeURIComponent(code)}`;
+          banner.classList.remove('hidden');
+        }
+      }
+    } catch (_) {}
   </script>
   <!-- Skrip Utama Pelanggan (Vanilla JS) -->
   <script src="../JS/pelanggan.js"></script>

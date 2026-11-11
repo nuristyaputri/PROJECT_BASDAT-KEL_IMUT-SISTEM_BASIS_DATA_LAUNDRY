@@ -58,6 +58,7 @@
 
     /* Hormati preferensi pengurangan gerakan (reduced motion) */
     @media (prefers-reduced-motion: reduce) {
+
       *,
       *::before,
       *::after {
@@ -195,6 +196,18 @@
               <span>Riwayat</span>
             </a>
           </li>
+
+          <!-- Item 6: Pemeriksaan Invoice -->
+          <li>
+            <a href="invoice.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Pemeriksaan Invoice</span>
+            </a>
+          </li>
         </ul>
 
         <!-- Kelompok: AKUN -->
@@ -290,7 +303,8 @@
               </button>
             </div>
             <div class="py-3 flex items-start gap-3">
-              <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
                   <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
@@ -298,7 +312,8 @@
               </div>
               <div class="text-xs leading-4">
                 <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
-                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi
+                  selesai 21 Mei 2024.</p>
                 <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
               </div>
             </div>
@@ -347,7 +362,8 @@
         <div id="statusOrderContainer" class="w-full xl:flex-1 flex flex-col gap-4">
 
           <!-- Empty State jika tidak ada pesanan aktif -->
-          <div id="statusEmptyContent" class="hidden w-full p-8 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col items-center justify-center text-center">
+          <div id="statusEmptyContent"
+            class="hidden w-full p-8 bg-white rounded-2xl shadow-[0px_6px_22px_0px_rgba(33,80,112,0.04)] border border-slate-200 flex flex-col items-center justify-center text-center">
             <div class="size-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mb-3">
               <svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6" />
@@ -356,13 +372,16 @@
             </div>
             <p class="text-slate-800 text-sm font-semibold">Tidak Ada Pesanan Aktif</p>
             <p class="text-slate-500 text-xs mt-1 max-w-sm">
-              Saat ini Anda tidak memiliki cucian yang sedang diproses. Buat pesanan baru kapan saja saat pakaian Anda siap dicuci.
+              Saat ini Anda tidak memiliki cucian yang sedang diproses. Buat pesanan baru kapan saja saat pakaian Anda
+              siap dicuci.
             </p>
             <div class="mt-4 flex flex-wrap gap-2 justify-center">
-              <a href="pesanan.html" class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold inline-flex items-center">
+              <a href="pesanan.html"
+                class="min-h-[44px] px-4 py-2 rounded-[10px] bg-blue-950 hover:bg-blue-900 text-white text-xs font-semibold inline-flex items-center">
                 Buat Pesanan Laundry
               </a>
-              <a href="riwayat.html" class="min-h-[44px] px-4 py-2 rounded-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold inline-flex items-center">
+              <a href="riwayat.html"
+                class="min-h-[44px] px-4 py-2 rounded-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold inline-flex items-center">
                 Lihat Riwayat Transaksi
               </a>
             </div>
@@ -380,7 +399,8 @@
                 <h2 id="activeOrderTitle" class="pt-1 text-slate-800 text-lg font-normal font-['Poppins'] leading-7">
                   Cuci + Setrika
                 </h2>
-                <span id="activeOrderCode" class="pt-0.5 text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+                <span id="activeOrderCode"
+                  class="pt-0.5 text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
                   TRX-240518-01
                 </span>
               </div>
@@ -396,8 +416,7 @@
 
             <!-- Kotak 4 Kolom Informasi Pesanan -->
             <div class="w-full pt-4">
-              <div
-                class="w-full p-3.5 bg-slate-50 rounded-[10px] grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-0">
+              <div class="w-full p-3.5 bg-slate-50 rounded-[10px] grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-0">
                 <div class="flex flex-col items-start">
                   <span class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Tanggal Masuk</span>
                   <span id="activeOrderDateIn" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
@@ -413,8 +432,10 @@
                 </div>
 
                 <div class="sm:pl-4 sm:border-l border-slate-200 flex flex-col items-start">
-                  <span class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Estimasi Selesai</span>
-                  <span id="activeOrderEstDone" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
+                  <span class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">Estimasi
+                    Selesai</span>
+                  <span id="activeOrderEstDone"
+                    class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
                     21 Mei 2024
                   </span>
                 </div>
@@ -445,8 +466,7 @@
               </div>
 
               <div class="px-2.5 py-1.5 bg-emerald-50 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
-                <span
-                  class="size-1.5 bg-emerald-500 rounded-full shadow-[0px_0px_0px_3px_rgba(40,167,123,0.14)]"
+                <span class="size-1.5 bg-emerald-500 rounded-full shadow-[0px_0px_0px_3px_rgba(40,167,123,0.14)]"
                   aria-hidden="true"></span>
                 <span class="text-teal-600 text-[10px] font-bold font-['Poppins'] leading-3 tracking-wide uppercase">
                   LIVE UPDATE
@@ -581,8 +601,7 @@
         <!-- =============================================================== -->
         <!-- KOLOM KANAN: Estimasi Selesai, Lokasi, Bantuan, & Detail        -->
         <!-- =============================================================== -->
-        <aside aria-label="Informasi Tambahan Pesanan"
-          class="w-full xl:w-80 flex flex-col gap-3.5 shrink-0">
+        <aside aria-label="Informasi Tambahan Pesanan" class="w-full xl:w-80 flex flex-col gap-3.5 shrink-0">
 
           <!-- WIDGET 1: Estimasi selesai (Sesuai Figma) -->
           <div
@@ -669,6 +688,16 @@
             </svg>
           </button>
 
+          <!-- Tombol Halaman Invoice Penuh -->
+          <a href="invoice.html" id="trackPageInvoiceBtn"
+            class="w-full px-4 py-2.5 bg-gradient-to-r from-cyan-700 to-blue-900 hover:brightness-110 active:scale-[0.99] rounded-lg shadow-xs inline-flex justify-center items-center gap-2 text-white text-xs font-bold font-['Poppins'] leading-4 transition">
+            <svg class="size-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Periksa Invoice &amp; Pembayaran</span>
+          </a>
+
           <!-- WIDGET 4: Tombol Lihat Detail Transaksi (Sesuai Figma) -->
           <a href="dtltransaksi.html"
             class="w-full px-4 py-2.5 bg-white hover:bg-slate-50 active:bg-slate-100 rounded-lg border border-slate-300 inline-flex justify-center items-center gap-2 text-slate-600 text-xs font-semibold font-['Poppins'] leading-4 transition">
@@ -723,7 +752,8 @@
         </div>
         <div class="flex justify-between py-1.5 border-b border-slate-100">
           <span class="text-slate-500">Status Saat Ini</span>
-          <span class="px-2 py-0.5 rounded-full bg-orange-100 text-yellow-700 font-semibold text-[11px]">Sedang dicuci</span>
+          <span class="px-2 py-0.5 rounded-full bg-orange-100 text-yellow-700 font-semibold text-[11px]">Sedang
+            dicuci</span>
         </div>
         <div class="flex justify-between pt-2 text-sm">
           <span class="font-bold text-slate-700">Total Tagihan</span>
@@ -787,7 +817,8 @@
         </button>
       </div>
       <div class="p-6 space-y-3 text-xs text-slate-600">
-        <p>Tim layanan pelanggan Bersihin siap membantu pertanyaan terkait status pesanan <strong>TRX-240518-01</strong>:</p>
+        <p>Tim layanan pelanggan Bersihin siap membantu pertanyaan terkait status pesanan
+          <strong>TRX-240518-01</strong>:</p>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
           <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
           <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
@@ -809,18 +840,18 @@
   <!-- JAVASCRIPT INTERAKTIVITAS STATUS PESANAN                              -->
   <!-- ===================================================================== -->
   <script>
-    // 0. Update Tanggal Real-Time Topbar Langsung
-    (function updateTopDate() {
-      const nowRealtime = new Date();
-      const dateFormatted = nowRealtime.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-      const topbarDate = document.getElementById('topbarDateDisplay');
-      if (topbarDate) topbarDate.textContent = dateFormatted;
-    })();
+      // 0. Update Tanggal Real-Time Topbar Langsung
+      (function updateTopDate() {
+        const nowRealtime = new Date();
+        const dateFormatted = nowRealtime.toLocaleDateString('id-ID', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+        const topbarDate = document.getElementById('topbarDateDisplay');
+        if (topbarDate) topbarDate.textContent = dateFormatted;
+      })();
 
     // 1. Toggle Sidebar Mobile
     const sidebar = document.getElementById('sidebar');
@@ -909,7 +940,7 @@
       if (typeof syncAllCustomerDataWithBackend === 'function') {
         try {
           await syncAllCustomerDataWithBackend();
-        } catch (_) {}
+        } catch (_) { }
       }
 
       const params = new URLSearchParams(window.location.search);
@@ -923,7 +954,7 @@
             const list = JSON.parse(allRaw);
             order = list.find(x => (x.code || x.id || x.orderId) === urlId) || null;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       if (!order) {
@@ -934,7 +965,7 @@
         try {
           const activeRaw = localStorage.getItem('bersihin_active_order') || sessionStorage.getItem('bersihin_last_order');
           if (activeRaw) order = JSON.parse(activeRaw);
-        } catch (_) {}
+        } catch (_) { }
       }
 
       const activeCard = document.getElementById('statusOrderActiveCard');
@@ -990,7 +1021,7 @@
               localStorage.setItem('bersihin_transactions', JSON.stringify(list));
             }
             localStorage.removeItem('bersihin_active_order');
-          } catch (_) {}
+          } catch (_) { }
           if (activeCard) activeCard.classList.add('hidden');
           if (timelineCard) timelineCard.classList.add('hidden');
           if (emptyContent) emptyContent.classList.remove('hidden');
@@ -1039,11 +1070,11 @@
                     localStorage.setItem('bersihin_transactions', JSON.stringify(list));
                   }
                 }
-              } catch (_) {}
+              } catch (_) { }
             }
           }
         }
-      } catch (_) {}
+      } catch (_) { }
 
       // 1. Update Judul & Informasi Utama Kartu Pesanan Aktif
       const titleEl = document.getElementById('activeOrderTitle');
@@ -1051,6 +1082,11 @@
 
       const codeEl = document.getElementById('activeOrderCode');
       if (codeEl) codeEl.textContent = orderCode;
+
+      const trackPageInvoiceBtn = document.getElementById('trackPageInvoiceBtn');
+      if (trackPageInvoiceBtn && orderCode) {
+        trackPageInvoiceBtn.href = `invoice.html?id=${encodeURIComponent(orderCode)}`;
+      }
 
       const dateInEl = document.getElementById('activeOrderDateIn');
       if (dateInEl) dateInEl.textContent = order.dateIn || order.tanggal_realtime || 'Hari ini';

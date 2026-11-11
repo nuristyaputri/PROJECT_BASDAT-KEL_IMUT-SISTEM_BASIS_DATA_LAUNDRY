@@ -207,6 +207,17 @@
               <span>Riwayat</span>
             </a>
           </li>
+
+          <!-- Item 6: Pemeriksaan Invoice -->
+          <li>
+            <a href="invoice.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Pemeriksaan Invoice</span>
+            </a>
+          </li>
         </ul>
 
         <!-- Kelompok: AKUN -->
@@ -540,16 +551,24 @@
             </div>
           </div>
 
-          <!-- TOMBOL AKSI: Unduh Invoice & Lacak Pesanan (Sesuai Figma) -->
+          <!-- TOMBOL AKSI: Halaman Invoice, Unduh PDF, & Lacak Pesanan -->
           <div id="actionButtonsBlock" class="w-full flex flex-col gap-2.5">
+            <a href="invoice.html" id="viewFullInvoiceBtn"
+              class="w-full px-4 py-3 bg-gradient-to-r from-cyan-700 to-blue-900 hover:brightness-110 active:scale-[0.99] rounded-[10px] shadow-sm inline-flex justify-center items-center gap-2 text-white text-xs font-bold font-['Poppins'] leading-4 transition">
+              <svg class="size-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Periksa Halaman Invoice Penuh</span>
+            </a>
+
             <button type="button" id="downloadInvoiceBtn"
-              class="w-full px-4 py-3 bg-blue-950 hover:bg-blue-900 active:bg-slate-950 rounded-[10px] shadow-[0px_8px_16px_0px_rgba(20,42,74,0.13)] inline-flex justify-center items-center gap-2 text-white text-xs font-semibold font-['Poppins'] leading-4 transition">
-              <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              class="w-full px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 rounded-[10px] inline-flex justify-center items-center gap-2 text-slate-700 text-xs font-semibold font-['Poppins'] leading-4 transition">
+              <svg class="size-4 text-slate-500" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M8 2.5V10.5M8 10.5L5 7.5M8 10.5L11 7.5" stroke="currentColor" stroke-width="1.4"
                   stroke-linecap="round" stroke-linejoin="round" />
                 <path d="M3 13H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
               </svg>
-              <span>Unduh Invoice</span>
+              <span>Cetak / Unduh Invoice</span>
             </button>
 
             <a href="status.html"
@@ -685,6 +704,11 @@
 
       const params = new URLSearchParams(window.location.search);
       let trxId = params.get('id');
+
+      const viewFullInvoiceBtn = document.getElementById('viewFullInvoiceBtn');
+      if (viewFullInvoiceBtn && trxId) {
+        viewFullInvoiceBtn.href = `invoice.html?id=${encodeURIComponent(trxId)}`;
+      }
 
       // Cek langsung ke database backend MySQL untuk data teraktual
       if (trxId) {

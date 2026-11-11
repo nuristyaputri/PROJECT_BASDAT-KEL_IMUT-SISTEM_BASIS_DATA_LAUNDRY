@@ -673,10 +673,17 @@
             <td class="py-4 px-5 text-slate-500">${tgl}</td>
             <td class="py-4 px-5">${statusBadge}</td>
             <td class="py-4 px-5 text-right">
-              <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${trx.nama_pelanggan}', 'Layanan Laundry', '4 kg', '${formatRupiah(trx.total_harga)}', '${tgl}', '${trx.status_pesanan}', '${trx.status_pembayaran || 'Lunas'}')"
-                class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
-                Detail
-              </button>
+              <div class="flex items-center justify-end gap-1.5">
+                <a href="invoice.html?id=${encodeURIComponent(trx.kode_pesanan)}"
+                  class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-lg text-xs font-semibold transition"
+                  title="Periksa Invoice & Pembukuan">
+                  Invoice
+                </a>
+                <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${trx.nama_pelanggan}', 'Layanan Laundry', '4 kg', '${formatRupiah(trx.total_harga)}', '${tgl}', '${trx.status_pesanan}', '${trx.status_pembayaran || 'Lunas'}')"
+                  class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
+                  Detail
+                </button>
+              </div>
             </td>
           `;
           tbody.appendChild(tr);
@@ -1739,6 +1746,37 @@
     }
   }
 
+  function logoutOwner(event) {
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
+    try {
+      localStorage.removeItem('bersihin_token');
+      localStorage.removeItem('bersihin_staff_token');
+      localStorage.removeItem('bersihin_user');
+      localStorage.removeItem('bersihin_active_role');
+      localStorage.removeItem('bersihin_owner_logged_in');
+      localStorage.removeItem('bersihin_pemilik_profile');
+      sessionStorage.removeItem('bersihin_token');
+      sessionStorage.removeItem('bersihin_staff_token');
+      sessionStorage.removeItem('bersihin_user');
+      sessionStorage.removeItem('bersihin_active_role');
+      sessionStorage.removeItem('bersihin_pemilik_profile');
+
+      const apiBase = getBackendBaseUrl();
+      fetch(`${apiBase}/api/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      }).catch(() => {});
+    } catch (e) {
+      console.error('Logout error:', e);
+    }
+    window.location.href = '../login.html';
+  }
+
+  window.logoutOwner = logoutOwner;
+
   function bootstrap() {
     initSharedComponents();
     initLoginPage();
@@ -1750,6 +1788,11 @@
     initLaporanPage();
     initProfilPage();
     initPasswordPage();
+
+    // Pasang penangan logout ke semua tombol/tautan keluar pemilik
+    document.querySelectorAll('a[href*="login.html"], [title="Keluar"]').forEach(el => {
+      el.addEventListener('click', logoutOwner);
+    });
 
     // Jalankan sinkronisasi pertama kali secara instan dari MySQL
     refreshActivePemilikPage();

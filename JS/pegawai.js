@@ -822,12 +822,20 @@
 
                 <!-- Footer Aksi Pegawai -->
                 <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-                    <button type="button" onclick="printInvoiceFromPegawai()" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition">
-                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                        </svg>
-                        <span>Cetak Struk</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="printInvoiceFromPegawai()" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition">
+                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak Struk</span>
+                        </button>
+                        <a id="modalOpenFullPageBtn" href="invoice.html" class="px-3.5 py-2 text-xs font-bold text-cyan-800 bg-sky-50 border border-sky-200 rounded-lg hover:bg-sky-100 flex items-center gap-1.5 transition">
+                            <svg class="w-3.5 h-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            <span>Buka Halaman Penuh</span>
+                        </a>
+                    </div>
 
                     <div class="flex items-center gap-2">
                         <button type="button" id="modalRejectBtn" onclick="rejectCurrentOrder()" class="px-3.5 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
@@ -879,6 +887,11 @@
         setVal('modalInvoiceTotal', order.totalFormatted);
         setVal('modalInvoicePaymentMethod', order.paymentMethod || 'QRIS');
         setVal('modalInvoiceNotes', order.notes || 'Tidak ada catatan khusus.');
+
+        const fullPageBtn = document.getElementById('modalOpenFullPageBtn');
+        if (fullPageBtn) {
+            fullPageBtn.href = `invoice.html?id=${encodeURIComponent(order.code || order.id)}`;
+        }
 
         const badgeCfg = getStatusBadgeConfig(order.status);
         const badgeEl = document.getElementById('modalInvoiceBadge');
@@ -2340,9 +2353,43 @@
         }
     }
 
+    function logoutStaff(event) {
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
+
+        try {
+            // 1. Bersihkan token dan seluruh data autentikasi sesi staf dari storage
+            localStorage.removeItem('bersihin_token');
+            localStorage.removeItem('bersihin_staff_token');
+            localStorage.removeItem('bersihin_user');
+            localStorage.removeItem('bersihin_active_role');
+            localStorage.removeItem('bersihin_pegawai_profile');
+            sessionStorage.removeItem('bersihin_token');
+            sessionStorage.removeItem('bersihin_staff_token');
+            sessionStorage.removeItem('bersihin_user');
+            sessionStorage.removeItem('bersihin_active_role');
+            sessionStorage.removeItem('bersihin_pegawai_profile');
+
+            // 2. Beritahu backend Express untuk destroy session jika terhubung
+            const apiBase = getBackendBaseUrl();
+            fetch(`${apiBase}/api/auth/logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            }).catch(() => {});
+        } catch (e) {
+            console.error('Logout error:', e);
+        }
+
+        // 3. Arahkan secara aman ke portal login utama di root
+        window.location.href = '../login.html';
+    }
+
     // ==========================================
     // 15. EXPOSE GLOBAL WINDOW API
     // ==========================================
+    window.logoutStaff = logoutStaff;
     window.showToast = showToast;
     window.copyToClipboard = copyToClipboard;
     window.updateStatus = updateOrderStatus;
@@ -2410,6 +2457,11 @@
         } else if (path.includes('password.html')) {
             initPasswordPage();
         }
+
+        // 3. Pasang penangan logout otomatis ke seluruh tombol/tautan keluar
+        document.querySelectorAll('a[href*="login.html"], [title="Keluar"]').forEach(el => {
+            el.addEventListener('click', logoutStaff);
+        });
     });
 
 })();
