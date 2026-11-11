@@ -797,23 +797,8 @@
         </main>
     </div>
 
-    <!-- SCRIPT FOR MOBILE TOGGLE -->
+    <!-- SCRIPT FOR MOBILE TOGGLE (handled centrally by ../JS/pemilik.js) -->
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        function toggleSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarOverlay.classList.toggle('hidden');
-        }
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', toggleSidebar);
-        }
-        if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', toggleSidebar);
-        }
 
         // Interactive Grafik Pendapatan (Period selector & Day points)
         const revPeriodBtn = document.getElementById('revPeriodBtn');

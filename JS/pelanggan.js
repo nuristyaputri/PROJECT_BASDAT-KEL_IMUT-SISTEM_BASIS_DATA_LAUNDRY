@@ -330,9 +330,34 @@
       if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
     }
 
-    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    if (openSidebarBtn && !openSidebarBtn.dataset.hasSidebarListener) {
+      openSidebarBtn.dataset.hasSidebarListener = 'true';
+      openSidebarBtn.addEventListener('click', openSidebar);
+    }
+    if (closeSidebarBtn && !closeSidebarBtn.dataset.hasSidebarListener) {
+      closeSidebarBtn.dataset.hasSidebarListener = 'true';
+      closeSidebarBtn.addEventListener('click', closeSidebar);
+    }
+    if (sidebarOverlay && !sidebarOverlay.dataset.hasSidebarListener) {
+      sidebarOverlay.dataset.hasSidebarListener = 'true';
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    if (sidebar && !sidebar.dataset.hasSidebarLinkClose) {
+      sidebar.dataset.hasSidebarLinkClose = 'true';
+      sidebar.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        });
+      });
+    }
+    if (sidebar && !document.body.dataset.hasCustomerEscSidebar) {
+      document.body.dataset.hasCustomerEscSidebar = 'true';
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+          closeSidebar();
+        }
+      });
+    }
 
     // 3.3 Dropdown Notifikasi & Profil Topbar
     const notifToggleBtn = document.getElementById('notifToggleBtn');

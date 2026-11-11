@@ -95,8 +95,11 @@
         </button>
     </header>
 
+    <!-- SIDEBAR OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
     <!-- SIDEBAR NAVIGASI STAFF -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out shrink-0">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out shrink-0">
         <div>
             <!-- Logo Sidebar Desktop -->
             <div class="p-6 hidden md:flex items-center gap-3 border-b border-slate-100">
@@ -419,15 +422,6 @@
             return 'Rp' + Number(num).toLocaleString('id-ID');
         }
 
-        // Toggle mobile sidebar
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-            });
-        }
-
         function getUnifiedOrders() {
             let list = [];
             try {
@@ -649,7 +643,7 @@
 
         document.addEventListener('DOMContentLoaded', initStaffInvoice);
     </script>
-    <script src="../JS/pegawai.js"></script>
+    <script src="../JS/pegawai.js?v=2.2"></script>
 </body>
 
 </html>
