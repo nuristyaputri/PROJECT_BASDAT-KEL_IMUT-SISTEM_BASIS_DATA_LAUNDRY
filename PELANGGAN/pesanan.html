@@ -902,27 +902,7 @@
   <!-- JAVASCRIPT INTERAKTIVITAS BUAT PESANAN                                -->
   <!-- ===================================================================== -->
   <script>
-    // 1. Toggle Sidebar Mobile
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-
-    function openSidebar() {
-      sidebar.classList.remove('-translate-x-full');
-      sidebarOverlay.classList.remove('hidden');
-      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'true');
-    }
-
-    function closeSidebar() {
-      sidebar.classList.add('-translate-x-full');
-      sidebarOverlay.classList.add('hidden');
-      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
-    }
-
-    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    // 1. Toggle Sidebar Mobile dikelola terpusat oleh ../JS/pelanggan.js
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
     // 3. Logika Interaktif Kalkulasi Buat Pesanan
     let selectedService = 'Cuci + Setrika';

@@ -239,8 +239,30 @@
       if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
     }
 
-    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    if (sidebarToggle && !sidebarToggle.dataset.hasSidebarListener) {
+      sidebarToggle.dataset.hasSidebarListener = 'true';
+      sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+    if (sidebarOverlay && !sidebarOverlay.dataset.hasSidebarListener) {
+      sidebarOverlay.dataset.hasSidebarListener = 'true';
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    if (sidebar && !sidebar.dataset.hasSidebarLinkClose) {
+      sidebar.dataset.hasSidebarLinkClose = 'true';
+      sidebar.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        });
+      });
+    }
+    if (sidebar && !document.body.dataset.hasOwnerEscSidebar) {
+      document.body.dataset.hasOwnerEscSidebar = 'true';
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+          closeSidebar();
+        }
+      });
+    }
 
     // 3.3 Topbar Notification Dropdown
     const notifToggleBtn = document.getElementById('notifToggleBtn');

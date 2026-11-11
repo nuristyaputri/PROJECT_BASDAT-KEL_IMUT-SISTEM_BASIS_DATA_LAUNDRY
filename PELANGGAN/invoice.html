@@ -507,27 +507,6 @@
       }
     }
 
-    // Sidebar toggle di mobile
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    function toggleSidebar(open) {
-      if (!sidebar) return;
-      if (open) {
-        sidebar.classList.remove('-translate-x-full');
-        sidebarOverlay?.classList.remove('hidden');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-        sidebarOverlay?.classList.add('hidden');
-      }
-    }
-
-    openSidebarBtn?.addEventListener('click', () => toggleSidebar(true));
-    closeSidebarBtn?.addEventListener('click', () => toggleSidebar(false));
-    sidebarOverlay?.addEventListener('click', () => toggleSidebar(false));
-
     // Kumpulan seluruh order aktif pelanggan dari storage
     function getAllCustomerOrders() {
       const allOrders = [];

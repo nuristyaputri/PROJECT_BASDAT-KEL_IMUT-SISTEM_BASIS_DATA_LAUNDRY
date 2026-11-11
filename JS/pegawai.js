@@ -104,17 +104,18 @@
         const dropdownStaffName = document.getElementById('dropdownStaffName') || document.querySelector('#profileDropdown p.font-bold, #pegawaiAvatarDropdown p.font-bold');
         const dropdownStaffEmail = document.getElementById('dropdownStaffEmail') || document.querySelector('#profileDropdown p.text-slate-500, #pegawaiAvatarDropdown p.text-slate-400');
         if (dropdownStaffName) dropdownStaffName.textContent = profile.nama;
-        if (dropdownStaffEmail) dropdownStaffEmail.textContent = profile.email || `${profile.posisi || profile.jabatan || 'Kasir'} &bull; Shift Pagi`;
+        if (dropdownStaffEmail) dropdownStaffEmail.textContent = profile.email || `${profile.posisi || profile.jabatan || 'Kasir'} • Shift Pagi`;
 
         const sidebarNameEl = document.querySelector('aside .text-slate-800.text-xs.font-bold, aside .text-\\[11px\\].font-bold');
         if (sidebarNameEl) sidebarNameEl.textContent = profile.nama;
 
         const sidebarRoleEl = document.querySelector('aside .text-slate-400.text-\\[10px\\].font-normal, aside .text-\\[9px\\].text-slate-400');
         if (sidebarRoleEl) {
-            sidebarRoleEl.textContent = `${profile.posisi || profile.jabatan || 'Kasir'} &bull; Shift Pagi`;
+            sidebarRoleEl.textContent = `${profile.posisi || profile.jabatan || 'Kasir'} • Shift Pagi`;
         }
 
-        const greetingHeading = document.getElementById('greetingHeading') || document.querySelector('main h2');
+        const candidateH2 = document.querySelector('main h2');
+        const greetingHeading = document.getElementById('greetingHeading') || (candidateH2 && /selamat/i.test(candidateH2.textContent) ? candidateH2 : null);
         if (greetingHeading) {
             const hour = new Date().getHours();
             let waktu = 'pagi';
@@ -271,7 +272,8 @@
             if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
         }
 
-        if (sidebarToggle) {
+        if (sidebarToggle && !sidebarToggle.dataset.hasSidebarListener) {
+            sidebarToggle.dataset.hasSidebarListener = 'true';
             sidebarToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isOpen = !sidebar.classList.contains('-translate-x-full');
@@ -280,15 +282,28 @@
             });
         }
 
-        if (sidebarOverlay) {
+        if (sidebarOverlay && !sidebarOverlay.dataset.hasSidebarListener) {
+            sidebarOverlay.dataset.hasSidebarListener = 'true';
             sidebarOverlay.addEventListener('click', closeSidebar);
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
-                closeSidebar();
-            }
-        });
+        if (!sidebar.dataset.hasSidebarLinkClose) {
+            sidebar.dataset.hasSidebarLinkClose = 'true';
+            sidebar.querySelectorAll('a[href]').forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 1024) closeSidebar();
+                });
+            });
+        }
+
+        if (!document.body.dataset.hasStaffEscSidebar) {
+            document.body.dataset.hasStaffEscSidebar = 'true';
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+                    closeSidebar();
+                }
+            });
+        }
     }
 
     // ==========================================

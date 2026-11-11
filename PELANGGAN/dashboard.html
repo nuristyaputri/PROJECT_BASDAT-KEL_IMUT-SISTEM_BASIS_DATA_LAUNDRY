@@ -962,21 +962,15 @@
       }
     };
 
-    // 1. Drawer Sidebar Mobile
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-
+    // 1. Drawer Sidebar Mobile (listener dikelola terpusat oleh ../JS/pelanggan.js)
     function setMobileSidebar(isOpen) {
-      sidebar.classList.toggle('-translate-x-full', !isOpen);
-      sidebarOverlay.classList.toggle('hidden', !isOpen);
-      openSidebarBtn.setAttribute('aria-expanded', String(isOpen));
+      const sb = document.getElementById('sidebar');
+      const ov = document.getElementById('sidebarOverlay');
+      const btn = document.getElementById('openSidebarBtn');
+      if (sb) sb.classList.toggle('-translate-x-full', !isOpen);
+      if (ov) ov.classList.toggle('hidden', !isOpen);
+      if (btn) btn.setAttribute('aria-expanded', String(isOpen));
     }
-
-    openSidebarBtn.addEventListener('click', () => setMobileSidebar(true));
-    closeSidebarBtn.addEventListener('click', () => setMobileSidebar(false));
-    sidebarOverlay.addEventListener('click', () => setMobileSidebar(false));
 
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
 

@@ -23,4 +23,3 @@ router.get('/me', verifyToken, authController.me);
 router.put('/password', verifyToken, authController.updatePassword);
 
 module.exports = router;
-w
