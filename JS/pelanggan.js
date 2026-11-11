@@ -1428,13 +1428,20 @@
               ${getStatusBadgeHtml(trx.status)}
             </td>
             <td class="px-3 py-1.5 text-right">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                aria-label="Lihat detail transaksi ${trx.code}"
-                class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </a>
+              <div class="flex items-center justify-end gap-1">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
+                  class="px-2 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-semibold inline-flex items-center gap-1 transition">
+                  <span>Invoice</span>
+                </a>
+                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
+                  aria-label="Lihat detail transaksi ${trx.code}"
+                  class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 transition">
+                  <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </div>
             </td>
           </tr>
         `).join('');
@@ -1921,14 +1928,22 @@
               ${getStatusBadgeHtml(trx.status)}
             </td>
             <td class="px-4 py-2 text-right">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                aria-label="Lihat rincian transaksi ${trx.code}"
-                class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
-                <span>Detail</span>
-                <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </a>
+              <div class="flex items-center justify-end gap-1.5">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
+                  class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold inline-flex items-center gap-1 transition">
+                  <svg class="size-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  <span>Invoice</span>
+                </a>
+                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
+                  aria-label="Lihat rincian transaksi ${trx.code}"
+                  class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                  <span>Detail</span>
+                  <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </div>
             </td>
           </tr>
         `).join('');
@@ -2552,6 +2567,34 @@
   // ===========================================================================
   // 14. BOOTSTRAP: JALANKAN INISIALISASI SETELAH DOM SIAP
   // ===========================================================================
+  function logoutCustomer(event) {
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
+    try {
+      localStorage.removeItem('bersihin_token');
+      localStorage.removeItem('bersihin_user');
+      localStorage.removeItem('bersihin_active_role');
+      localStorage.removeItem('bersihin_customer_profile');
+      sessionStorage.removeItem('bersihin_token');
+      sessionStorage.removeItem('bersihin_user');
+      sessionStorage.removeItem('bersihin_active_role');
+      sessionStorage.removeItem('bersihin_customer_profile');
+
+      const apiBase = getApiBaseUrl();
+      fetch(`${apiBase}/api/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      }).catch(() => {});
+    } catch (e) {
+      console.error('Logout error:', e);
+    }
+    window.location.href = '../login.html';
+  }
+
+  window.logoutCustomer = logoutCustomer;
+
   function bootstrap() {
     initSharedComponents();
     initLoginPage();
@@ -2564,6 +2607,11 @@
     initProfilPage();
     initEditProfilPage();
     initPasswordPage();
+
+    // Pasang penangan logout ke semua tautan/tombol keluar pelanggan
+    document.querySelectorAll('a[href*="login.html"], [title="Keluar"]').forEach(el => {
+      el.addEventListener('click', logoutCustomer);
+    });
 
     // Otomatis sinkronisasi profil dan pesanan langsung dari database MySQL XAMPP jika backend aktif
     if (typeof syncAllCustomerDataWithBackend === 'function') {

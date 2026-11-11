@@ -137,6 +137,14 @@
                             <span class="px-2 py-0.5 text-[11px] font-semibold text-white bg-red-400 rounded-full">18</span>
                         </a>
 
+                        <!-- Pemeriksaan Invoice -->
+                        <a href="invoice.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Pemeriksaan Invoice</span>
+                        </a>
+
                         <!-- Laporan -->
                         <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
                             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -602,10 +610,17 @@
                     <span class="text-lg font-bold text-slate-900" id="modalTotalPrice">Rp0</span>
                 </div>
 
-                <div class="pt-2 flex items-center justify-end gap-3">
+                <div class="pt-2 flex flex-wrap items-center justify-end gap-2.5">
+                    <a id="modalOwnerInvoiceLink" href="invoice.html"
+                        class="px-4 py-2.5 bg-gradient-to-r from-sky-600 to-blue-900 hover:brightness-110 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-sm transition">
+                        <svg class="w-4 h-4 text-sky-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Buka Halaman Invoice Penuh</span>
+                    </a>
                     <button onclick="window.print()"
                         class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                         </svg>
                         <span>Cetak Struk</span>
@@ -686,6 +701,11 @@
                 badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-teal-700 border border-emerald-200/60';
             } else {
                 badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+            }
+
+            const invLink = document.getElementById('modalOwnerInvoiceLink');
+            if (invLink) {
+                invLink.href = `invoice.html?id=${encodeURIComponent(code)}`;
             }
 
             detailModal.classList.remove('hidden');

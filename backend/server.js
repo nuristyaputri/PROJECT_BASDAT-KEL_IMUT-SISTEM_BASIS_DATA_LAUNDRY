@@ -56,7 +56,18 @@ app.use('/api', apiRoutes);
 // Alias kompatibilitas jika frontend memanggil rute langsung tanpa prefix /api
 app.use('/auth', require('./routes/authRoutes'));
 
-// 5. Default Route (Forward ke Login)
+// 5. Default Route & Pengalihan Login Terpadu
+app.get([
+  '/login',
+  '/logout',
+  '/PEGAWAI/login.html',
+  '/PELANGGAN/login.html',
+  '/PEMILIK/login.html',
+  '*/login.html'
+], (req, res) => {
+  res.redirect('/login.html');
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(rootDir, 'login.html'));
 });

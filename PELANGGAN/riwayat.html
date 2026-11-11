@@ -9,7 +9,8 @@
   <!-- Google Fonts: Poppins (sesuai standar Figma) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -58,6 +59,7 @@
 
     /* Hormati preferensi pengurangan gerakan (reduced motion) */
     @media (prefers-reduced-motion: reduce) {
+
       *,
       *::before,
       *::after {
@@ -195,6 +197,18 @@
               <span>Riwayat</span>
             </a>
           </li>
+
+          <!-- Item 6: Pemeriksaan Invoice -->
+          <li>
+            <a href="invoice.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Pemeriksaan Invoice</span>
+            </a>
+          </li>
         </ul>
 
         <!-- Kelompok: AKUN -->
@@ -290,7 +304,8 @@
               </button>
             </div>
             <div class="py-3 flex items-start gap-3">
-              <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+              <div
+                class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                 <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
                   <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
@@ -298,7 +313,8 @@
               </div>
               <div class="text-xs leading-4">
                 <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
-                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi
+                  selesai 21 Mei 2024.</p>
                 <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
               </div>
             </div>
@@ -360,17 +376,18 @@
       </div>
 
       <!-- 2. KARTU STATISTIK RINGKASAN TRANSAKSI (4 Kolom Sesuai Figma) -->
-      <section aria-label="Statistik Transaksi Pelanggan"
-        class="w-full grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <section aria-label="Statistik Transaksi Pelanggan" class="w-full grid grid-cols-2 lg:grid-cols-4 gap-4">
 
         <!-- Stat 1: Total Transaksi -->
-        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+        <div
+          class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Total Pesanan</span>
             <div class="size-8 rounded-lg bg-blue-50 text-cyan-700 flex items-center justify-center shrink-0">
               <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <rect x="2.5" y="2.5" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.4" />
-                <path d="M5.5 6H10.5M5.5 8.5H10.5M5.5 11H8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                <path d="M5.5 6H10.5M5.5 8.5H10.5M5.5 11H8.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" />
               </svg>
             </div>
           </div>
@@ -381,7 +398,8 @@
         </div>
 
         <!-- Stat 2: Sedang Diproses -->
-        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+        <div
+          class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Diproses</span>
             <div class="size-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
@@ -393,17 +411,20 @@
           </div>
           <div class="pt-3">
             <span id="statProcessOrders" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">1</span>
-            <span id="statProcessOrdersSub" class="text-amber-700 text-[10px] font-semibold block pt-0.5">1 pesanan berjalan</span>
+            <span id="statProcessOrdersSub" class="text-amber-700 text-[10px] font-semibold block pt-0.5">1 pesanan
+              berjalan</span>
           </div>
         </div>
 
         <!-- Stat 3: Pesanan Selesai -->
-        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+        <div
+          class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Selesai</span>
             <div class="size-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
               <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M3.5 8.5L6.5 11.5L12.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M3.5 8.5L6.5 11.5L12.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
             </div>
           </div>
@@ -414,7 +435,8 @@
         </div>
 
         <!-- Stat 4: Total Pengeluaran -->
-        <div class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
+        <div
+          class="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200 shadow-[0px_4px_16px_0px_rgba(33,80,112,0.04)] flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="text-slate-500 text-[11px] font-semibold font-['Poppins'] leading-4">Total Pengeluaran</span>
             <div class="size-8 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
@@ -425,7 +447,8 @@
             </div>
           </div>
           <div class="pt-3">
-            <span id="statTotalExpense" class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">Rp842.000</span>
+            <span id="statTotalExpense"
+              class="text-slate-900 text-2xl font-bold font-['Poppins'] leading-7">Rp842.000</span>
             <span class="text-slate-400 text-[10px] block pt-0.5">Akumulasi pengeluaran</span>
           </div>
         </div>
@@ -440,22 +463,27 @@
         <div class="w-full flex flex-col lg:flex-row justify-between lg:items-center gap-4">
 
           <!-- Tabs Filter Status -->
-          <div role="tablist" aria-label="Filter status transaksi" class="inline-flex p-1 bg-slate-100 rounded-xl gap-1 self-start">
+          <div role="tablist" aria-label="Filter status transaksi"
+            class="inline-flex p-1 bg-slate-100 rounded-xl gap-1 self-start">
             <button type="button" role="tab" id="tabAll" aria-selected="true" data-filter="all"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-semibold font-['Poppins'] transition bg-white text-slate-800 shadow-xs">
-              Semua <span id="badgeTabAll" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">24</span>
+              Semua <span id="badgeTabAll"
+                class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600">24</span>
             </button>
             <button type="button" role="tab" id="tabProcess" aria-selected="false" data-filter="Diproses"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Diproses <span id="badgeTabProcess" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 text-amber-800">1</span>
+              Diproses <span id="badgeTabProcess"
+                class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 text-amber-800">1</span>
             </button>
             <button type="button" role="tab" id="tabDone" aria-selected="false" data-filter="Selesai"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Selesai <span id="badgeTabDone" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-teal-800">22</span>
+              Selesai <span id="badgeTabDone"
+                class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-teal-800">22</span>
             </button>
             <button type="button" role="tab" id="tabCanceled" aria-selected="false" data-filter="Dibatalkan"
               class="filter-tab px-3 py-1.5 rounded-lg text-xs font-medium font-['Poppins'] transition text-slate-600 hover:text-slate-900">
-              Dibatalkan <span id="badgeTabCanceled" class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700">1</span>
+              Dibatalkan <span id="badgeTabCanceled"
+                class="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700">1</span>
             </button>
           </div>
 
@@ -463,7 +491,8 @@
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full lg:w-auto">
             <!-- Input Cari -->
             <div class="relative flex-1 sm:w-64">
-              <svg class="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <svg class="size-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4" />
                 <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
               </svg>
@@ -480,8 +509,10 @@
                 <option value="highest">Nominal Tertinggi</option>
                 <option value="lowest">Nominal Terendah</option>
               </select>
-              <svg class="size-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              <svg class="size-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
             </div>
           </div>
@@ -531,7 +562,8 @@
         <!-- Footer Tabel: Informasi & Pagination -->
         <div class="w-full pt-4 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p id="tableInfoText" class="text-slate-500 text-xs font-normal font-['Poppins']">
-            Menampilkan <span class="font-semibold text-slate-700">1 - 8</span> dari <span id="totalItemsCount" class="font-semibold text-slate-700">24</span> transaksi
+            Menampilkan <span class="font-semibold text-slate-700">1 - 8</span> dari <span id="totalItemsCount"
+              class="font-semibold text-slate-700">24</span> transaksi
           </p>
 
           <nav aria-label="Navigasi Halaman" class="inline-flex items-center gap-1">
@@ -539,13 +571,16 @@
               class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed">
               Sebelumnya
             </button>
-            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold">
+            <button type="button"
+              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold">
               1
             </button>
-            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
+            <button type="button"
+              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
               2
             </button>
-            <button type="button" class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
+            <button type="button"
+              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
               3
             </button>
             <button type="button" id="nextPageBtn"
