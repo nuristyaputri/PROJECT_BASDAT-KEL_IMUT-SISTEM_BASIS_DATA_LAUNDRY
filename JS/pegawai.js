@@ -720,337 +720,20 @@
     }
 
     // ==========================================
-    // 6.5 MODAL INVOICE & VERIFIKASI PEMBAYARAN
+    // 6.5 NAVIGASI HALAMAN PENUH INVOICE & VERIFIKASI PEMBAYARAN
     // ==========================================
     let activeModalOrderId = null;
 
     function injectInvoiceModal() {
-        if (document.getElementById('invoiceVerificationModal')) return;
-
-        const modalDiv = document.createElement('div');
-        modalDiv.id = 'invoiceVerificationModal';
-        modalDiv.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs hidden';
-        modalDiv.setAttribute('role', 'dialog');
-        modalDiv.setAttribute('aria-modal', 'true');
-        modalDiv.innerHTML = `
-            <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh] animate-in fade-in duration-200">
-                <!-- Header Gradient Elegan -->
-                <div class="px-5 py-4 bg-gradient-to-r from-blue-950 to-cyan-800 text-white flex items-center justify-between shrink-0">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-cyan-200">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold leading-tight">Pemeriksaan Invoice & Verifikasi Pembayaran</h3>
-                            <p class="text-[11px] text-cyan-200/90 mt-0.5">Konfirmasi penerimaan pembayaran pelanggan</p>
-                        </div>
-                    </div>
-                    <button type="button" onclick="closeInvoiceModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition" aria-label="Tutup">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Isi Modal Invoice / Struk -->
-                <div class="p-5 md:p-6 overflow-y-auto space-y-4 text-xs text-slate-700" id="invoiceModalContentArea">
-                    <!-- Status & No. Pesanan Real-Time -->
-                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status Pesanan & Pembayaran</span>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="modalInvoiceBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-bold border border-amber-200/60">
-                                    <span id="modalInvoiceDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                    <span id="modalInvoiceStatusText">Menunggu Konfirmasi Pegawai</span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="sm:text-right">
-                            <span class="text-[10px] text-slate-400 block">Kode Transaksi / Invoice</span>
-                            <span id="modalInvoiceOrderCode" class="text-xs font-extrabold text-blue-950 font-mono tracking-tight block mt-0.5">TRX-0000</span>
-                        </div>
-                    </div>
-
-                    <!-- Informasi Pelanggan -->
-                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2">
-                        <div class="text-[11px] font-bold text-slate-800 pb-1 border-b border-slate-100 flex items-center justify-between">
-                            <span>Informasi Pelanggan</span>
-                            <span id="modalInvoiceDateText" class="text-[10px] text-slate-400 font-normal">9 November 2026</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-[11px]">
-                            <div>
-                                <span class="text-slate-400 block text-[10px]">Nama Pelanggan:</span>
-                                <span id="modalInvoiceCustName" class="font-bold text-slate-800 block">Nuristya</span>
-                            </div>
-                            <div>
-                                <span class="text-slate-400 block text-[10px]">No. WhatsApp / HP:</span>
-                                <span id="modalInvoiceCustPhone" class="font-bold text-slate-800 block">0889 8080 8098</span>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <span class="text-slate-400 block text-[10px]">Alamat Pengambilan / Antar:</span>
-                                <span id="modalInvoiceCustAddress" class="text-slate-700 block mt-0.5">Jl. Margonda Raya No. 45, Beji, Depok</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Rincian Layanan & Biaya -->
-                    <div class="border border-slate-200 rounded-xl overflow-hidden">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-[11px] font-semibold border-b border-slate-200">
-                                    <th class="py-2.5 px-3">Layanan</th>
-                                    <th class="py-2.5 px-3 text-center">Berat</th>
-                                    <th class="py-2.5 px-3 text-right">Tarif</th>
-                                    <th class="py-2.5 px-3 text-right">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100 text-xs">
-                                <tr>
-                                    <td class="py-2.5 px-3">
-                                        <span id="modalInvoiceServiceName" class="font-bold text-slate-800 block">Cuci + Setrika</span>
-                                        <span class="text-[10px] text-slate-400">Pakaian harian & seragam</span>
-                                    </td>
-                                    <td id="modalInvoiceWeight" class="py-2.5 px-3 text-center font-medium text-slate-700">3.5 kg</td>
-                                    <td id="modalInvoiceUnitPrice" class="py-2.5 px-3 text-right font-medium text-slate-600">Rp10.000</td>
-                                    <td id="modalInvoiceSubtotal" class="py-2.5 px-3 text-right font-bold text-slate-800">Rp35.000</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-sky-50/80 border-t border-sky-100">
-                                    <td colspan="3" class="py-2.5 px-3 text-right font-bold text-slate-800 text-xs">TOTAL TAGIHAN</td>
-                                    <td id="modalInvoiceTotal" class="py-2.5 px-3 text-right font-extrabold text-blue-950 text-sm">Rp35.000</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <!-- Metode & Verifikasi Bukti Pembayaran -->
-                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold text-slate-800">Status & Metode Pembayaran</span>
-                            <span id="modalInvoicePaymentStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Menunggu Konfirmasi</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60">
-                            <span class="text-slate-500">Kanal Pembayaran:</span>
-                            <span id="modalInvoicePaymentMethod" class="font-bold text-cyan-800">QRIS (Gopay / ShopeePay / BCA)</span>
-                        </div>
-                        <div class="p-2.5 bg-white rounded-lg border border-slate-200/80 flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div class="text-[11px]">
-                                <span class="font-semibold text-slate-800 block">Verifikasi Pegawai</span>
-                                <span id="modalInvoiceVerifyHint" class="text-slate-500 block">Periksa saldo masuk / uang tunai di kasir sebelum menekan tombol konfirmasi di bawah.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Catatan Pelanggan -->
-                    <div class="p-3 rounded-lg bg-amber-50/70 border border-amber-200/60 text-[11px]">
-                        <span class="font-bold text-amber-900 block">Catatan Khusus Pelanggan:</span>
-                        <p id="modalInvoiceNotes" class="text-amber-800 mt-0.5 italic">-</p>
-                    </div>
-
-                    <!-- Ubah Tahap Cucian Langsung (Fitur Pegawai Terpadu) -->
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
-                        <div>
-                            <span class="font-bold text-slate-800 block">Ubah Tahap Pesanan:</span>
-                            <span class="text-[10px] text-slate-400 block">Langsung tersinkron ke akun pelanggan</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <select id="modalQuickStatusSelect" class="bg-white border border-slate-300 rounded-lg text-xs py-1.5 px-2.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                                <option value="Menunggu konfirmasi">Menunggu konfirmasi</option>
-                                <option value="Diproses">Diproses</option>
-                                <option value="Dicuci">Dicuci</option>
-                                <option value="Disetrika">Disetrika</option>
-                                <option value="Selesai">Selesai</option>
-                            </select>
-                            <button type="button" onclick="applyModalQuickStatus()" class="px-3 py-1.5 bg-cyan-700 hover:bg-cyan-800 text-white font-semibold rounded-lg text-xs shadow-xs transition">
-                                Terapkan
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Aksi Pegawai -->
-                <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="printInvoiceFromPegawai()" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition">
-                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            <span>Cetak Struk</span>
-                        </button>
-                        <a id="modalOpenFullPageBtn" href="invoice.html" class="px-3.5 py-2 text-xs font-bold text-cyan-800 bg-sky-50 border border-sky-200 rounded-lg hover:bg-sky-100 flex items-center gap-1.5 transition">
-                            <svg class="w-3.5 h-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                            <span>Buka Halaman Penuh</span>
-                        </a>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <button type="button" id="modalRejectBtn" onclick="rejectCurrentOrder()" class="px-3.5 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
-                            Tolak / Batal
-                        </button>
-                        <button type="button" id="modalConfirmBtn" onclick="confirmCurrentOrder()" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-900 rounded-lg hover:brightness-110 shadow-md flex items-center gap-1.5 transition">
-                            <svg class="w-4 h-4 text-cyan-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span id="modalConfirmBtnText">Konfirmasi Pembayaran & Mulai Proses</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modalDiv);
-
-        modalDiv.addEventListener('click', (e) => {
-            if (e.target === modalDiv) closeInvoiceModal();
-        });
+        // Pemeriksaan Invoice & Verifikasi Pembayaran langsung dibuka pada halaman penuh invoice.html
+        return;
     }
 
     async function openInvoiceModal(orderId) {
-        injectInvoiceModal();
         const orders = await fetchUnifiedOrders();
         const order = orders.find(o => o.id === orderId || o.code === orderId || String(o.dbId) === String(orderId));
-
-        if (!order) {
-            showToast(`Data pesanan ${orderId} tidak ditemukan`, true);
-            return;
-        }
-
-        activeModalOrderId = order.id;
-
-        const setVal = (id, text) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = text;
-        };
-
-        setVal('modalInvoiceOrderCode', order.code);
-        setVal('modalInvoiceDateText', `${order.date} • ${order.time}`);
-        setVal('modalInvoiceCustName', order.customerName);
-        setVal('modalInvoiceCustPhone', order.customerPhone);
-        setVal('modalInvoiceCustAddress', order.customerAddress);
-        setVal('modalInvoiceServiceName', order.service);
-        setVal('modalInvoiceWeight', order.weight);
-        setVal('modalInvoiceSubtotal', order.totalFormatted);
-        setVal('modalInvoiceTotal', order.totalFormatted);
-        setVal('modalInvoicePaymentMethod', order.paymentMethod || 'QRIS');
-        setVal('modalInvoiceNotes', order.notes || 'Tidak ada catatan khusus.');
-
-        const fullPageBtn = document.getElementById('modalOpenFullPageBtn');
-        if (fullPageBtn) {
-            fullPageBtn.href = `invoice.html?id=${encodeURIComponent(order.code || order.id)}`;
-        }
-
-        const badgeCfg = getStatusBadgeConfig(order.status);
-        const badgeEl = document.getElementById('modalInvoiceBadge');
-        const dotEl = document.getElementById('modalInvoiceDot');
-        const statusTextEl = document.getElementById('modalInvoiceStatusText');
-
-        if (badgeEl) badgeEl.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${badgeCfg.badgeClass}`;
-        if (dotEl) dotEl.className = `w-2 h-2 rounded-full ${badgeCfg.dotClass}`;
-        if (statusTextEl) statusTextEl.textContent = order.status;
-
-        const payBadge = document.getElementById('modalInvoicePaymentStatusBadge');
-        const confirmBtnText = document.getElementById('modalConfirmBtnText');
-        const confirmBtn = document.getElementById('modalConfirmBtn');
-        const verifyHint = document.getElementById('modalInvoiceVerifyHint');
-        const quickSelect = document.getElementById('modalQuickStatusSelect');
-
-        if (quickSelect) {
-            quickSelect.value = order.status;
-        }
-
-        // Tentukan tahap selanjutnya dan label tombol konfirmasi cerdas
-        let nextStage = 'Diproses';
-        if (order.status === 'Menunggu konfirmasi') {
-            nextStage = 'Diproses';
-            if (payBadge) {
-                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
-                payBadge.textContent = 'Menunggu Konfirmasi Pegawai';
-            }
-            if (confirmBtnText) confirmBtnText.textContent = 'Konfirmasi Pembayaran & Mulai Proses';
-            if (confirmBtn) {
-                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-900 rounded-lg hover:brightness-110 shadow-md flex items-center gap-1.5 transition cursor-pointer ring-2 ring-cyan-400/40';
-            }
-            if (verifyHint) {
-                verifyHint.textContent = `Tagihan ${order.totalFormatted} via ${order.paymentMethod}. Tekan tombol konfirmasi setelah memeriksa dana diterima.`;
-            }
-        } else if (order.status === 'Diproses') {
-            nextStage = 'Dicuci';
-            if (payBadge) {
-                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
-                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
-            }
-            if (confirmBtnText) confirmBtnText.textContent = 'Lanjut ke Tahap Cuci';
-            if (confirmBtn) {
-                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-cyan-700 hover:bg-cyan-800 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
-            }
-            if (verifyHint) {
-                verifyHint.textContent = `Pesanan sedang disiapkan. Klik tombol untuk memindahkan status ke pencucian di mesin cuci.`;
-            }
-        } else if (order.status === 'Dicuci') {
-            nextStage = 'Disetrika';
-            if (payBadge) {
-                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
-                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
-            }
-            if (confirmBtnText) confirmBtnText.textContent = 'Lanjut ke Tahap Setrika';
-            if (confirmBtn) {
-                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-indigo-700 hover:bg-indigo-800 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
-            }
-            if (verifyHint) {
-                verifyHint.textContent = `Pakaian selesai dicuci. Klik tombol untuk melanjutkan ke proses setrika uap rapi.`;
-            }
-        } else if (order.status === 'Disetrika') {
-            nextStage = 'Selesai';
-            if (payBadge) {
-                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
-                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
-            }
-            if (confirmBtnText) confirmBtnText.textContent = 'Tandai Selesai & Siap Diambil';
-            if (confirmBtn) {
-                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
-            }
-            if (verifyHint) {
-                verifyHint.textContent = `Pakaian telah rapi disetrika dan dikemas. Klik tombol untuk memberitahu pelanggan siap diambil.`;
-            }
-        } else {
-            nextStage = 'Selesai';
-            if (payBadge) {
-                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
-                payBadge.textContent = 'Pesanan Selesai';
-            }
-            if (confirmBtnText) confirmBtnText.textContent = 'Pesanan Telah Selesai';
-            if (confirmBtn) {
-                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-slate-500 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-default';
-            }
-            if (verifyHint) {
-                verifyHint.textContent = `Pesanan telah selesai diproses dan siap diambil oleh pelanggan.`;
-            }
-        }
-
-        if (confirmBtn) {
-            confirmBtn.onclick = async () => {
-                if (order.status === 'Menunggu konfirmasi') {
-                    await confirmOrderPayment(order.id);
-                } else if (order.status !== 'Selesai') {
-                    await updateOrderStatus(order.id, nextStage);
-                }
-                await openInvoiceModal(order.id);
-            };
-        }
-
-        const modal = document.getElementById('invoiceVerificationModal');
-        if (modal) modal.classList.remove('hidden');
+        const targetId = order ? (order.code || order.id) : orderId;
+        window.location.href = `invoice.html?id=${encodeURIComponent(targetId || '')}`;
     }
 
     function closeInvoiceModal() {
@@ -1251,6 +934,9 @@
         if (totalText) totalText.textContent = `${customers.length} orang`;
 
         function renderCustomerRows(listToRender) {
+            if (showingInfo) {
+                showingInfo.innerText = `Menampilkan ${listToRender.length} dari ${customers.length} data`;
+            }
             if (!tbody) return;
             tbody.innerHTML = '';
 
@@ -1452,6 +1138,9 @@
         const orders = await fetchUnifiedOrders();
 
         function renderOrders(listToRender) {
+            if (showingInfo) {
+                showingInfo.innerText = `Menampilkan ${listToRender.length} dari ${orders.length} data`;
+            }
             if (!tbody) return;
             tbody.innerHTML = '';
 
@@ -1476,7 +1165,7 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50/80 transition cursor-pointer order-row';
                 tr.dataset.status = o.status;
-                tr.onclick = () => { openInvoiceModal(o.id); };
+                tr.onclick = () => { window.location.href = `invoice.html?id=${encodeURIComponent(o.code || o.id)}`; };
 
                 tr.innerHTML = `
                     <td class="py-3.5 px-4 font-bold text-slate-700 whitespace-nowrap">
@@ -1495,10 +1184,10 @@
                     </td>
                     <td class="py-3.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button type="button" onclick="openInvoiceModal('${o.id}')"
+                            <a href="invoice.html?id=${encodeURIComponent(o.code || o.id)}"
                                 class="px-2.5 py-1 text-[11px] font-semibold text-cyan-700 hover:text-cyan-800 bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-200 transition">
                                 Cek Invoice
-                            </button>
+                            </a>
                             <a href="detailpesanan.html?id=${encodeURIComponent(o.id)}" title="Detail Pesanan"
                                 class="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-cyan-600 rounded-lg transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1581,13 +1270,12 @@
             setVal('summarySubtotal', o.totalFormatted);
             setVal('summaryTotal', o.totalFormatted);
 
-            // Tambahkan tombol Cek Invoice & Verifikasi Pembayaran jika ada container tombol aksi
+            // Tambahkan tombol Detail Invoice & Verifikasi Pembayaran langsung ke halaman penuh invoice.html
             const actionContainer = document.querySelector('main .lg\\:col-span-4.space-y-3\\.5');
             if (actionContainer && !document.getElementById('detailCheckInvoiceBtn')) {
-                const btnInv = document.createElement('button');
+                const btnInv = document.createElement('a');
                 btnInv.id = 'detailCheckInvoiceBtn';
-                btnInv.type = 'button';
-                btnInv.onclick = () => { openInvoiceModal(o.id); };
+                btnInv.href = `invoice.html?id=${encodeURIComponent(o.code || o.id)}`;
                 btnInv.className = 'w-full py-2.5 px-4 bg-gradient-to-r from-cyan-600 to-blue-900 hover:brightness-110 active:scale-[0.99] text-white text-xs font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition cursor-pointer';
                 btnInv.innerHTML = `
                     <svg class="w-4 h-4 text-cyan-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1635,6 +1323,14 @@
             badgeText: 'text-indigo-700',
             dotColor: 'bg-indigo-600',
             labelColor: 'text-indigo-600'
+        },
+        'Siap Diambil': {
+            step: 5,
+            barColor: 'bg-emerald-500',
+            badgeBg: 'bg-emerald-50',
+            badgeText: 'text-emerald-700',
+            dotColor: 'bg-emerald-600',
+            labelColor: 'text-emerald-600'
         },
         'Selesai': {
             step: 5,
@@ -1714,7 +1410,7 @@
             const stepLabel = card.querySelector('.step-label');
             if (stepLabel) {
                 stepLabel.textContent = `${cfg.step}/5 - ${newStatus}`;
-                stepLabel.className = `step-label font-semibold ${cfg.labelColor}`;
+                stepLabel.className = `step-label text-[10px] font-semibold ${cfg.labelColor}`;
             }
 
             const badge = card.querySelector('.status-badge');
@@ -1722,7 +1418,7 @@
             const badgeDot = badge ? badge.querySelector('span:first-child') : null;
 
             if (badge && badgeText && badgeDot) {
-                badge.className = `status-badge px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${cfg.badgeBg} ${cfg.badgeText}`;
+                badge.className = `inline-flex items-center gap-1.5 status-badge px-2.5 py-1 rounded-full text-[11px] font-semibold ${cfg.badgeBg} ${cfg.badgeText}`;
                 badgeDot.className = `w-1.5 h-1.5 rounded-full ${cfg.dotColor}`;
                 badgeText.textContent = newStatus;
             }
@@ -1753,24 +1449,67 @@
             if (el) el.textContent = val;
         };
 
+        const prosesAktif = counts['Diproses'] + counts['Dicuci'] + counts['Disetrika'];
+        const totalAll = cards.length;
+
+        setCnt('count-total', totalAll);
         setCnt('count-menunggu', counts['Menunggu konfirmasi']);
+        setCnt('count-proses-aktif', prosesAktif);
         setCnt('count-diproses', counts['Diproses']);
         setCnt('count-dicuci', counts['Dicuci']);
         setCnt('count-disetrika', counts['Disetrika']);
         setCnt('count-selesai', counts['Selesai']);
 
-        const activeCount = counts['Menunggu konfirmasi'] + counts['Diproses'] + counts['Dicuci'] + counts['Disetrika'];
+        setCnt('pill-count-all', totalAll);
+        setCnt('pill-count-menunggu', counts['Menunggu konfirmasi']);
+        setCnt('pill-count-diproses', counts['Diproses']);
+        setCnt('pill-count-dicuci', counts['Dicuci']);
+        setCnt('pill-count-disetrika', counts['Disetrika']);
+        setCnt('pill-count-selesai', counts['Selesai']);
+
+        const activeCount = counts['Menunggu konfirmasi'] + prosesAktif;
         const sidebarBadge = document.getElementById('sidebarBadge');
         if (sidebarBadge) sidebarBadge.textContent = activeCount;
     }
 
+    function syncStagePillUI(activeStage) {
+        document.querySelectorAll('#statusFilterPills .stage-pill').forEach(btn => {
+            const isMatch = (btn.dataset.stage || 'ALL') === activeStage;
+            const badge = btn.querySelector('span:last-child');
+            if (isMatch) {
+                btn.className = 'stage-pill inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold border bg-cyan-700 text-white border-cyan-700 shadow-xs transition cursor-pointer';
+                if (badge) badge.className = 'px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-white/20 text-white';
+            } else {
+                btn.className = 'stage-pill inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold border bg-white text-slate-600 border-slate-200 hover:bg-sky-50 hover:text-cyan-700 transition cursor-pointer';
+                if (badge) badge.className = 'px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600';
+            }
+        });
+    }
+
     async function initStatusPesananPage() {
-        injectInvoiceModal();
         const searchInput = document.getElementById('searchInput');
         const stageFilterSelect = document.getElementById('stageFilterSelect');
+        const sortOrderSelect = document.getElementById('sortOrderSelect');
         const container = document.getElementById('orderQueueContainer');
 
-        const orders = await fetchUnifiedOrders();
+        let orders = await fetchUnifiedOrders();
+
+        // Terapkan pengurutan sesuai pilihan dropdown
+        const sortMode = sortOrderSelect ? sortOrderSelect.value : 'newest';
+        orders = [...orders].sort((a, b) => {
+            if (sortMode === 'oldest') {
+                return (a.rawDate?.getTime() || Number(a.dbId) || 0) - (b.rawDate?.getTime() || Number(b.dbId) || 0);
+            }
+            if (sortMode === 'highest') {
+                return (Number(b.total) || 0) - (Number(a.total) || 0);
+            }
+            if (sortMode === 'stage') {
+                const stepA = (STAGE_CONFIG[a.status] || STAGE_CONFIG['Diproses']).step;
+                const stepB = (STAGE_CONFIG[b.status] || STAGE_CONFIG['Diproses']).step;
+                return stepA - stepB;
+            }
+            return (Number(b.dbId) || b.rawDate?.getTime() || 0) - (Number(a.dbId) || a.rawDate?.getTime() || 0);
+        });
 
         if (container) {
             container.innerHTML = '';
@@ -1782,99 +1521,95 @@
 
                 const cfg = STAGE_CONFIG[o.status] || STAGE_CONFIG['Diproses'];
 
-                const card = document.createElement('div');
-                card.className = 'order-card p-5 md:px-6 hover:bg-slate-50/70 transition flex flex-col lg:flex-row lg:items-center justify-between gap-4';
-                card.dataset.id = o.id;
-                card.dataset.name = o.customerName;
-                card.dataset.status = o.status;
+                const tr = document.createElement('tr');
+                tr.className = 'order-card hover:bg-slate-50/80 transition';
+                tr.dataset.id = o.id;
+                tr.dataset.code = o.code;
+                tr.dataset.name = o.customerName;
+                tr.dataset.service = o.service;
+                tr.dataset.status = o.status;
 
-                let segmentsHtml = '';
-                for (let i = 0; i < 5; i++) {
-                    segmentsHtml += `<div class="step-seg flex-1 rounded-full ${i < cfg.step ? cfg.barColor : 'bg-slate-200'}"></div>`;
-                }
-
-                card.innerHTML = `
-                    <!-- Left Info: Avatar, Name, Service -->
-                    <div class="flex items-center gap-3.5 min-w-[240px]">
-                        <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center text-cyan-600 font-bold text-xs shrink-0">
-                            ${inits}
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <a href="detailpesanan.html?id=${encodeURIComponent(o.id)}"
-                                    class="text-sm font-bold text-slate-800 hover:text-blue-600 transition flex items-center gap-1.5">
-                                    <span>${o.customerName}</span>
-                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                </a>
-                                ${o.status === 'Menunggu konfirmasi' ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-rose-100 text-rose-700 animate-pulse">Menunggu Konfirmasi</span>' : ''}
+                tr.innerHTML = `
+                    <td class="py-4 px-5 whitespace-nowrap">
+                        <div class="font-bold font-mono text-slate-700">${o.code}</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">${o.date || '-'}</div>
+                    </td>
+                    <td class="py-4 px-4 whitespace-nowrap">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center text-cyan-700 font-bold text-[11px] shrink-0">
+                                ${inits}
                             </div>
-                            <p class="text-[11px] text-slate-400 mt-0.5">${o.code} • ${o.service} • ${o.weight}</p>
+                            <div>
+                                <a href="detailpesanan.html?id=${encodeURIComponent(o.id)}"
+                                    class="text-xs font-bold text-slate-800 hover:text-cyan-700 transition block">
+                                    ${o.customerName}
+                                </a>
+                                <span class="text-[10px] text-slate-400">${o.customerPhone || '-'}</span>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Center: 5-Step Segmented Bar & Label -->
-                    <div class="flex-1 max-w-md w-full px-0 lg:px-4">
-                        <div class="flex justify-between items-center text-[10px] text-slate-400 mb-1.5">
-                            <span>Tahapan Pengerjaan</span>
-                            <span class="step-label font-semibold ${cfg.labelColor}">${cfg.step}/5 - ${o.status}</span>
-                        </div>
-                        <div class="progress-bar flex gap-1.5 h-1.5">
-                            ${segmentsHtml}
-                        </div>
-                    </div>
-
-                    <!-- Right: Status Badge & Dynamic Selector + Cek Invoice Button -->
-                    <div class="flex flex-wrap items-center gap-2.5 shrink-0 self-end lg:self-center">
-                        <button type="button" onclick="openInvoiceModal('${o.id}')"
-                            class="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-cyan-700 border border-sky-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <span>Cek Invoice & Pembayaran</span>
-                        </button>
-
-                        <div class="status-badge px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${cfg.badgeBg} ${cfg.badgeText}">
+                    </td>
+                    <td class="py-4 px-4 whitespace-nowrap">
+                        <div class="font-semibold text-slate-700">${o.service}</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">Pembayaran: ${o.paymentMethod || 'QRIS'}</div>
+                    </td>
+                    <td class="py-4 px-4 font-semibold text-slate-700 whitespace-nowrap">${o.weight}</td>
+                    <td class="py-4 px-4 font-bold text-cyan-800 whitespace-nowrap">${o.totalFormatted}</td>
+                    <td class="py-4 px-4 whitespace-nowrap">
+                        <span class="inline-flex items-center gap-1.5 status-badge px-2.5 py-1 rounded-full text-[11px] font-semibold ${cfg.badgeBg} ${cfg.badgeText}">
                             <span class="w-1.5 h-1.5 rounded-full ${cfg.dotColor}"></span>
                             <span class="badge-text">${o.status}</span>
-                        </div>
-
-                        <div class="relative">
-                            <label for="select-${o.id}" class="sr-only">Ubah Status ${o.code}</label>
-                            <select id="select-${o.id}" onchange="updateStatus('${o.id}', this.value)"
-                                class="status-select appearance-none pl-3 pr-8 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer">
-                                <option value="Menunggu konfirmasi" ${o.status === 'Menunggu konfirmasi' ? 'selected' : ''}>Menunggu konfirmasi</option>
-                                <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
-                                <option value="Dicuci" ${o.status === 'Dicuci' ? 'selected' : ''}>Dicuci</option>
-                                <option value="Disetrika" ${o.status === 'Disetrika' ? 'selected' : ''}>Disetrika</option>
-                                <option value="Selesai" ${o.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </span>
+                    </td>
+                    <td class="py-4 px-5 text-right whitespace-nowrap">
+                        <div class="inline-flex items-center justify-end gap-2">
+                            <a href="invoice.html?id=${encodeURIComponent(o.code || o.id)}"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-sky-50 text-slate-700 hover:text-cyan-700 border border-slate-200 hover:border-sky-200 rounded-lg text-[11px] font-semibold transition">
+                                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
+                                <span>Detail</span>
+                            </a>
+
+                            <div class="relative">
+                                <label for="select-${o.id}" class="sr-only">Ubah Status ${o.code}</label>
+                                <select id="select-${o.id}" onchange="updateStatus('${o.id}', this.value)"
+                                    class="status-select appearance-none pl-2.5 pr-7 py-1.5 bg-slate-50 hover:bg-white border border-slate-200 rounded-lg text-[11px] font-semibold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition cursor-pointer">
+                                    <option value="Menunggu konfirmasi" ${o.status === 'Menunggu konfirmasi' ? 'selected' : ''}>Menunggu konfirmasi</option>
+                                    <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                                    <option value="Dicuci" ${o.status === 'Dicuci' ? 'selected' : ''}>Dicuci</option>
+                                    <option value="Disetrika" ${o.status === 'Disetrika' ? 'selected' : ''}>Disetrika</option>
+                                    <option value="Selesai" ${o.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </td>
                 `;
-                container.appendChild(card);
+                container.appendChild(tr);
             });
         }
 
         function handleFilter() {
             const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
             const stageVal = stageFilterSelect ? stageFilterSelect.value : 'ALL';
+            syncStagePillUI(stageVal);
 
             const cards = document.querySelectorAll('.order-card');
             let visibleCount = 0;
 
             cards.forEach(card => {
                 const orderId = (card.dataset.id || '').toLowerCase();
+                const orderCode = (card.dataset.code || '').toLowerCase();
                 const name = (card.dataset.name || '').toLowerCase();
+                const service = (card.dataset.service || '').toLowerCase();
                 const status = card.dataset.status || '';
 
-                const matchesSearch = !searchVal || orderId.includes(searchVal) || name.includes(searchVal);
+                const matchesSearch = !searchVal || orderId.includes(searchVal) || orderCode.includes(searchVal) || name.includes(searchVal) || service.includes(searchVal);
                 const matchesStage = (stageVal === 'ALL') || (status === stageVal);
 
                 if (matchesSearch && matchesStage) {
@@ -1885,16 +1620,34 @@
                 }
             });
 
+            const emptyBox = document.getElementById('noResultsMessage');
+            if (emptyBox) {
+                emptyBox.classList.toggle('hidden', visibleCount > 0);
+            }
+
             const footerText = document.getElementById('footerCountText');
             if (footerText) {
                 footerText.textContent = `Menampilkan ${visibleCount} dari ${cards.length} antrean pesanan`;
             }
         }
 
-        if (searchInput) searchInput.addEventListener('input', handleFilter);
-        if (stageFilterSelect) stageFilterSelect.addEventListener('change', handleFilter);
+        window.handleFilter = handleFilter;
+
+        if (searchInput && !searchInput.dataset.bound) {
+            searchInput.dataset.bound = 'true';
+            searchInput.addEventListener('input', handleFilter);
+        }
+        if (stageFilterSelect && !stageFilterSelect.dataset.bound) {
+            stageFilterSelect.dataset.bound = 'true';
+            stageFilterSelect.addEventListener('change', handleFilter);
+        }
+        if (sortOrderSelect && !sortOrderSelect.dataset.bound) {
+            sortOrderSelect.dataset.bound = 'true';
+            sortOrderSelect.addEventListener('change', initStatusPesananPage);
+        }
 
         recalculateStatusMetrics();
+        handleFilter();
     }
 
     // ==========================================
@@ -1929,6 +1682,10 @@
         if (statBelumDibayar) statBelumDibayar.textContent = formatRupiah(totalBelumLunas);
 
         function renderTransactions(listToRender) {
+            const countVisibleEl = document.getElementById('countVisible');
+            const countTotalEl = document.getElementById('countTotal');
+            if (countVisibleEl) countVisibleEl.textContent = String(listToRender.length);
+            if (countTotalEl) countTotalEl.textContent = String(orders.length);
             if (!tbody) return;
             tbody.innerHTML = '';
 
@@ -1979,10 +1736,10 @@
                         `}
                     </td>
                     <td class="px-5 py-4 text-right">
-                        <button type="button" onclick="openInvoiceModal('${o.id}')"
-                            class="px-3 py-1.5 border border-slate-200 rounded-lg text-cyan-700 hover:text-cyan-800 hover:bg-sky-50 hover:border-sky-200 text-xs font-semibold transition">
+                        <a href="invoice.html?id=${encodeURIComponent(o.code || o.id)}"
+                            class="inline-block px-3 py-1.5 border border-slate-200 rounded-lg text-cyan-700 hover:text-cyan-800 hover:bg-sky-50 hover:border-sky-200 text-xs font-semibold transition">
                             Detail
-                        </button>
+                        </a>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2113,7 +1870,7 @@
                 const badgeCfg = getStatusBadgeConfig(o.status);
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50/80 transition cursor-pointer';
-                tr.onclick = () => { openInvoiceModal(o.id); };
+                tr.onclick = () => { window.location.href = `invoice.html?id=${encodeURIComponent(o.code || o.id)}`; };
 
                 tr.innerHTML = `
                     <td class="py-3.5 px-3 font-bold text-slate-800 whitespace-nowrap">
@@ -2473,7 +2230,8 @@
     window.filterByStage = function (stageName) {
         const stageFilterSelect = document.getElementById('stageFilterSelect');
         if (stageFilterSelect) {
-            stageFilterSelect.value = (stageFilterSelect.value === stageName) ? 'ALL' : stageName;
+            const nextVal = (stageName === 'ALL' || stageFilterSelect.value === stageName) ? 'ALL' : stageName;
+            stageFilterSelect.value = nextVal;
             stageFilterSelect.dispatchEvent(new Event('change'));
         }
     };
@@ -2499,9 +2257,8 @@
 
         // 2. Polling sinkronisasi real-time otomatis ke database MySQL XAMPP setiap 3.5 detik
         setInterval(() => {
-            // Hindari me-refresh saat modal invoice sedang terbuka agar interaksi staf tidak terganggu
-            const modal = document.getElementById('invoiceVerificationModal');
-            if (modal && !modal.classList.contains('hidden')) return;
+            // Hindari me-refresh saat staf sedang membuka dropdown ubah status
+            if (document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('status-select')) return;
 
             refreshActivePageView();
         }, 3500);

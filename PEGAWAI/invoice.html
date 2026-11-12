@@ -49,7 +49,9 @@
             aside,
             header,
             #pegawaiTopNav,
-            #pegawaiOrderSwitcher,
+            #invoiceSearchHero,
+            #invoiceEmptyPrompt,
+            #invoiceNotFoundBanner,
             #cashierActionPanel,
             #bottomNavPegawai,
             .no-print {
@@ -71,7 +73,7 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-clip">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
     <header class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
@@ -99,89 +101,142 @@
     <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
 
     <!-- SIDEBAR NAVIGASI STAFF -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col justify-between -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out shrink-0">
-        <div>
-            <!-- Logo Sidebar Desktop -->
-            <div class="p-6 hidden md:flex items-center gap-3 border-b border-slate-100">
-                <div class="w-10 h-10 -rotate-3 rounded-2xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px] shrink-0">
+    <aside id="sidebar"
+        class="no-print fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:sticky md:top-0 md:self-start md:min-h-screen md:inset-auto md:z-10 px-5 pt-7 pb-5 shrink-0">
+
+        <div class="flex flex-col">
+            <!-- Brand Logo -->
+            <div class="hidden md:flex items-center gap-2.5 pl-1.5 pb-7">
+                <div
+                    class="w-10 h-10 -rotate-3 rounded-xl bg-gradient-to-br from-sky-300 to-blue-400 shadow-[0_7px_17px_0_rgba(96,183,220,0.23)] flex items-center justify-center gap-[3px] shrink-0">
                     <span class="w-[3px] h-3.5 bg-white rounded-full rotate-[27deg]"></span>
                     <span class="w-[2.5px] h-5 bg-white rounded-full rotate-[27deg]"></span>
                     <span class="w-[3px] h-3 bg-white rounded-full rotate-[27deg]"></span>
                 </div>
                 <div>
                     <div class="leading-none">
-                        <span class="text-xl font-bold text-blue-950 tracking-tight">Bersih</span><span class="text-xl font-bold text-blue-400">in</span>
+                        <span class="text-xl font-bold text-blue-950 tracking-tight">Bersih</span><span
+                            class="text-xl font-bold text-blue-400">in</span>
                     </div>
-                    <span class="block text-[8px] font-bold tracking-[2.5px] text-slate-400 uppercase mt-1">STAFF PORTAL</span>
+                    <span class="block text-[8px] font-bold tracking-[2.6px] text-slate-400 uppercase mt-1">
+                        STAFF PORTAL
+                    </span>
                 </div>
             </div>
-
             <!-- Navigation Links -->
-            <div class="px-4 py-6">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">MENU UTAMA</p>
-                <nav class="space-y-1">
-                    <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="datapesanan.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <span>Data Pesanan</span>
-                    </a>
-                    <a href="statuspesanan.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Status Pesanan</span>
-                    </a>
-                    <a href="datatransaksi.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>Data Transaksi</span>
-                    </a>
-                    <!-- Menu Aktif: Pemeriksaan Invoice -->
-                    <a href="invoice.html" aria-current="page" class="flex items-center gap-3 px-3 py-2.5 text-xs font-bold bg-cyan-50 text-cyan-800 border-r-4 border-cyan-700 rounded-xl transition">
-                        <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span>Pemeriksaan Invoice</span>
-                    </a>
-                    <a href="datapelanggan.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>Data Pelanggan</span>
-                    </a>
-                    <a href="profil.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>Profil Pegawai</span>
-                    </a>
-                </nav>
-            </div>
+            <nav class="space-y-6">
+                <!-- Operasional -->
+                <div>
+                    <p class="px-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">
+                        OPERASIONAL
+                    </p>
+                    <div class="space-y-1">
+                        <!-- Dashboard -->
+                        <a href="dashboard.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+
+                        <!-- Data Pelanggan -->
+                        <a href="datapelanggan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span>Data Pelanggan</span>
+                        </a>
+
+                        <!-- Data Pesanan -->
+                        <a href="datapesanan.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <span>Data Pesanan</span>
+                        </a>
+
+                        <!-- Kelola Status -->
+                        <a href="statuspesanan.html"
+                            class="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                <span>Kelola Status</span>
+                            </div>
+                            <span id="sidebarBadge"
+                                class="w-4 h-4 bg-red-400 rounded-full text-white text-[9px] font-semibold flex items-center justify-center">
+                                4
+                            </span>
+                        </a>
+
+                        <!-- Data Transaksi -->
+                        <a href="datatransaksi.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Data Transaksi</span>
+                        </a>
+
+                        <!-- Pemeriksaan Invoice (Active) -->
+                        <a href="invoice.html" aria-current="page"
+                            class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold bg-blue-50 text-cyan-700 transition">
+                            <span
+                                class="w-[3px] h-7 -left-5 top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-[3px]"></span>
+                            <svg class="w-5 h-5 text-cyan-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Pemeriksaan Invoice</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Akun -->
+                <div>
+                    <p class="px-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">
+                        AKUN
+                    </p>
+                    <div class="space-y-1">
+                        <!-- Profil Saya -->
+                        <a href="profil.html"
+                            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-normal text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition">
+                            <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>Profil Saya</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
         </div>
 
-        <!-- Profil Singkat Pegawai -->
-        <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div id="staffSidebarInitials" class="staff-avatar-initials w-9 h-9 rounded-full bg-cyan-700 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                    DN
-                </div>
-                <div>
-                    <span id="staffSidebarName" class="block text-xs font-bold text-slate-800">Dina Nurhaliza</span>
-                    <span id="staffSidebarRole" class="block text-[10px] text-slate-400">Kasir Utama</span>
-                </div>
-            </div>
-            <a href="../login.html" onclick="if(window.logoutStaff){logoutStaff(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}" class="text-slate-400 hover:text-rose-600 transition" title="Keluar">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        <!-- Bagian Bawah Sidebar: Tombol Keluar -->
+        <div class="w-full mt-16 pt-4 flex flex-col justify-end items-start gap-2 shrink-0">
+            <a href="../login.html" title="Keluar" onclick="if(window.logoutStaff){logoutStaff(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}"
+                class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
+                <span>Keluar</span>
             </a>
         </div>
     </aside>
@@ -192,224 +247,266 @@
         <!-- Topbar Desktop -->
         <div id="pegawaiTopNav" class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <nav class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                    <a href="dashboard.html" class="hover:text-cyan-700">Staff Portal</a>
-                    <span>/</span>
-                    <a href="datatransaksi.html" class="hover:text-cyan-700">Data Transaksi</a>
-                    <span>/</span>
-                    <span class="text-slate-800 font-semibold">Pemeriksaan Invoice &amp; Verifikasi Pembayaran</span>
-                </nav>
                 <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                     <span>Pemeriksaan Invoice &amp; Verifikasi Pembayaran</span>
                     <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800 border border-cyan-200">Kasir</span>
                 </h1>
-                <p class="text-xs text-slate-500 mt-0.5">Halaman penuh pemeriksaan invoice resmi, mutasi pembayaran pelanggan, serta verifikasi status cucian.</p>
-            </div>
-
-            <div class="flex items-center gap-2.5 shrink-0">
-                <a href="datatransaksi.html" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    <span>Daftar Transaksi</span>
-                </a>
-                <button type="button" onclick="window.print()" class="px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-xs flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    <span>Cetak Struk Kasir</span>
-                </button>
             </div>
         </div>
 
-        <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full space-y-6">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full space-y-6">
 
-            <!-- Pemilih Pesanan Cepat untuk Kasir -->
-            <div id="pegawaiOrderSwitcher" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-700 flex items-center justify-center shrink-0">
+            <!-- HERO PENCARIAN INVOICE PELANGGAN -->
+            <section id="invoiceSearchHero" class="no-print relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 via-white to-cyan-50/80 border border-sky-200/80 shadow-xs p-6 sm:p-8">
+                <div class="max-w-3xl space-y-4">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/90 text-cyan-800 text-[11px] font-bold uppercase tracking-wider border border-cyan-200">
+                        <svg class="w-3.5 h-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Pusat Pemeriksaan Invoice</span>
+                    </span>
+
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                            Cari Invoice Pelanggan
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
+                            Masukkan ID Pesanan pelanggan (contoh: <span class="font-mono font-semibold text-slate-700">TRX-...</span> atau <span class="font-mono font-semibold text-slate-700">ORD-...</span>) untuk memeriksa rincian tagihan, progres cucian, dan memverifikasi pembayaran kasir.
+                        </p>
+                    </div>
+
+                    <form id="invoiceSearchForm" onsubmit="searchStaffInvoice(event)" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
+                        <div class="relative flex-1">
+                            <svg class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <input type="text" id="invoiceSearchInput" autocomplete="off" placeholder="Masukkan ID Pesanan pelanggan (mis. TRX-20261112-001)..." class="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition">
+                            <button type="button" id="clearInvoiceSearchBtn" onclick="resetStaffInvoiceSearch()" title="Bersihkan pencarian" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <button type="submit" id="invoiceSearchBtn" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-700 hover:brightness-110 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2 shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span>Cari Invoice</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- PROMPT AWAL (SEBELUM ADA ID PESANAN YANG DICARI) -->
+            <div id="invoiceEmptyPrompt" class="no-print bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center space-y-3">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-sky-50 border border-sky-100 text-cyan-700 flex items-center justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <div class="max-w-md mx-auto space-y-1">
+                    <h3 class="text-sm sm:text-base font-bold text-slate-800">Belum Ada Invoice Ditampilkan</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Ketikkan <span class="font-semibold text-slate-700">ID Pesanan pelanggan</span> pada kolom pencarian di atas, lalu tekan <span class="font-semibold text-cyan-700">Cari Invoice</span> untuk membuka lembar detail &amp; verifikasi pembayaran.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ALERT TIDAK DITEMUKAN -->
+            <div id="invoiceNotFoundBanner" class="hidden no-print bg-rose-50 rounded-2xl border border-rose-200 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-slate-800 block">Pilih Transaksi untuk Diperiksa &amp; Diverifikasi:</span>
-                        <span class="text-[11px] text-slate-400">Pilih dari pesanan aktif atau masukkan kode transaksi.</span>
+                        <h3 class="text-sm font-bold text-rose-900">ID Pesanan Tidak Ditemukan</h3>
+                        <p id="invoiceNotFoundMsg" class="text-xs text-rose-700 mt-0.5">Pesanan dengan kode tersebut tidak ditemukan dalam sistem. Periksa kembali ID Pesanan pelanggan.</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <select id="staffOrderSelector" onchange="switchStaffInvoice(this.value)" class="bg-slate-50 border border-slate-300 text-xs font-semibold rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                        <!-- Diisi dinamis -->
-                    </select>
-                </div>
+                <button type="button" onclick="resetStaffInvoiceSearch()" class="px-4 py-2 bg-white border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-bold rounded-xl transition shrink-0">
+                    Reset Pencarian
+                </button>
             </div>
 
-            <!-- KARTU INVOICE RESMI (CETAK / FULL DETAIL) -->
-            <div class="invoice-card bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-                
-                <!-- Header Invoice Kasir -->
-                <div class="p-6 bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
-                            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="size-8">
-                        </div>
-                        <div>
-                            <div class="text-base font-bold tracking-tight">BERSIHIN LAUNDRY - POS KASIR</div>
-                            <p class="text-xs text-sky-200">Lembar Pemeriksaan Invoice &amp; Verifikasi Transaksi Staf</p>
-                        </div>
-                    </div>
-                    <div class="sm:text-right">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">KODE PESANAN:</span>
-                        <span id="staffInvCode" class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
-                        <span id="staffInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30 WIB</span>
-                    </div>
-                </div>
+            <!-- HASIL PEMERIKSAAN INVOICE (TERSEMBUNYI HINGGA DITEMUKAN / DIBUKA DENGAN ?id=) -->
+            <div id="invoiceResultSection" class="hidden space-y-6">
 
-                <!-- Status Strip -->
-                <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="text-slate-500 font-semibold">Status Pembayaran:</span>
-                        <span id="staffPaymentBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                            <span id="staffPaymentText">Menunggu Konfirmasi</span>
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-slate-500 font-semibold">Tahap Cucian Saat Ini:</span>
-                        <span id="staffStageBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
-                            Menunggu konfirmasi
-                        </span>
-                    </div>
-                </div>
-
-                <div class="p-6 sm:p-8 space-y-6">
-
-                    <!-- Data Pelanggan & Petugas Kasir -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                        <div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">DATA PELANGGAN:</span>
-                            <h4 id="staffCustName" class="text-sm font-bold text-slate-900">Nama Pelanggan</h4>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="staffCustPhone" class="text-slate-600 font-medium">0812-3456-7890</span>
-                                <a id="staffWaLink" href="https://wa.me/" target="_blank" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold text-[10px] hover:bg-emerald-200 transition">
-                                    Chat WA
-                                </a>
+                <!-- KARTU INVOICE RESMI (CETAK / FULL DETAIL - TAMPILAN LAMA) -->
+                <div class="invoice-card bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
+                    
+                    <!-- Header Invoice Kasir -->
+                    <div class="p-6 bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
+                                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="size-8">
                             </div>
-                            <p id="staffCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji, Depok</p>
-                        </div>
-                        <div class="md:text-right">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PETUGAS &amp; KASIR:</span>
-                            <p class="text-slate-700"><span class="font-semibold text-slate-900">Kasir Bertugas:</span> <span id="staffStaffName">Dina Nurhaliza (Kasir Utama)</span></p>
-                            <p class="text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Metode Pembayaran:</span> <span id="staffPayMethod" class="font-bold text-cyan-800">QRIS</span></p>
-                            <div class="mt-2 text-slate-500 italic">
-                                <span>Catatan Pelanggan: </span>
-                                <span id="staffNotes" class="text-slate-700 font-medium">Pakaian reguler &amp; seragam</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabel Item Layanan -->
-                    <div class="border border-slate-200 rounded-xl overflow-hidden">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                                    <th class="py-3 px-4">Layanan Laundry</th>
-                                    <th class="py-3 px-4 text-center">Kuantitas / Berat</th>
-                                    <th class="py-3 px-4 text-right">Tarif Dasar</th>
-                                    <th class="py-3 px-4 text-right">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="staffItemsBody" class="divide-y divide-slate-100">
-                                <tr>
-                                    <td class="py-3 px-4">
-                                        <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci Komplit (Cuci + Setrika)</span>
-                                        <span class="text-[10px] text-slate-400">Pakaian harian &amp; seragam</span>
-                                    </td>
-                                    <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">4,5 kg</td>
-                                    <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
-                                    <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">Rp40.500</td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="border-t-2 border-slate-200 bg-sky-50/70">
-                                <tr>
-                                    <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">TOTAL TAGIHAN TRANSAKSI:</td>
-                                    <td id="staffTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">Rp40.000</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <!-- PANEL VERIFIKASI PEMBAYARAN KASIR -->
-                    <div id="cashierActionPanel" class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                             <div>
-                                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span>Tindakan Verifikasi Kasir &amp; Tahapan Cucian</span>
-                                </h3>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Pastikan uang tunai atau mutasi QRIS/Bank telah valid sebelum mengonfirmasi pembayaran lunas.</p>
+                                <div class="text-base font-bold tracking-tight">BERSIHIN LAUNDRY - POS KASIR</div>
+                                <p class="text-xs text-sky-200">Lembar Pemeriksaan Invoice &amp; Verifikasi Transaksi Staf</p>
                             </div>
                         </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                            <!-- Ubah Tahapan Pesanan -->
-                            <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-2">
-                                <label class="font-bold text-slate-800 block">Perbarui Tahap Pengerjaan:</label>
-                                <div class="flex items-center gap-2">
-                                    <select id="staffStageSelect" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg text-xs py-2 px-3 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
-                                        <option value="Menunggu konfirmasi">Menunggu konfirmasi</option>
-                                        <option value="Diproses">Diproses</option>
-                                        <option value="Sedang Dicuci">Sedang Dicuci</option>
-                                        <option value="Sedang Disetrika">Sedang Disetrika</option>
-                                        <option value="Siap Diambil">Siap Diambil</option>
-                                        <option value="Selesai">Selesai</option>
-                                    </select>
-                                    <button type="button" onclick="applyStaffStageUpdate()" class="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
-                                        Terapkan
-                                    </button>
-                                </div>
-                                <span class="text-[10px] text-slate-400 block">Status akan otomatis diperbarui di aplikasi pelanggan &amp; owner.</span>
-                            </div>
-
-                            <!-- Tombol Verifikasi Pembayaran Lunas -->
-                            <div class="p-4 bg-white rounded-xl border border-slate-200 flex flex-col justify-between gap-3">
-                                <div>
-                                    <span class="font-bold text-slate-800 block">Status Verifikasi Kasir:</span>
-                                    <span id="cashierVerifyHint" class="text-[11px] text-slate-500 block mt-0.5">Tekan tombol di bawah untuk menetapkan transaksi ini sebagai LUNAS.</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" onclick="rejectStaffOrder()" class="px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
-                                        Tolak / Batal
-                                    </button>
-                                    <button type="button" id="confirmStaffOrderBtn" onclick="confirmStaffOrderPayment()" class="flex-1 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-800 rounded-lg hover:brightness-110 shadow-sm flex items-center justify-center gap-1.5 transition">
-                                        <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        <span>Konfirmasi LUNAS</span>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="sm:text-right">
+                            <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">KODE PESANAN:</span>
+                            <span id="staffInvCode" class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
+                            <span id="staffInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30 WIB</span>
                         </div>
                     </div>
 
+                    <!-- Status Strip -->
+                    <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-500 font-semibold">Status Pembayaran:</span>
+                            <span id="staffPaymentBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span id="staffPaymentText">Menunggu Konfirmasi</span>
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-500 font-semibold">Tahap Cucian Saat Ini:</span>
+                            <span id="staffStageBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                                Menunggu konfirmasi
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-6 sm:p-8 space-y-6">
+
+                        <!-- Data Pelanggan & Petugas Kasir -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">DATA PELANGGAN:</span>
+                                <h4 id="staffCustName" class="text-sm font-bold text-slate-900">Nama Pelanggan</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span id="staffCustPhone" class="text-slate-600 font-medium">0812-3456-7890</span>
+                                    <a id="staffWaLink" href="https://wa.me/" target="_blank" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold text-[10px] hover:bg-emerald-200 transition">
+                                        Chat WA
+                                    </a>
+                                </div>
+                                <p id="staffCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji, Depok</p>
+                            </div>
+                            <div class="md:text-right">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PETUGAS &amp; KASIR:</span>
+                                <p class="text-slate-700"><span class="font-semibold text-slate-900">Kasir Bertugas:</span> <span id="staffStaffName">Dina Nurhaliza (Kasir Utama)</span></p>
+                                <p class="text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Metode Pembayaran:</span> <span id="staffPayMethod" class="font-bold text-cyan-800">QRIS</span></p>
+                                <div class="mt-2 text-slate-500 italic">
+                                    <span>Catatan Pelanggan: </span>
+                                    <span id="staffNotes" class="text-slate-700 font-medium">Pakaian reguler &amp; seragam</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabel Item Layanan -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                        <th class="py-3 px-4">Layanan Laundry</th>
+                                        <th class="py-3 px-4 text-center">Kuantitas / Berat</th>
+                                        <th class="py-3 px-4 text-right">Tarif Dasar</th>
+                                        <th class="py-3 px-4 text-right">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staffItemsBody" class="divide-y divide-slate-100">
+                                    <tr>
+                                        <td class="py-3 px-4">
+                                            <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci Komplit (Cuci + Setrika)</span>
+                                            <span class="text-[10px] text-slate-400">Pakaian harian &amp; seragam</span>
+                                        </td>
+                                        <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">4,5 kg</td>
+                                        <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
+                                        <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">Rp40.500</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="border-t-2 border-slate-200 bg-sky-50/70">
+                                    <tr>
+                                        <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">TOTAL TAGIHAN TRANSAKSI:</td>
+                                        <td id="staffTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">Rp40.000</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- PANEL VERIFIKASI PEMBAYARAN KASIR -->
+                        <div id="cashierActionPanel" class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                                <div>
+                                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Tindakan Verifikasi Kasir &amp; Tahapan Cucian</span>
+                                    </h3>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">Pastikan uang tunai atau mutasi QRIS/Bank telah valid sebelum mengonfirmasi pembayaran lunas.</p>
+                                </div>
+                                <button type="button" onclick="window.print()" class="px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-xs flex items-center justify-center gap-1.5 transition shrink-0">
+                                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                    </svg>
+                                    <span>Cetak Struk Kasir</span>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <!-- Ubah Tahapan Pesanan -->
+                                <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-2">
+                                    <label class="font-bold text-slate-800 block">Perbarui Tahap Pengerjaan:</label>
+                                    <div class="flex items-center gap-2">
+                                        <select id="staffStageSelect" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg text-xs py-2 px-3 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                                            <option value="Menunggu konfirmasi">Menunggu konfirmasi</option>
+                                            <option value="Diproses">Diproses</option>
+                                            <option value="Sedang Dicuci">Sedang Dicuci</option>
+                                            <option value="Sedang Disetrika">Sedang Disetrika</option>
+                                            <option value="Siap Diambil">Siap Diambil</option>
+                                            <option value="Selesai">Selesai</option>
+                                        </select>
+                                        <button type="button" onclick="applyStaffStageUpdate()" class="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
+                                            Terapkan
+                                        </button>
+                                    </div>
+                                    <span class="text-[10px] text-slate-400 block">Status akan otomatis diperbarui di aplikasi pelanggan &amp; owner.</span>
+                                </div>
+
+                                <!-- Tombol Verifikasi Pembayaran Lunas -->
+                                <div class="p-4 bg-white rounded-xl border border-slate-200 flex flex-col justify-between gap-3">
+                                    <div>
+                                        <span class="font-bold text-slate-800 block">Status Verifikasi Kasir:</span>
+                                        <span id="cashierVerifyHint" class="text-[11px] text-slate-500 block mt-0.5">Tekan tombol di bawah untuk menetapkan transaksi ini sebagai LUNAS.</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="rejectStaffOrder()" class="px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
+                                            Tolak / Batal
+                                        </button>
+                                        <button type="button" id="confirmStaffOrderBtn" onclick="confirmStaffOrderPayment()" class="flex-1 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-800 rounded-lg hover:brightness-110 shadow-sm flex items-center justify-center gap-1.5 transition">
+                                            <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Konfirmasi LUNAS</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer Invoice -->
+                    <div class="p-4 bg-slate-100 text-center text-xs text-slate-500 border-t border-slate-200">
+                        <span>Sistem Basis Data Bersihin Laundry • Tercatat di Audit Trail Pegawai</span>
+                    </div>
                 </div>
 
-                <!-- Footer Invoice -->
-                <div class="p-4 bg-slate-100 text-center text-xs text-slate-500 border-t border-slate-200">
-                    <span>Sistem Basis Data Bersihin Laundry • Tercatat di Audit Trail Pegawai</span>
+                <!-- Navigasi Bawah -->
+                <div id="bottomNavPegawai" class="flex items-center justify-between gap-3 no-print">
+                    <a href="datapesanan.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        &larr; Kembali ke Data Pesanan
+                    </a>
+                    <a href="datatransaksi.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        Daftar Semua Transaksi &rarr;
+                    </a>
                 </div>
-            </div>
 
-            <!-- Navigasi Bawah -->
-            <div id="bottomNavPegawai" class="flex items-center justify-between gap-3 no-print">
-                <a href="datapesanan.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                    &larr; Kembali ke Data Pesanan
-                </a>
-                <a href="datatransaksi.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                    Daftar Semua Transaksi &rarr;
-                </a>
             </div>
 
         </main>
@@ -588,6 +685,61 @@
 
         let currentActiveOrder = null;
 
+        function showInvoiceEmptyState() {
+            const emptyEl = document.getElementById('invoiceEmptyPrompt');
+            const notFoundEl = document.getElementById('invoiceNotFoundBanner');
+            const resultEl = document.getElementById('invoiceResultSection');
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            if (notFoundEl) notFoundEl.classList.add('hidden');
+            if (resultEl) resultEl.classList.add('hidden');
+        }
+
+        function showInvoiceNotFoundState(query) {
+            const emptyEl = document.getElementById('invoiceEmptyPrompt');
+            const notFoundEl = document.getElementById('invoiceNotFoundBanner');
+            const notFoundMsg = document.getElementById('invoiceNotFoundMsg');
+            const resultEl = document.getElementById('invoiceResultSection');
+            if (emptyEl) emptyEl.classList.add('hidden');
+            if (resultEl) resultEl.classList.add('hidden');
+            if (notFoundEl) notFoundEl.classList.remove('hidden');
+            if (notFoundMsg) {
+                notFoundMsg.textContent = `Pesanan dengan ID "${query}" tidak ditemukan dalam sistem. Periksa kembali ID Pesanan pelanggan.`;
+            }
+        }
+
+        function showInvoiceResultState() {
+            const emptyEl = document.getElementById('invoiceEmptyPrompt');
+            const notFoundEl = document.getElementById('invoiceNotFoundBanner');
+            const resultEl = document.getElementById('invoiceResultSection');
+            if (emptyEl) emptyEl.classList.add('hidden');
+            if (notFoundEl) notFoundEl.classList.add('hidden');
+            if (resultEl) resultEl.classList.remove('hidden');
+        }
+
+        function findOrderByQuery(orders, rawQuery) {
+            const q = String(rawQuery || '').trim().replace(/^#/, '').toLowerCase();
+            if (!q || !Array.isArray(orders)) return null;
+
+            const exact = orders.find(o => {
+                const candidates = [o.code, o.id, o.id_pesanan].filter(v => v !== undefined && v !== null);
+                return candidates.some(v => String(v).trim().toLowerCase() === q);
+            });
+            if (exact) return exact;
+
+            return orders.find(o => {
+                const candidates = [o.code, o.id, o.id_pesanan].filter(v => v !== undefined && v !== null);
+                return candidates.some(v => String(v).trim().toLowerCase().includes(q));
+            }) || null;
+        }
+
+        function toggleClearSearchBtn() {
+            const input = document.getElementById('invoiceSearchInput');
+            const clearBtn = document.getElementById('clearInvoiceSearchBtn');
+            if (!input || !clearBtn) return;
+            if (input.value.trim()) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+        }
+
         function renderStaffInvoice(order) {
             if (!order) return;
             currentActiveOrder = order;
@@ -662,6 +814,12 @@
             document.getElementById('staffPayMethod').textContent = payMethod;
             document.getElementById('staffStageBadge').textContent = stage;
 
+            const searchInput = document.getElementById('invoiceSearchInput');
+            if (searchInput && !searchInput.value.trim()) {
+                searchInput.value = code;
+                toggleClearSearchBtn();
+            }
+
             // WhatsApp link
             const waClean = custPhone.replace(/[^0-9]/g, '');
             const waFormatted = waClean.startsWith('0') ? '62' + waClean.slice(1) : waClean;
@@ -702,48 +860,78 @@
                 }
                 if (verifyHint) verifyHint.textContent = 'Periksa saldo rekening atau fisik uang tunai, lalu tekan tombol konfirmasi.';
             }
+
+            showInvoiceResultState();
         }
 
         async function initStaffInvoice() {
-            const orders = await loadUnifiedOrders();
+            const searchInput = document.getElementById('invoiceSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', toggleClearSearchBtn);
+            }
+
             const params = new URLSearchParams(window.location.search);
-            const paramId = params.get('id') || params.get('code');
+            const paramId = (params.get('id') || params.get('code') || '').trim();
 
-            const selector = document.getElementById('staffOrderSelector');
-            if (selector) {
-                selector.innerHTML = '';
-                orders.forEach(o => {
-                    const opt = document.createElement('option');
-                    opt.value = o.code || o.id;
-                    opt.textContent = `${o.code || o.id} - ${o.customerName || 'Pelanggan'} (${o.service || 'Laundry'})`;
-                    selector.appendChild(opt);
-                });
+            if (!paramId) {
+                currentActiveOrder = null;
+                showInvoiceEmptyState();
+                await loadUnifiedOrders();
+                return;
             }
 
-            let found = null;
-            if (paramId) {
-                found = orders.find(o => o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId));
-            }
-            if (!found && orders.length > 0) {
-                found = orders[0];
+            if (searchInput) {
+                searchInput.value = paramId;
+                toggleClearSearchBtn();
             }
 
+            const orders = await loadUnifiedOrders();
+            const found = findOrderByQuery(orders, paramId);
             if (found) {
-                if (selector) selector.value = found.code || found.id;
                 await enrichStaffOrderDetail(found);
                 renderStaffInvoice(found);
+            } else {
+                currentActiveOrder = null;
+                showInvoiceNotFoundState(paramId);
             }
         }
 
-        async function switchStaffInvoice(code) {
-            if (!code) return;
-            window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(code)}`);
-            const orders = cachedStaffOrders.length ? cachedStaffOrders : await loadUnifiedOrders();
-            const match = orders.find(o => o.code === code || o.id === code);
+        async function searchStaffInvoice(event) {
+            if (event) event.preventDefault();
+            const input = document.getElementById('invoiceSearchInput');
+            const query = input ? input.value.trim() : '';
+
+            if (!query) {
+                resetStaffInvoiceSearch();
+                return;
+            }
+
+            toggleClearSearchBtn();
+            const orders = await loadUnifiedOrders();
+            const match = findOrderByQuery(orders, query);
+
             if (match) {
+                const resolvedCode = match.code || match.id || String(match.id_pesanan);
+                window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(resolvedCode)}`);
                 await enrichStaffOrderDetail(match);
                 renderStaffInvoice(match);
+            } else {
+                currentActiveOrder = null;
+                window.history.replaceState(null, '', 'invoice.html');
+                showInvoiceNotFoundState(query);
             }
+        }
+
+        function resetStaffInvoiceSearch() {
+            const input = document.getElementById('invoiceSearchInput');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            toggleClearSearchBtn();
+            currentActiveOrder = null;
+            window.history.replaceState(null, '', 'invoice.html');
+            showInvoiceEmptyState();
         }
 
         // Aksi Kasir: Konfirmasi Pembayaran Lunas ke Database MySQL

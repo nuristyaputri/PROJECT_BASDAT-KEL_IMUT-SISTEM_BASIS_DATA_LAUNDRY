@@ -1202,9 +1202,8 @@
         banner.classList.remove('hidden');
       }
 
-      if (orderInvoiceModal) {
-        orderInvoiceModal.classList.remove('hidden');
-      }
+      // Langsung arahkan ke halaman penuh Pemeriksaan Invoice & Verifikasi Pembayaran (tanpa pop-up modal)
+      window.location.href = `invoice.html?id=${encodeURIComponent(orderCodeVal)}`;
     }
 
     // Submit Buat Pesanan Terintegrasi ke Backend MySQL & Modal Invoice
