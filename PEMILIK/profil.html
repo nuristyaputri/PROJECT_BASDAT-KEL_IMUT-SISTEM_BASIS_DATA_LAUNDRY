@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - Bersihin Owner Console</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,7 +69,7 @@
         <div class="w-full flex flex-col justify-start items-start">
 
             <!-- Logo Brand Bersihin Laundry -->
-            <div class="w-full px-2 pb-6 flex justify-between items-center gap-2.5">
+            <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
                 <a href="dashboard.html"
                     class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                     <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
@@ -188,7 +191,7 @@
                 </ul>
 
                 <!-- Kelompok: AKUN -->
-                <div class="w-full px-2.5 pt-5 pb-2">
+                <div class="w-full px-2.5 pt-6 pb-2">
                     <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
                         AKUN
                     </span>
@@ -213,7 +216,7 @@
         </div>
 
         <!-- Bagian Bawah Sidebar: Tombol Keluar -->
-        <div class="w-full pt-4 flex flex-col justify-end items-start gap-2">
+        <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
             <a href="../login.html"
                 onclick="if(window.logoutOwner){logoutOwner(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}"
                 class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
@@ -232,15 +235,26 @@
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
         <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20">
-            <div class="flex flex-col justify-start items-start">
-                <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Profil Saya</h1>
-                <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-                    <time datetime="2024-05-20">Senin, 20 Mei 2024</time>
-                </p>
+            <div>
+                <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Profil Saya</h1>
+                <p class="text-xs text-slate-400">Kelola informasi pribadi dan akun pemilik Anda</p>
             </div>
 
             <!-- Right Controls -->
             <div class="flex items-center gap-4">
+                <!-- Tanggal Real-Time -->
+                <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+                    </div>
+                </div>
+
                 <!-- Notification Bell -->
                 <div class="relative">
                     <button id="notifToggleBtn" type="button" class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer" aria-label="Notifikasi" aria-expanded="false">
@@ -337,7 +351,7 @@
                         </p>
                         <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-xs rounded-full border border-white/20">
                             <span class="size-1.5 bg-emerald-300 rounded-full"></span>
-                            <span class="text-white text-[11px] font-medium leading-none">Pemilik Bisnis · Owner sejak Agustus 2021</span>
+                            <span class="text-white text-[11px] font-medium leading-none">Pemilik Bisnis</span>
                         </div>
                     </div>
                 </div>
@@ -505,9 +519,6 @@
                             <h3 id="statusHeading" class="text-white text-lg font-bold font-['Poppins'] leading-6 flex items-center gap-2">
                                 <span>Bersihin Laundry</span>
                             </h3>
-                            <p class="pt-1 text-slate-300 text-xs font-normal font-['Poppins']">
-                                Pusat &amp; Outlet Cabang · Aktif sejak Agustus 2021
-                            </p>
                         </div>
 
                         <!-- Progress Bar Operasional -->

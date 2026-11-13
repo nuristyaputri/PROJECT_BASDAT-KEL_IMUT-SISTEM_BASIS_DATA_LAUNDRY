@@ -43,13 +43,20 @@ async function login(req, res) {
 
     const secret = process.env.JWT_SECRET || 'bersihin_laundry_jwt_secret_key_2024_secure';
 
-    // 1. Jalur MySQL Database
+    // 1. Jalur MySQL Database (jalankan ensureSchema agar pelanggan dengan id_user NULL otomatis disinkronkan)
     let foundUser = null;
     let authSource = 'database';
+    const DEMO_SEEDED_HASH = '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW';
 
     try {
+      if (typeof db.ensureSchema === 'function') {
+        await db.ensureSchema();
+      }
+
+      const idCleanNoSpace = identifier.toLowerCase().replace(/\s+/g, '');
       const [rows] = await db.execute(
         `SELECT u.id_user, u.username, u.email, u.no_telp, u.password, u.role, u.status,
+                p.id_pelanggan,
                 COALESCE(p.created_at, u.created_at) AS created_at,
                 COALESCE(p.nama, pg.nama, pm.nama, u.username) AS nama,
                 COALESCE(p.telepon, pg.telepon, pm.telepon, u.no_telp, '') AS telepon_profil,
@@ -58,13 +65,70 @@ async function login(req, res) {
          LEFT JOIN pelanggan p ON p.id_user = u.id_user
          LEFT JOIN pegawai pg ON pg.id_user = u.id_user
          LEFT JOIN pemilik pm ON pm.id_user = u.id_user
-         WHERE (u.username = ? OR u.email = ? OR u.no_telp = ?) AND u.status = 'AKTIF'
+         WHERE (
+           u.username = ?
+           OR u.email = ?
+           OR u.no_telp = ?
+           OR LOWER(SUBSTRING_INDEX(u.email, '@', 1)) = LOWER(?)
+           OR LOWER(p.nama) = LOWER(?)
+           OR LOWER(REPLACE(p.nama, ' ', '')) = ?
+           OR LOWER(SUBSTRING_INDEX(p.nama, ' ', 1)) = LOWER(?)
+           OR p.telepon = ?
+         ) AND u.status = 'AKTIF'
          LIMIT 1`,
-        [identifier, identifier, identifier]
+        [identifier, identifier, identifier, identifier, identifier, idCleanNoSpace, identifier, identifier]
       );
 
       if (rows && rows.length > 0) {
         foundUser = rows[0];
+      } else {
+        // Jika belum ada di tabel users, cek apakah ada di tabel pelanggan (misal id_user masih NULL seperti Maya Anggraini)
+        const [unlinkedRows] = await db.execute(
+          `SELECT * FROM pelanggan
+           WHERE email = ?
+              OR telepon = ?
+              OR LOWER(nama) = LOWER(?)
+              OR LOWER(REPLACE(nama, ' ', '')) = ?
+              OR LOWER(SUBSTRING_INDEX(nama, ' ', 1)) = LOWER(?)
+              OR LOWER(SUBSTRING_INDEX(email, '@', 1)) = LOWER(?)
+           LIMIT 1`,
+          [identifier, identifier, identifier, idCleanNoSpace, identifier, identifier]
+        );
+
+        if (unlinkedRows && unlinkedRows.length > 0) {
+          const cust = unlinkedRows[0];
+          const cleanEmail = cust.email ? String(cust.email).trim().toLowerCase() : `${idCleanNoSpace}@example.com`;
+          const cleanPhone = cust.telepon ? String(cust.telepon).trim() : null;
+          let genUsername = String(cust.nama || idCleanNoSpace).toLowerCase().replace(/[^a-z0-9]/g, '') || `pelanggan${cust.id_pelanggan}`;
+
+          const [uCheck] = await db.execute('SELECT id_user FROM users WHERE username = ? LIMIT 1', [genUsername]);
+          if (uCheck && uCheck.length > 0) {
+            genUsername = `${genUsername}${cust.id_pelanggan}`;
+          }
+
+          const [insUser] = await db.execute(
+            "INSERT INTO users (username, email, no_telp, password, role, status) VALUES (?, ?, ?, ?, 'PELANGGAN', 'AKTIF')",
+            [genUsername, cleanEmail, cleanPhone, DEMO_SEEDED_HASH]
+          );
+
+          if (insUser && insUser.insertId) {
+            await db.execute('UPDATE pelanggan SET id_user = ? WHERE id_pelanggan = ?', [insUser.insertId, cust.id_pelanggan]);
+            foundUser = {
+              id_user: insUser.insertId,
+              id_pelanggan: cust.id_pelanggan,
+              username: genUsername,
+              email: cleanEmail,
+              no_telp: cleanPhone,
+              password: DEMO_SEEDED_HASH,
+              role: 'PELANGGAN',
+              status: 'AKTIF',
+              created_at: cust.created_at,
+              nama: cust.nama,
+              telepon_profil: cust.telepon || '',
+              alamat_profil: cust.alamat || ''
+            };
+          }
+        }
       }
     } catch (dbErr) {
       // MySQL offline / database belum diimport, beralih ke in-memory store
@@ -74,9 +138,13 @@ async function login(req, res) {
     // 2. Jalur In-Memory Fallback (jika MySQL tidak menemukan atau sedang offline)
     if (!foundUser) {
       const idLower = identifier.toLowerCase();
+      const idNoSpace = idLower.replace(/\s+/g, '');
       const mockUser = mockDb.users.find(u => {
+        const emailPrefix = u.email ? u.email.toLowerCase().split('@')[0] : '';
         const match = u.username.toLowerCase() === idLower ||
                       (u.email && u.email.toLowerCase() === idLower) ||
+                      (emailPrefix && emailPrefix === idLower) ||
+                      (u.nama && (u.nama.toLowerCase() === idLower || u.nama.toLowerCase().replace(/\s+/g, '') === idNoSpace || u.nama.toLowerCase().split(' ')[0] === idLower)) ||
                       (u.no_telp && u.no_telp === identifier) ||
                       (u.telepon && u.telepon === identifier);
         return match && u.status === 'AKTIF';
@@ -105,7 +173,6 @@ async function login(req, res) {
 
     // Verifikasi password (Bcrypt / Plaintext fallback / Seed Hash fallback)
     let passwordValid = false;
-    const DEMO_SEEDED_HASH = '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW';
 
     try {
       passwordValid = await bcrypt.compare(password, foundUser.password);
@@ -176,11 +243,16 @@ async function login(req, res) {
         if (custRows && custRows.length > 0) {
           idPelanggan = custRows[0].id_pelanggan;
           profileData = custRows[0];
+          if (!custRows[0].id_user && foundUser.id_user) {
+            await db.query('UPDATE pelanggan SET id_user = ? WHERE id_pelanggan = ?', [foundUser.id_user, idPelanggan]).catch(() => {});
+            profileData.id_user = foundUser.id_user;
+          }
         }
       } catch (_) {}
       if (!idPelanggan) {
-        const mCust = mockDb.pelanggan.find(p => p.id_user === foundUser.id_user);
+        const mCust = mockDb.pelanggan.find(p => p.id_user === foundUser.id_user || (p.email && foundUser.email && p.email.toLowerCase() === foundUser.email.toLowerCase()));
         idPelanggan = (mCust && mCust.id_pelanggan) || foundUser.id_pelanggan || null;
+        if (mCust && !mCust.id_user && foundUser.id_user) mCust.id_user = foundUser.id_user;
         profileData = mCust || { nama: foundUser.nama || foundUser.username, email: foundUser.email };
       }
     }
@@ -397,7 +469,13 @@ async function register(req, res) {
     const userTelp = telepon && String(telepon).trim() ? String(telepon).trim() : '08' + Math.floor(1000000000 + Math.random() * 9000000000);
 
     // Cek MySQL jika ada
+    let createdUserId = null;
+    let createdCustId = null;
     try {
+      if (typeof db.ensureSchema === 'function') {
+        await db.ensureSchema();
+      }
+
       const [existing] = await db.execute('SELECT id_user FROM users WHERE email = ? LIMIT 1', [cleanEmail]);
       if (existing && existing.length > 0) {
         return sendJSONResponse(res, false, 'Email ini sudah terdaftar dalam sistem.', null, 409);
@@ -416,21 +494,38 @@ async function register(req, res) {
       );
 
       if (result && result.insertId) {
-        const kodePelanggan = 'PLG-' + String(result.insertId).padStart(5, '0');
-        await db.execute(
-          "INSERT INTO pelanggan (id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier) VALUES (?, ?, ?, ?, ?, ?, 'REGULER')",
-          [result.insertId, kodePelanggan, nama.trim(), userTelp, cleanEmail, 'Jl. Margonda Raya No. 45, Beji, Depok']
-        ).catch(pErr => {
-          console.error('Peringatan: Gagal insert profil pelanggan:', pErr.message);
-        });
+        createdUserId = result.insertId;
+        // Cek apakah data pelanggan sudah ada di tabel pelanggan (misal ditambahkan kasir dengan id_user NULL)
+        const [existingCust] = await db.execute(
+          'SELECT id_pelanggan FROM pelanggan WHERE email = ? OR telepon = ? OR LOWER(nama) = LOWER(?) LIMIT 1',
+          [cleanEmail, userTelp, nama.trim()]
+        );
+
+        if (existingCust && existingCust.length > 0) {
+          createdCustId = existingCust[0].id_pelanggan;
+          await db.execute(
+            'UPDATE pelanggan SET id_user = ?, nama = ?, telepon = ?, email = ? WHERE id_pelanggan = ?',
+            [createdUserId, nama.trim(), userTelp, cleanEmail, createdCustId]
+          );
+        } else {
+          const kodePelanggan = 'PLG-' + String(createdUserId).padStart(5, '0');
+          const [custRes] = await db.execute(
+            "INSERT INTO pelanggan (id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier) VALUES (?, ?, ?, ?, ?, ?, 'REGULER')",
+            [createdUserId, kodePelanggan, nama.trim(), userTelp, cleanEmail, 'Jl. Margonda Raya No. 45, Beji, Depok']
+          );
+          if (custRes && custRes.insertId) createdCustId = custRes.insertId;
+        }
       }
     } catch (dbErr) {
       console.error('Peringatan: Gagal registrasi database MySQL:', dbErr.message);
     }
 
     // Simpan ke mockDb
+    const mockUserId = createdUserId || (mockDb.users.length + 1);
+    const mockCustId = createdCustId || (mockDb.pelanggan.length + 1);
     const mockUser = {
-      id_user: mockDb.users.length + 1,
+      id_user: mockUserId,
+      id_pelanggan: mockCustId,
       username: finalUsername,
       email: cleanEmail,
       no_telp: userTelp,
@@ -443,6 +538,8 @@ async function register(req, res) {
     mockDb.users.push(mockUser);
 
     return sendJSONResponse(res, true, 'Pendaftaran akun pelanggan baru berhasil.', {
+      id_user: mockUserId,
+      id_pelanggan: mockCustId,
       username: finalUsername,
       email: cleanEmail,
       nama: nama.trim(),

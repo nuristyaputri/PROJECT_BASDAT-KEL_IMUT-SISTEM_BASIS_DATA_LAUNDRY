@@ -608,32 +608,20 @@
             d.aktivitas_terbaru.forEach(act => {
               const item = document.createElement('div');
               item.className = 'flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition';
-              let badgeBg = 'bg-sky-100 text-cyan-600';
               let statusText = `Pesanan ${act.kode_pesanan} sedang diproses`;
               if (act.status === 'SELESAI') {
-                badgeBg = 'bg-emerald-100 text-emerald-600';
                 statusText = `Pesanan ${act.kode_pesanan} telah selesai`;
               } else if (act.status === 'SIAP_DIAMBIL') {
-                badgeBg = 'bg-teal-100 text-teal-600';
                 statusText = `Pesanan ${act.kode_pesanan} siap diambil`;
               } else if (act.status === 'MENUNGGU') {
-                badgeBg = 'bg-amber-100 text-amber-600';
                 statusText = `Pesanan ${act.kode_pesanan} menunggu proses`;
               }
 
               item.innerHTML = `
-                <div class="flex items-center gap-3.5">
-                  <div class="w-10 h-10 rounded-xl ${badgeBg} flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
-                    <p class="text-xs text-slate-500">${act.nama_pelanggan || 'Pelanggan'} · ${act.nama_layanan || 'Layanan Laundry'} · ${formatRupiah(act.total_harga)}</p>
-                  </div>
+                <div>
+                  <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
+                  <p class="text-xs text-slate-500">${act.nama_pelanggan || 'Pelanggan'} · ${act.nama_layanan || 'Layanan Laundry'} · ${formatRupiah(act.total_harga)}</p>
                 </div>
-                <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Real-time</span>
               `;
               actContainer.appendChild(item);
             });
@@ -655,7 +643,6 @@
                 <div class="text-xs leading-4">
                   <p class="font-semibold text-slate-800">Pesanan ${act.kode_pesanan} (${act.status})</p>
                   <p class="text-slate-500 text-[11px] mt-0.5">${act.nama_pelanggan} - ${formatRupiah(act.total_harga)}</p>
-                  <span class="block text-[10px] text-slate-400 mt-1">Real-time DB</span>
                 </div>
               `;
               notifList.appendChild(notifLink);
@@ -684,30 +671,53 @@
       if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
         tbody.innerHTML = '';
         json.data.forEach(trx => {
+          const statusPesanan = String(trx.status_pesanan || 'MENUNGGU').toUpperCase();
+          const statusBayar = String(trx.status_pembayaran || 'MENUNGGU').toUpperCase();
+          const layananText = trx.nama_layanan || 'Cuci Komplit (Cuci + Setrika)';
+          const beratText = trx.total_berat ? `${parseFloat(trx.total_berat)} kg` : '1 kg';
+          const metodeText = trx.metode ? `${statusBayar} (${trx.metode})` : statusBayar;
+
           const tr = document.createElement('tr');
           tr.className = 'trx-row hover:bg-slate-50/60 transition group';
           tr.setAttribute('data-code', trx.kode_pesanan || '');
           tr.setAttribute('data-name', trx.nama_pelanggan || '');
-          tr.setAttribute('data-service', 'Cuci Komplit');
+          tr.setAttribute('data-service', layananText);
           tr.setAttribute('data-price', formatRupiah(trx.total_harga));
-          tr.setAttribute('data-status', trx.status_pesanan || 'Diproses');
+          tr.setAttribute('data-status', statusPesanan);
 
-          const tgl = trx.tanggal_bayar ? new Date(trx.tanggal_bayar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Hari ini';
+          const rawDate = trx.tanggal_pesanan || trx.tanggal_bayar;
+          const tgl = rawDate ? new Date(rawDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Hari ini';
 
-          let statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>Diproses</span>';
-          if (trx.status_pesanan === 'SELESAI' || trx.status_pembayaran === 'BERHASIL') {
-            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>Selesai</span>';
-          } else if (trx.status_pesanan === 'MENUNGGU' || trx.status_pembayaran === 'MENUNGGU') {
-            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Menunggu</span>';
+          let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>${statusPesanan}</span>`;
+          if (statusPesanan === 'SELESAI') {
+            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+          } else if (statusPesanan === 'SIAP_DIAMBIL') {
+            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+          } else if (statusPesanan === 'MENUNGGU') {
+            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>${statusPesanan}</span>`;
+          } else if (statusPesanan === 'DIBATALKAN') {
+            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>${statusPesanan}</span>`;
           }
+
+          const invoiceSubBadge = statusBayar === 'BERHASIL'
+            ? `<span class="text-[10px] font-semibold text-emerald-600">Invoice: BERHASIL</span>`
+            : `<span class="text-[10px] font-semibold text-amber-600">Invoice: ${statusBayar}</span>`;
+
+          const safeName = (trx.nama_pelanggan || 'Pelanggan').replace(/'/g, "\\'");
+          const safeService = layananText.replace(/'/g, "\\'");
 
           tr.innerHTML = `
             <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.kode_pesanan}</td>
             <td class="py-4 px-5 text-slate-700 font-medium">${trx.nama_pelanggan || 'Pelanggan'}</td>
-            <td class="py-4 px-5 text-slate-600">Layanan Laundry</td>
+            <td class="py-4 px-5 text-slate-600">${layananText}</td>
             <td class="py-4 px-5 font-bold text-slate-800">${formatRupiah(trx.total_harga)}</td>
             <td class="py-4 px-5 text-slate-500">${tgl}</td>
-            <td class="py-4 px-5">${statusBadge}</td>
+            <td class="py-4 px-5">
+              <div class="flex flex-col items-start gap-1">
+                ${statusBadge}
+                ${invoiceSubBadge}
+              </div>
+            </td>
             <td class="py-4 px-5 text-right">
               <div class="flex items-center justify-end gap-1.5">
                 <a href="invoice.html?id=${encodeURIComponent(trx.kode_pesanan)}"
@@ -715,7 +725,7 @@
                   title="Periksa Invoice & Pembukuan">
                   Invoice
                 </a>
-                <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${trx.nama_pelanggan}', 'Layanan Laundry', '4 kg', '${formatRupiah(trx.total_harga)}', '${tgl}', '${trx.status_pesanan}', '${trx.status_pembayaran || 'Lunas'}')"
+                <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${safeName}', '${safeService}', '${beratText}', '${formatRupiah(trx.total_harga)}', '${tgl}', '${statusPesanan}', '${metodeText}')"
                   class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
                   Detail
                 </button>
@@ -725,9 +735,13 @@
           tbody.appendChild(tr);
         });
 
-        const paginationInfo = document.getElementById('paginationInfo');
-        if (paginationInfo) {
-          paginationInfo.textContent = `Menampilkan ${json.data.length} dari ${json.data.length} transaksi`;
+        if (typeof window.filterTransactions === 'function') {
+          window.filterTransactions();
+        } else {
+          const paginationInfo = document.getElementById('paginationInfo');
+          if (paginationInfo) {
+            paginationInfo.innerHTML = `Menampilkan <strong class="text-slate-700 font-semibold">${json.data.length}</strong> dari <strong class="text-slate-700 font-semibold">${json.data.length}</strong> data`;
+          }
         }
       }
     } catch (_) {}
@@ -736,8 +750,124 @@
   /**
    * Mengambil data pelanggan dari MySQL XAMPP dan merender ke tabel secara dinamis
    */
+  let currentCustomerPage = 1;
+  const CUSTOMER_PAGE_SIZE = 5;
+  let cachedOwnerCustomers = [];
+
+  function renderOwnerCustomerTablePage() {
+    const tbody = document.getElementById('customerTableBody') || document.querySelector('#pelangganTable tbody') || document.querySelector('#customerTable tbody');
+    if (!tbody) return;
+
+    const searchInput = document.getElementById('searchInput');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    const filtered = cachedOwnerCustomers.filter(cust => {
+      if (!query) return true;
+      const hay = `${cust.nama || ''} ${cust.kode_pelanggan || ''} ${cust.telepon || ''} ${cust.email || ''} ${cust.alamat || ''}`.toLowerCase();
+      return hay.includes(query);
+    });
+
+    const totalItems = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / CUSTOMER_PAGE_SIZE));
+    if (currentCustomerPage > totalPages) currentCustomerPage = totalPages;
+    if (currentCustomerPage < 1) currentCustomerPage = 1;
+
+    const startIdx = (currentCustomerPage - 1) * CUSTOMER_PAGE_SIZE;
+    const pageItems = filtered.slice(startIdx, startIdx + CUSTOMER_PAGE_SIZE);
+
+    tbody.innerHTML = '';
+    pageItems.forEach(cust => {
+      const inits = (cust.nama || 'PL').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PL';
+      const joinedDate = cust.created_at
+        ? new Date(cust.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+        : '1 Mar 2024';
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-50/80 transition group customer-row';
+      tr.innerHTML = `
+        <td class="py-3.5 px-5 whitespace-nowrap">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
+              ${inits}
+            </div>
+            <div>
+              <div class="font-bold text-slate-800 text-xs md:text-sm group-hover:text-cyan-700 transition customer-name">${cust.nama}</div>
+              <span class="text-[11px] text-slate-400">${cust.kode_pelanggan || ('PLG-081' + cust.id_pelanggan)}</span>
+            </div>
+          </div>
+        </td>
+        <td class="py-3.5 px-4 font-medium text-slate-600 whitespace-nowrap customer-phone">${cust.telepon || '-'}</td>
+        <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap customer-email">${cust.email || '-'}</td>
+        <td class="py-3.5 px-4 text-slate-600 max-w-xs truncate" title="${(cust.alamat || '-').replace(/"/g, '&quot;')}">${cust.alamat || '-'}</td>
+        <td class="py-3.5 px-4 text-center">
+          <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+            ${cust.total_pesanan ?? 0}
+          </span>
+        </td>
+        <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">${joinedDate}</td>
+        <td class="py-3.5 px-5 text-center whitespace-nowrap">
+          <div class="inline-flex items-center gap-1.5">
+            <button type="button" onclick="window.showBersihinToast && window.showBersihinToast('Detail Pelanggan: ${(cust.nama || '').replace(/'/g, "\\'")} (${cust.kode_pelanggan || ''}) - Tier: ${cust.member_tier || 'REGULER'}')"
+              class="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-sky-600 hover:border-sky-300 hover:bg-sky-50 transition" title="Lihat Detail">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const totalCounter = document.getElementById('totalCounter');
+    if (totalCounter) totalCounter.textContent = `${totalItems} pelanggan`;
+
+    const paginationInfo = document.getElementById('customerPaginationInfo');
+    if (paginationInfo) {
+      paginationInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${pageItems.length}</span> dari <span class="font-semibold text-slate-700">${totalItems}</span> data`;
+    }
+
+    const paginationBtns = document.getElementById('customerPaginationButtons');
+    if (paginationBtns) {
+      let btnsHtml = `
+        <button type="button" data-cust-page="${currentCustomerPage - 1}" ${currentCustomerPage <= 1 ? 'disabled' : ''}
+          class="w-8 h-8 rounded-lg border border-slate-200 bg-white ${currentCustomerPage <= 1 ? 'text-slate-400 opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 text-slate-600'} flex items-center justify-center transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      `;
+      for (let p = 1; p <= totalPages; p++) {
+        if (p === currentCustomerPage) {
+          btnsHtml += `<button type="button" data-cust-page="${p}" class="w-8 h-8 rounded-lg bg-slate-900 text-white font-semibold flex items-center justify-center shadow-xs">${p}</button>`;
+        } else {
+          btnsHtml += `<button type="button" data-cust-page="${p}" class="w-8 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center transition">${p}</button>`;
+        }
+      }
+      btnsHtml += `
+        <button type="button" data-cust-page="${currentCustomerPage + 1}" ${currentCustomerPage >= totalPages ? 'disabled' : ''}
+          class="w-8 h-8 rounded-lg border border-slate-200 bg-white ${currentCustomerPage >= totalPages ? 'text-slate-400 opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 text-slate-600'} flex items-center justify-center transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      `;
+      paginationBtns.innerHTML = btnsHtml;
+      paginationBtns.querySelectorAll('button[data-cust-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.disabled) return;
+          const targetPage = Number(btn.getAttribute('data-cust-page'));
+          if (targetPage >= 1 && targetPage <= totalPages) {
+            currentCustomerPage = targetPage;
+            renderOwnerCustomerTablePage();
+          }
+        });
+      });
+    }
+  }
+
   async function syncPemilikPelangganFromDatabase() {
-    const tbody = document.getElementById('customerTableBody') || document.querySelector('#customerTable tbody');
+    const tbody = document.getElementById('customerTableBody') || document.querySelector('#pelangganTable tbody') || document.querySelector('#customerTable tbody');
     if (!tbody) return;
 
     try {
@@ -749,39 +879,8 @@
       if (!res.ok) return;
       const json = await res.json();
       if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        tbody.innerHTML = '';
-        json.data.forEach(cust => {
-          const inits = (cust.nama || 'PL').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PL';
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50/80 transition group customer-row';
-          tr.innerHTML = `
-            <td class="py-3.5 px-5 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
-                  ${inits}
-                </div>
-                <div>
-                  <div class="font-bold text-slate-800 customer-name">${cust.nama}</div>
-                  <div class="text-[11px] text-slate-400">${cust.kode_pelanggan || ('PLG-00' + cust.id_pelanggan)}</div>
-                </div>
-              </div>
-            </td>
-            <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${cust.telepon || '-'}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${cust.email || '-'}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-700">${cust.total_pesanan || 0} order</td>
-            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-800">${formatRupiah(cust.total_belanja || 0)}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                ${cust.member_tier || 'Silver'}
-              </span>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        const totalCounter = document.getElementById('totalCounter');
-        if (totalCounter) totalCounter.textContent = `${json.data.length} Pelanggan`;
+        cachedOwnerCustomers = json.data;
+        renderOwnerCustomerTablePage();
       }
     } catch (_) {}
   }
@@ -833,7 +932,11 @@
         });
 
         const totalCounter = document.getElementById('totalCounter');
-        if (totalCounter) totalCounter.textContent = `${json.data.length} Pegawai`;
+        if (totalCounter) totalCounter.textContent = `${json.data.length} pegawai`;
+        const empPageInfo = document.getElementById('employeePaginationInfo');
+        if (empPageInfo) {
+          empPageInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${json.data.length}</span> dari <span class="font-semibold text-slate-700">${json.data.length}</span> data`;
+        }
       }
     } catch (_) {}
   }
@@ -1213,26 +1316,11 @@
 
     // 7.2 Live Search Pelanggan
     const searchInput = document.getElementById('searchInput');
-    const customerRows = document.querySelectorAll('.customer-row');
-    const totalCounter = document.getElementById('totalCounter');
-
-    if (searchInput && customerRows.length) {
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        let visibleCount = 0;
-
-        customerRows.forEach(row => {
-          const text = row.innerText.toLowerCase();
-          if (text.includes(query)) {
-            row.style.display = '';
-            visibleCount++;
-          } else {
-            row.style.display = 'none';
-          }
-        });
-
-        if (totalCounter) {
-          totalCounter.innerText = `${visibleCount} pelanggan`;
+    if (searchInput && document.getElementById('customerTableBody')) {
+      searchInput.addEventListener('input', () => {
+        if (cachedOwnerCustomers.length > 0) {
+          currentCustomerPage = 1;
+          renderOwnerCustomerTablePage();
         }
       });
     }
@@ -1474,10 +1562,10 @@
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const serviceFilter = document.getElementById('serviceFilter');
-    const trxRows = document.querySelectorAll('.trx-row');
     const paginationInfo = document.getElementById('paginationInfo');
 
     function filterTransactions() {
+      const trxRows = document.querySelectorAll('.trx-row');
       if (!trxRows.length) return;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
       const status = statusFilter ? statusFilter.value : '';
@@ -1493,7 +1581,7 @@
 
         const matchesQuery = !query || code.includes(query) || name.includes(query);
         const matchesStatus = !status || rowStatus === status;
-        const matchesService = !service || rowService === service;
+        const matchesService = !service || rowService.includes(service);
 
         if (matchesQuery && matchesStatus && matchesService) {
           row.style.display = '';
@@ -1539,15 +1627,21 @@
 
       if (badge) {
         badge.innerText = status || '';
-        if (status === 'Diproses') {
+        const sUp = String(status || '').toUpperCase();
+        if (sUp === 'DIPROSES' || sUp === 'DICUCI' || sUp === 'DISETRIKA') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-cyan-700 border border-sky-100';
-        } else if (status === 'Menunggu') {
+        } else if (sUp === 'MENUNGGU') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/60';
-        } else if (status === 'Selesai') {
+        } else if (sUp === 'SELESAI' || sUp === 'SIAP_DIAMBIL') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-teal-700 border border-emerald-200/60';
         } else {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
         }
+      }
+
+      const invLink = document.getElementById('modalOwnerInvoiceLink');
+      if (invLink) {
+        invLink.href = `invoice.html?id=${encodeURIComponent(code || '')}`;
       }
 
       detailModal.classList.remove('hidden');

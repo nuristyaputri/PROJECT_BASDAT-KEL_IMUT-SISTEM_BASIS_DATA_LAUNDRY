@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profil Saya - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
 
   <!-- Google Fonts: Poppins (sesuai standar Figma) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -255,11 +258,11 @@
   <!-- ===================================================================== -->
   <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
 
-    <!-- TOPBAR (Acuan Figma: h-20 px-9 bg-white/90 border-b border-slate-200) -->
+        <!-- TOPBAR -->
     <header
       class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
 
-      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Subtitle -->
       <div class="flex items-center gap-3">
         <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
           aria-controls="sidebar"
@@ -270,25 +273,36 @@
         </button>
 
         <div class="flex flex-col justify-start items-start">
-          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Profil Saya</h1>
-          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
-          </p>
+          <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Profil Saya</h1>
+          <p class="text-xs text-slate-400">Kelola informasi pribadi dan akun Anda</p>
         </div>
       </div>
-      <!-- Kanan: Notifikasi & Profil Pelanggan -->
-      <div class="flex justify-end items-center gap-3">
+
+      <!-- Kanan: Tanggal Real-Time + Notifikasi + Profil Pelanggan -->
+      <div class="flex items-center gap-4 md:gap-5">
+        <!-- Tanggal Real-Time -->
+        <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+          </div>
+        </div>
 
         <!-- Tombol Notifikasi -->
         <div class="relative">
           <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
-            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             <span id="notifDot"
-              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
           </button>
 
           <!-- Panel Dropdown Notifikasi -->
@@ -317,7 +331,7 @@
           </div>
         </div>
 
-        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <!-- Profil Pengguna (Avatar Style Pemilik) -->
         <div class="relative">
           <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
             aria-label="Profil Pengguna"
@@ -342,7 +356,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </header>
 
@@ -543,21 +556,21 @@
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </h3>
-              <p class="pt-1 text-slate-300 text-xs font-normal font-['Poppins']">
-                8 dari 10 transaksi menuju Gold
+              <p id="memberProgressSubtitle" class="pt-1 text-slate-300 text-xs font-normal font-['Poppins']">
+                2 dari 10 transaksi menuju Gold
               </p>
             </div>
 
             <!-- Progress Bar Transaksi -->
             <div class="w-full pt-4 pb-2">
               <div class="w-full h-2 bg-white/20 rounded-full overflow-hidden">
-                <div class="w-4/5 h-full bg-sky-300 rounded-full"></div>
+                <div id="memberProgressBar" class="h-full bg-sky-300 rounded-full transition-all duration-300" style="width: 20%;"></div>
               </div>
             </div>
 
             <div class="w-full flex justify-between items-center text-[11px] text-slate-300">
-              <span>80% Tercapai</span>
-              <span class="text-sky-200 font-medium">2 transaksi lagi</span>
+              <span id="memberProgressPercent">20% Tercapai</span>
+              <span id="memberProgressRemaining" class="text-sky-200 font-medium">8 transaksi lagi</span>
             </div>
 
             <!-- Tombol Keuntungan Member -->
@@ -879,7 +892,7 @@
         <p>Pusat layanan seputar data akun, alamat penjemputan, atau kendala pemesanan:</p>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
           <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
-          <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
+          <p class="text-[11px] text-slate-500">Jam operasional: 08.00 - 16.00 WIB</p>
         </div>
         <div class="pt-2 flex justify-end">
           <button type="button" id="okHelpModalBtn"
@@ -1015,6 +1028,27 @@
             const mb = document.getElementById('memberTierBadge');
             if (mb) mb.textContent = tNum;
           }
+          // Hitung jumlah pesanan real-time untuk akun pelanggan ini
+          try {
+            let ordersUrl = `${getApiBaseUrl()}/api/pelanggan/pesanan`;
+            if (q.length > 0) ordersUrl += `?${q.join('&')}`;
+            const oRes = await fetch(ordersUrl, { headers });
+            const oJson = await oRes.json();
+            if (oJson && oJson.success && Array.isArray(oJson.data)) {
+              const orderCount = oJson.data.length;
+              const target = 10;
+              const pct = Math.min(100, Math.round((orderCount / target) * 100));
+              const rem = Math.max(0, target - orderCount);
+              const subEl = document.getElementById('memberProgressSubtitle');
+              const barEl = document.getElementById('memberProgressBar');
+              const pctEl = document.getElementById('memberProgressPercent');
+              const remEl = document.getElementById('memberProgressRemaining');
+              if (subEl) subEl.textContent = `${orderCount} dari ${target} transaksi menuju Gold`;
+              if (barEl) barEl.style.width = `${pct}%`;
+              if (pctEl) pctEl.textContent = `${pct}% Tercapai`;
+              if (remEl) remEl.textContent = rem > 0 ? `${rem} transaksi lagi` : 'Target tercapai!';
+            }
+          } catch (_) {}
           if (p.created_at) {
             const ms = document.getElementById('bannerMemberSince');
             if (ms) {

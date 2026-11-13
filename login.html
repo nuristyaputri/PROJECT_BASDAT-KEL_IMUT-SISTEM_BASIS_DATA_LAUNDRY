@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Login - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="assets/logo-bersihin-sidebar.svg">
 
   <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -419,6 +422,20 @@
           password: 'password123',
           role: 'PELANGGAN',
           redirect: 'PELANGGAN/dashboard.html'
+        },
+        {
+          id_user: 7,
+          id_pelanggan: 4,
+          kode_pelanggan: 'PLG-08132',
+          member_tier: 'REGULER',
+          username: 'mayaanggraini',
+          email: 'maya@example.com',
+          telepon: '083333333333',
+          nama: 'Maya Anggraini',
+          alamat: 'Jl. Pondok Cina No. 7, Beji, Depok',
+          password: 'password123',
+          role: 'PELANGGAN',
+          redirect: 'PELANGGAN/dashboard.html'
         }
       ];
 
@@ -566,13 +583,15 @@
             let resIdCust = resUser.id_pelanggan || result.data.id_pelanggan || null;
             let resIdUser = resUser.id_user || result.data.id_user || null;
             const uName = resUser.username || (result.data.user && result.data.user.username) || rawId;
-            if (!resIdCust && (uName === 'nuristya' || resIdUser === 7)) {
-              resIdCust = 5;
-              resIdUser = 7;
+            if (!resIdCust && (uName === 'mayaanggraini' || uName === 'maya')) {
+              resIdCust = 4;
+              resIdUser = resIdUser || 7;
             }
             verifiedUser = {
               id_user: resIdUser,
               id_pelanggan: resIdCust,
+              kode_pelanggan: resUser.kode_pelanggan || null,
+              member_tier: resUser.member_tier || 'REGULER',
               username: uName,
               email: resUser.email || (result.data.user && result.data.user.email) || rawId,
               nama: resUser.nama || (result.data.user && result.data.user.nama) || rawId,
@@ -596,9 +615,12 @@
             // Periksa apakah akun tersimpan di storage lokal (misal pengguna baru mendaftar atau override kata sandi)
             const allUsers = getRegisteredUsers();
             const normalizedId = rawId.toLowerCase();
+            const normalizedNoSpace = normalizedId.replace(/\s+/g, '');
             const localUser = allUsers.find(u =>
               (u.email && u.email.toLowerCase() === normalizedId) ||
+              (u.email && u.email.toLowerCase().split('@')[0] === normalizedId) ||
               (u.username && u.username.toLowerCase() === normalizedId) ||
+              (u.nama && (u.nama.toLowerCase() === normalizedId || u.nama.toLowerCase().replace(/\s+/g, '') === normalizedNoSpace || u.nama.toLowerCase().split(' ')[0] === normalizedId)) ||
               (u.telepon && u.telepon === normalizedId)
             );
 
@@ -634,10 +656,13 @@
         if (!verifiedUser && !backendFailedExplicitly) {
           const allUsers = getRegisteredUsers();
           const normalizedId = rawId.toLowerCase();
+          const normalizedNoSpace = normalizedId.replace(/\s+/g, '');
 
           const foundUser = allUsers.find(u =>
             (u.email && u.email.toLowerCase() === normalizedId) ||
+            (u.email && u.email.toLowerCase().split('@')[0] === normalizedId) ||
             (u.username && u.username.toLowerCase() === normalizedId) ||
+            (u.nama && (u.nama.toLowerCase() === normalizedId || u.nama.toLowerCase().replace(/\s+/g, '') === normalizedNoSpace || u.nama.toLowerCase().split(' ')[0] === normalizedId)) ||
             (u.telepon && u.telepon === normalizedId)
           );
 
@@ -691,6 +716,7 @@
               if (uname === 'andipratama' || userId === 4) { custId = 1; userId = 4; }
               else if (uname === 'rinamarlina' || userId === 5) { custId = 2; userId = 5; }
               else if (uname === 'dedikurniawan' || userId === 6) { custId = 3; userId = 6; }
+              else if (uname === 'mayaanggraini' || uname === 'maya' || userId === 7) { custId = 4; userId = 7; }
             }
             verifiedUser.id_pelanggan = custId;
             verifiedUser.id_user = userId;

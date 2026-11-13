@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Bersihin Owner Console</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +39,16 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+        }
+
+        /* Gradien Banner Selamat Datang sama persis seperti di Dashboard Pelanggan */
+        .bg-figma-welcome {
+            background: linear-gradient(110deg, #155e75 0%, #0e7490 62%, #7dd3fc 100%);
+        }
+
+        /* Gradien Ilustrasi Mesin Cuci sesuai Figma: bg-linear-50 from-white to-blue-100 */
+        .bg-figma-washer {
+            background: linear-gradient(140deg, #ffffff 0%, #dbeafe 100%);
         }
     </style>
 </head>
@@ -74,7 +87,7 @@
         <div class="w-full flex flex-col justify-start items-start">
 
             <!-- Logo Brand Bersihin Laundry -->
-            <div class="w-full px-2 pb-6 flex justify-between items-center gap-2.5">
+            <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
                 <a href="dashboard.html"
                     class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                     <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
@@ -198,7 +211,7 @@
                 </ul>
 
                 <!-- Kelompok: AKUN -->
-                <div class="w-full px-2.5 pt-5 pb-2">
+                <div class="w-full px-2.5 pt-6 pb-2">
                     <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
                         AKUN
                     </span>
@@ -221,7 +234,7 @@
         </div>
 
         <!-- Bagian Bawah Sidebar: Tombol Keluar -->
-        <div class="w-full pt-4 flex flex-col justify-end items-start gap-2">
+        <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
             <a href="../login.html"
                 onclick="if(window.logoutOwner){logoutOwner(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}"
                 class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
@@ -256,8 +269,7 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="block text-[10px] text-slate-400 font-medium">Periode aktif</span>
-                        <span class="text-xs font-semibold text-slate-700">Mei 2024</span>
+                        <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
                     </div>
                 </div>
 
@@ -285,28 +297,25 @@
                         </div>
                         <div id="ownerNotifDropdownList" class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
                             <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
-                                    <p class="font-semibold text-slate-800">Pesanan ORD-0524-014 selesai</p>
-                                    <p class="text-slate-500 text-[11px] mt-0.5">Rizky Maulana - Cuci + Setrika</p>
-                                    <span class="block text-[10px] text-slate-400 mt-1">8 menit lalu</span>
+                                    <p class="font-semibold text-slate-800">Pesanan TRX-240520-05 (MENUNGGU)</p>
+                                    <p class="text-slate-500 text-[11px] mt-0.5">Maya Anggraini - Rp22.500</p>
                                 </div>
                             </a>
                             <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
                                 <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
-                                    <p class="font-semibold text-slate-800">Pembayaran baru diterima</p>
-                                    <p class="text-slate-500 text-[11px] mt-0.5">TRX-240520-09 - Rp45.000 via QRIS</p>
-                                    <span class="block text-[10px] text-slate-400 mt-1">24 menit lalu</span>
+                                    <p class="font-semibold text-slate-800">Pesanan TRX-240519-02 (DIPROSES)</p>
+                                    <p class="text-slate-500 text-[11px] mt-0.5">Rina Marlina - Rp52.000</p>
                                 </div>
                             </a>
                         </div>
@@ -349,33 +358,54 @@
 
         <!-- PAGE BODY -->
         <main class="p-6 md:p-9 space-y-6 max-w-7xl w-full mx-auto">
-            <!-- GREETING & DATE FILTER -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <span class="text-[11px] font-bold tracking-widest text-cyan-600 uppercase">Ringkasan Bisnis</span>
-                    <h2 class="text-xl md:text-2xl font-semibold text-slate-800">Selamat datang, Rangga.</h2>
-                    <p class="text-xs md:text-sm text-slate-500">Performa laundry Anda terlihat baik hari ini.</p>
+            <!-- HERO BANNER SELAMAT DATANG (Sama Persis seperti di Dashboard Pelanggan) -->
+            <section aria-label="Sambutan Pemilik Bisnis"
+                class="self-stretch min-h-44 px-6 sm:px-9 py-7 sm:py-8 relative bg-figma-welcome rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center overflow-hidden shadow-[0_12px_30px_0_rgba(22,65,94,0.12)]">
+
+                <div class="relative z-10 max-w-xl flex flex-col justify-start items-start">
+                    <span class="inline-block px-2.5 py-1 bg-white/10 rounded-md text-cyan-100 text-[10px] font-bold tracking-wider uppercase mb-2">
+                        RINGKASAN BISNIS PEMILIK
+                    </span>
+                    <h2 class="text-white text-xl sm:text-2xl font-semibold font-['Poppins'] leading-8 sm:leading-9">
+                        Selamat datang, <span id="bannerOwnerName">Rangga</span>.
+                    </h2>
+                    <p class="pt-1.5 text-blue-50 text-xs font-normal font-['Poppins'] leading-4">
+                        Performa laundry Anda terlihat prima dan seluruh operasional berjalan lancar hari ini.
+                    </p>
                 </div>
+
+                <!-- Elemen Dekoratif Lingkaran & Ilustrasi Mesin Cuci (Sama persis seperti di Dashboard Pelanggan) -->
                 <div
-                    class="inline-flex items-center gap-2.5 px-3.5 py-2 bg-white rounded-xl border border-slate-200 shadow-2xs self-start sm:self-auto">
-                    <div class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                    class="size-72 right-[180px] top-[-170px] absolute bg-white/0 rounded-full shadow-[0px_0px_0px_55px_rgba(255,255,255,0.02)] border border-white/10 pointer-events-none hidden sm:block"
+                    aria-hidden="true"></div>
+
+                <div class="w-44 h-40 right-6 lg:right-12 bottom-0 absolute pointer-events-none hidden md:block"
+                    aria-hidden="true">
+                    <div
+                        class="w-28 h-32 left-[35px] bottom-0 absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
+                        <div class="self-stretch h-7 relative border-b border-slate-300">
+                            <div class="size-1.5 left-[86px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
+                            <div class="size-1.5 left-[74px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
+                        </div>
+                        <div
+                            class="size-16 left-[18px] top-[42px] absolute bg-cyan-700 rounded-[35px] outline outline-[6.40px] outline-offset-[-6.40px] outline-sky-200 overflow-hidden">
+                            <div class="w-20 h-9 left-[-0.65px] top-[39.34px] absolute origin-top-left rotate-[-8deg] bg-sky-300">
+                            </div>
+                            <div
+                                class="size-5 left-[31.32px] top-[25.08px] absolute origin-top-left rotate-[22deg] rounded-lg border-[4.80px] border-white">
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="text-[10px] text-slate-400 font-medium">Hari ini</div>
-                        <div id="ownerDateDisplay" class="text-xs font-semibold text-slate-700" data-realtime-full-date>Senin, 20 Mei 2024</div>
-                    </div>
+                    <div class="left-[157px] top-[12px] absolute text-cyan-100 text-xl font-normal leading-8 select-none">✦</div>
+                    <div class="left-[3px] top-[55px] absolute text-cyan-100 text-xs font-normal leading-5 select-none">✦</div>
                 </div>
-            </div>
+            </section>
 
             <!-- PRIMARY 4 METRIC STATS -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Total Pendapatan -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition">
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-sky-100 text-blue-600 flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -384,20 +414,14 @@
                         </div>
                         <div>
                             <span class="text-xs font-medium text-slate-500">Total Pendapatan</span>
-                            <div id="ownerTotalPendapatan" class="text-xl font-bold text-slate-800">Rp294.000</div>
+                            <div id="ownerTotalPendapatan" class="text-xl font-bold text-slate-800">Rp191.500</div>
                         </div>
-                    </div>
-                    <div class="text-xs">
-                        <span class="text-emerald-600 font-semibold inline-flex items-center">
-                            ↑ 18,2%
-                        </span>
-                        <span class="text-slate-400 ml-1">dari bulan lalu</span>
                     </div>
                 </div>
 
                 <!-- Total Transaksi -->
                 <div class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition">
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3">
                         <div
                             class="w-10 h-10 rounded-xl bg-violet-100 text-indigo-600 flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -407,21 +431,15 @@
                         </div>
                         <div>
                             <span class="text-xs font-medium text-slate-500">Total Transaksi</span>
-                            <div id="ownerTotalTransaksi" class="text-xl font-bold text-slate-800">8</div>
+                            <div id="ownerTotalTransaksi" class="text-xl font-bold text-slate-800">5</div>
                         </div>
-                    </div>
-                    <div class="text-xs">
-                        <span class="text-emerald-600 font-semibold inline-flex items-center">
-                            ↑ 12,4%
-                        </span>
-                        <span class="text-slate-400 ml-1">dari bulan lalu</span>
                     </div>
                 </div>
 
                 <!-- Total Pelanggan -->
                 <a href="datapelanggan.html"
                     class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition block group">
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3">
                         <div
                             class="w-10 h-10 rounded-xl bg-emerald-100/70 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -432,20 +450,14 @@
                         <div>
                             <span class="text-xs font-medium text-slate-500 group-hover:text-cyan-700 transition">Total
                                 Pelanggan</span>
-                            <div id="ownerTotalPelanggan" class="text-xl font-bold text-slate-800">5</div>
+                            <div id="ownerTotalPelanggan" class="text-xl font-bold text-slate-800">4</div>
                         </div>
-                    </div>
-                    <div class="text-xs">
-                        <span class="text-emerald-600 font-semibold inline-flex items-center">
-                            ↑ 8,1%
-                        </span>
-                        <span class="text-slate-400 ml-1">dari bulan lalu</span>
                     </div>
                 </a>
 
                 <!-- Total Pegawai -->
                 <a href="datapegawai.html" class="bg-white p-5 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition block group">
-                    <div class="flex items-center gap-3 mb-3">
+                    <div class="flex items-center gap-3">
                         <div
                             class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -457,12 +469,6 @@
                             <span class="text-xs font-medium text-slate-500 group-hover:text-cyan-700 transition">Total Pegawai</span>
                             <div id="ownerTotalPegawai" class="text-xl font-bold text-slate-800">2</div>
                         </div>
-                    </div>
-                    <div class="text-xs">
-                        <span class="text-emerald-600 font-semibold inline-flex items-center">
-                            ↑ 1 pegawai
-                        </span>
-                        <span class="text-slate-400 ml-1">dari bulan lalu</span>
                     </div>
                 </a>
             </div>
@@ -481,7 +487,7 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Pesanan Masuk</span>
-                            <div id="ownerPesananMasuk" class="text-base font-bold text-slate-800">8</div>
+                            <div id="ownerPesananMasuk" class="text-base font-bold text-slate-800">5</div>
                         </div>
                     </div>
                     <span class="text-xs font-medium text-slate-400 bg-slate-50 px-2 py-1 rounded-md">Hari ini</span>
@@ -500,10 +506,10 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Pesanan Selesai</span>
-                            <div id="ownerPesananSelesai" class="text-base font-bold text-slate-800">2</div>
+                            <div id="ownerPesananSelesai" class="text-base font-bold text-slate-800">1</div>
                         </div>
                     </div>
-                    <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">Real-time</span>
+                    <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md">Selesai</span>
                 </div>
 
                 <!-- Dalam Proses -->
@@ -518,220 +524,10 @@
                         </div>
                         <div>
                             <span class="text-xs text-slate-500 font-medium">Dalam Proses</span>
-                            <div id="ownerDalamProses" class="text-base font-bold text-slate-800">6</div>
+                            <div id="ownerDalamProses" class="text-base font-bold text-slate-800">3</div>
                         </div>
                     </div>
                     <span class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md">Operasional</span>
-                </div>
-            </div>
-
-            <!-- CHARTS SECTION -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- CHART 1: Grafik Pendapatan -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-sm font-semibold text-slate-800">Grafik Pendapatan</h3>
-                                <p id="revChartSubtitle" class="text-xs text-slate-400">Klik titik atau hari untuk melihat detail pendapatan</p>
-                            </div>
-                            <div class="relative">
-                                <button type="button" id="revPeriodBtn"
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 text-xs text-slate-600 bg-white hover:bg-slate-50 transition cursor-pointer">
-                                    <span id="revPeriodLabel">7 hari terakhir</span>
-                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div id="revPeriodMenu"
-                                    class="hidden absolute right-0 mt-1.5 w-40 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 text-xs">
-                                    <button type="button" data-rev-period="7d"
-                                        class="w-full text-left px-3.5 py-2 font-semibold text-cyan-700 bg-sky-50/60 hover:bg-slate-50 cursor-pointer">7 hari terakhir</button>
-                                    <button type="button" data-rev-period="14d"
-                                        class="w-full text-left px-3.5 py-2 text-slate-600 hover:bg-slate-50 cursor-pointer">14 hari terakhir</button>
-                                    <button type="button" data-rev-period="30d"
-                                        class="w-full text-left px-3.5 py-2 text-slate-600 hover:bg-slate-50 cursor-pointer">30 hari terakhir</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Big Total -->
-                        <div class="flex items-center justify-between gap-2.5 mb-6">
-                            <div class="flex items-center gap-2.5">
-                                <div id="revTotalValue" class="text-2xl font-bold text-slate-900">Rp6.840.000</div>
-                                <span id="revBadgeValue"
-                                    class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+15,8%</span>
-                            </div>
-                            <span id="revSelectedDayBadge" class="hidden text-[11px] font-medium text-cyan-700 bg-sky-50 px-2.5 py-1 rounded-lg"></span>
-                        </div>
-
-                        <!-- Area / Line Chart (SVG Crisp Responsive & Interactive) -->
-                        <div class="relative w-full h-44">
-                            <!-- Y-Axis Values -->
-                            <div
-                                class="absolute left-0 inset-y-0 w-8 flex flex-col justify-between text-[10px] text-slate-400 font-medium">
-                                <span>15jt</span>
-                                <span>10jt</span>
-                                <span>5jt</span>
-                                <span>0</span>
-                            </div>
-
-                            <!-- SVG Curve -->
-                            <div class="ml-9 h-full">
-                                <svg class="w-full h-36 overflow-visible" viewBox="0 0 700 140"
-                                    preserveAspectRatio="none">
-                                    <defs>
-                                        <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
-                                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
-                                        </linearGradient>
-                                    </defs>
-
-                                    <!-- Grid Horizontal lines -->
-                                    <line x1="0" y1="10" x2="700" y2="10" stroke="#f1f5f9" stroke-width="1"
-                                        stroke-dasharray="3 3" />
-                                    <line x1="0" y1="50" x2="700" y2="50" stroke="#f1f5f9" stroke-width="1"
-                                        stroke-dasharray="3 3" />
-                                    <line x1="0" y1="90" x2="700" y2="90" stroke="#f1f5f9" stroke-width="1"
-                                        stroke-dasharray="3 3" />
-                                    <line x1="0" y1="130" x2="700" y2="130" stroke="#f1f5f9" stroke-width="1" />
-
-                                    <!-- Area Fill -->
-                                    <path id="revAreaPath"
-                                        d="M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25 L 700 130 L 0 130 Z"
-                                        fill="url(#revenueGrad)" />
-
-                                    <!-- Line Stroke -->
-                                    <path id="revLinePath"
-                                        d="M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25"
-                                        fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" />
-
-                                    <!-- Interactive Dots for All 7 Days -->
-                                    <circle data-rev-day="Sen" data-rev-val="Rp680.000" data-rev-growth="+4,2%" cx="0" cy="95" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
-                                    <circle data-rev-day="Sel" data-rev-val="Rp790.000" data-rev-growth="+6,8%" cx="115" cy="88" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
-                                    <circle data-rev-day="Rab" data-rev-val="Rp920.000" data-rev-growth="+11,5%" cx="230" cy="65" r="5" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer ring-4 ring-sky-100 transition-all" />
-                                    <circle data-rev-day="Kam" data-rev-val="Rp860.000" data-rev-growth="+9,1%" cx="355" cy="58" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
-                                    <circle data-rev-day="Jum" data-rev-val="Rp1.080.000" data-rev-growth="+16,4%" cx="480" cy="40" r="5" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer ring-4 ring-sky-100 transition-all" />
-                                    <circle data-rev-day="Sab" data-rev-val="Rp1.190.000" data-rev-growth="+19,0%" cx="590" cy="32" r="5" fill="#ffffff" stroke="#0284c7" stroke-width="2.5" class="cursor-pointer hover:r-6 transition-all" />
-                                    <circle data-rev-day="Min" data-rev-val="Rp1.320.000" data-rev-growth="+22,4%" cx="700" cy="25" r="6" fill="#0284c7" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-all" />
-                                </svg>
-                                <!-- X-Axis Days (Clickable) -->
-                                <div class="flex justify-between text-[11px] text-slate-400 font-medium pt-2">
-                                    <button type="button" data-rev-day="Sen" data-rev-val="Rp680.000" data-rev-growth="+4,2%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sen</button>
-                                    <button type="button" data-rev-day="Sel" data-rev-val="Rp790.000" data-rev-growth="+6,8%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sel</button>
-                                    <button type="button" data-rev-day="Rab" data-rev-val="Rp920.000" data-rev-growth="+11,5%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Rab</button>
-                                    <button type="button" data-rev-day="Kam" data-rev-val="Rp860.000" data-rev-growth="+9,1%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Kam</button>
-                                    <button type="button" data-rev-day="Jum" data-rev-val="Rp1.080.000" data-rev-growth="+16,4%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Jum</button>
-                                    <button type="button" data-rev-day="Sab" data-rev-val="Rp1.190.000" data-rev-growth="+19,0%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Sab</button>
-                                    <button type="button" data-rev-day="Min" data-rev-val="Rp1.320.000" data-rev-growth="+22,4%" class="hover:text-sky-600 cursor-pointer px-1 rounded">Min</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CHART 2: Grafik Transaksi -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-sm font-semibold text-slate-800">Grafik Transaksi</h3>
-                                <p class="text-xs text-slate-400">Klik batang diagram untuk rincian harian</p>
-                            </div>
-                            <div class="relative">
-                                <button type="button" id="trxChartMenuBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 cursor-pointer" aria-label="Menu Opsi">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                                    </svg>
-                                </button>
-                                <div id="trxChartMenu"
-                                    class="hidden absolute right-0 mt-1.5 w-44 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 text-xs">
-                                    <button type="button" id="trxResetBarBtn"
-                                        class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-slate-50 cursor-pointer">Tampilkan Rata-rata</button>
-                                    <a href="transaksi.html"
-                                        class="block px-3.5 py-2 text-slate-700 hover:bg-slate-50">Buka Data Transaksi</a>
-                                    <a href="laporan.html"
-                                        class="block px-3.5 py-2 text-cyan-600 font-semibold hover:bg-slate-50">Buka Laporan Lengkap</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bar Chart Container (Interactive) -->
-                        <div class="h-44 flex items-end justify-between gap-2 sm:gap-4 px-2 pt-6">
-                            <!-- Sen: 12 -->
-                            <button type="button" data-trx-day="Senin" data-trx-count="12 transaksi" data-trx-omzet="Rp680.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">12</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-16 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sen</span>
-                            </button>
-                            <!-- Sel: 15 -->
-                            <button type="button" data-trx-day="Selasa" data-trx-count="15 transaksi" data-trx-omzet="Rp790.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">15</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-20 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sel</span>
-                            </button>
-                            <!-- Rab: 18 -->
-                            <button type="button" data-trx-day="Rabu" data-trx-count="18 transaksi" data-trx-omzet="Rp920.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">18</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-24 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Rab</span>
-                            </button>
-                            <!-- Kam: 21 -->
-                            <button type="button" data-trx-day="Kamis" data-trx-count="21 transaksi" data-trx-omzet="Rp860.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">21</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-28 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Kam</span>
-                            </button>
-                            <!-- Jum: 24 -->
-                            <button type="button" data-trx-day="Jumat" data-trx-count="24 transaksi" data-trx-omzet="Rp1.080.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">24</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-32 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Jum</span>
-                            </button>
-                            <!-- Sab: 27 -->
-                            <button type="button" data-trx-day="Sabtu" data-trx-count="27 transaksi" data-trx-omzet="Rp1.190.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">27</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-36 bg-gradient-to-t from-blue-500 to-sky-400 rounded-t-md group-hover:from-blue-600 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Sab</span>
-                            </button>
-                            <!-- Min: 30 -->
-                            <button type="button" data-trx-day="Minggu" data-trx-count="30 transaksi" data-trx-omzet="Rp1.320.000" class="flex-1 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none">
-                                <span
-                                    class="text-[10px] font-semibold text-slate-500 opacity-80 group-hover:opacity-100">30</span>
-                                <div
-                                    class="trx-bar w-full max-w-[28px] h-40 bg-gradient-to-t from-blue-600 to-sky-400 rounded-t-md group-hover:from-blue-700 group-hover:to-sky-500 transition-all">
-                                </div>
-                                <span class="trx-day-label text-[11px] text-slate-400 font-medium">Min</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Footer Average -->
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <span id="trxFooterLabel" class="text-slate-400">Rata-rata harian</span>
-                        <span id="trxFooterValue" class="font-semibold text-slate-800">21 transaksi</span>
-                    </div>
                 </div>
             </div>
 
@@ -755,201 +551,52 @@
                     <!-- Activity 1 -->
                     <div
                         class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition">
-                        <div class="flex items-center gap-3.5">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan ORD-0524-014 telah
-                                    selesai</h4>
-                                <p class="text-xs text-slate-500">Rizky Maulana · Cuci + Setrika</p>
-                            </div>
+                        <div>
+                            <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan TRX-240520-05 menunggu proses</h4>
+                            <p class="text-xs text-slate-500">Maya Anggraini · Cuci Komplit (Cuci + Setrika) · Rp22.500</p>
                         </div>
-                        <span class="text-xs text-slate-400 font-medium whitespace-nowrap">8 menit lalu</span>
                     </div>
 
                     <!-- Activity 2 -->
                     <div
                         class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition">
-                        <div class="flex items-center gap-3.5">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pembayaran baru diterima
-                                </h4>
-                                <p class="text-xs text-slate-500">TRX-240520-09 · Rp45.000 via QRIS</p>
-                            </div>
+                        <div>
+                            <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan TRX-240519-02 sedang diproses</h4>
+                            <p class="text-xs text-slate-500">Rina Marlina · Cuci Komplit (Cuci + Setrika), Cuci Bedcover Besar · Rp52.000</p>
                         </div>
-                        <span class="text-xs text-slate-400 font-medium whitespace-nowrap">24 menit lalu</span>
                     </div>
 
                     <!-- Activity 3 -->
-                    <a href="datapelanggan.html"
-                        class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition block group">
-                        <div class="flex items-center gap-3.5">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h4
-                                    class="text-xs md:text-sm font-semibold text-slate-800 group-hover:text-cyan-700 transition">
-                                    Pelanggan baru terdaftar
-                                </h4>
-                                <p class="text-xs text-slate-500">Nadia Putri bergabung sebagai pelanggan</p>
-                            </div>
+                    <div
+                        class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition">
+                        <div>
+                            <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan TRX-240518-01 sedang diproses</h4>
+                            <p class="text-xs text-slate-500">Andi Pratama · Cuci Komplit (Cuci + Setrika) · Rp40.500</p>
                         </div>
-                        <span class="text-xs text-slate-400 font-medium whitespace-nowrap">1 jam lalu</span>
-                    </a>
+                    </div>
+
+                    <!-- Activity 4 -->
+                    <div
+                        class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition">
+                        <div>
+                            <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan TRX-240517-03 siap diambil</h4>
+                            <p class="text-xs text-slate-500">Dedi Kurniawan · Cuci Komplit (Cuci + Setrika) · Rp45.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Activity 5 -->
+                    <div
+                        class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition">
+                        <div>
+                            <h4 class="text-xs md:text-sm font-semibold text-slate-800">Pesanan TRX-240510-04 telah selesai</h4>
+                            <p class="text-xs text-slate-500">Andi Pratama · Cuci Komplit (Cuci + Setrika) · Rp54.000</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- SCRIPT FOR MOBILE TOGGLE (handled centrally by ../JS/pemilik.js) -->
-    <script>
-
-        // Interactive Grafik Pendapatan (Period selector & Day points)
-        const revPeriodBtn = document.getElementById('revPeriodBtn');
-        const revPeriodLabel = document.getElementById('revPeriodLabel');
-        const revPeriodMenu = document.getElementById('revPeriodMenu');
-        const revTotalValue = document.getElementById('revTotalValue');
-        const revBadgeValue = document.getElementById('revBadgeValue');
-        const revSelectedDayBadge = document.getElementById('revSelectedDayBadge');
-        const revAreaPath = document.getElementById('revAreaPath');
-        const revLinePath = document.getElementById('revLinePath');
-
-        const revPeriodData = {
-            '7d': {
-                label: '7 hari terakhir',
-                total: 'Rp6.840.000',
-                growth: '+15,8%',
-                line: 'M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25',
-                area: 'M 0 95 C 100 80, 150 110, 230 65 C 320 20, 400 85, 480 40 C 560 0, 620 50, 700 25 L 700 130 L 0 130 Z'
-            },
-            '14d': {
-                label: '14 hari terakhir',
-                total: 'Rp13.120.000',
-                growth: '+16,9%',
-                line: 'M 0 105 C 100 90, 150 75, 230 70 C 320 55, 400 50, 480 45 C 560 30, 620 35, 700 20',
-                area: 'M 0 105 C 100 90, 150 75, 230 70 C 320 55, 400 50, 480 45 C 560 30, 620 35, 700 20 L 700 130 L 0 130 Z'
-            },
-            '30d': {
-                label: '30 hari terakhir',
-                total: 'Rp24.800.000',
-                growth: '+18,2%',
-                line: 'M 0 110 C 100 95, 150 85, 230 60 C 320 45, 400 55, 480 30 C 560 25, 620 20, 700 15',
-                area: 'M 0 110 C 100 95, 150 85, 230 60 C 320 45, 400 55, 480 30 C 560 25, 620 20, 700 15 L 700 130 L 0 130 Z'
-            }
-        };
-
-        if (revPeriodBtn && revPeriodMenu) {
-            revPeriodBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                revPeriodMenu.classList.toggle('hidden');
-            });
-
-            document.querySelectorAll('[data-rev-period]').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const key = btn.getAttribute('data-rev-period');
-                    const d = revPeriodData[key];
-                    if (d) {
-                        revPeriodLabel.textContent = d.label;
-                        revTotalValue.textContent = d.total;
-                        revBadgeValue.textContent = d.growth;
-                        revLinePath.setAttribute('d', d.line);
-                        revAreaPath.setAttribute('d', d.area);
-                        revSelectedDayBadge.classList.add('hidden');
-                    }
-                    revPeriodMenu.classList.add('hidden');
-                });
-            });
-        }
-
-        document.querySelectorAll('[data-rev-day]').forEach((el) => {
-            el.addEventListener('click', () => {
-                const day = el.getAttribute('data-rev-day');
-                const val = el.getAttribute('data-rev-val');
-                const growth = el.getAttribute('data-rev-growth');
-                revTotalValue.textContent = val;
-                revBadgeValue.textContent = growth;
-                revSelectedDayBadge.textContent = 'Hari: ' + day + ' (Klik untuk reset)';
-                revSelectedDayBadge.classList.remove('hidden');
-                revSelectedDayBadge.classList.add('cursor-pointer');
-            });
-        });
-
-        if (revSelectedDayBadge) {
-            revSelectedDayBadge.addEventListener('click', () => {
-                revTotalValue.textContent = 'Rp6.840.000';
-                revBadgeValue.textContent = '+15,8%';
-                revSelectedDayBadge.classList.add('hidden');
-            });
-        }
-
-        // Interactive Grafik Transaksi (Bars & Menu Opsi)
-        const trxChartMenuBtn = document.getElementById('trxChartMenuBtn');
-        const trxChartMenu = document.getElementById('trxChartMenu');
-        const trxResetBarBtn = document.getElementById('trxResetBarBtn');
-        const trxFooterLabel = document.getElementById('trxFooterLabel');
-        const trxFooterValue = document.getElementById('trxFooterValue');
-
-        if (trxChartMenuBtn && trxChartMenu) {
-            trxChartMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                trxChartMenu.classList.toggle('hidden');
-            });
-        }
-
-        document.querySelectorAll('[data-trx-day]').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                const day = btn.getAttribute('data-trx-day');
-                const count = btn.getAttribute('data-trx-count');
-                const omzet = btn.getAttribute('data-trx-omzet');
-
-                document.querySelectorAll('.trx-bar').forEach((bar) => {
-                    bar.classList.remove('ring-4', 'ring-sky-200');
-                });
-                const currentBar = btn.querySelector('.trx-bar');
-                if (currentBar) currentBar.classList.add('ring-4', 'ring-sky-200');
-
-                trxFooterLabel.textContent = 'Hari ' + day + ' (' + omzet + ')';
-                trxFooterValue.textContent = count;
-            });
-        });
-
-        if (trxResetBarBtn) {
-            trxResetBarBtn.addEventListener('click', () => {
-                document.querySelectorAll('.trx-bar').forEach((bar) => {
-                    bar.classList.remove('ring-4', 'ring-sky-200');
-                });
-                trxFooterLabel.textContent = 'Rata-rata harian';
-                trxFooterValue.textContent = '21 transaksi';
-                trxChartMenu.classList.add('hidden');
-            });
-        }
-
-        document.addEventListener('click', (e) => {
-            if (revPeriodMenu && !revPeriodMenu.contains(e.target) && e.target !== revPeriodBtn) {
-                revPeriodMenu.classList.add('hidden');
-            }
-            if (trxChartMenu && !trxChartMenu.contains(e.target) && e.target !== trxChartMenuBtn) {
-                trxChartMenu.classList.add('hidden');
-            }
-        });
-    </script>
     <!-- Skrip Utama Pemilik (Vanilla JS) -->
     <script src="../JS/pemilik.js"></script>
 </body>

@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Pelanggan - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
 
   <!-- Google Fonts: Poppins (sesuai desain Figma) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,6 +89,11 @@
     #activeOrderStepper *,
     #statSedangDiproses,
     #statSedangDiprosesSub,
+    #cardTotalPengeluaran,
+    #cardTotalPengeluaran *,
+    #statTotalPengeluaran,
+    #statTotalPengeluaran *,
+    #statTotalPengeluaranSub,
     [data-status-badge],
     [data-status-badge] *,
     *,
@@ -289,11 +297,11 @@
   <!-- ===================================================================== -->
   <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
 
-    <!-- TOPBAR -->
+        <!-- TOPBAR -->
     <header
       class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
 
-      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Subtitle -->
       <div class="flex items-center gap-3">
         <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
           aria-controls="sidebar"
@@ -304,26 +312,36 @@
         </button>
 
         <div class="flex flex-col justify-start items-start">
-          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Dashboard</h1>
-          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
-          </p>
+          <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Dashboard</h1>
+          <p class="text-xs text-slate-400">Ringkasan akun dan pesanan laundry Anda</p>
         </div>
       </div>
 
-      <!-- Kanan: Notifikasi & Profil Pelanggan -->
-      <div class="flex justify-end items-center gap-3">
+      <!-- Kanan: Tanggal Real-Time + Notifikasi + Profil Pelanggan -->
+      <div class="flex items-center gap-4 md:gap-5">
+        <!-- Tanggal Real-Time -->
+        <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+          </div>
+        </div>
 
         <!-- Tombol Notifikasi -->
         <div class="relative">
           <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
-            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             <span id="notifDot"
-              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
           </button>
 
           <!-- Panel Dropdown Notifikasi -->
@@ -352,11 +370,11 @@
           </div>
         </div>
 
-        <!-- Profil Pengguna (Avatar Style Pelanggan) -->
+        <!-- Profil Pengguna (Avatar Style Pemilik) -->
         <div class="relative">
           <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
             aria-label="Profil Pengguna"
-            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
             AP
           </button>
 
@@ -377,7 +395,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </header>
 
@@ -407,10 +424,10 @@
           class="size-72 right-[180px] top-[-170px] absolute bg-white/0 rounded-full shadow-[0px_0px_0px_55px_rgba(255,255,255,0.02)] border border-white/10 pointer-events-none hidden sm:block"
           aria-hidden="true"></div>
 
-        <div class="w-44 h-40 right-6 lg:right-12 top-[17px] absolute pointer-events-none hidden md:block"
+        <div class="w-44 h-40 right-6 lg:right-12 bottom-0 absolute pointer-events-none hidden md:block"
           aria-hidden="true">
           <div
-            class="w-28 h-32 left-[35px] top-[32px] absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
+            class="w-28 h-32 left-[35px] bottom-0 absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
             <div class="self-stretch h-7 relative border-b border-slate-300">
               <div class="size-1.5 left-[86px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
               <div class="size-1.5 left-[74px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
@@ -496,7 +513,7 @@
         </article>
 
         <!-- Kartu 4: Total Pengeluaran -->
-        <article
+        <article id="cardTotalPengeluaran"
           class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
           <div class="size-9 bg-purple-100 rounded-xl inline-flex justify-center items-center shrink-0">
             <svg class="size-5 text-violet-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
