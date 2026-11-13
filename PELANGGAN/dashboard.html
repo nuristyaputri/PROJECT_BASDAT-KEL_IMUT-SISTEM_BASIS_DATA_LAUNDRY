@@ -88,12 +88,10 @@
     #activeOrderStepper,
     #activeOrderStepper *,
     #statSedangDiproses,
-    #statSedangDiprosesSub,
     #cardTotalPengeluaran,
     #cardTotalPengeluaran *,
     #statTotalPengeluaran,
     #statTotalPengeluaran *,
-    #statTotalPengeluaranSub,
     [data-status-badge],
     [data-status-badge] *,
     *,
@@ -220,8 +218,7 @@
                 <span>Status Pesanan</span>
               </span>
               <span id="sidebarActiveBadge"
-                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
-                1
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none hidden">
               </span>
             </a>
           </li>
@@ -468,10 +465,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Transaksi</h3>
             <div id="statTotalTransaksi" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">24</div>
-            <div id="statTotalTransaksiSub" class="pt-0.5 text-[10px] font-normal font-['Poppins'] leading-3">
-              <span class="text-emerald-700 font-semibold">+3</span>
-              <span class="text-slate-500"> bulan ini</span>
-            </div>
           </div>
         </article>
 
@@ -488,9 +481,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Sedang Diproses</h3>
             <div id="statSedangDiproses" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">1</div>
-            <div id="statSedangDiprosesSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              Tahap penyetrikaan
-            </div>
           </div>
         </article>
 
@@ -506,9 +496,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Pesanan Selesai</h3>
             <div id="statPesananSelesai" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">22</div>
-            <div id="statPesananSelesaiSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              91% tepat waktu
-            </div>
           </div>
         </article>
 
@@ -525,9 +512,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Pengeluaran</h3>
             <div id="statTotalPengeluaran" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">Rp842k</div>
-            <div id="statTotalPengeluaranSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              Akumulasi pengeluaran
-            </div>
           </div>
         </article>
       </section>
@@ -1159,12 +1143,19 @@
           document.getElementById('statSedangDiproses').textContent = stats.processing;
           document.getElementById('statPesananSelesai').textContent = stats.completed;
           document.getElementById('statTotalPengeluaran').textContent = stats.totalExpenseFormatted;
-          const procSub = document.getElementById('statSedangDiprosesSub');
-          if (procSub) procSub.textContent = `${stats.processing} pesanan berjalan`;
-          const expSub = document.getElementById('statTotalPengeluaranSub');
-          if (expSub) expSub.textContent = 'Akumulasi pengeluaran';
+          
+          
         }
-        sidebarActiveBadge.textContent = stats ? String(stats.processing) : '1';
+        if (sidebarActiveBadge) {
+          const procCount = stats ? (stats.processing || 0) : 0;
+          if (procCount > 0) {
+            sidebarActiveBadge.textContent = String(procCount);
+            sidebarActiveBadge.classList.remove('hidden');
+          } else {
+            sidebarActiveBadge.textContent = '';
+            sidebarActiveBadge.classList.add('hidden');
+          }
+        }
         activeOrderReadyContent.classList.remove('hidden');
         activeOrderEmptyContent.classList.add('hidden');
         recentTransactionsTableWrapper.classList.remove('hidden');
@@ -1191,7 +1182,10 @@
         document.getElementById('statSedangDiproses').textContent = '0';
         document.getElementById('statPesananSelesai').textContent = '0';
         document.getElementById('statTotalPengeluaran').textContent = 'Rp0';
-        sidebarActiveBadge.textContent = '0';
+        if (sidebarActiveBadge) {
+          sidebarActiveBadge.textContent = '';
+          sidebarActiveBadge.classList.add('hidden');
+        }
         activeOrderReadyContent.classList.add('hidden');
         activeOrderEmptyContent.classList.remove('hidden');
         recentTransactionsTableWrapper.classList.add('hidden');
@@ -1255,8 +1249,7 @@
         if (doneEl && doneEl.textContent !== String(stats.completed)) doneEl.textContent = stats.completed;
         const expEl = document.getElementById('statTotalPengeluaran');
         if (expEl && expEl.textContent !== stats.totalExpenseFormatted) expEl.textContent = stats.totalExpenseFormatted;
-        const expSub = document.getElementById('statTotalPengeluaranSub');
-        if (expSub && expSub.textContent !== 'Akumulasi pengeluaran') expSub.textContent = 'Akumulasi pengeluaran';
+        
       }
 
       const readyContent = document.getElementById('activeOrderReadyContent');
@@ -1266,8 +1259,7 @@
       if (!order) {
         if (readyContent) readyContent.classList.add('hidden');
         if (emptyContent) emptyContent.classList.remove('hidden');
-        const procSub = document.getElementById('statSedangDiprosesSub');
-        if (procSub && procSub.textContent !== 'Tidak ada pesanan aktif') procSub.textContent = 'Tidak ada pesanan aktif';
+        
         return;
       }
 
@@ -1373,7 +1365,6 @@
       // 3. Evaluasi Status & Estimasi Pengerjaan
       const badgeEl = document.getElementById('activeOrderBadge');
       const stepperEl = document.getElementById('activeOrderStepper');
-      const subProcessEl = document.getElementById('statSedangDiprosesSub');
 
       const rawStatus = String(order.status || '').toUpperCase().trim();
       let step = 1;
@@ -1389,7 +1380,7 @@
             <span class="text-amber-800 text-[10px] font-semibold">Menunggu konfirmasi pegawai</span>
           </span>
         `;
-        if (subProcessEl && subProcessEl.textContent !== 'Menunggu cek pegawai') subProcessEl.textContent = 'Menunggu cek pegawai';
+        
       } else if (rawStatus === 'DIPROSES' || rawStatus.includes('TERKONFIRMASI')) {
         step = 2;
         estText = order.estDone || 'Siap dicuci';
@@ -1399,7 +1390,7 @@
             <span class="text-teal-700 text-[10px] font-bold">Terkonfirmasi &bull; Siap dicuci</span>
           </span>
         `;
-        if (subProcessEl && subProcessEl.textContent !== 'Terkonfirmasi pegawai') subProcessEl.textContent = 'Terkonfirmasi pegawai';
+        
       } else if (rawStatus === 'DICUCI' || rawStatus.includes('CUCI')) {
         step = 3;
         estText = order.estDone || 'Estimasi selesai 2 hari lagi';
@@ -1409,12 +1400,7 @@
             <span class="text-yellow-800 text-[10px] font-semibold">Sedang dicuci</span>
           </span>
         `;
-        if (subProcessEl) {
-          const txt = (String(order.estDone || '').toLowerCase().includes('jam') || String(order.service || '').toLowerCase().includes('express'))
-            ? 'Proses kilat (4 Jam)'
-            : 'Estimasi selesai besok';
-          if (subProcessEl.textContent !== txt) subProcessEl.textContent = txt;
-        }
+        
       } else if (rawStatus === 'DISETRIKA' || rawStatus.includes('SETRIKA')) {
         step = 4;
         estText = order.estDone || 'Estimasi selesai hari ini';
@@ -1424,7 +1410,7 @@
             <span class="text-indigo-800 text-[10px] font-semibold">Sedang disetrika</span>
           </span>
         `;
-        if (subProcessEl && subProcessEl.textContent !== 'Tahap penyetrikaan') subProcessEl.textContent = 'Tahap penyetrikaan';
+        
       } else if (rawStatus === 'SELESAI' || rawStatus.includes('SIAP')) {
         step = 5;
         estText = 'Pesanan siap / selesai';
@@ -1434,7 +1420,7 @@
             <span class="text-teal-700 text-[10px] font-semibold">Selesai</span>
           </span>
         `;
-        if (subProcessEl && subProcessEl.textContent !== 'Pesanan telah selesai') subProcessEl.textContent = 'Pesanan telah selesai';
+        
       }
 
       const finalEstText = estRealtimeText || estText;

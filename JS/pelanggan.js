@@ -243,7 +243,33 @@
   // ===========================================================================
   // 3. INISIALISASI KOMPONEN BERSAMA (SHARED) PADA SELURUH HALAMAN
   // ===========================================================================
+  
+  // 3.2b Sinkronisasi Badge Status Pesanan pada Sidebar Navigasi
+  function updateSidebarActiveBadge() {
+    const sidebarActiveBadge = document.getElementById('sidebarActiveBadge');
+    if (!sidebarActiveBadge) return;
+    try {
+      const allTrx = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+      const stats = typeof getCustomerStats === 'function' ? getCustomerStats(allTrx) : null;
+      const procCount = stats ? (stats.processing || 0) : 0;
+      if (procCount > 0) {
+        sidebarActiveBadge.textContent = String(procCount);
+        sidebarActiveBadge.classList.remove('hidden');
+        sidebarActiveBadge.style.display = '';
+      } else {
+        sidebarActiveBadge.textContent = '';
+        sidebarActiveBadge.classList.add('hidden');
+        sidebarActiveBadge.style.display = 'none';
+      }
+    } catch (_) {
+      sidebarActiveBadge.classList.add('hidden');
+      sidebarActiveBadge.style.display = 'none';
+    }
+  }
+  window.updateSidebarActiveBadge = updateSidebarActiveBadge;
+
   function initSharedComponents() {
+    updateSidebarActiveBadge();
     const profile = getCustomerProfile();
     const initials = getInitials(profile.fullName || profile.username || 'Pelanggan');
 
@@ -311,10 +337,7 @@
       if (el) el.textContent = memberSinceStr;
     });
 
-    const expSub = document.getElementById('statTotalPengeluaranSub');
-    if (expSub && expSub.textContent !== 'Akumulasi pengeluaran') {
-      expSub.textContent = 'Akumulasi pengeluaran';
-    }
+    
 
     // 3.3b Sinkronisasi Real-Time Kartu Bersihin Member Berdasarkan Jumlah Pesanan Akun Pelanggan
     const memberTierLabel = document.getElementById('memberTierLabel');
@@ -498,13 +521,21 @@
         </div>
       `;
 
-      if (dot) dot.classList.remove('hidden');
+      const isCustRead = localStorage.getItem('bersihin_notif_read_pelanggan') === 'true';
+      if (dot) {
+        if (isCustRead) dot.classList.add('hidden');
+        else dot.classList.remove('hidden');
+      }
 
       const markBtn = document.getElementById('markNotifReadBtn');
       if (markBtn) {
+        if (isCustRead) markBtn.textContent = 'Semua dibaca';
+        else markBtn.textContent = 'Tandai dibaca';
+
         markBtn.onclick = (e) => {
           e.stopPropagation();
           if (dot) dot.classList.add('hidden');
+          localStorage.setItem('bersihin_notif_read_pelanggan', 'true');
           markBtn.textContent = 'Semua dibaca';
           showToast('Notifikasi ditandai telah dibaca.');
         };
@@ -1519,13 +1550,7 @@
     const statSedangEl = document.getElementById('statSedangDiproses');
     if (statSedangEl && statSedangEl.textContent !== String(stats.processing)) statSedangEl.textContent = stats.processing;
 
-    const statProcessSub = document.getElementById('statSedangDiprosesSub');
-    if (statProcessSub) {
-      if (!stats.processing || stats.processing === 0) {
-        if (statProcessSub.textContent !== 'Tidak ada pesanan aktif') statProcessSub.textContent = 'Tidak ada pesanan aktif';
-      }
-      // Jangan timpa jika sudah diisi tahap spesifik oleh syncDashboardActiveOrder (mis. Tahap penyetrikaan)
-    }
+    
 
     const statSelesaiEl = document.getElementById('statPesananSelesai');
     if (statSelesaiEl && statSelesaiEl.textContent !== String(stats.completed)) statSelesaiEl.textContent = stats.completed;
@@ -1533,8 +1558,7 @@
     const statExpenseEl = document.getElementById('statTotalPengeluaran');
     if (statExpenseEl && statExpenseEl.textContent !== stats.totalExpenseFormatted) statExpenseEl.textContent = stats.totalExpenseFormatted;
 
-    const statExpenseSub = document.getElementById('statTotalPengeluaranSub');
-    if (statExpenseSub && statExpenseSub.textContent !== 'Akumulasi pengeluaran') statExpenseSub.textContent = 'Akumulasi pengeluaran';
+    
 
     // 5.3 Render Tabel Riwayat Transaksi Terbaru (Dinamis dari Storage)
     const recentBody = document.getElementById('recentTransactionsBody');
@@ -2930,6 +2954,7 @@
 
   function bootstrap() {
     initSharedComponents();
+    updateSidebarActiveBadge();
     initLoginPage();
     initDashboardPage();
     initLayananPage();
@@ -2977,6 +3002,7 @@
       if (typeof syncAllCustomerDataWithBackend === 'function') {
         syncAllCustomerDataWithBackend().then(() => {
           const path = (window.location.pathname || '').toLowerCase();
+          updateSidebarActiveBadge();
           if (path.includes('dashboard.html') || path.endsWith('/pelanggan/') || path.endsWith('/pelanggan')) {
             initDashboardPage();
           } else if (path.includes('status.html')) {

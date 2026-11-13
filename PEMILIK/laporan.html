@@ -268,49 +268,65 @@
                     </div>
                 </div>
 
-                <!-- Notification Bell -->
+                                <!-- Tombol & Dropdown Notifikasi -->
                 <div class="relative">
-                    <button type="button" id="notifToggleBtn" aria-expanded="false" class="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer" aria-label="Notifikasi">
+                    <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
+                        class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span id="notifDot" class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                        <span id="notifDot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
                     </button>
 
-                    <!-- Notification Dropdown -->
-                    <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+                    <!-- Panel Dropdown Notifikasi -->
+                    <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-50">
                         <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
-                            <span class="text-xs font-bold text-slate-800">Notifikasi Operasional</span>
-                            <button type="button" id="markNotifReadBtn" class="text-[11px] font-semibold text-cyan-600 hover:text-cyan-700 cursor-pointer">Tandai dibaca</button>
+                            <span class="text-xs font-bold text-slate-800">Notifikasi Pemilik</span>
+                            <button type="button" id="markNotifReadBtn"
+                                class="min-h-[36px] px-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 cursor-pointer">
+                                Tandai dibaca
+                            </button>
                         </div>
-                        <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
-                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        <div id="ownerNotifDropdownList" class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                                        <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
-                                    <p class="font-semibold text-slate-800">Pesanan ORD-0524-014 selesai</p>
-                                    <p class="text-slate-500 text-[11px] mt-0.5">Rizky Maulana - Cuci + Setrika</p>
-                                    <span class="block text-[10px] text-slate-400 mt-1">8 menit lalu</span>
+                                    <p class="font-bold text-slate-800">Pesanan Masuk TRX-240520-05</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Maya Anggraini &bull; Total Rp22.500 menunggu proses.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">Baru saja</span>
                                 </div>
-                            </a>
-                            <a href="transaksi.html" class="py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition">
-                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </div>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </div>
                                 <div class="text-xs leading-4">
-                                    <p class="font-semibold text-slate-800">Pembayaran baru diterima</p>
-                                    <p class="text-slate-500 text-[11px] mt-0.5">TRX-240520-09 - Rp45.000 via QRIS</p>
-                                    <span class="block text-[10px] text-slate-400 mt-1">24 menit lalu</span>
+                                    <p class="font-bold text-slate-800">Pembayaran Lunas TRX-240519-02</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Rina Marlina &bull; Rp52.000 via QRIS terverifikasi.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">15 menit lalu</span>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="pt-2.5 border-t border-slate-100 text-center">
-                            <a href="transaksi.html" class="text-xs font-semibold text-cyan-600 hover:text-cyan-700">Lihat Semua Aktivitas</a>
+                            </div>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan Siap Diambil TRX-240517-03</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Dedi Kurniawan &bull; Cucian telah selesai dikerjakan staf.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">1 jam lalu</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -470,11 +486,12 @@
             return 'http://localhost:5000';
         }
 
-        function ensurePemilikToken() {
-            return sessionStorage.getItem('bersihin_token') ||
-                sessionStorage.getItem('bersihin_staff_token') ||
-                localStorage.getItem('bersihin_token') ||
-                localStorage.getItem('bersihin_staff_token') || '';
+        // Token khusus PEMILIK (memakai fungsi dari pemilik.js agar tidak tertukar dengan token Pegawai/Pelanggan)
+        async function getLaporanToken() {
+            if (typeof window.ensurePemilikToken === 'function') {
+                try { const t = await window.ensurePemilikToken(); if (t) return t; } catch (_) {}
+            }
+            return sessionStorage.getItem('bersihin_owner_token') || localStorage.getItem('bersihin_owner_token') || '';
         }
 
         function escapeHtml(str) {
@@ -487,204 +504,136 @@
                 .replace(/'/g, '&#39;');
         }
 
+        const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function localDayKey(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+        function localMonthKey(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1); }
+        function monthLabelFromKey(key) {
+            const [y, m] = key.split('-');
+            return MONTH_NAMES[Number(m) - 1] + ' ' + y;
+        }
+
         // State Laporan Terintegrasi Database
         const reportState = {
             currentTab: 'bulanan',
-            selectedMonth: 'ALL',
-            monthlyList: [],
-            dailyMap: {},
-            totalPelanggan: 0,
-            mergedOrders: []
+            selectedMonth: null,
+            paidOrders: [],        // transaksi yang pembayarannya BERHASIL (sumber pendapatan)
+            monthKeys: [],
+            loaded: false
         };
 
-        // Mengambil dan mensinkronkan data langsung dari database backend / localStorage
+        // Mengambil data transaksi asli dari database (MySQL XAMPP) + pesanan pelanggan yang belum masuk database
         async function fetchLaporanData() {
-            const token = ensurePemilikToken();
-            const headers = {};
-            if (token) headers['Authorization'] = 'Bearer ' + token;
+            const token = await getLaporanToken();
+            const headers = token ? { Authorization: 'Bearer ' + token } : {};
 
-            let apiReport = null;
             let apiOrders = [];
-
-            // 1. Ambil laporan pendapatan dari API backend
-            try {
-                const res = await fetch(`${getApiBaseUrl()}/api/pemilik/laporan/pendapatan`, { headers });
-                if (res.ok) {
-                    const json = await res.json();
-                    if (json && json.success && json.data) {
-                        apiReport = json.data;
-                    }
-                }
-            } catch (_) {}
-
-            // 2. Ambil data pesanan/transaksi terperinci dari API backend
+            let apiOk = false;
             try {
                 const resTrx = await fetch(`${getApiBaseUrl()}/api/pemilik/transaksi`, { headers });
                 if (resTrx.ok) {
                     const jsonTrx = await resTrx.json();
                     if (jsonTrx && jsonTrx.success && Array.isArray(jsonTrx.data)) {
                         apiOrders = jsonTrx.data;
+                        apiOk = true;
                     }
                 }
             } catch (_) {}
 
-            // 3. Gabungkan dengan transaksi lokal (jika ada transaksi offline/demo baru)
-            const localTrx = [];
+            const rows = [];
+            const seen = new Set();
+
+            apiOrders.forEach(o => {
+                const code = o.kode_pesanan || ('ID-' + o.id_pesanan);
+                if (seen.has(code)) return;
+                seen.add(code);
+                rows.push({
+                    code,
+                    customer: o.nama_pelanggan || 'Pelanggan',
+                    orderStatus: String(o.status_pesanan || '').toUpperCase(),
+                    payStatus: String(o.status_pembayaran || '').toUpperCase(),
+                    amount: Number(o.jumlah_bayar != null ? o.jumlah_bayar : o.total_harga) || 0,
+                    date: o.tanggal_bayar || o.tanggal_pesanan || null
+                });
+            });
+
+            // Pesanan dari akun Pelanggan/Pegawai yang belum tersimpan di database
             try {
-                const u = JSON.parse(localStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_unified_orders') || localStorage.getItem('bersihin_orders') || '[]');
-                if (Array.isArray(u)) {
-                    u.forEach(item => {
-                        const code = item.kode_pesanan || item.code || item.id;
-                        if (!apiOrders.some(ao => (ao.kode_pesanan === code || ao.id_pesanan === item.id_pesanan))) {
-                            localTrx.push({
-                                id_pesanan: item.id_pesanan || item.id,
-                                kode_pesanan: code,
-                                nama_pelanggan: item.nama_pelanggan || item.customerName || 'Pelanggan',
-                                total_harga: Number(item.total_harga != null ? item.total_harga : item.total) || 0,
-                                jumlah_bayar: Number(item.jumlah_bayar != null ? item.jumlah_bayar : (item.total_harga != null ? item.total_harga : item.total)) || 0,
-                                tanggal_bayar: item.tanggal_bayar || item.tanggal_pesanan || item.date || new Date().toISOString(),
-                                status_pembayaran: item.status_pembayaran || item.paymentStatus || 'BERHASIL'
-                            });
-                        }
+                const local = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
+                if (Array.isArray(local)) {
+                    local.forEach(item => {
+                        const code = item.kode_pesanan || item.code || item.orderId || item.id;
+                        if (!code || seen.has(code)) return;
+                        seen.add(code);
+                        const pay = String(item.status_pembayaran || item.paymentStatus || '').toUpperCase();
+                        rows.push({
+                            code,
+                            customer: item.nama_pelanggan || item.customerName || 'Pelanggan',
+                            orderStatus: String(item.status || '').toUpperCase(),
+                            payStatus: (pay === 'LUNAS' || pay === 'BERHASIL') ? 'BERHASIL' : pay,
+                            amount: Number(item.total_harga != null ? item.total_harga : (typeof item.amount === 'number' ? item.amount : item.total)) || 0,
+                            date: item.tanggal_bayar || item.createdAt || item.timestamp || null
+                        });
                     });
                 }
             } catch (_) {}
 
-            const mergedOrders = [...apiOrders, ...localTrx];
-
-            // Fallback resmi seeder database_laundry.sql jika server belum terisi transaksi baru
-            if (mergedOrders.length === 0 && (!apiReport || !apiReport.total_pesanan)) {
-                mergedOrders.push(
-                    { id_pesanan: 1, kode_pesanan: 'TRX-240518-01', nama_pelanggan: 'Andi Pratama', jumlah_bayar: 40500, total_harga: 40500, tanggal_bayar: '2024-05-18 10:20:00', status_pembayaran: 'BERHASIL' },
-                    { id_pesanan: 2, kode_pesanan: 'TRX-240519-02', nama_pelanggan: 'Rina Marlina', jumlah_bayar: 52000, total_harga: 52000, tanggal_bayar: '2024-05-19 11:35:00', status_pembayaran: 'BERHASIL' },
-                    { id_pesanan: 3, kode_pesanan: 'TRX-240517-03', nama_pelanggan: 'Dedi Kurniawan', jumlah_bayar: 45000, total_harga: 45000, tanggal_bayar: '2024-05-17 09:05:00', status_pembayaran: 'BERHASIL' },
-                    { id_pesanan: 4, kode_pesanan: 'TRX-240510-04', nama_pelanggan: 'Andi Pratama', jumlah_bayar: 54000, total_harga: 54000, tanggal_bayar: '2024-05-10 13:05:00', status_pembayaran: 'BERHASIL' },
-                    { id_pesanan: 5, kode_pesanan: 'TRX-240520-05', nama_pelanggan: 'Maya Anggraini', jumlah_bayar: 22500, total_harga: 22500, tanggal_bayar: '2024-05-20 08:50:00', status_pembayaran: 'MENUNGGU' }
-                );
-            }
-
-            // Agregasi bulanan & harian dari database
-            const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const monthlyMap = {};
-            const dailyMap = {};
-            const customersAll = new Set();
-
-            mergedOrders.forEach(ord => {
-                const payStatus = String(ord.status_pembayaran || '').toUpperCase();
-                const isPaid = payStatus === 'BERHASIL' || payStatus === 'LUNAS';
-                const amount = Number(ord.jumlah_bayar != null ? ord.jumlah_bayar : ord.total_harga) || 0;
-                const cust = ord.nama_pelanggan || 'Pelanggan';
-                customersAll.add(cust);
-
-                const d = new Date(ord.tanggal_bayar || ord.tanggal_pesanan || Date.now());
-                const isValidDate = !isNaN(d.getTime());
-                const year = isValidDate ? d.getFullYear() : 2024;
-                const month = isValidDate ? d.getMonth() : 4;
-                const day = isValidDate ? d.getDate() : 1;
-                const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
-                const monthLabel = `${MONTH_NAMES[month]} ${year}`;
-                const dayKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-                if (!monthlyMap[monthKey]) {
-                    monthlyMap[monthKey] = {
-                        bulan_key: monthKey,
-                        bulan_label: monthLabel,
-                        total_transaksi: 0,
-                        total_pendapatan: 0,
-                        pelanggan: new Set()
-                    };
-                }
-                if (!dailyMap[dayKey]) {
-                    dailyMap[dayKey] = {
-                        hari_key: dayKey,
-                        total_transaksi: 0,
-                        total_pendapatan: 0,
-                        pelanggan: new Set()
-                    };
-                }
-
-                monthlyMap[monthKey].total_transaksi++;
-                monthlyMap[monthKey].pelanggan.add(cust);
-
-                dailyMap[dayKey].total_transaksi++;
-                dailyMap[dayKey].pelanggan.add(cust);
-
-                if (isPaid) {
-                    monthlyMap[monthKey].total_pendapatan += amount;
-                    dailyMap[dayKey].total_pendapatan += amount;
-                }
+            // Hanya transaksi lunas yang dihitung sebagai pendapatan (sama seperti query backend: pembayaran.status = 'BERHASIL')
+            const paid = [];
+            rows.forEach(r => {
+                if (r.payStatus !== 'BERHASIL') return;
+                if (r.orderStatus.includes('BATAL')) return;
+                const d = r.date ? new Date(r.date) : null;
+                if (!d || isNaN(d.getTime())) return;
+                paid.push({ ...r, d, dayKey: localDayKey(d), monthKey: localMonthKey(d), year: d.getFullYear() });
             });
 
-            // Sinkronisasi data bulanan jika endpoint backend sudah mengembalikan pendapatan_bulanan
-            if (apiReport && Array.isArray(apiReport.pendapatan_bulanan) && apiReport.pendapatan_bulanan.length > 0) {
-                apiReport.pendapatan_bulanan.forEach(mb => {
-                    if (monthlyMap[mb.bulan_key]) {
-                        monthlyMap[mb.bulan_key].total_pendapatan = Math.max(monthlyMap[mb.bulan_key].total_pendapatan, Number(mb.total_pendapatan) || 0);
-                        monthlyMap[mb.bulan_key].total_transaksi = Math.max(monthlyMap[mb.bulan_key].total_transaksi, Number(mb.total_transaksi) || 0);
-                    } else {
-                        monthlyMap[mb.bulan_key] = {
-                            bulan_key: mb.bulan_key,
-                            bulan_label: mb.bulan_label,
-                            total_transaksi: Number(mb.total_transaksi) || 0,
-                            total_pendapatan: Number(mb.total_pendapatan) || 0,
-                            pelanggan: new Set()
-                        };
-                    }
-                });
-            }
+            reportState.paidOrders = paid;
+            reportState.monthKeys = Array.from(new Set(paid.map(p => p.monthKey))).sort((a, b) => b.localeCompare(a));
+            reportState.loaded = true;
+            reportState.apiOk = apiOk;
 
-            const monthlyList = Object.values(monthlyMap)
-                .sort((a, b) => b.bulan_key.localeCompare(a.bulan_key))
-                .map(m => {
-                    const rev = m.total_pendapatan;
-                    const exp = Math.round(rev * 0.38);
-                    return {
-                        bulan_key: m.bulan_key,
-                        bulan_label: m.bulan_label,
-                        total_transaksi: m.total_transaksi,
-                        total_pendapatan: rev,
-                        total_pengeluaran: exp,
-                        laba_bersih: rev - exp,
-                        total_pelanggan: m.pelanggan.size
-                    };
-                });
-
-            reportState.monthlyList = monthlyList;
-            reportState.dailyMap = dailyMap;
-            reportState.totalPelanggan = (apiReport && apiReport.total_pelanggan) ? apiReport.total_pelanggan : customersAll.size;
-            reportState.mergedOrders = mergedOrders;
-
-            populateMonthDropdown(monthlyList);
+            populateMonthDropdown();
             applyReportView();
         }
 
-        // Dropdown pemilih bulan dinamis
-        function populateMonthDropdown(monthlyList) {
+        function aggregate(list) {
+            const customers = new Set();
+            let revenue = 0;
+            list.forEach(p => { revenue += p.amount; customers.add(String(p.customer).toLowerCase().trim()); });
+            return { revenue, count: list.length, customers: customers.size };
+        }
+
+        // Dropdown pemilih bulan dinamis (mempertahankan pilihan pengguna saat data diperbarui)
+        function populateMonthDropdown() {
             const select = document.getElementById('monthSelect');
             if (!select) return;
 
-            select.innerHTML = '';
-            const allOpt = document.createElement('option');
-            allOpt.value = 'ALL';
-            allOpt.textContent = 'Semua Bulan (Tahun Berjalan)';
-            select.appendChild(allOpt);
-
-            monthlyList.forEach((m, idx) => {
-                const opt = document.createElement('option');
-                opt.value = m.bulan_key;
-                opt.textContent = m.bulan_label;
-                if (idx === 0) {
-                    opt.selected = true;
-                    reportState.selectedMonth = m.bulan_key;
-                }
-                select.appendChild(opt);
-            });
-
-            if (!reportState.selectedMonth) {
-                reportState.selectedMonth = monthlyList.length > 0 ? monthlyList[0].bulan_key : 'ALL';
+            const keys = reportState.monthKeys;
+            const currentKey = localMonthKey(new Date());
+            if (!reportState.selectedMonth || (reportState.selectedMonth !== 'ALL' && !keys.includes(reportState.selectedMonth))) {
+                reportState.selectedMonth = keys.includes(currentKey) ? currentKey : (keys[0] || 'ALL');
             }
 
-            select.onchange = function(e) {
+            const signature = keys.join('|');
+            if (select.dataset.signature !== signature) {
+                select.dataset.signature = signature;
+                select.innerHTML = '';
+                const allOpt = document.createElement('option');
+                allOpt.value = 'ALL';
+                allOpt.textContent = 'Semua Bulan (Tahun Berjalan)';
+                select.appendChild(allOpt);
+                keys.forEach(k => {
+                    const opt = document.createElement('option');
+                    opt.value = k;
+                    opt.textContent = monthLabelFromKey(k);
+                    select.appendChild(opt);
+                });
+            }
+            select.value = reportState.selectedMonth;
+
+            select.onchange = function (e) {
                 reportState.selectedMonth = e.target.value;
                 setTab('bulanan');
             };
@@ -709,85 +658,82 @@
 
         // Terapkan data ke 4 Card KPI dan Tabel Rincian Keuangan
         function applyReportView() {
+            if (!reportState.loaded) return;
             const period = reportState.currentTab;
-            const selectedMonth = reportState.selectedMonth;
-            const monthlyList = reportState.monthlyList;
-
-            let totalRev = 0;
-            let totalTrx = 0;
-            let totalCust = 0;
+            const paid = reportState.paidOrders;
+            const now = new Date();
+            let subset = [];
+            let tableMonths = [];
 
             if (period === 'harian') {
                 document.getElementById('kpiLabel1').textContent = 'Pendapatan Hari Ini';
                 document.getElementById('kpiLabel2').textContent = 'Transaksi Hari Ini';
                 document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
                 document.getElementById('kpiLabel4').textContent = 'Pelanggan Hari Ini';
-
-                const todayKey = new Date().toISOString().slice(0, 10);
-                const dayData = reportState.dailyMap ? (reportState.dailyMap[todayKey] || Object.values(reportState.dailyMap)[0]) : null;
-
-                if (dayData) {
-                    totalRev = dayData.total_pendapatan;
-                    totalTrx = dayData.total_transaksi;
-                    totalCust = dayData.pelanggan.size;
-                }
+                const todayKey = localDayKey(now);
+                subset = paid.filter(p => p.dayKey === todayKey);
+                tableMonths = [localMonthKey(now)];
             } else if (period === 'bulanan') {
                 document.getElementById('kpiLabel1').textContent = 'Pendapatan Bulanan';
                 document.getElementById('kpiLabel2').textContent = 'Jumlah Transaksi';
                 document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
                 document.getElementById('kpiLabel4').textContent = 'Pelanggan Aktif';
-
-                if (selectedMonth && selectedMonth !== 'ALL') {
-                    const found = monthlyList.find(m => m.bulan_key === selectedMonth);
-                    if (found) {
-                        totalRev = found.total_pendapatan;
-                        totalTrx = found.total_transaksi;
-                        totalCust = found.total_pelanggan;
-                    }
-                } else if (monthlyList.length > 0) {
-                    const latest = monthlyList[0];
-                    totalRev = latest.total_pendapatan;
-                    totalTrx = latest.total_transaksi;
-                    totalCust = latest.total_pelanggan;
+                const sel = reportState.selectedMonth;
+                if (sel && sel !== 'ALL') {
+                    subset = paid.filter(p => p.monthKey === sel);
+                    tableMonths = [sel];
+                } else {
+                    subset = paid.filter(p => p.year === now.getFullYear());
+                    tableMonths = reportState.monthKeys.filter(k => k.startsWith(now.getFullYear() + '-'));
                 }
             } else {
                 document.getElementById('kpiLabel1').textContent = 'Pendapatan Tahunan';
                 document.getElementById('kpiLabel2').textContent = 'Total Transaksi';
                 document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
                 document.getElementById('kpiLabel4').textContent = 'Total Pelanggan';
-
-                monthlyList.forEach(m => {
-                    totalRev += m.total_pendapatan;
-                    totalTrx += m.total_transaksi;
-                });
-                totalCust = reportState.totalPelanggan || 4;
+                const sel = reportState.selectedMonth;
+                const year = (sel && sel !== 'ALL') ? Number(sel.slice(0, 4)) : now.getFullYear();
+                subset = paid.filter(p => p.year === year);
+                tableMonths = reportState.monthKeys.filter(k => k.startsWith(year + '-'));
             }
 
-            const avgTrx = totalTrx > 0 ? Math.round(totalRev / totalTrx) : 0;
+            const agg = aggregate(subset);
+            const avgTrx = agg.count > 0 ? Math.round(agg.revenue / agg.count) : 0;
 
-            document.getElementById('kpiValue1').textContent = formatRupiah(totalRev);
-            document.getElementById('kpiValue2').textContent = Number(totalTrx).toLocaleString('id-ID');
+            document.getElementById('kpiValue1').textContent = formatRupiah(agg.revenue);
+            document.getElementById('kpiValue2').textContent = Number(agg.count).toLocaleString('id-ID');
             document.getElementById('kpiValue3').textContent = formatRupiah(avgTrx);
-            document.getElementById('kpiValue4').textContent = Number(totalCust).toLocaleString('id-ID');
+            document.getElementById('kpiValue4').textContent = Number(agg.customers).toLocaleString('id-ID');
 
-            renderReportTable(monthlyList, selectedMonth);
+            renderReportTable(tableMonths);
+        }
+
+        function buildMonthlyRows(monthKeys) {
+            return monthKeys.map(k => {
+                const agg = aggregate(reportState.paidOrders.filter(p => p.monthKey === k));
+                // Database belum memiliki tabel pengeluaran, sehingga pengeluaran tercatat Rp0
+                return {
+                    bulan_key: k,
+                    bulan_label: monthLabelFromKey(k),
+                    total_transaksi: agg.count,
+                    total_pendapatan: agg.revenue,
+                    total_pengeluaran: 0,
+                    laba_bersih: agg.revenue
+                };
+            }).filter(r => r.total_transaksi > 0);
         }
 
         // Render Baris Tabel Rincian Keuangan
-        function renderReportTable(monthlyList, selectedMonth) {
+        function renderReportTable(monthKeys) {
             const tbody = document.getElementById('reportTableBody');
             if (!tbody) return;
 
-            let displayList = monthlyList;
-            if (selectedMonth && selectedMonth !== 'ALL') {
-                displayList = monthlyList.filter(m => m.bulan_key === selectedMonth);
-            }
-
-            if (!displayList || displayList.length === 0) {
+            const displayList = buildMonthlyRows(monthKeys);
+            if (displayList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" class="py-8 px-6 text-center text-slate-400 font-medium italic">
-                            Belum ada riwayat transaksi database pada periode yang dipilih.
+                            ${reportState.apiOk ? 'Belum ada transaksi lunas pada periode yang dipilih.' : 'Tidak dapat terhubung ke database. Pastikan server backend & XAMPP aktif.'}
                         </td>
                     </tr>
                 `;
@@ -807,7 +753,7 @@
 
         // Ekspor Laporan Keuangan ke format file CSV riil
         function exportReport() {
-            const list = reportState.monthlyList || [];
+            const list = buildMonthlyRows(reportState.monthKeys || []);
             if (list.length === 0) {
                 alert('Tidak ada data transaksi database untuk diekspor.');
                 return;
@@ -829,6 +775,7 @@
         }
 
         // Inisialisasi saat DOM siap
+        window.fetchLaporanData = fetchLaporanData;
         document.addEventListener('DOMContentLoaded', fetchLaporanData);
     </script>
 <!-- Skrip Utama Pemilik (Vanilla JS) -->
