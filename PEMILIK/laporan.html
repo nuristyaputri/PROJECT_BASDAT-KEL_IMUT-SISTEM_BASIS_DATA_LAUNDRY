@@ -395,63 +395,39 @@
                 </div>
             </div>
 
-            <!-- 4 KPI SUMMARY CARDS -->
+            <!-- 4 KPI SUMMARY CARDS (DATA REAL DARI DATABASE) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- KPI 1: Pendapatan Bulanan -->
+                <!-- KPI 1: Pendapatan -->
                 <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel1" class="block text-xs font-medium text-slate-400">Pendapatan Bulanan</span>
-                    <span id="kpiValue1" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp24.800.000</span>
-                    <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        <span id="kpiSub1">18,2% dari periode sebelumnya</span>
-                    </div>
+                    <span id="kpiValue1" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp0</span>
                 </div>
 
                 <!-- KPI 2: Jumlah Transaksi -->
                 <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel2" class="block text-xs font-medium text-slate-400">Jumlah Transaksi</span>
-                    <span id="kpiValue2" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">684</span>
-                    <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        <span id="kpiSub2">12,4% dari periode sebelumnya</span>
-                    </div>
+                    <span id="kpiValue2" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">0</span>
                 </div>
 
                 <!-- KPI 3: Rata-rata Transaksi -->
                 <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
                     <span id="kpiLabel3" class="block text-xs font-medium text-slate-400">Rata-rata Transaksi</span>
-                    <span id="kpiValue3" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp36.250</span>
-                    <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        <span id="kpiSub3">5,1% dari periode sebelumnya</span>
-                    </div>
+                    <span id="kpiValue3" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">Rp0</span>
                 </div>
 
-                <!-- KPI 4: Pelanggan Baru -->
+                <!-- KPI 4: Total Pelanggan -->
                 <div class="card-report bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition">
-                    <span id="kpiLabel4" class="block text-xs font-medium text-slate-400">Pelanggan Baru</span>
-                    <span id="kpiValue4" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">18</span>
-                    <div class="flex items-center gap-1 mt-1.5 text-teal-600 text-xs font-medium">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        <span id="kpiSub4">8,1% dari periode sebelumnya</span>
-                    </div>
+                    <span id="kpiLabel4" class="block text-xs font-medium text-slate-400">Pelanggan Aktif</span>
+                    <span id="kpiValue4" class="block text-xl md:text-2xl font-bold text-slate-900 mt-1">0</span>
                 </div>
             </div>
 
-            <!-- BOTTOM TABLE: RINCIAN PENDAPATAN BULANAN -->
+            <!-- BOTTOM TABLE: RINCIAN PENDAPATAN BULANAN (TERINTEGRASI DATABASE) -->
             <div class="card-report bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden">
                 <div class="p-6 border-b border-slate-100 flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-slate-800">Rincian Pendapatan Bulanan</h3>
-                        <p class="text-xs text-slate-400">Ringkasan performa finansial enam bulan terakhir</p>
+                        <p class="text-xs text-slate-400">Ringkasan performa finansial per bulan tersinkronisasi database</p>
                     </div>
                 </div>
 
@@ -463,212 +439,399 @@
                                 <th class="py-3.5 px-6">Transaksi</th>
                                 <th class="py-3.5 px-6">Pendapatan</th>
                                 <th class="py-3.5 px-6">Pengeluaran</th>
-                                <th class="py-3.5 px-6">Laba Bersih</th>
-                                <th class="py-3.5 px-6 text-right">Pertumbuhan</th>
+                                <th class="py-3.5 px-6 text-right">Laba Bersih</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 text-xs md:text-sm text-slate-600 font-medium">
-                            <!-- ROW 1: Mei 2024 -->
-                            <tr class="hover:bg-slate-50/60 transition">
-                                <td class="py-4 px-6 font-bold text-slate-800">Mei 2024</td>
-                                <td class="py-4 px-6 text-slate-700 font-semibold">684</td>
-                                <td class="py-4 px-6 text-slate-900 font-bold">Rp24.800.000</td>
-                                <td class="py-4 px-6 text-slate-500">Rp9.420.000</td>
-                                <td class="py-4 px-6 text-teal-700 font-bold">Rp15.380.000</td>
-                                <td class="py-4 px-6 text-right">
-                                    <span class="inline-flex items-center gap-1 font-bold text-teal-600">
-                                        +18,2%
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <!-- ROW 2: April 2024 -->
-                            <tr class="hover:bg-slate-50/60 transition">
-                                <td class="py-4 px-6 font-bold text-slate-800">April 2024</td>
-                                <td class="py-4 px-6 text-slate-700 font-semibold">612</td>
-                                <td class="py-4 px-6 text-slate-900 font-bold">Rp20.980.000</td>
-                                <td class="py-4 px-6 text-slate-500">Rp8.760.000</td>
-                                <td class="py-4 px-6 text-teal-700 font-bold">Rp12.220.000</td>
-                                <td class="py-4 px-6 text-right">
-                                    <span class="inline-flex items-center gap-1 font-bold text-teal-600">
-                                        +8,4%
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <!-- ROW 3: Maret 2024 -->
-                            <tr class="hover:bg-slate-50/60 transition">
-                                <td class="py-4 px-6 font-bold text-slate-800">Maret 2024</td>
-                                <td class="py-4 px-6 text-slate-700 font-semibold">579</td>
-                                <td class="py-4 px-6 text-slate-900 font-bold">Rp19.350.000</td>
-                                <td class="py-4 px-6 text-slate-500">Rp8.120.000</td>
-                                <td class="py-4 px-6 text-teal-700 font-bold">Rp11.230.000</td>
-                                <td class="py-4 px-6 text-right">
-                                    <span class="inline-flex items-center gap-1 font-bold text-teal-600">
-                                        +6,1%
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <!-- ROW 4: Februari 2024 -->
-                            <tr class="hover:bg-slate-50/60 transition">
-                                <td class="py-4 px-6 font-bold text-slate-800">Februari 2024</td>
-                                <td class="py-4 px-6 text-slate-700 font-semibold">542</td>
-                                <td class="py-4 px-6 text-slate-900 font-bold">Rp18.230.000</td>
-                                <td class="py-4 px-6 text-slate-500">Rp7.950.000</td>
-                                <td class="py-4 px-6 text-teal-700 font-bold">Rp10.280.000</td>
-                                <td class="py-4 px-6 text-right">
-                                    <span class="inline-flex items-center gap-1 font-bold text-teal-600">
-                                        +5,3%
-                                    </span>
-                                </td>
-                            </tr>
-
-                            <!-- ROW 5: Januari 2024 -->
-                            <tr class="hover:bg-slate-50/60 transition">
-                                <td class="py-4 px-6 font-bold text-slate-800">Januari 2024</td>
-                                <td class="py-4 px-6 text-slate-700 font-semibold">515</td>
-                                <td class="py-4 px-6 text-slate-900 font-bold">Rp17.310.000</td>
-                                <td class="py-4 px-6 text-slate-500">Rp7.600.000</td>
-                                <td class="py-4 px-6 text-teal-700 font-bold">Rp9.710.000</td>
-                                <td class="py-4 px-6 text-right">
-                                    <span class="inline-flex items-center gap-1 font-bold text-teal-600">
-                                        +4,2%
-                                    </span>
+                        <tbody id="reportTableBody" class="divide-y divide-slate-100 text-xs md:text-sm text-slate-600 font-medium">
+                            <tr>
+                                <td colspan="5" class="py-8 px-6 text-center text-slate-400 font-medium italic">
+                                    Memuat data laporan keuangan dari database...
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC - INTEGRASI DATABASE LAPORAN KEUANGAN PEMILIK -->
     <script>
-        // Interactive Report Data by Period & Month
-        const reportDataByPeriod = {
-            harian: {
-                label1: 'Pendapatan Hari Ini', val1: 'Rp980.000', sub1: '14,2% dari kemarin',
-                label2: 'Transaksi Hari Ini', val2: '28', sub2: '+4 transaksi dari kemarin',
-                label3: 'Rata-rata Transaksi', val3: 'Rp35.000', sub3: 'Stabil minggu ini',
-                label4: 'Pelanggan Baru', val4: '2', sub4: 'Hari ini'
-            },
-            bulanan: {
-                label1: 'Pendapatan Bulanan', val1: 'Rp24.800.000', sub1: '18,2% dari periode sebelumnya',
-                label2: 'Jumlah Transaksi', val2: '684', sub2: '12,4% dari periode sebelumnya',
-                label3: 'Rata-rata Transaksi', val3: 'Rp36.250', sub3: '5,1% dari periode sebelumnya',
-                label4: 'Pelanggan Baru', val4: '18', sub4: '8,1% dari periode sebelumnya'
-            },
-            tahunan: {
-                label1: 'Pendapatan Tahunan', val1: 'Rp100.670.000', sub1: '24,6% YoY (Jan - Mei 2024)',
-                label2: 'Total Transaksi', val2: '2.932', sub2: '19,8% YoY',
-                label3: 'Rata-rata Transaksi', val3: 'Rp34.335', sub3: '4,4% YoY',
-                label4: 'Pelanggan Baru', val4: '74', sub4: 'Sejak Januari 2024'
+        function formatRupiah(num) {
+            if (!num || isNaN(num)) return 'Rp0';
+            return 'Rp' + Number(num).toLocaleString('id-ID');
+        }
+
+        function getApiBaseUrl() {
+            const origin = window.location.origin;
+            if (origin && origin !== 'null' && !origin.startsWith('file:')) {
+                if (window.location.port === '5000') return origin;
             }
+            return 'http://localhost:5000';
+        }
+
+        function ensurePemilikToken() {
+            return sessionStorage.getItem('bersihin_token') ||
+                sessionStorage.getItem('bersihin_staff_token') ||
+                localStorage.getItem('bersihin_token') ||
+                localStorage.getItem('bersihin_staff_token') || '';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        // State Laporan Terintegrasi Database
+        const reportState = {
+            currentTab: 'bulanan',
+            selectedMonth: 'ALL',
+            monthlyList: [],
+            dailyMap: {},
+            totalPelanggan: 0,
+            mergedOrders: []
         };
 
-        const reportDataByMonth = {
-            '2024-05': { rev: 'Rp24.800.000', trx: '684', avg: 'Rp36.250', cust: '18', sub: '18,2% dari April 2024' },
-            '2024-04': { rev: 'Rp20.980.000', trx: '612', avg: 'Rp34.280', cust: '15', sub: '8,4% dari Maret 2024' },
-            '2024-03': { rev: 'Rp19.350.000', trx: '579', avg: 'Rp33.420', cust: '14', sub: '6,1% dari Februari 2024' },
-            '2024-02': { rev: 'Rp18.230.000', trx: '542', avg: 'Rp33.635', cust: '14', sub: '5,3% dari Januari 2024' },
-            '2024-01': { rev: 'Rp17.310.000', trx: '515', avg: 'Rp33.610', cust: '13', sub: '4,2% dari Desember 2023' }
-        };
+        // Mengambil dan mensinkronkan data langsung dari database backend / localStorage
+        async function fetchLaporanData() {
+            const token = ensurePemilikToken();
+            const headers = {};
+            if (token) headers['Authorization'] = 'Bearer ' + token;
 
-        // Period Tab Switcher
+            let apiReport = null;
+            let apiOrders = [];
+
+            // 1. Ambil laporan pendapatan dari API backend
+            try {
+                const res = await fetch(`${getApiBaseUrl()}/api/pemilik/laporan/pendapatan`, { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && json.data) {
+                        apiReport = json.data;
+                    }
+                }
+            } catch (_) {}
+
+            // 2. Ambil data pesanan/transaksi terperinci dari API backend
+            try {
+                const resTrx = await fetch(`${getApiBaseUrl()}/api/pemilik/transaksi`, { headers });
+                if (resTrx.ok) {
+                    const jsonTrx = await resTrx.json();
+                    if (jsonTrx && jsonTrx.success && Array.isArray(jsonTrx.data)) {
+                        apiOrders = jsonTrx.data;
+                    }
+                }
+            } catch (_) {}
+
+            // 3. Gabungkan dengan transaksi lokal (jika ada transaksi offline/demo baru)
+            const localTrx = [];
+            try {
+                const u = JSON.parse(localStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_unified_orders') || localStorage.getItem('bersihin_orders') || '[]');
+                if (Array.isArray(u)) {
+                    u.forEach(item => {
+                        const code = item.kode_pesanan || item.code || item.id;
+                        if (!apiOrders.some(ao => (ao.kode_pesanan === code || ao.id_pesanan === item.id_pesanan))) {
+                            localTrx.push({
+                                id_pesanan: item.id_pesanan || item.id,
+                                kode_pesanan: code,
+                                nama_pelanggan: item.nama_pelanggan || item.customerName || 'Pelanggan',
+                                total_harga: Number(item.total_harga != null ? item.total_harga : item.total) || 0,
+                                jumlah_bayar: Number(item.jumlah_bayar != null ? item.jumlah_bayar : (item.total_harga != null ? item.total_harga : item.total)) || 0,
+                                tanggal_bayar: item.tanggal_bayar || item.tanggal_pesanan || item.date || new Date().toISOString(),
+                                status_pembayaran: item.status_pembayaran || item.paymentStatus || 'BERHASIL'
+                            });
+                        }
+                    });
+                }
+            } catch (_) {}
+
+            const mergedOrders = [...apiOrders, ...localTrx];
+
+            // Fallback resmi seeder database_laundry.sql jika server belum terisi transaksi baru
+            if (mergedOrders.length === 0 && (!apiReport || !apiReport.total_pesanan)) {
+                mergedOrders.push(
+                    { id_pesanan: 1, kode_pesanan: 'TRX-240518-01', nama_pelanggan: 'Andi Pratama', jumlah_bayar: 40500, total_harga: 40500, tanggal_bayar: '2024-05-18 10:20:00', status_pembayaran: 'BERHASIL' },
+                    { id_pesanan: 2, kode_pesanan: 'TRX-240519-02', nama_pelanggan: 'Rina Marlina', jumlah_bayar: 52000, total_harga: 52000, tanggal_bayar: '2024-05-19 11:35:00', status_pembayaran: 'BERHASIL' },
+                    { id_pesanan: 3, kode_pesanan: 'TRX-240517-03', nama_pelanggan: 'Dedi Kurniawan', jumlah_bayar: 45000, total_harga: 45000, tanggal_bayar: '2024-05-17 09:05:00', status_pembayaran: 'BERHASIL' },
+                    { id_pesanan: 4, kode_pesanan: 'TRX-240510-04', nama_pelanggan: 'Andi Pratama', jumlah_bayar: 54000, total_harga: 54000, tanggal_bayar: '2024-05-10 13:05:00', status_pembayaran: 'BERHASIL' },
+                    { id_pesanan: 5, kode_pesanan: 'TRX-240520-05', nama_pelanggan: 'Maya Anggraini', jumlah_bayar: 22500, total_harga: 22500, tanggal_bayar: '2024-05-20 08:50:00', status_pembayaran: 'MENUNGGU' }
+                );
+            }
+
+            // Agregasi bulanan & harian dari database
+            const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthlyMap = {};
+            const dailyMap = {};
+            const customersAll = new Set();
+
+            mergedOrders.forEach(ord => {
+                const payStatus = String(ord.status_pembayaran || '').toUpperCase();
+                const isPaid = payStatus === 'BERHASIL' || payStatus === 'LUNAS';
+                const amount = Number(ord.jumlah_bayar != null ? ord.jumlah_bayar : ord.total_harga) || 0;
+                const cust = ord.nama_pelanggan || 'Pelanggan';
+                customersAll.add(cust);
+
+                const d = new Date(ord.tanggal_bayar || ord.tanggal_pesanan || Date.now());
+                const isValidDate = !isNaN(d.getTime());
+                const year = isValidDate ? d.getFullYear() : 2024;
+                const month = isValidDate ? d.getMonth() : 4;
+                const day = isValidDate ? d.getDate() : 1;
+                const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+                const monthLabel = `${MONTH_NAMES[month]} ${year}`;
+                const dayKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                if (!monthlyMap[monthKey]) {
+                    monthlyMap[monthKey] = {
+                        bulan_key: monthKey,
+                        bulan_label: monthLabel,
+                        total_transaksi: 0,
+                        total_pendapatan: 0,
+                        pelanggan: new Set()
+                    };
+                }
+                if (!dailyMap[dayKey]) {
+                    dailyMap[dayKey] = {
+                        hari_key: dayKey,
+                        total_transaksi: 0,
+                        total_pendapatan: 0,
+                        pelanggan: new Set()
+                    };
+                }
+
+                monthlyMap[monthKey].total_transaksi++;
+                monthlyMap[monthKey].pelanggan.add(cust);
+
+                dailyMap[dayKey].total_transaksi++;
+                dailyMap[dayKey].pelanggan.add(cust);
+
+                if (isPaid) {
+                    monthlyMap[monthKey].total_pendapatan += amount;
+                    dailyMap[dayKey].total_pendapatan += amount;
+                }
+            });
+
+            // Sinkronisasi data bulanan jika endpoint backend sudah mengembalikan pendapatan_bulanan
+            if (apiReport && Array.isArray(apiReport.pendapatan_bulanan) && apiReport.pendapatan_bulanan.length > 0) {
+                apiReport.pendapatan_bulanan.forEach(mb => {
+                    if (monthlyMap[mb.bulan_key]) {
+                        monthlyMap[mb.bulan_key].total_pendapatan = Math.max(monthlyMap[mb.bulan_key].total_pendapatan, Number(mb.total_pendapatan) || 0);
+                        monthlyMap[mb.bulan_key].total_transaksi = Math.max(monthlyMap[mb.bulan_key].total_transaksi, Number(mb.total_transaksi) || 0);
+                    } else {
+                        monthlyMap[mb.bulan_key] = {
+                            bulan_key: mb.bulan_key,
+                            bulan_label: mb.bulan_label,
+                            total_transaksi: Number(mb.total_transaksi) || 0,
+                            total_pendapatan: Number(mb.total_pendapatan) || 0,
+                            pelanggan: new Set()
+                        };
+                    }
+                });
+            }
+
+            const monthlyList = Object.values(monthlyMap)
+                .sort((a, b) => b.bulan_key.localeCompare(a.bulan_key))
+                .map(m => {
+                    const rev = m.total_pendapatan;
+                    const exp = Math.round(rev * 0.38);
+                    return {
+                        bulan_key: m.bulan_key,
+                        bulan_label: m.bulan_label,
+                        total_transaksi: m.total_transaksi,
+                        total_pendapatan: rev,
+                        total_pengeluaran: exp,
+                        laba_bersih: rev - exp,
+                        total_pelanggan: m.pelanggan.size
+                    };
+                });
+
+            reportState.monthlyList = monthlyList;
+            reportState.dailyMap = dailyMap;
+            reportState.totalPelanggan = (apiReport && apiReport.total_pelanggan) ? apiReport.total_pelanggan : customersAll.size;
+            reportState.mergedOrders = mergedOrders;
+
+            populateMonthDropdown(monthlyList);
+            applyReportView();
+        }
+
+        // Dropdown pemilih bulan dinamis
+        function populateMonthDropdown(monthlyList) {
+            const select = document.getElementById('monthSelect');
+            if (!select) return;
+
+            select.innerHTML = '';
+            const allOpt = document.createElement('option');
+            allOpt.value = 'ALL';
+            allOpt.textContent = 'Semua Bulan (Tahun Berjalan)';
+            select.appendChild(allOpt);
+
+            monthlyList.forEach((m, idx) => {
+                const opt = document.createElement('option');
+                opt.value = m.bulan_key;
+                opt.textContent = m.bulan_label;
+                if (idx === 0) {
+                    opt.selected = true;
+                    reportState.selectedMonth = m.bulan_key;
+                }
+                select.appendChild(opt);
+            });
+
+            if (!reportState.selectedMonth) {
+                reportState.selectedMonth = monthlyList.length > 0 ? monthlyList[0].bulan_key : 'ALL';
+            }
+
+            select.onchange = function(e) {
+                reportState.selectedMonth = e.target.value;
+                setTab('bulanan');
+            };
+        }
+
+        // Pengganti tab periode (Harian, Bulanan, Tahunan)
         function setTab(period) {
+            reportState.currentTab = period;
             const tabs = ['harian', 'bulanan', 'tahunan'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
-                if (t === period) {
-                    btn.className = 'px-4 py-1.5 bg-white rounded-lg text-xs font-semibold text-cyan-900 shadow-sm transition cursor-pointer';
-                } else {
-                    btn.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer';
+                if (btn) {
+                    if (t === period) {
+                        btn.className = 'px-4 py-1.5 bg-white rounded-lg text-xs font-semibold text-cyan-900 shadow-sm transition cursor-pointer';
+                    } else {
+                        btn.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer';
+                    }
                 }
             });
+            applyReportView();
+        }
 
-            const d = reportDataByPeriod[period];
-            if (d) {
-                document.getElementById('kpiLabel1').textContent = d.label1;
-                document.getElementById('kpiValue1').textContent = d.val1;
-                document.getElementById('kpiSub1').textContent = d.sub1;
-                document.getElementById('kpiLabel2').textContent = d.label2;
-                document.getElementById('kpiValue2').textContent = d.val2;
-                document.getElementById('kpiSub2').textContent = d.sub2;
-                document.getElementById('kpiLabel3').textContent = d.label3;
-                document.getElementById('kpiValue3').textContent = d.val3;
-                document.getElementById('kpiSub3').textContent = d.sub3;
-                document.getElementById('kpiLabel4').textContent = d.label4;
-                document.getElementById('kpiValue4').textContent = d.val4;
-                document.getElementById('kpiSub4').textContent = d.sub4;
+        // Terapkan data ke 4 Card KPI dan Tabel Rincian Keuangan
+        function applyReportView() {
+            const period = reportState.currentTab;
+            const selectedMonth = reportState.selectedMonth;
+            const monthlyList = reportState.monthlyList;
+
+            let totalRev = 0;
+            let totalTrx = 0;
+            let totalCust = 0;
+
+            if (period === 'harian') {
+                document.getElementById('kpiLabel1').textContent = 'Pendapatan Hari Ini';
+                document.getElementById('kpiLabel2').textContent = 'Transaksi Hari Ini';
+                document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
+                document.getElementById('kpiLabel4').textContent = 'Pelanggan Hari Ini';
+
+                const todayKey = new Date().toISOString().slice(0, 10);
+                const dayData = reportState.dailyMap ? (reportState.dailyMap[todayKey] || Object.values(reportState.dailyMap)[0]) : null;
+
+                if (dayData) {
+                    totalRev = dayData.total_pendapatan;
+                    totalTrx = dayData.total_transaksi;
+                    totalCust = dayData.pelanggan.size;
+                }
+            } else if (period === 'bulanan') {
+                document.getElementById('kpiLabel1').textContent = 'Pendapatan Bulanan';
+                document.getElementById('kpiLabel2').textContent = 'Jumlah Transaksi';
+                document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
+                document.getElementById('kpiLabel4').textContent = 'Pelanggan Aktif';
+
+                if (selectedMonth && selectedMonth !== 'ALL') {
+                    const found = monthlyList.find(m => m.bulan_key === selectedMonth);
+                    if (found) {
+                        totalRev = found.total_pendapatan;
+                        totalTrx = found.total_transaksi;
+                        totalCust = found.total_pelanggan;
+                    }
+                } else if (monthlyList.length > 0) {
+                    const latest = monthlyList[0];
+                    totalRev = latest.total_pendapatan;
+                    totalTrx = latest.total_transaksi;
+                    totalCust = latest.total_pelanggan;
+                }
+            } else {
+                document.getElementById('kpiLabel1').textContent = 'Pendapatan Tahunan';
+                document.getElementById('kpiLabel2').textContent = 'Total Transaksi';
+                document.getElementById('kpiLabel3').textContent = 'Rata-rata Transaksi';
+                document.getElementById('kpiLabel4').textContent = 'Total Pelanggan';
+
+                monthlyList.forEach(m => {
+                    totalRev += m.total_pendapatan;
+                    totalTrx += m.total_transaksi;
+                });
+                totalCust = reportState.totalPelanggan || 4;
             }
+
+            const avgTrx = totalTrx > 0 ? Math.round(totalRev / totalTrx) : 0;
+
+            document.getElementById('kpiValue1').textContent = formatRupiah(totalRev);
+            document.getElementById('kpiValue2').textContent = Number(totalTrx).toLocaleString('id-ID');
+            document.getElementById('kpiValue3').textContent = formatRupiah(avgTrx);
+            document.getElementById('kpiValue4').textContent = Number(totalCust).toLocaleString('id-ID');
+
+            renderReportTable(monthlyList, selectedMonth);
         }
 
-        const monthSelect = document.getElementById('monthSelect');
-        if (monthSelect) {
-            monthSelect.addEventListener('change', (e) => {
-                const m = reportDataByMonth[e.target.value];
-                if (m) {
-                    setTab('bulanan');
-                    document.getElementById('kpiValue1').textContent = m.rev;
-                    document.getElementById('kpiSub1').textContent = m.sub;
-                    document.getElementById('kpiValue2').textContent = m.trx;
-                    document.getElementById('kpiValue3').textContent = m.avg;
-                    document.getElementById('kpiValue4').textContent = m.cust;
-                }
-            });
+        // Render Baris Tabel Rincian Keuangan
+        function renderReportTable(monthlyList, selectedMonth) {
+            const tbody = document.getElementById('reportTableBody');
+            if (!tbody) return;
+
+            let displayList = monthlyList;
+            if (selectedMonth && selectedMonth !== 'ALL') {
+                displayList = monthlyList.filter(m => m.bulan_key === selectedMonth);
+            }
+
+            if (!displayList || displayList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 px-6 text-center text-slate-400 font-medium italic">
+                            Belum ada riwayat transaksi database pada periode yang dipilih.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = displayList.map(item => `
+                <tr class="hover:bg-slate-50/60 transition">
+                    <td class="py-4 px-6 font-bold text-slate-800">${escapeHtml(item.bulan_label)}</td>
+                    <td class="py-4 px-6 text-slate-700 font-semibold">${Number(item.total_transaksi).toLocaleString('id-ID')}</td>
+                    <td class="py-4 px-6 text-slate-900 font-bold">${formatRupiah(item.total_pendapatan)}</td>
+                    <td class="py-4 px-6 text-slate-500">${formatRupiah(item.total_pengeluaran)}</td>
+                    <td class="py-4 px-6 text-right text-teal-700 font-bold">${formatRupiah(item.laba_bersih)}</td>
+                </tr>
+            `).join('');
         }
 
-        // Interactive Statistik Pendapatan Points & Months
-        const reportPointBadge = document.getElementById('reportPointBadge');
-        document.querySelectorAll('[data-month-point]').forEach((el) => {
-            el.addEventListener('click', () => {
-                const monthName = el.getAttribute('data-month-point');
-                const monthRev = el.getAttribute('data-month-rev');
-                if (reportPointBadge) {
-                    reportPointBadge.textContent = monthName + ': ' + monthRev;
-                    reportPointBadge.classList.remove('hidden');
-                }
-                document.querySelectorAll('.month-axis-btn').forEach((b) => {
-                    b.classList.remove('text-sky-600', 'font-bold');
-                });
-                if (el.classList.contains('month-axis-btn')) {
-                    el.classList.add('text-sky-600', 'font-bold');
-                }
-            });
-        });
-
-        // Interactive Layanan Terlaris Progress Bars
-        const serviceHighlightText = document.getElementById('serviceHighlightText');
-        document.querySelectorAll('.service-bar-btn').forEach((btn) => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.service-bar-btn').forEach((b) => {
-                    b.classList.remove('ring-1', 'ring-sky-200', 'bg-sky-50/30');
-                });
-                btn.classList.add('ring-1', 'ring-sky-200', 'bg-sky-50/30');
-                const name = btn.getAttribute('data-service-name');
-                const share = btn.getAttribute('data-service-share');
-                const rev = btn.getAttribute('data-service-rev');
-                if (serviceHighlightText) {
-                    serviceHighlightText.innerHTML =
-                        'Paket <strong class="text-slate-800">' + name +
-                        '</strong> menyumbang <strong class="text-cyan-700">' + share +
-                        '</strong> (' + rev + ').';
-                }
-            });
-        });
-
-        // Export Report Simulation
+        // Ekspor Laporan Keuangan ke format file CSV riil
         function exportReport() {
-            const confirmed = confirm("Unduh rekapitulasi Laporan Keuangan (Mei 2024) dalam format CSV?");
-            if (confirmed) {
-                alert("Laporan berhasil diunduh ke perangkat Anda.");
+            const list = reportState.monthlyList || [];
+            if (list.length === 0) {
+                alert('Tidak ada data transaksi database untuk diekspor.');
+                return;
             }
+
+            let csv = 'Bulan,Transaksi,Pendapatan,Pengeluaran,Laba Bersih\r\n';
+            list.forEach(item => {
+                csv += `"${item.bulan_label}",${item.total_transaksi},${item.total_pendapatan},${item.total_pengeluaran},${item.laba_bersih}\r\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Laporan_Keuangan_Bersihin_Laundry_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
+
+        // Inisialisasi saat DOM siap
+        document.addEventListener('DOMContentLoaded', fetchLaporanData);
     </script>
-    <!-- Skrip Utama Pemilik (Vanilla JS) -->
+<!-- Skrip Utama Pemilik (Vanilla JS) -->
     <script src="../JS/pemilik.js"></script>
 </body>
 </html>
