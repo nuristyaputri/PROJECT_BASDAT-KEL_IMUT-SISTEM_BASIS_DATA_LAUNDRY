@@ -210,8 +210,7 @@
                                 <span>Kelola Status</span>
                             </span>
                             <span id="sidebarBadge"
-                                class="min-w-[18px] h-[18px] px-1 bg-red-400 rounded-full inline-flex justify-center items-center text-white text-[9px] font-semibold leading-none">
-                                4
+                                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none hidden">
                             </span>
                         </a>
                     </li>
@@ -314,7 +313,7 @@
                     </div>
                 </div>
 
-                <!-- Tombol & Dropdown Notifikasi -->
+                                <!-- Tombol & Dropdown Notifikasi -->
                 <div class="relative">
                     <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
                         class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
@@ -322,22 +321,57 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        <span id="notifDot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
                     </button>
-                    <!-- Notification Dropdown -->
-                    <div id="pegawaiNotifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
-                        <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
-                            <span class="font-semibold text-xs text-slate-700">Notifikasi</span>
-                            <span class="text-[10px] bg-cyan-100 text-cyan-700 font-bold px-1.5 py-0.5 rounded-full">3 Baru</span>
+
+                    <!-- Panel Dropdown Notifikasi -->
+                    <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-50">
+                        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                            <span class="text-xs font-bold text-slate-800">Notifikasi Pegawai</span>
+                            <button type="button" id="markNotifReadBtn"
+                                class="min-h-[36px] px-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 cursor-pointer">
+                                Tandai dibaca
+                            </button>
                         </div>
-                        <div class="max-h-64 overflow-y-auto divide-y divide-slate-50 text-xs">
-                            <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
-                                <p class="font-semibold text-slate-800 text-[11px]">Pesanan Masuk #ORD-2026-081</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Cuci Komplit 3.5 kg baru saja masuk antrean.</p>
+                        <div id="pegawaiNotifList" class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                                        <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan Masuk TRX-240520-05</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Cuci Komplit 3,5 kg menunggu konfirmasi kasir.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">Baru saja</span>
+                                </div>
                             </div>
-                            <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
-                                <p class="font-semibold text-slate-800 text-[11px]">Status Siap Diambil</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Pesanan #ORD-2026-079 telah selesai disetrika.</p>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                                        <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan TRX-240519-02 Disetrika</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Pakaian selesai dicuci dan masuk tahap setrika uap.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">15 menit lalu</span>
+                                </div>
+                            </div>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan TRX-240517-03 Siap Diambil</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Cucian bersih &amp; rapi, siap diserahkan ke pelanggan.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">1 jam lalu</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -475,14 +509,14 @@
                     <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div class="flex items-center gap-2">
                             <span class="text-slate-500 font-semibold">Status Pembayaran:</span>
-                            <span id="staffPaymentBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5">
+                            <span id="staffPaymentBadge" onclick="showStaffPaymentToast()" title="Klik untuk cek status verifikasi kasir" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                 <span id="staffPaymentText">Menunggu Konfirmasi</span>
                             </span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-slate-500 font-semibold">Tahap Cucian Saat Ini:</span>
-                            <span id="staffStageBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                            <span id="staffStageBadge" onclick="showStaffStageToast()" title="Klik untuk cek status tahap penyucian" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200 cursor-pointer hover:opacity-90 transition">
                                 Menunggu konfirmasi
                             </span>
                         </div>
@@ -691,21 +725,10 @@
 
                     </div>
 
-                    <!-- Footer Invoice -->
-                    <div class="p-4 bg-slate-100 text-center text-xs text-slate-500 border-t border-slate-200">
-                        <span>Sistem Basis Data Bersihin Laundry • Tercatat di Audit Trail Pegawai</span>
-                    </div>
+                    
                 </div>
 
-                <!-- Navigasi Bawah -->
-                <div id="bottomNavPegawai" class="flex items-center justify-between gap-3 no-print">
-                    <a href="datapesanan.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                        &larr; Kembali ke Data Pesanan
-                    </a>
-                    <a href="datatransaksi.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                        Daftar Semua Transaksi &rarr;
-                    </a>
-                </div>
+                
 
             </div>
 
@@ -1130,9 +1153,9 @@
                 payBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5';
                 payBadge.innerHTML = '<svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Lunas Terverifikasi</span>';
                 if (confirmBtn) {
-                    confirmBtn.disabled = true;
-                    confirmBtn.className = 'flex-1 px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed flex items-center justify-center gap-1.5';
-                    confirmBtn.innerHTML = '<span>Sudah Terverifikasi Lunas</span>';
+                    confirmBtn.disabled = false;
+                    confirmBtn.className = 'flex-1 px-4 py-2 text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer';
+                    confirmBtn.innerHTML = '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Sudah Terverifikasi Lunas</span>';
                 }
                 if (verifyHint) verifyHint.textContent = 'Pembayaran transaksi ini telah berhasil diverifikasi oleh kasir.';
             } else {
@@ -1316,10 +1339,135 @@
             showInvoiceEmptyState();
         }
 
+        // Helper Toast Notifikasi Modern Staff Invoice
+        function showStaffToast(message, isError = false) {
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, isError);
+                return;
+            }
+            let toast = document.getElementById('toastNotification');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toastNotification';
+                toast.className = 'fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-xl text-xs';
+                toast.innerHTML = `
+                    <div class="toast-icon w-6 h-6 rounded-full ${isError ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            ${isError 
+                                ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />'
+                                : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'}
+                        </svg>
+                    </div>
+                    <div id="toastMessage" class="font-medium">${message}</div>
+                `;
+                document.body.appendChild(toast);
+            } else {
+                const toastMsg = document.getElementById('toastMessage');
+                if (toastMsg) toastMsg.textContent = message;
+                const iconWrap = toast.querySelector('.toast-icon, div:first-child');
+                if (iconWrap) {
+                    if (isError) {
+                        iconWrap.className = 'w-6 h-6 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0';
+                        iconWrap.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>';
+                    } else {
+                        iconWrap.className = 'w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+                        iconWrap.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+                    }
+                }
+            }
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            clearTimeout(window._staffToastTimer);
+            window._staffToastTimer = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+        window.showToast = showStaffToast;
+
+        function showStaffPaymentToast() {
+            if (!currentActiveOrder) {
+                showStaffToast('Pilih atau cari invoice pesanan terlebih dahulu!', true);
+                return;
+            }
+            const isLunas = String(currentActiveOrder.paymentStatus || '').toLowerCase().includes('lunas');
+            if (isLunas) {
+                showStaffToast(`Verifikasi Kasir: Pembayaran pesanan ${currentActiveOrder.code || currentActiveOrder.id} sudah LUNAS terverifikasi.`);
+            } else {
+                showStaffToast(`Verifikasi Kasir: Pembayaran pesanan ${currentActiveOrder.code || currentActiveOrder.id} masih Menunggu Konfirmasi.`);
+            }
+        }
+
+        function showStaffStageToast() {
+            if (!currentActiveOrder) {
+                showStaffToast('Pilih atau cari invoice pesanan terlebih dahulu!', true);
+                return;
+            }
+            showStaffToast(`Tahap Penyucian Saat Ini: "${currentActiveOrder.status || 'Diproses'}" (${currentActiveOrder.code || currentActiveOrder.id})`);
+        }
+        // Sinkronisasi status pesanan dari pemeriksaan invoice pegawai ke LocalStorage
+        function syncStaffOrderToLocalStorage(order) {
+            if (!order) return;
+            const targetId = order.code || order.id || String(order.id_pesanan);
+            try {
+                const now = Date.now();
+                const rawTrx = localStorage.getItem('bersihin_transactions');
+                if (rawTrx) {
+                    const list = JSON.parse(rawTrx);
+                    list.forEach(item => {
+                        if ((item.orderId || item.code || item.id) === targetId || (order.id_pesanan && String(item.id_pesanan) === String(order.id_pesanan))) {
+                            item.status = order.status;
+                            item.paymentStatus = order.paymentStatus;
+                            item.updatedAt = now;
+                            if (order.status === 'Selesai') item.paymentStatus = 'Lunas';
+                        }
+                    });
+                    localStorage.setItem('bersihin_transactions', JSON.stringify(list));
+                }
+
+                const rawInv = localStorage.getItem('bersihin_invoices');
+                if (rawInv) {
+                    const list = JSON.parse(rawInv);
+                    list.forEach(item => {
+                        if ((item.orderId || item.code || item.id || item.kode_pesanan) === targetId || (order.id_pesanan && String(item.id_pesanan) === String(order.id_pesanan))) {
+                            item.status = order.status;
+                            item.paymentStatus = order.paymentStatus;
+                            item.updatedAt = now;
+                            if (order.status === 'Selesai') item.paymentStatus = 'Lunas';
+                        }
+                    });
+                    localStorage.setItem('bersihin_invoices', JSON.stringify(list));
+                }
+
+                const rawActive = localStorage.getItem('bersihin_active_order');
+                if (rawActive) {
+                    const act = JSON.parse(rawActive);
+                    if ((act.orderId || act.code || act.id) === targetId || (order.id_pesanan && String(act.id_pesanan) === String(order.id_pesanan))) {
+                        if (order.status === 'Selesai') {
+                            localStorage.removeItem('bersihin_active_order');
+                        } else {
+                            act.status = order.status;
+                            act.paymentStatus = order.paymentStatus;
+                            act.updatedAt = now;
+                            localStorage.setItem('bersihin_active_order', JSON.stringify(act));
+                        }
+                    }
+                }
+
+                localStorage.setItem('bersihin_order_updated', now.toString());
+            } catch (_) {}
+        }
+
         // Aksi Kasir: Konfirmasi Pembayaran Lunas ke Database MySQL
         async function confirmStaffOrderPayment() {
-            if (!currentActiveOrder) return;
-            if (!confirm(`Konfirmasi pembayaran lunas untuk pesanan ${currentActiveOrder.code || currentActiveOrder.id}?`)) return;
+            if (!currentActiveOrder) {
+                showStaffToast('Pilih atau cari invoice pesanan terlebih dahulu!', true);
+                return;
+            }
+            if (String(currentActiveOrder.paymentStatus || '').toLowerCase().includes('lunas')) {
+                showStaffToast(`Pesanan ${currentActiveOrder.code || currentActiveOrder.id} sudah terverifikasi LUNAS sebelumnya.`);
+                return;
+            }
 
             if (currentActiveOrder.id_pesanan) {
                 try {
@@ -1334,24 +1482,28 @@
                     const json = await res.json();
                     if (!res.ok) throw new Error(json.message || 'Gagal konfirmasi pembayaran');
                 } catch (err) {
-                    alert('Gagal menyimpan konfirmasi pembayaran: ' + err.message);
+                    showStaffToast('Gagal verifikasi pembayaran: ' + err.message, true);
                     return;
                 }
             }
 
             currentActiveOrder.paymentStatus = 'Lunas';
             if (currentActiveOrder.status === 'Menunggu konfirmasi') {
-                currentActiveOrder.status = 'Dalam Antrian';
+                currentActiveOrder.status = 'Sedang Dicuci';
             }
+            syncStaffOrderToLocalStorage(currentActiveOrder);
 
-            alert('Pembayaran BERHASIL dikonfirmasi sebagai LUNAS!');
+            showStaffToast(`Verifikasi Kasir Berhasil: Pembayaran pesanan ${currentActiveOrder.code || currentActiveOrder.id} LUNAS!`);
             await enrichStaffOrderDetail(currentActiveOrder);
             renderStaffInvoice(currentActiveOrder);
         }
 
         // Aksi Kasir: Ubah Tahap Cucian ke Database MySQL
         async function applyStaffStageUpdate() {
-            if (!currentActiveOrder) return;
+            if (!currentActiveOrder) {
+                showStaffToast('Pilih atau cari invoice pesanan terlebih dahulu!', true);
+                return;
+            }
             const newStage = document.getElementById('staffStageSelect').value;
 
             if (currentActiveOrder.id_pesanan) {
@@ -1367,19 +1519,23 @@
                     const json = await res.json();
                     if (!res.ok) throw new Error(json.message || 'Gagal mengubah status');
                 } catch (err) {
-                    alert('Gagal memperbarui status pesanan: ' + err.message);
+                    showStaffToast('Gagal memperbarui status: ' + err.message, true);
                     return;
                 }
             }
 
             currentActiveOrder.status = newStage;
-            alert(`Tahap pengerjaan pesanan ${currentActiveOrder.code || currentActiveOrder.id} diperbarui menjadi: ${newStage}`);
+            syncStaffOrderToLocalStorage(currentActiveOrder);
+            showStaffToast(`Tahap penyucian pesanan ${currentActiveOrder.code || currentActiveOrder.id} berhasil diperbarui: "${newStage}"`);
             renderStaffInvoice(currentActiveOrder);
         }
 
         // Aksi Kasir: Tolak Pesanan ke Database MySQL
         async function rejectStaffOrder() {
-            if (!currentActiveOrder) return;
+            if (!currentActiveOrder) {
+                showStaffToast('Pilih atau cari invoice pesanan terlebih dahulu!', true);
+                return;
+            }
             const alasan = prompt('Alasan pembatalan/penolakan pesanan:', 'Pakaian melebihi kapasitas outlet');
             if (alasan === null) return;
 
@@ -1396,14 +1552,15 @@
                     const json = await res.json();
                     if (!res.ok) throw new Error(json.message || 'Gagal menolak pesanan');
                 } catch (err) {
-                    alert('Gagal menolak pesanan: ' + err.message);
+                    showStaffToast('Gagal menolak pesanan: ' + err.message, true);
                     return;
                 }
             }
 
             currentActiveOrder.status = 'Dibatalkan';
             currentActiveOrder.paymentStatus = 'Ditolak';
-            alert(`Pesanan ${currentActiveOrder.code || currentActiveOrder.id} telah dibatalkan.`);
+            syncStaffOrderToLocalStorage(currentActiveOrder);
+            showStaffToast(`Pesanan ${currentActiveOrder.code || currentActiveOrder.id} telah dibatalkan.`, true);
             renderStaffInvoice(currentActiveOrder);
         }
 

@@ -394,69 +394,111 @@
                 }
             });
         }
+
+        updateSidebarBadge();
     }
 
-    // ==========================================
-    // 5. DROPDOWN NOTIFIKASI TOPBAR
-    // ==========================================
-    function initNotificationDropdown() {
-        const notifButtons = document.querySelectorAll('button[aria-label="Notifikasi"]');
-        if (!notifButtons.length) return;
+    // 4b. Sinkronisasi Badge Status Pesanan pada Sidebar Navigasi Pegawai
+    async function updateSidebarBadge() {
+        const sidebarBadge = document.getElementById('sidebarBadge');
+        if (!sidebarBadge) return;
 
-        notifButtons.forEach(btn => {
-            const container = btn.parentElement;
-            if (!container) return;
+        try {
+            const orders = await fetchUnifiedOrders();
+            let diprosesCount = 0;
+            let menungguCount = 0;
 
-            const dropdown = document.createElement('div');
-            dropdown.className = 'notif-dropdown hidden absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden';
-            dropdown.innerHTML = `
-                <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-800">Notifikasi Staf</span>
-                    <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">Real-Time</span>
-                </div>
-                <div class="max-h-64 overflow-y-auto divide-y divide-slate-100 text-xs">
-                    <a href="statuspesanan.html" class="p-3 block hover:bg-slate-50 transition">
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-2 h-2 mt-1.5 rounded-full bg-red-500 shrink-0"></span>
-                            <div>
-                                <div class="font-semibold text-slate-800">Pesanan Baru Perlu Konfirmasi</div>
-                                <div class="text-[11px] text-slate-500 mt-0.5">Pelanggan baru saja checkout invoice via aplikasi.</div>
-                                <div class="text-[10px] text-slate-400 mt-1">Baru saja</div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="datatransaksi.html" class="p-3 block hover:bg-slate-50 transition">
-                        <div class="flex items-start gap-2.5">
-                            <span class="w-2 h-2 mt-1.5 rounded-full bg-teal-500 shrink-0"></span>
-                            <div>
-                                <div class="font-semibold text-slate-800">Pembayaran QRIS Masuk</div>
-                                <div class="text-[11px] text-slate-500 mt-0.5">Verifikasi pembayaran invoice pesanan pelanggan.</div>
-                                <div class="text-[10px] text-slate-400 mt-1">Hari ini</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="p-2.5 text-center bg-slate-50 border-t border-slate-100">
-                    <a href="statuspesanan.html" class="text-[11px] font-semibold text-cyan-700 hover:text-cyan-800">
-                        Buka Kelola Status Pesanan &rarr;
-                    </a>
-                </div>
-            `;
-
-            container.classList.add('relative');
-            container.appendChild(dropdown);
-
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle('hidden');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!container.contains(e.target)) {
-                    dropdown.classList.add('hidden');
+            orders.forEach(o => {
+                const st = (o.status || '').trim();
+                if (st === 'Dibatalkan' || st === 'Selesai' || st === 'Siap Diambil') return;
+                if (st === 'Menunggu konfirmasi') {
+                    menungguCount++;
+                } else {
+                    diprosesCount++;
                 }
             });
-        });
+
+            const activeAttention = menungguCount + diprosesCount;
+            if (activeAttention > 0) {
+                sidebarBadge.textContent = String(activeAttention);
+                sidebarBadge.classList.remove('hidden');
+                sidebarBadge.style.display = '';
+            } else {
+                sidebarBadge.textContent = '';
+                sidebarBadge.classList.add('hidden');
+                sidebarBadge.style.display = 'none';
+            }
+        } catch (_) {
+            sidebarBadge.classList.add('hidden');
+            sidebarBadge.style.display = 'none';
+        }
+    }
+    window.updateSidebarBadge = updateSidebarBadge;
+
+    // ==========================================
+    // 5. DROPDOWN NOTIFIKASI TOPBAR PEGAWAI (Gaya Identik Pelanggan)
+    // ==========================================
+    function initNotificationDropdown() {
+        const notifToggleBtn = document.getElementById('notifToggleBtn');
+        const notifDropdown = document.getElementById('notifDropdown') || document.getElementById('pegawaiNotifDropdown');
+        const notifDot = document.getElementById('notifDot') || (notifToggleBtn ? notifToggleBtn.querySelector('.bg-red-500, .bg-rose-500') : null);
+        const markNotifReadBtn = document.getElementById('markNotifReadBtn');
+
+        if (!notifToggleBtn || !notifDropdown) return;
+
+        // Cek status dibaca dari localStorage
+        const isRead = localStorage.getItem('bersihin_notif_read_pegawai') === 'true';
+        if (isRead) {
+            if (notifDot) notifDot.classList.add('hidden');
+            if (markNotifReadBtn) markNotifReadBtn.textContent = 'Semua dibaca';
+        } else {
+            if (notifDot) notifDot.classList.remove('hidden');
+            if (markNotifReadBtn) markNotifReadBtn.textContent = 'Tandai dibaca';
+        }
+
+        if (!notifToggleBtn.dataset.hasNotifListener) {
+            notifToggleBtn.dataset.hasNotifListener = 'true';
+            notifToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const willOpen = notifDropdown.classList.contains('hidden');
+                notifDropdown.classList.toggle('hidden', !willOpen);
+                const profileDropdown = document.getElementById('profileDropdown') || document.getElementById('pegawaiAvatarDropdown');
+                if (profileDropdown) profileDropdown.classList.add('hidden');
+                notifToggleBtn.setAttribute('aria-expanded', String(willOpen));
+            });
+        }
+
+        if (markNotifReadBtn && !markNotifReadBtn.dataset.hasMarkListener) {
+            markNotifReadBtn.dataset.hasMarkListener = 'true';
+            markNotifReadBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (notifDot) notifDot.classList.add('hidden');
+                localStorage.setItem('bersihin_notif_read_pegawai', 'true');
+                markNotifReadBtn.textContent = 'Semua dibaca';
+                showToast('Notifikasi ditandai telah dibaca.');
+            });
+        }
+
+        if (!document.body.dataset.hasGlobalPegawaiNotif) {
+            document.body.dataset.hasGlobalPegawaiNotif = 'true';
+            document.addEventListener('click', (e) => {
+                const curNotifBtn = document.getElementById('notifToggleBtn');
+                const curNotifDrop = document.getElementById('notifDropdown') || document.getElementById('pegawaiNotifDropdown');
+                if (curNotifDrop && !curNotifDrop.contains(e.target) && curNotifBtn && !curNotifBtn.contains(e.target)) {
+                    curNotifDrop.classList.add('hidden');
+                    if (curNotifBtn) curNotifBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const curNotifDrop = document.getElementById('notifDropdown') || document.getElementById('pegawaiNotifDropdown');
+                    const curNotifBtn = document.getElementById('notifToggleBtn');
+                    if (curNotifDrop) curNotifDrop.classList.add('hidden');
+                    if (curNotifBtn) curNotifBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
     }
 
     // ==========================================
@@ -720,7 +762,7 @@
             if (mapById.has(code)) {
                 // Selaraskan status jika di local ada update
                 const existing = mapById.get(code);
-                if (lo.status) {
+                if (lo.status && (!existing.status || existing.status === 'Menunggu konfirmasi' || lo.updatedAt)) {
                     existing.status = normalizeOrderStatus(lo.status);
                     existing.paymentStatus = (existing.status === 'Menunggu konfirmasi') ? 'Menunggu' : 'Lunas';
                 }
@@ -1525,7 +1567,17 @@
 
         const activeCount = counts['Menunggu konfirmasi'] + prosesAktif;
         const sidebarBadge = document.getElementById('sidebarBadge');
-        if (sidebarBadge) sidebarBadge.textContent = activeCount;
+        if (sidebarBadge) {
+            if (activeCount > 0) {
+                sidebarBadge.textContent = String(activeCount);
+                sidebarBadge.classList.remove('hidden');
+                sidebarBadge.style.display = '';
+            } else {
+                sidebarBadge.textContent = '';
+                sidebarBadge.classList.add('hidden');
+                sidebarBadge.style.display = 'none';
+            }
+        }
     }
 
     function syncStagePillUI(activeStage) {
@@ -1872,10 +1924,16 @@
         let menungguCount = 0;
 
         orders.forEach(o => {
-            if (o.status !== 'Dibatalkan') masukCount++;
-            if (o.status === 'Menunggu konfirmasi') menungguCount++;
-            else if (o.status === 'Selesai' || o.status === 'Siap Diambil') selesaiCount++;
-            else diprosesCount++;
+            const st = (o.status || '').trim();
+            if (st === 'Dibatalkan') return;
+            masukCount++;
+            if (st === 'Menunggu konfirmasi') {
+                menungguCount++;
+            } else if (st === 'Selesai' || st === 'Siap Diambil') {
+                selesaiCount++;
+            } else {
+                diprosesCount++;
+            }
         });
 
         const elMasuk = document.getElementById('statPesananMasuk');
@@ -1889,22 +1947,19 @@
         const subMenunggu = document.getElementById('subMenungguKonfirmasi');
 
         const activeAttention = menungguCount + diprosesCount;
-        if (elMasuk) elMasuk.textContent = String(masukCount || orders.length || 28);
-        if (elDiproses) elDiproses.textContent = String(diprosesCount || 12);
-        if (elSelesai) elSelesai.textContent = String(selesaiCount || 9);
-        if (elMenunggu) elMenunggu.textContent = String(menungguCount > 0 ? menungguCount : 7);
+        if (elMasuk) elMasuk.textContent = String(masukCount);
+        if (elDiproses) elDiproses.textContent = String(diprosesCount);
+        if (elSelesai) elSelesai.textContent = String(selesaiCount);
+        if (elMenunggu) elMenunggu.textContent = String(menungguCount);
 
-        if (subMasuk) subMasuk.textContent = '+6 dari kemarin';
-        if (subDiproses) {
-            const total = masukCount || orders.length || 28;
-            const pct = Math.round(((diprosesCount || 12) / total) * 100);
-            subDiproses.textContent = `${pct > 0 ? pct : 43}% dari total`;
-        }
-        if (subSelesai) subSelesai.textContent = 'Siap diambil';
-        if (subMenunggu) subMenunggu.textContent = 'Perlu tindakan';
+        // Hapus elemen subtitle teks jika masih ditemukan di DOM
+        if (subMasuk) subMasuk.remove();
+        if (subDiproses) subDiproses.remove();
+        if (subSelesai) subSelesai.remove();
+        if (subMenunggu) subMenunggu.remove();
 
         if (elBannerCount) {
-            elBannerCount.textContent = `${activeAttention > 0 ? activeAttention : 4} pesanan`;
+            elBannerCount.textContent = `${activeAttention} pesanan`;
         }
 
         // 2. Render Tabel Pesanan Terbaru dari Akun Pelanggan Nyata (Sesuai Gambar 3)
@@ -2307,6 +2362,7 @@
         // 1. Dengarkan event storage dari Pelanggan untuk pembaruan instan antar-tab
         window.addEventListener('storage', (e) => {
             if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+                updateSidebarBadge();
                 refreshActivePageView();
             }
         });
@@ -2316,6 +2372,7 @@
             // Hindari me-refresh saat staf sedang membuka dropdown ubah status
             if (document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('status-select')) return;
 
+            updateSidebarBadge();
             refreshActivePageView();
         }, 3500);
 
