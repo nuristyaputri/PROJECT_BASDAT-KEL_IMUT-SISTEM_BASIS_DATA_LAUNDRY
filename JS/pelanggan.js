@@ -39,14 +39,18 @@
       services: '/api/pelanggan/services'
     },
     defaultProfile: {
+      id_pelanggan: 1,
+      id_user: 4,
+      username: 'andipratama',
       fullName: 'Andi Pratama',
-      email: 'andi.pratama@gmail.com',
-      phone: '081290123456',
-      address: 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan',
+      email: 'andi.pratama@email.com',
+      phone: '081234567821',
+      address: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
       memberTier: 'Silver Member',
       member_tier: 'SILVER',
       kode_pelanggan: 'PLG-08129',
-      joinDate: 'Mei 2024'
+      created_at: '2024-03-01 09:00:00',
+      joinDate: 'Maret 2024'
     }
   };
 
@@ -161,13 +165,13 @@
 
       // Jika userObj aktif login, pastikan profil 100% selaras dengan akun tersebut!
       if (userObj) {
-        const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Pelanggan';
-        const activeEmail = userObj.email || (storedProfile && storedProfile.email) || '';
-        const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '';
-        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan';
-        const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || null;
-        const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || null;
-        const activeKode = userObj.kode_pelanggan || (storedProfile && storedProfile.kode_pelanggan) || '';
+        const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Andi Pratama';
+        const activeEmail = userObj.email || (storedProfile && storedProfile.email) || 'andi.pratama@email.com';
+        const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '081234567821';
+        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan';
+        const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || 4;
+        const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || 1;
+        const activeKode = userObj.kode_pelanggan || (storedProfile && storedProfile.kode_pelanggan) || 'PLG-08129';
         const rawTier = String(userObj.member_tier || (storedProfile && (storedProfile.member_tier || storedProfile.memberTier)) || 'REGULER').toUpperCase();
         const activeTierLabel = rawTier.includes('GOLD')
           ? 'Gold Member'
@@ -278,7 +282,7 @@
       year: 'numeric'
     });
     const isoDateStr = nowRealtime.toISOString().slice(0, 10);
-    document.querySelectorAll('header time, [data-realtime-date], time#topbarDateDisplay').forEach(el => {
+    document.querySelectorAll('header time, [data-realtime-date], [data-realtime-full-date], time#topbarDateDisplay').forEach(el => {
       el.textContent = dateFormatted;
       el.setAttribute('datetime', isoDateStr);
     });
@@ -308,12 +312,43 @@
     });
 
     const expSub = document.getElementById('statTotalPengeluaranSub');
-    if (expSub) {
-      const d = (profile.created_at || profile.createdAt) ? new Date(profile.created_at || profile.createdAt) : new Date();
-      const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      const mShort = !isNaN(d.getTime()) ? shortMonths[d.getMonth()] : 'Nov';
-      const y = !isNaN(d.getTime()) ? d.getFullYear() : new Date().getFullYear();
-      expSub.textContent = `Sejak ${mShort} ${y}`;
+    if (expSub && expSub.textContent !== 'Akumulasi pengeluaran') {
+      expSub.textContent = 'Akumulasi pengeluaran';
+    }
+
+    // 3.3b Sinkronisasi Real-Time Kartu Bersihin Member Berdasarkan Jumlah Pesanan Akun Pelanggan
+    const memberTierLabel = document.getElementById('memberTierLabel');
+    const memberTierBadge = document.getElementById('memberTierBadge');
+    const memberProgressSubtitle = document.getElementById('memberProgressSubtitle');
+    const memberProgressBar = document.getElementById('memberProgressBar');
+    const memberProgressPercent = document.getElementById('memberProgressPercent');
+    const memberProgressRemaining = document.getElementById('memberProgressRemaining');
+
+    if (memberTierLabel || memberProgressSubtitle) {
+      const rawT = String(profile.member_tier || profile.memberTier || 'SILVER').toUpperCase();
+      const tLabel = rawT.includes('GOLD') ? 'Gold Member' : (rawT.includes('SILVER') ? 'Silver Member' : 'Reguler Member');
+      const tBadge = rawT.includes('GOLD') ? 'Tier 3' : (rawT.includes('SILVER') ? 'Tier 2' : 'Tier 1');
+      if (memberTierLabel) memberTierLabel.textContent = tLabel;
+      if (memberTierBadge) memberTierBadge.textContent = tBadge;
+
+      const allOrders = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+      const orderCount = Array.isArray(allOrders) ? allOrders.length : 0;
+      const targetOrders = 10;
+      const pct = Math.min(100, Math.round((orderCount / targetOrders) * 100));
+      const rem = Math.max(0, targetOrders - orderCount);
+
+      if (memberProgressSubtitle) {
+        memberProgressSubtitle.textContent = `${orderCount} dari ${targetOrders} transaksi menuju Gold`;
+      }
+      if (memberProgressBar) {
+        memberProgressBar.style.width = `${pct}%`;
+      }
+      if (memberProgressPercent) {
+        memberProgressPercent.textContent = `${pct}% Tercapai`;
+      }
+      if (memberProgressRemaining) {
+        memberProgressRemaining.textContent = rem > 0 ? `${rem} transaksi lagi` : 'Target tercapai!';
+      }
     }
 
     // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna (Stabil & Tidak Berkedip)
@@ -700,13 +735,23 @@
         } else {
           localStorage.removeItem('bersihin_remember_identifier');
         }
-        localStorage.setItem('bersihin_customer_profile', JSON.stringify({
+        const profObj = {
+          id_pelanggan: 1,
+          id_user: 4,
+          username: 'andipratama',
+          kode_pelanggan: 'PLG-08129',
           nama: 'Andi Pratama',
+          fullName: 'Andi Pratama',
           email: identifier.includes('@') ? identifier : 'andi.pratama@email.com',
-          telepon: '0812 3456 7821',
-          alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
-          member_tier: 'Silver Member'
-        }));
+          telepon: '081234567821',
+          phone: '081234567821',
+          alamat: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
+          address: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
+          member_tier: 'SILVER',
+          memberTier: 'Silver Member'
+        };
+        localStorage.setItem('bersihin_customer_profile', JSON.stringify(profObj));
+        sessionStorage.setItem('bersihin_customer_profile', JSON.stringify(profObj));
       } catch (err) {
         // Storage restricted
       }
@@ -876,24 +921,41 @@
 
     return {
       code: code,
+      kode_pesanan: code,
       id: code,
       id_pesanan: dbRow.id_pesanan,
-      id_pelanggan: dbRow.id_pelanggan,
+      id_pelanggan: dbRow.id_pelanggan || 1,
+      nama_pelanggan: dbRow.nama_pelanggan || 'Andi Pratama',
+      telepon: dbRow.telepon || dbRow.telepon_pelanggan || '081234567821',
+      alamat: dbRow.alamat || dbRow.alamat_pelanggan || 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
       orderSeq: idx,
       date: dateStr,
       timestamp: timeIso,
+      tanggal_pesanan: dbRow.tanggal_pesanan || timeIso,
+      tanggal_selesai: dbRow.tanggal_selesai || null,
       service: dbRow.layanan || 'Cuci Komplit (Cuci + Setrika)',
+      layanan: dbRow.layanan || 'Cuci Komplit (Cuci + Setrika)',
       weight: `${beratVal.toLocaleString('id-ID')} kg`,
       weightKg: beratVal,
+      total_berat: beratVal,
       amount: amountNum,
+      total_harga: amountNum,
       total: `Rp${amountNum.toLocaleString('id-ID')}`,
       totalFormatted: `Rp${amountNum.toLocaleString('id-ID')}`,
       status: statusText,
       statusCode: st,
+      status_pembayaran: dbRow.status_pembayaran || 'MENUNGGU',
+      metode_pembayaran: dbRow.metode_pembayaran || 'QRIS',
+      paymentMethod: dbRow.metode_pembayaran || 'QRIS',
+      referensi_bayar: dbRow.referensi_bayar || null,
+      bukti_bayar: dbRow.bukti_bayar || dbRow.bukti_transfer || null,
+      bukti_transfer: dbRow.bukti_bayar || dbRow.bukti_transfer || null,
+      details: Array.isArray(dbRow.details) ? dbRow.details : null,
       dateIn: dateStr,
       dateOut: estStr,
       estDone: estStr,
       notes: dbRow.catatan || 'Pakaian reguler',
+      catatan: dbRow.catatan || 'Pakaian reguler',
       calcSub: `${beratVal.toLocaleString('id-ID')} kg (Estimasi)`,
       paidDate: dbRow.status_pembayaran === 'BERHASIL' ? 'Lunas' : 'Belum dibayar',
       created: `Dibuat pada ${dateStr}`
@@ -928,17 +990,21 @@
         }
       } catch (_) {}
 
-      // Fallback ID pelanggan jika username diketahui di database bersihinlaundry
+      // Fallback ID pelanggan sesuai database_laundry.sql XAMPP
       if (!activeCustId) {
-        if (activeUsername === 'andipratama' || activeUserId === 4) {
-          activeCustId = 1;
-          activeUserId = 4;
-        } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
+        if (activeUsername === 'rinamarlina' || activeUserId === 5) {
           activeCustId = 2;
           activeUserId = 5;
         } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
           activeCustId = 3;
           activeUserId = 6;
+        } else if (activeUsername === 'mayaanggraini' || activeUsername === 'maya' || activeUserId === 7) {
+          activeCustId = 4;
+          activeUserId = 7;
+        } else {
+          activeCustId = 1;
+          activeUserId = 4;
+          if (!activeUsername) activeUsername = 'andipratama';
         }
       }
 
@@ -985,8 +1051,28 @@
       const json = await res.json();
       if (!json.success || !Array.isArray(json.data)) return null;
 
+      // Pertahankan bukti_transfer yang baru diunggah di localStorage bila kode pesanan cocok dengan XAMPP
+      const localProofByCode = {};
+      try {
+        const prevInv = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+        if (Array.isArray(prevInv)) {
+          prevInv.forEach(it => {
+            const c = it && (it.kode_pesanan || it.code || it.orderId || it.id);
+            const b = it && (it.bukti_bayar || it.bukti_transfer);
+            if (c && b) localProofByCode[c] = b;
+          });
+        }
+      } catch (_) {}
+
       const dbRows = json.data;
-      const mappedList = dbRows.map((r, idx) => mapDbOrderToFrontend(r, idx));
+      const mappedList = dbRows.map((r, idx) => {
+        const mapped = mapDbOrderToFrontend(r, idx);
+        if (!mapped.bukti_transfer && localProofByCode[mapped.code]) {
+          mapped.bukti_transfer = localProofByCode[mapped.code];
+          mapped.bukti_bayar = localProofByCode[mapped.code];
+        }
+        return mapped;
+      });
 
       // Urutkan pesanan dari yang paling baru ke yang lama (id_pesanan DESC atau timestamp DESC)
       mappedList.sort((a, b) => {
@@ -996,9 +1082,15 @@
         return (new Date(b.timestamp).getTime() || 0) - (new Date(a.timestamp).getTime() || 0);
       });
 
-      // 1. Simpan daftar pesanan murni dari database MySQL XAMPP (ke sessionStorage & localStorage)
+      // 1. Simpan daftar pesanan murni dari database MySQL XAMPP (bersihkan transaksi dummy lama)
       sessionStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
       localStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
+      localStorage.setItem('bersihin_invoices', JSON.stringify(mappedList));
+      if (mappedList.length > 0) {
+        localStorage.setItem('last_active_invoice', JSON.stringify(mappedList[0]));
+      } else {
+        localStorage.removeItem('last_active_invoice');
+      }
 
       // 2. Selaraskan pesanan aktif teratas yang belum selesai (prioritaskan Express atau pesanan terbaru)
       let activeFromDb = mappedList.find(x => {
@@ -1161,6 +1253,9 @@
       } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
         activeCustId = 3;
         activeUserId = 6;
+      } else if (activeUsername === 'mayaanggraini' || activeUsername === 'maya' || activeUserId === 7) {
+        activeCustId = 4;
+        activeUserId = 7;
       }
     }
 
@@ -1852,6 +1947,14 @@
   // ===========================================================================
   // 9. MODUL RIWAYAT TRANSAKSI (PELANGGAN/riwayat.html)
   // ===========================================================================
+  // State persisten untuk Riwayat Transaksi agar filter tidak ter-reset saat auto-refresh polling
+  let riwayatCurrentFilter = 'all';
+  let riwayatCurrentSearch = '';
+  let riwayatCurrentSort = 'newest';
+  let riwayatCurrentPage = 1;
+  const RIWAYAT_ITEMS_PER_PAGE = 8;
+  let riwayatListenersBound = false;
+
   function initRiwayatPage() {
     const tableBody = document.getElementById('historyTableBody');
     const filterTabs = document.querySelectorAll('.filter-tab');
@@ -1898,11 +2001,19 @@
     const totalCountEl = document.getElementById('totalItemsCount');
     if (totalCountEl) totalCountEl.textContent = stats.total;
 
-    let currentFilter = 'all';
-    let currentSearch = '';
-    let currentSort = 'newest';
-    let currentPage = 1;
-    const itemsPerPage = 8;
+    // Sinkronisasi styling visual tab dengan riwayatCurrentFilter yang aktif
+    filterTabs.forEach(t => {
+      const tabFilter = t.getAttribute('data-filter') || 'all';
+      if (tabFilter === riwayatCurrentFilter) {
+        t.setAttribute('aria-selected', 'true');
+        t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+        t.classList.remove('text-slate-600');
+      } else {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+        t.classList.add('text-slate-600');
+      }
+    });
 
     // Sinkronisasi pesanan langsung dari database MySQL XAMPP secara real-time
     (async function syncWithDatabase() {
@@ -1928,19 +2039,19 @@
     function renderRows() {
       if (!tableBody) return;
 
-      // 1. Filter data
+      // 1. Filter data menggunakan state filter persisten
       let filtered = allTrx.filter(trx => {
         let matchFilter = true;
         const cat = normalizeStatusCategory(trx.status);
-        if (currentFilter === 'Diproses') {
+        if (riwayatCurrentFilter === 'Diproses') {
           matchFilter = (cat === 'Diproses');
-        } else if (currentFilter === 'Selesai') {
+        } else if (riwayatCurrentFilter === 'Selesai') {
           matchFilter = (cat === 'Selesai');
-        } else if (currentFilter === 'Dibatalkan') {
+        } else if (riwayatCurrentFilter === 'Dibatalkan') {
           matchFilter = (cat === 'Dibatalkan');
         }
 
-        const q = currentSearch.toLowerCase();
+        const q = riwayatCurrentSearch.toLowerCase();
         const matchSearch = !q ||
           trx.code.toLowerCase().includes(q) ||
           trx.service.toLowerCase().includes(q) ||
@@ -1978,7 +2089,7 @@
         const amtA = a.amount || 0;
         const amtB = b.amount || 0;
 
-        if (currentSort === 'newest') {
+        if (riwayatCurrentSort === 'newest') {
           const idA = Number(a.id_pesanan) || 0;
           const idB = Number(b.id_pesanan) || 0;
           if (idA && idB && idA !== idB) return idB - idA;
@@ -1988,7 +2099,7 @@
           }
           return 0;
         }
-        if (currentSort === 'oldest') {
+        if (riwayatCurrentSort === 'oldest') {
           const idA = Number(a.id_pesanan) || 0;
           const idB = Number(b.id_pesanan) || 0;
           if (idA && idB && idA !== idB) return idA - idB;
@@ -1998,18 +2109,18 @@
           }
           return 0;
         }
-        if (currentSort === 'highest') return amtB - amtA;
-        if (currentSort === 'lowest') return amtA - amtB;
+        if (riwayatCurrentSort === 'highest') return amtB - amtA;
+        if (riwayatCurrentSort === 'lowest') return amtA - amtB;
         return 0;
       });
 
       // 3. Hitung pagination dinamis
-      const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
-      if (currentPage > totalPages) currentPage = totalPages;
-      if (currentPage < 1) currentPage = 1;
+      const totalPages = Math.max(1, Math.ceil(filtered.length / RIWAYAT_ITEMS_PER_PAGE));
+      if (riwayatCurrentPage > totalPages) riwayatCurrentPage = totalPages;
+      if (riwayatCurrentPage < 1) riwayatCurrentPage = 1;
 
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = Math.min(startIndex + itemsPerPage, filtered.length);
+      const startIndex = (riwayatCurrentPage - 1) * RIWAYAT_ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + RIWAYAT_ITEMS_PER_PAGE, filtered.length);
       const pageItems = filtered.slice(startIndex, endIndex);
 
       // 4. Render ke tabel
@@ -2022,14 +2133,14 @@
         if (emptySearchState) emptySearchState.classList.add('hidden');
 
         tableBody.innerHTML = pageItems.map(trx => `
-          <tr class="trx-row hover:bg-slate-50/80 transition"
+          <tr class="trx-row hover:bg-slate-50/80"
             data-code="${trx.code}"
             data-service="${trx.service}"
             data-status="${trx.status}"
             data-amount="${trx.amount}"
             data-timestamp="${trx.timestamp}">
             <td class="px-4 py-3.5 font-bold text-slate-800">
-              <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+              <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700">${trx.code}</a>
             </td>
             <td class="px-4 py-3.5 text-slate-600">${trx.date}</td>
             <td class="px-4 py-3.5 text-slate-700 font-medium">${trx.service}</td>
@@ -2038,7 +2149,7 @@
             <td class="px-4 py-3.5">
               <a href="status.html?id=${encodeURIComponent(trx.code)}"
                 title="Klik untuk melacak perjalanan pesanan ${trx.code}"
-                class="inline-block transition hover:opacity-85 hover:scale-[1.02] active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
+                class="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
                 ${getStatusBadgeHtml(trx.status)}
               </a>
             </td>
@@ -2046,7 +2157,7 @@
               <div class="flex items-center justify-end">
                 <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
                   aria-label="Lihat invoice & bukti pembayaran transaksi ${trx.code}"
-                  class="min-h-[36px] px-3.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                  class="min-h-[36px] px-3.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                   <span>Detail</span>
                   <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -2081,11 +2192,11 @@
         prevBtn.disabled = false;
         prevBtn.removeAttribute('disabled');
         prevBtn.onclick = () => {
-          if (currentPage > 1) {
-            currentPage--;
+          if (riwayatCurrentPage > 1) {
+            riwayatCurrentPage--;
             renderRows();
           } else if (totalPages > 1) {
-            currentPage = totalPages;
+            riwayatCurrentPage = totalPages;
             renderRows();
           }
         };
@@ -2095,11 +2206,11 @@
         nextBtn.disabled = false;
         nextBtn.removeAttribute('disabled');
         nextBtn.onclick = () => {
-          if (currentPage < totalPages) {
-            currentPage++;
+          if (riwayatCurrentPage < totalPages) {
+            riwayatCurrentPage++;
             renderRows();
           } else if (totalPages > 1) {
-            currentPage = 1;
+            riwayatCurrentPage = 1;
             renderRows();
           }
         };
@@ -2108,10 +2219,10 @@
       if (pageContainer) {
         let pagesHtml = '';
         for (let i = 1; i <= totalPages; i++) {
-          const isActive = (i === currentPage);
+          const isActive = (i === riwayatCurrentPage);
           pagesHtml += `
             <button type="button" data-page="${i}"
-              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg text-xs font-semibold transition ${isActive ? 'bg-cyan-700 text-white' : 'border border-slate-200 bg-white hover:bg-slate-100 text-slate-600'}">
+              class="page-num-btn min-w-[36px] min-h-[36px] w-9 h-9 inline-flex items-center justify-center rounded-lg text-xs font-semibold ${isActive ? 'bg-slate-900 text-white shadow-xs' : 'border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 shadow-2xs'}">
               ${i}
             </button>
           `;
@@ -2121,8 +2232,8 @@
         pageContainer.querySelectorAll('.page-num-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             const p = parseInt(btn.getAttribute('data-page'), 10);
-            if (p && p !== currentPage) {
-              currentPage = p;
+            if (p && p !== riwayatCurrentPage) {
+              riwayatCurrentPage = p;
               renderRows();
             }
           });
@@ -2132,65 +2243,73 @@
 
     renderRows();
 
-    // Event Klik Tab Filter
-    filterTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        filterTabs.forEach(t => {
-          t.setAttribute('aria-selected', 'false');
-          t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-          t.classList.add('text-slate-600');
+    // Event listener dipasang hanya SATU KALI agar tidak tertumpuk/reset saat auto-refresh polling
+    if (!riwayatListenersBound) {
+      riwayatListenersBound = true;
+
+      // Event Klik Tab Filter
+      filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          riwayatCurrentFilter = tab.getAttribute('data-filter') || 'all';
+          riwayatCurrentPage = 1;
+
+          filterTabs.forEach(t => {
+            const isTarget = (t.getAttribute('data-filter') || 'all') === riwayatCurrentFilter;
+            t.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+            if (isTarget) {
+              t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.remove('text-slate-600');
+            } else {
+              t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.add('text-slate-600');
+            }
+          });
+
+          renderRows();
         });
-
-        tab.setAttribute('aria-selected', 'true');
-        tab.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-        tab.classList.remove('text-slate-600');
-
-        currentFilter = tab.getAttribute('data-filter') || 'all';
-        currentPage = 1;
-        renderRows();
       });
-    });
 
-    // Real-time Search Input
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        currentSearch = e.target.value.trim().toLowerCase();
-        currentPage = 1;
-        renderRows();
-      });
-    }
-
-    // Reset Filter Button
-    if (resetFilterBtn) {
-      resetFilterBtn.addEventListener('click', () => {
-        currentFilter = 'all';
-        currentSearch = '';
-        currentPage = 1;
-        if (searchInput) searchInput.value = '';
-
-        filterTabs.forEach((t, idx) => {
-          if (idx === 0) {
-            t.setAttribute('aria-selected', 'true');
-            t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.remove('text-slate-600');
-          } else {
-            t.setAttribute('aria-selected', 'false');
-            t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.add('text-slate-600');
-          }
+      // Real-time Search Input
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          riwayatCurrentSearch = e.target.value.trim().toLowerCase();
+          riwayatCurrentPage = 1;
+          renderRows();
         });
+      }
 
-        renderRows();
-      });
-    }
+      // Reset Filter Button
+      if (resetFilterBtn) {
+        resetFilterBtn.addEventListener('click', () => {
+          riwayatCurrentFilter = 'all';
+          riwayatCurrentSearch = '';
+          riwayatCurrentPage = 1;
+          if (searchInput) searchInput.value = '';
 
-    // Sort Dropdown
-    if (sortSelect) {
-      sortSelect.addEventListener('change', (e) => {
-        currentSort = e.target.value;
-        currentPage = 1;
-        renderRows();
-      });
+          filterTabs.forEach((t, idx) => {
+            if (idx === 0) {
+              t.setAttribute('aria-selected', 'true');
+              t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.remove('text-slate-600');
+            } else {
+              t.setAttribute('aria-selected', 'false');
+              t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.add('text-slate-600');
+            }
+          });
+
+          renderRows();
+        });
+      }
+
+      // Sort Dropdown
+      if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+          riwayatCurrentSort = e.target.value;
+          riwayatCurrentPage = 1;
+          renderRows();
+        });
+      }
     }
   }
 
@@ -2367,11 +2486,15 @@
       const headers = {};
       if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil?id_pelanggan=${encodeURIComponent(profile.id_pelanggan || 1)}&id_user=${encodeURIComponent(profile.id_user || 4)}`, { credentials: 'same-origin', headers });
       const result = await res.json();
       if (result && result.success && result.data) {
         const d = result.data;
         profile = saveCustomerProfile({
+          id_pelanggan: d.id_pelanggan || profile.id_pelanggan || 1,
+          id_user: d.id_user || profile.id_user || 4,
+          username: d.username || profile.username || 'andipratama',
+          kode_pelanggan: d.kode_pelanggan || profile.kode_pelanggan || 'PLG-08129',
           fullName: d.nama || profile.fullName,
           phone: d.telepon || profile.phone,
           email: d.email || profile.email,
@@ -2449,7 +2572,7 @@
       const headers = {};
       if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil?id_pelanggan=${encodeURIComponent(profile.id_pelanggan || 1)}&id_user=${encodeURIComponent(profile.id_user || 4)}`, { credentials: 'same-origin', headers });
       const result = await res.json();
       if (result && result.success && result.data) {
         const d = result.data;

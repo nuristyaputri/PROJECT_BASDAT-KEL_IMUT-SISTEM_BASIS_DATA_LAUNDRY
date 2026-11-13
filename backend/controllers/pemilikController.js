@@ -730,10 +730,12 @@ exports.daftarPesanan = async (req, res) => {
         try {
             let sql = `
                 SELECT p.id_pesanan, p.kode_pesanan, p.id_pelanggan, p.id_pegawai,
-                       p.tanggal_pesanan, p.tanggal_selesai, p.total_berat, p.total_harga,
-                       p.status, p.catatan, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan,
-                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Layanan Standar') AS layanan_nama,
-                       pb.metode AS metode_bayar, pb.status AS status_bayar,
+                       p.tanggal_pesanan, p.tanggal_pesanan AS tanggal_masuk, p.tanggal_selesai, p.total_berat, p.total_harga,
+                       p.status, p.catatan, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan, pl.alamat AS alamat_pelanggan,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS layanan_nama,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS daftar_layanan,
+                       pb.metode AS metode_bayar, pb.metode AS metode_pembayaran,
+                       pb.status AS status_bayar, pb.status AS status_pembayaran,
                        COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_bayar,
                        COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_transfer
                 FROM pesanan p
@@ -878,7 +880,9 @@ exports.daftarTransaksi = async (req, res) => {
     try {
         try {
             const sql = `
-                SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan, p.total_harga, p.status AS status_pesanan,
+                SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan,
+                       p.total_berat, p.total_harga, p.tanggal_pesanan, p.status AS status_pesanan,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS nama_layanan,
                        pb.id_pembayaran, pb.jumlah_bayar, pb.metode, pb.tanggal_bayar, pb.status AS status_pembayaran
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan

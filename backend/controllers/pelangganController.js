@@ -11,6 +11,9 @@ const { db: mockDb, nextId, fmt } = require('../config/dataStore');
 const bcrypt = require('bcryptjs');
 
 async function getCustomerId(req) {
+  if (typeof pool.ensureSchema === 'function') {
+    await pool.ensureSchema().catch(() => {});
+  }
   // Prioritas 1: Jika request secara eksplisit menyertakan id_pelanggan di query atau body
   if (req.query && req.query.id_pelanggan && Number(req.query.id_pelanggan) > 0) {
     return Number(req.query.id_pelanggan);
@@ -81,7 +84,14 @@ async function getCustomerId(req) {
     } catch (_) {}
   }
 
-  return null;
+  // Fallback otomatis ke pelanggan pertama di database XAMPP (id_pelanggan = 1 / Andi Pratama)
+  // jika halaman pelanggan dibuka langsung tanpa parameter sesi
+  try {
+    const [firstRows] = await pool.query('SELECT id_pelanggan FROM pelanggan ORDER BY id_pelanggan ASC LIMIT 1');
+    if (firstRows && firstRows.length > 0) return Number(firstRows[0].id_pelanggan);
+  } catch (_) {}
+
+  return 1;
 }
 
 /**
@@ -90,6 +100,7 @@ async function getCustomerId(req) {
  */
 async function getPelanggan(req, res) {
   try {
+    if (typeof pool.ensureSchema === 'function') await pool.ensureSchema();
     const idPelanggan = await getCustomerId(req);
     if (!idPelanggan) {
       return res.status(401).json({
@@ -98,10 +109,10 @@ async function getPelanggan(req, res) {
       });
     }
 
-    // 1. Coba database MySQL
+    // 1. Coba database MySQL XAMPP
     try {
       const [rows] = await pool.query(
-        `SELECT p.id_pelanggan, p.id_user, p.kode_pelanggan, p.nama, p.telepon, p.email, p.alamat, p.member_tier,
+        `SELECT p.id_pelanggan, p.id_user, u.username, p.kode_pelanggan, p.nama, p.telepon, p.email, p.alamat, p.member_tier,
                 COALESCE(p.created_at, u.created_at, NOW()) AS created_at
          FROM pelanggan p
          LEFT JOIN users u ON u.id_user = p.id_user
@@ -112,7 +123,7 @@ async function getPelanggan(req, res) {
       if (rows && rows.length > 0) {
         return res.json({
           success: true,
-          message: 'Data pelanggan berhasil diambil',
+          message: 'Data pelanggan berhasil diambil dari database MySQL XAMPP',
           data: rows[0]
         });
       }
@@ -206,12 +217,21 @@ async function updatePelanggan(req, res) {
 
       // Perbarui juga data users (email & no_telp) agar sinkron untuk login selanjutnya
       if (targetUserId) {
-        await pool.query(
-          `UPDATE users
-           SET email = COALESCE(?, email), no_telp = COALESCE(?, no_telp)
-           WHERE id_user = ?`,
-          [cleanEmail, cleanTelp, targetUserId]
-        );
+        try {
+          await pool.query(
+            `UPDATE users
+             SET email = COALESCE(?, email), no_telp = COALESCE(?, no_telp)
+             WHERE id_user = ?`,
+            [cleanEmail, cleanTelp, targetUserId]
+          );
+        } catch (_) {
+          await pool.query(
+            `UPDATE users
+             SET email = COALESCE(?, email)
+             WHERE id_user = ?`,
+            [cleanEmail, targetUserId]
+          );
+        }
         console.log(`[UPDATE USERS MySQL] id_user: ${targetUserId}, no_telp: ${cleanTelp}`);
       }
       dbSuccess = true;
@@ -370,49 +390,111 @@ async function updatePasswordPelanggan(req, res) {
 
 /**
  * GET /api/pelanggan/pesanan
- * Mengambil riwayat pesanan milik pelanggan
+ * Mengambil riwayat pesanan milik pelanggan langsung dari database MySQL XAMPP
  */
 async function getPesanan(req, res) {
   try {
+    if (typeof pool.ensureSchema === 'function') await pool.ensureSchema();
     const idPelanggan = await getCustomerId(req);
     if (!idPelanggan) {
       return res.json({ success: true, data: [] });
     }
 
     try {
-      let querySql = `
-        SELECT p.id_pesanan, p.kode_pesanan, p.id_pelanggan, p.id_pegawai, p.tanggal_pesanan, p.tanggal_selesai,
-               p.total_berat, p.total_harga, p.status, p.catatan, p.created_at,
-               COALESCE(MAX(pem.status), 'MENUNGGU') AS status_pembayaran,
-               MAX(pem.metode) AS metode_pembayaran,
-               MAX(pem.referensi_bayar) AS referensi_bayar,
-               COALESCE(MAX(pem.bukti_bayar), MAX(p.bukti_bayar)) AS bukti_bayar,
-               COALESCE(MAX(pem.bukti_bayar), MAX(p.bukti_bayar)) AS bukti_transfer,
-               COALESCE(GROUP_CONCAT(DISTINCT l.nama_layanan ORDER BY dp.id_detail SEPARATOR ', '), 'Cuci Komplit (Cuci + Setrika)') AS layanan,
-               MAX(dp.harga_satuan) AS harga_satuan,
-               SUM(dp.subtotal) AS subtotal
-        FROM pesanan p
-        LEFT JOIN pembayaran pem ON pem.id_pesanan = p.id_pesanan
-        LEFT JOIN detail_pesanan dp ON dp.id_pesanan = p.id_pesanan
-        LEFT JOIN layanan l ON l.id_layanan = dp.id_layanan
-        WHERE p.id_pelanggan = ?
-        GROUP BY p.id_pesanan
-        ORDER BY p.id_pesanan DESC
-      `;
-      const [rows] = await pool.query(querySql, [idPelanggan]);
+      const [orderRows] = await pool.query(
+        `SELECT p.*,
+                COALESCE(pl.nama, 'Pelanggan') AS nama_pelanggan,
+                COALESCE(pl.telepon, '') AS telepon,
+                COALESCE(pl.alamat, '') AS alamat,
+                COALESCE(pl.email, '') AS email,
+                COALESCE(pl.kode_pelanggan, '') AS kode_pelanggan,
+                COALESCE(pl.member_tier, 'SILVER') AS member_tier
+         FROM pesanan p
+         LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
+         WHERE p.id_pelanggan = ?
+         ORDER BY p.id_pesanan DESC`,
+        [idPelanggan]
+      );
 
-      // Deduplikasi id_pesanan jika ada relasi pembayaran ganda
-      const uniqueList = [];
-      const seen = new Set();
-      (rows || []).forEach(r => {
-        if (!seen.has(r.id_pesanan)) {
-          seen.add(r.id_pesanan);
-          uniqueList.push(r);
-        }
+      if (!orderRows || orderRows.length === 0) {
+        return res.json({ success: true, data: [] });
+      }
+
+      const orderIds = orderRows.map(r => r.id_pesanan);
+      let detailRows = [];
+      let payRows = [];
+      let riwayatRows = [];
+
+      try {
+        const [dRows] = await pool.query(
+          `SELECT dp.*, l.nama_layanan, l.kategori, l.satuan, l.estimasi_waktu
+           FROM detail_pesanan dp
+           LEFT JOIN layanan l ON l.id_layanan = dp.id_layanan
+           WHERE dp.id_pesanan IN (?)
+           ORDER BY dp.id_detail ASC`,
+          [orderIds]
+        );
+        detailRows = dRows || [];
+      } catch (_) {}
+
+      try {
+        const [pRows] = await pool.query(
+          `SELECT * FROM pembayaran
+           WHERE id_pesanan IN (?)
+           ORDER BY id_pembayaran DESC`,
+          [orderIds]
+        );
+        payRows = pRows || [];
+      } catch (_) {}
+
+      try {
+        const [rRows] = await pool.query(
+          `SELECT r.*, pg.nama AS nama_pegawai
+           FROM riwayat_status r
+           LEFT JOIN pegawai pg ON pg.id_pegawai = r.id_pegawai
+           WHERE r.id_pesanan IN (?)
+           ORDER BY r.waktu_perubahan ASC, r.id_riwayat ASC`,
+          [orderIds]
+        );
+        riwayatRows = rRows || [];
+      } catch (_) {}
+
+      const enrichedOrders = orderRows.map(r => {
+        const dets = detailRows.filter(d => Number(d.id_pesanan) === Number(r.id_pesanan));
+        const pays = payRows.filter(pm => Number(pm.id_pesanan) === Number(r.id_pesanan));
+        const riws = riwayatRows.filter(rw => Number(rw.id_pesanan) === Number(r.id_pesanan));
+        const latestPay = pays.length > 0 ? pays[0] : null;
+        const srvNames = [...new Set(dets.map(d => d.nama_layanan).filter(Boolean))];
+        const layananStr = srvNames.length > 0 ? srvNames.join(', ') : 'Cuci Komplit (Cuci + Setrika)';
+        const subtotalSum = dets.reduce((acc, d) => acc + (Number(d.subtotal) || 0), 0) || Number(r.total_harga) || 0;
+        const hargaSatuan = dets.length > 0 ? Number(dets[0].harga_satuan) : 9000;
+        const satuanUtama = dets.length > 0 && dets[0].satuan ? dets[0].satuan : 'kg';
+        const buktiImg = (latestPay && latestPay.bukti_bayar) || r.bukti_bayar || null;
+
+        return {
+          ...r,
+          layanan: layananStr,
+          service: layananStr,
+          satuan: satuanUtama,
+          harga_satuan: hargaSatuan,
+          subtotal: subtotalSum,
+          status_pembayaran: latestPay ? latestPay.status : 'MENUNGGU',
+          metode_pembayaran: latestPay ? latestPay.metode : 'TRANSFER',
+          referensi_bayar: latestPay ? latestPay.referensi_bayar : null,
+          tanggal_bayar: latestPay ? latestPay.tanggal_bayar : null,
+          jumlah_bayar: latestPay ? latestPay.jumlah_bayar : r.total_harga,
+          bukti_bayar: buktiImg,
+          bukti_transfer: buktiImg,
+          detail: dets,
+          details: dets,
+          pembayaran: pays,
+          riwayat: riws
+        };
       });
 
-      return res.json({ success: true, data: uniqueList });
-    } catch (_) {
+      return res.json({ success: true, data: enrichedOrders });
+    } catch (sqlErr) {
+      console.error('Peringatan getPesanan MySQL:', sqlErr.message);
       const mockOrders = (mockDb.pesanan || [])
         .filter(p => p.id_pelanggan === idPelanggan)
         .map(p => {
@@ -739,12 +821,31 @@ async function createPesanan(req, res) {
 
       const estDate = new Date(now.getTime() + durationHours * 60 * 60 * 1000);
 
-      // A. Insert ke tabel pesanan (termasuk tanggal_selesai estimasi dan bukti_bayar)
-      const [resPesanan] = await connection.execute(
-        `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan, bukti_bayar)
-         VALUES (?, ?, NULL, NOW(), ?, ?, ?, 'MENUNGGU', ?, ?)`,
-        [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes, proofOfPayment]
-      );
+      // A. Insert ke tabel pesanan (tanpa nilai NULL: id_pegawai default 1, bukti_bayar terisi)
+      const safeProof = proofOfPayment || `TUNAI-${orderCode}`;
+      let resPesanan;
+      try {
+        [resPesanan] = await connection.execute(
+          `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan, bukti_bayar)
+           VALUES (?, ?, 1, NOW(), ?, ?, ?, 'MENUNGGU', ?, ?)`,
+          [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes || 'Pakaian reguler', safeProof]
+        );
+      } catch (colErr) {
+        if (typeof pool.ensureSchema === 'function') await pool.ensureSchema().catch(() => {});
+        try {
+          [resPesanan] = await connection.execute(
+            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan, bukti_bayar)
+             VALUES (?, ?, 1, NOW(), ?, ?, ?, 'MENUNGGU', ?, ?)`,
+            [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes || 'Pakaian reguler', safeProof]
+          );
+        } catch (_) {
+          [resPesanan] = await connection.execute(
+            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan)
+             VALUES (?, ?, 1, NOW(), ?, ?, ?, 'MENUNGGU', ?)`,
+            [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes || 'Pakaian reguler']
+          );
+        }
+      }
       newOrderId = resPesanan.insertId;
 
       // B. Insert ke tabel detail_pesanan
@@ -759,16 +860,24 @@ async function createPesanan(req, res) {
       const payMethodStr = ` (Metode Bayar: ${payMethod}${proofOfPayment ? ', Bukti Transfer Terlampir' : ''})`;
       await connection.execute(
         `INSERT INTO riwayat_status (id_pesanan, id_pegawai, status, catatan, waktu_perubahan)
-         VALUES (?, NULL, 'MENUNGGU', ?, NOW())`,
+         VALUES (?, 1, 'MENUNGGU', ?, NOW())`,
         [newOrderId, `Pesanan dibuat oleh pelanggan${deliveryMethodStr}${payMethodStr}`]
       );
 
       // D. Insert ke tabel pembayaran
-      await connection.execute(
-        `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar)
-         VALUES (?, ?, ?, NOW(), 'MENUNGGU', ?, ?)`,
-        [newOrderId, calculatedTotal, payMethod, orderCode, proofOfPayment]
-      );
+      try {
+        await connection.execute(
+          `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar)
+           VALUES (?, ?, ?, NOW(), 'MENUNGGU', ?, ?)`,
+          [newOrderId, calculatedTotal, payMethod, orderCode, safeProof]
+        );
+      } catch (_) {
+        await connection.execute(
+          `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar)
+           VALUES (?, ?, ?, NOW(), 'MENUNGGU', ?)`,
+          [newOrderId, calculatedTotal, payMethod, orderCode]
+        );
+      }
 
       await connection.commit();
       dbSaved = true;
@@ -926,8 +1035,7 @@ async function getPesananDetail(req, res) {
           [order.id_pesanan]
         );
         const [pembayaran] = await pool.query(
-          `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar
-           FROM pembayaran
+          `SELECT * FROM pembayaran
            WHERE id_pesanan = ?
            ORDER BY id_pembayaran DESC`,
           [order.id_pesanan]
@@ -942,6 +1050,8 @@ async function getPesananDetail(req, res) {
           success: true,
           data: {
             ...order,
+            telepon: order.telepon_pelanggan || '',
+            alamat: order.alamat_pelanggan || '',
             layanan: serviceTitle,
             service: serviceTitle,
             bukti_bayar: proofImg,
@@ -950,12 +1060,15 @@ async function getPesananDetail(req, res) {
             metode_pembayaran: latestPay ? latestPay.metode : null,
             referensi_bayar: latestPay ? latestPay.referensi_bayar : null,
             detail: details,
+            details: details,
             pembayaran: pembayaran,
             riwayat: riwayat
           }
         });
       }
-    } catch (_) {}
+    } catch (dbErr) {
+      console.error('Error getPesananDetail MySQL:', dbErr.message);
+    }
 
     // Fallback mockDb
     const mockOrder = mockDb.pesanan.find(p => p.id_pesanan === Number(idOrCode) || p.kode_pesanan === idOrCode);

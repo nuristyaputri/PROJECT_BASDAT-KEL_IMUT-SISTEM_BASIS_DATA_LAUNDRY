@@ -10,10 +10,13 @@
 -- 5. Database `bersihinlaundry` beserta 9 tabel dan seluruh data seeder otomatis terpasang!
 --
 -- DAFTAR AKUN LOGIN DEMO (Semua password: password123):
--- - PEMILIK   : username: pemilik         | email: rangga@bersihin.id
--- - PEGAWAI 1 : username: dina.staff      | email: dina.nurhaliza@bersihin.id
--- - PEGAWAI 2 : username: budi.operator   | email: budi.operator@bersihin.id
--- - PELANGGAN : username: andipratama     | email: andi.pratama@email.com (081234567821)
+-- - PEMILIK     : username: pemilik         | email: rangga@bersihin.id
+-- - PEGAWAI 1   : username: dina.staff      | email: dina.nurhaliza@bersihin.id
+-- - PEGAWAI 2   : username: budi.operator   | email: budi.operator@bersihin.id
+-- - PELANGGAN 1 : username: andipratama     | email: andi.pratama@email.com (081234567821)
+-- - PELANGGAN 2 : username: rinamarlina     | email: rina.marlina@example.com (081111111111)
+-- - PELANGGAN 3 : username: dedikurniawan   | email: dedi.kurniawan@example.com (082222222222)
+-- - PELANGGAN 4 : username: mayaanggraini   | email: maya@example.com (083333333333)
 -- =============================================================================
 
 CREATE DATABASE IF NOT EXISTS `bersihinlaundry` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -37,8 +40,8 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id_user` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
-  `email` VARCHAR(100) DEFAULT NULL,
-  `no_telp` VARCHAR(20) DEFAULT NULL,
+  `email` VARCHAR(100) NOT NULL DEFAULT '-',
+  `no_telp` VARCHAR(20) NOT NULL DEFAULT '-',
   `password` VARCHAR(255) NOT NULL,
   `role` ENUM('PEMILIK', 'PEGAWAI', 'PELANGGAN') NOT NULL,
   `status` ENUM('AKTIF', 'NONAKTIF') NOT NULL DEFAULT 'AKTIF',
@@ -60,7 +63,7 @@ CREATE TABLE `pemilik` (
   `kode_pemilik` VARCHAR(20) NOT NULL,
   `nama` VARCHAR(100) NOT NULL,
   `telepon` VARCHAR(20) NOT NULL,
-  `alamat` TEXT DEFAULT NULL,
+  `alamat` TEXT NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pemilik`),
   UNIQUE KEY `idx_pemilik_kode` (`kode_pemilik`),
@@ -77,7 +80,7 @@ CREATE TABLE `pegawai` (
   `kode_pegawai` VARCHAR(20) NOT NULL,
   `nama` VARCHAR(100) NOT NULL,
   `telepon` VARCHAR(20) NOT NULL,
-  `alamat` TEXT DEFAULT NULL,
+  `alamat` TEXT NOT NULL,
   `jabatan` VARCHAR(50) NOT NULL DEFAULT 'Kasir',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pegawai`),
@@ -91,19 +94,19 @@ CREATE TABLE `pegawai` (
 -- -----------------------------------------------------------------------------
 CREATE TABLE `pelanggan` (
   `id_pelanggan` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_user` INT UNSIGNED DEFAULT NULL,
+  `id_user` INT UNSIGNED NOT NULL,
   `kode_pelanggan` VARCHAR(20) NOT NULL,
   `nama` VARCHAR(100) NOT NULL,
   `telepon` VARCHAR(20) NOT NULL,
-  `email` VARCHAR(100) DEFAULT NULL,
-  `alamat` TEXT DEFAULT NULL,
+  `email` VARCHAR(100) NOT NULL DEFAULT '-',
+  `alamat` TEXT NOT NULL,
   `member_tier` ENUM('REGULER', 'SILVER', 'GOLD') NOT NULL DEFAULT 'SILVER',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pelanggan`),
   UNIQUE KEY `idx_pelanggan_kode` (`kode_pelanggan`),
   KEY `idx_pelanggan_telepon` (`telepon`),
   KEY `idx_pelanggan_user` (`id_user`),
-  CONSTRAINT `fk_pelanggan_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_pelanggan_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------
@@ -115,9 +118,9 @@ CREATE TABLE `layanan` (
   `kategori` ENUM('KILOAN', 'SATUAN', 'EXPRESS', 'SPECIAL') NOT NULL DEFAULT 'KILOAN',
   `satuan` VARCHAR(20) NOT NULL DEFAULT 'kg',
   `harga` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-  `estimasi_waktu` VARCHAR(50) DEFAULT '2 Hari',
+  `estimasi_waktu` VARCHAR(50) NOT NULL DEFAULT '2 Hari',
   `status` ENUM('AKTIF', 'NONAKTIF') NOT NULL DEFAULT 'AKTIF',
-  `deskripsi` TEXT DEFAULT NULL,
+  `deskripsi` TEXT NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_layanan`),
   KEY `idx_layanan_status` (`status`)
@@ -130,14 +133,14 @@ CREATE TABLE `pesanan` (
   `id_pesanan` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `kode_pesanan` VARCHAR(30) NOT NULL,
   `id_pelanggan` INT UNSIGNED NOT NULL,
-  `id_pegawai` INT UNSIGNED DEFAULT NULL,
+  `id_pegawai` INT UNSIGNED NOT NULL DEFAULT 1,
   `tanggal_pesanan` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `tanggal_selesai` DATETIME DEFAULT NULL,
-  `total_berat` DECIMAL(8,2) DEFAULT NULL,
+  `tanggal_selesai` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total_berat` DECIMAL(8,2) NOT NULL DEFAULT 1.00,
   `total_harga` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
   `status` ENUM('MENUNGGU', 'DIPROSES', 'DICUCI', 'DISETRIKA', 'SIAP_DIAMBIL', 'SELESAI', 'DIBATALKAN') NOT NULL DEFAULT 'MENUNGGU',
-  `catatan` TEXT DEFAULT NULL,
-  `bukti_bayar` LONGTEXT DEFAULT NULL,
+  `catatan` TEXT NOT NULL,
+  `bukti_bayar` LONGTEXT NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pesanan`),
@@ -147,7 +150,7 @@ CREATE TABLE `pesanan` (
   KEY `idx_pesanan_status` (`status`),
   KEY `idx_pesanan_tanggal` (`tanggal_pesanan`),
   CONSTRAINT `fk_pesanan_pelanggan` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_pesanan_pegawai` FOREIGN KEY (`id_pegawai`) REFERENCES `pegawai` (`id_pegawai`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_pesanan_pegawai` FOREIGN KEY (`id_pegawai`) REFERENCES `pegawai` (`id_pegawai`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------
@@ -173,15 +176,15 @@ CREATE TABLE `detail_pesanan` (
 CREATE TABLE `riwayat_status` (
   `id_riwayat` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `id_pesanan` INT UNSIGNED NOT NULL,
-  `id_pegawai` INT UNSIGNED DEFAULT NULL,
+  `id_pegawai` INT UNSIGNED NOT NULL DEFAULT 1,
   `status` VARCHAR(30) NOT NULL,
-  `catatan` VARCHAR(255) DEFAULT NULL,
+  `catatan` VARCHAR(255) NOT NULL DEFAULT '-',
   `waktu_perubahan` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_riwayat`),
   KEY `idx_riwayat_pesanan` (`id_pesanan`),
   KEY `idx_riwayat_pegawai` (`id_pegawai`),
   CONSTRAINT `fk_riwayat_pesanan` FOREIGN KEY (`id_pesanan`) REFERENCES `pesanan` (`id_pesanan`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_riwayat_pegawai` FOREIGN KEY (`id_pegawai`) REFERENCES `pegawai` (`id_pegawai`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_riwayat_pegawai` FOREIGN KEY (`id_pegawai`) REFERENCES `pegawai` (`id_pegawai`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------
@@ -194,8 +197,8 @@ CREATE TABLE `pembayaran` (
   `metode` ENUM('TUNAI', 'QRIS', 'TRANSFER') NOT NULL DEFAULT 'TUNAI',
   `tanggal_bayar` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` ENUM('MENUNGGU', 'BERHASIL', 'GAGAL') NOT NULL DEFAULT 'MENUNGGU',
-  `referensi_bayar` VARCHAR(100) DEFAULT NULL,
-  `bukti_bayar` LONGTEXT DEFAULT NULL,
+  `referensi_bayar` VARCHAR(100) NOT NULL DEFAULT '-',
+  `bukti_bayar` LONGTEXT NOT NULL,
   PRIMARY KEY (`id_pembayaran`),
   KEY `idx_pembayaran_pesanan` (`id_pesanan`),
   KEY `idx_pembayaran_status` (`status`),
@@ -213,7 +216,8 @@ INSERT INTO `users` (`id_user`, `username`, `email`, `no_telp`, `password`, `rol
 (3, 'budi.operator', 'budi.operator@bersihin.id', '081377889900', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PEGAWAI', 'AKTIF', '2024-02-01 08:00:00'),
 (4, 'andipratama', 'andi.pratama@email.com', '081234567821', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-01 09:00:00'),
 (5, 'rinamarlina', 'rina.marlina@example.com', '081111111111', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-10 10:00:00'),
-(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '082222222222', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00');
+(6, 'dedikurniawan', 'dedi.kurniawan@example.com', '082222222222', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-03-15 11:00:00'),
+(7, 'mayaanggraini', 'maya@example.com', '083333333333', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 'PELANGGAN', 'AKTIF', '2024-04-01 14:00:00');
 
 -- 2. pemilik
 INSERT INTO `pemilik` (`id_pemilik`, `id_user`, `kode_pemilik`, `nama`, `telepon`, `alamat`, `created_at`) VALUES
@@ -229,7 +233,7 @@ INSERT INTO `pelanggan` (`id_pelanggan`, `id_user`, `kode_pelanggan`, `nama`, `t
 (1, 4, 'PLG-08129', 'Andi Pratama', '081234567821', 'andi.pratama@email.com', 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan', 'SILVER', '2024-03-01 09:00:00'),
 (2, 5, 'PLG-08130', 'Rina Marlina', '081111111111', 'rina.marlina@example.com', 'Jl. Kukusan Raya No. 5, Beji, Depok', 'GOLD', '2024-03-10 10:00:00'),
 (3, 6, 'PLG-08131', 'Dedi Kurniawan', '082222222222', 'dedi.kurniawan@example.com', 'Jl. Beji Timur No. 12, Depok', 'REGULER', '2024-03-15 11:00:00'),
-(4, NULL, 'PLG-08132', 'Maya Anggraini', '083333333333', 'maya@example.com', 'Jl. Pondok Cina No. 7, Beji, Depok', 'REGULER', '2024-04-01 14:00:00');
+(4, 7, 'PLG-08132', 'Maya Anggraini', '083333333333', 'maya@example.com', 'Jl. Pondok Cina No. 7, Beji, Depok', 'REGULER', '2024-04-01 14:00:00');
 
 -- 5. layanan
 INSERT INTO `layanan` (`id_layanan`, `nama_layanan`, `kategori`, `satuan`, `harga`, `estimasi_waktu`, `status`, `deskripsi`, `created_at`) VALUES
@@ -241,12 +245,12 @@ INSERT INTO `layanan` (`id_layanan`, `nama_layanan`, `kategori`, `satuan`, `harg
 (6, 'Cuci Sepatu Premium', 'SPECIAL', 'pasang', 30000.00, '2 Hari', 'AKTIF', 'Deep cleaning sepatu sneakers / canvas / formal.', '2024-01-01 08:00:00');
 
 -- 6. pesanan
-INSERT INTO `pesanan` (`id_pesanan`, `kode_pesanan`, `id_pelanggan`, `id_pegawai`, `tanggal_pesanan`, `tanggal_selesai`, `total_berat`, `total_harga`, `status`, `catatan`, `created_at`) VALUES
-(1, 'TRX-240518-01', 1, 1, '2024-05-18 10:15:00', '2024-05-20 16:00:00', 4.50, 40500.00, 'DICUCI', 'Pewangi aroma Lavender, jangan campur baju putih', '2024-05-18 10:15:00'),
-(2, 'TRX-240519-02', 2, 1, '2024-05-19 11:30:00', '2024-05-21 14:00:00', 3.00, 52000.00, 'DISETRIKA', 'Termasuk 1 bedcover sedang', '2024-05-19 11:30:00'),
-(3, 'TRX-240517-03', 3, 2, '2024-05-17 09:00:00', '2024-05-19 17:00:00', 5.00, 45000.00, 'SIAP_DIAMBIL', 'Sudah konfirmasi via WhatsApp', '2024-05-17 09:00:00'),
-(4, 'TRX-240510-04', 1, 1, '2024-05-10 13:00:00', '2024-05-12 15:30:00', 6.00, 54000.00, 'SELESAI', 'Pelanggan puas, ambil tepat waktu', '2024-05-10 13:00:00'),
-(5, 'TRX-240520-05', 4, 1, '2024-05-20 08:45:00', '2024-05-22 12:00:00', 2.50, 22500.00, 'MENUNGGU', 'Minta dipisahkan kemeja kerja', '2024-05-20 08:45:00');
+INSERT INTO `pesanan` (`id_pesanan`, `kode_pesanan`, `id_pelanggan`, `id_pegawai`, `tanggal_pesanan`, `tanggal_selesai`, `total_berat`, `total_harga`, `status`, `catatan`, `bukti_bayar`, `created_at`) VALUES
+(1, 'TRX-240518-01', 1, 1, '2024-05-18 10:15:00', '2024-05-20 16:00:00', 4.50, 40500.00, 'DICUCI', 'Pewangi aroma Lavender, jangan campur baju putih', 'QRIS-VERIFIED-240518-01', '2024-05-18 10:15:00'),
+(2, 'TRX-240519-02', 2, 1, '2024-05-19 11:30:00', '2024-05-21 14:00:00', 3.00, 52000.00, 'DISETRIKA', 'Termasuk 1 bedcover sedang', 'TRF-VERIFIED-240519-02', '2024-05-19 11:30:00'),
+(3, 'TRX-240517-03', 3, 2, '2024-05-17 09:00:00', '2024-05-19 17:00:00', 5.00, 45000.00, 'SIAP_DIAMBIL', 'Sudah konfirmasi via WhatsApp', 'TUNAI-OUTLET-240517-03', '2024-05-17 09:00:00'),
+(4, 'TRX-240510-04', 1, 1, '2024-05-10 13:00:00', '2024-05-12 15:30:00', 6.00, 54000.00, 'SELESAI', 'Pelanggan puas, ambil tepat waktu', 'QRIS-VERIFIED-240510-04', '2024-05-10 13:00:00'),
+(5, 'TRX-240520-05', 4, 1, '2024-05-20 08:45:00', '2024-05-22 12:00:00', 2.50, 22500.00, 'MENUNGGU', 'Minta dipisahkan kemeja kerja', 'TUNAI-KASIR-240520-05', '2024-05-20 08:45:00');
 
 -- 7. detail_pesanan
 INSERT INTO `detail_pesanan` (`id_detail`, `id_pesanan`, `id_layanan`, `jumlah`, `harga_satuan`, `subtotal`) VALUES
@@ -277,12 +281,12 @@ INSERT INTO `riwayat_status` (`id_riwayat`, `id_pesanan`, `id_pegawai`, `status`
 (16, 4, 1, 'SELESAI', 'Pesanan telah diambil oleh Andi Pratama', '2024-05-12 15:30:00');
 
 -- 9. pembayaran
-INSERT INTO `pembayaran` (`id_pembayaran`, `id_pesanan`, `jumlah_bayar`, `metode`, `tanggal_bayar`, `status`, `referensi_bayar`) VALUES
-(1, 1, 40500.00, 'QRIS', '2024-05-18 10:20:00', 'BERHASIL', 'QRIS-20240518-091823'),
-(2, 2, 52000.00, 'TRANSFER', '2024-05-19 11:35:00', 'BERHASIL', 'TRF-BCA-889123'),
-(3, 3, 45000.00, 'TUNAI', '2024-05-17 09:05:00', 'BERHASIL', 'CASH-OUTLET-001'),
-(4, 4, 54000.00, 'QRIS', '2024-05-10 13:05:00', 'BERHASIL', 'QRIS-20240510-081231'),
-(5, 5, 22500.00, 'TUNAI', '2024-05-20 08:50:00', 'MENUNGGU', 'BAYAR-DI-AKHIR');
+INSERT INTO `pembayaran` (`id_pembayaran`, `id_pesanan`, `jumlah_bayar`, `metode`, `tanggal_bayar`, `status`, `referensi_bayar`, `bukti_bayar`) VALUES
+(1, 1, 40500.00, 'QRIS', '2024-05-18 10:20:00', 'BERHASIL', 'QRIS-20240518-091823', 'QRIS-VERIFIED-240518-01'),
+(2, 2, 52000.00, 'TRANSFER', '2024-05-19 11:35:00', 'BERHASIL', 'TRF-BCA-889123', 'TRF-VERIFIED-240519-02'),
+(3, 3, 45000.00, 'TUNAI', '2024-05-17 09:05:00', 'BERHASIL', 'CASH-OUTLET-001', 'TUNAI-OUTLET-240517-03'),
+(4, 4, 54000.00, 'QRIS', '2024-05-10 13:05:00', 'BERHASIL', 'QRIS-20240510-081231', 'QRIS-VERIFIED-240510-04'),
+(5, 5, 22500.00, 'TUNAI', '2024-05-20 08:50:00', 'MENUNGGU', 'BAYAR-DI-AKHIR', 'TUNAI-KASIR-240520-05');
 
 SET FOREIGN_KEY_CHECKS = 1;
 

@@ -107,6 +107,7 @@ exports.updateProfil = async (req, res) => {
 // 4. Daftar pelanggan
 exports.daftarPelanggan = async (req, res) => {
     try {
+        if (typeof db.ensureSchema === "function") await db.ensureSchema();
         const [rows] = await db.query(
             `SELECT id_pelanggan, id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier, created_at
              FROM pelanggan ORDER BY id_pelanggan DESC`
@@ -122,6 +123,7 @@ exports.daftarPelanggan = async (req, res) => {
 exports.detailPelanggan = async (req, res) => {
     try {
         if (!validId(req.params.id)) return sendError(res, 400, "ID pelanggan tidak valid");
+        if (typeof db.ensureSchema === "function") await db.ensureSchema();
         const [rows] = await db.execute(
             `SELECT id_pelanggan, id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier, created_at
              FROM pelanggan WHERE id_pelanggan = ? LIMIT 1`, [Number(req.params.id)]
@@ -134,7 +136,7 @@ exports.detailPelanggan = async (req, res) => {
     }
 };
 
-// 6. Tambah pelanggan (akun login pelanggan tidak dibuat otomatis)
+// 6. Tambah pelanggan (otomatis membuatkan akun login users & mengisi id_user)
 exports.tambahPelanggan = async (req, res) => {
     try {
         const { nama, telepon, email, alamat, member_tier } = req.body || {};
@@ -143,14 +145,48 @@ exports.tambahPelanggan = async (req, res) => {
             ? String(member_tier).toUpperCase()
             : 'REGULER';
         const kode = `PLG-${String(Date.now()).slice(-8)}${Math.floor(10 + Math.random() * 90)}`;
+        const cleanEmail = email && String(email).trim() ? String(email).trim().toLowerCase() : null;
+        const cleanPhone = telepon && String(telepon).trim() ? String(telepon).trim() : null;
+
+        // Buat atau tautkan akun di tabel users agar id_user selalu terisi dan pelanggan bisa login (default password: password123)
+        let idUser = null;
+        try {
+            const DEFAULT_HASH = '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW'; // password123
+            let baseUsername = String(nama.trim()).toLowerCase().replace(/[^a-z0-9]/g, '') || 'pelanggan';
+            if (cleanEmail && cleanEmail.includes('@')) {
+                const emailPre = cleanEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
+                if (emailPre) baseUsername = emailPre;
+            }
+            const [existingUser] = await db.execute(
+                "SELECT id_user FROM users WHERE (email IS NOT NULL AND email = ?) OR (no_telp IS NOT NULL AND no_telp = ?) LIMIT 1",
+                [cleanEmail || '', cleanPhone || '']
+            );
+            if (existingUser && existingUser.length > 0) {
+                idUser = existingUser[0].id_user;
+            } else {
+                let finalUsername = baseUsername;
+                const [uCheck] = await db.execute("SELECT id_user FROM users WHERE username = ? LIMIT 1", [finalUsername]);
+                if (uCheck && uCheck.length > 0) {
+                    finalUsername = `${baseUsername}${Math.floor(100 + Math.random() * 900)}`;
+                }
+                const [insUser] = await db.execute(
+                    "INSERT INTO users (username, email, no_telp, password, role, status) VALUES (?, ?, ?, ?, 'PELANGGAN', 'AKTIF')",
+                    [finalUsername, cleanEmail, cleanPhone, DEFAULT_HASH]
+                );
+                if (insUser && insUser.insertId) idUser = insUser.insertId;
+            }
+        } catch (uErr) {
+            console.warn("Peringatan buat user saat tambahPelanggan:", uErr.message);
+        }
+
         const [result] = await db.execute(
-            `INSERT INTO pelanggan (kode_pelanggan, nama, telepon, email, alamat, member_tier)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [kode, nama.trim(), telepon || null, email || null, alamat || null, tierVal]
+            `INSERT INTO pelanggan (id_user, kode_pelanggan, nama, telepon, email, alamat, member_tier)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [idUser || 4, kode, nama.trim(), cleanPhone || '081200000000', cleanEmail || `${kode.toLowerCase()}@example.com`, alamat || 'Depok, Jawa Barat', tierVal]
         );
         return res.status(201).json({
             success: true, message: "Pelanggan berhasil ditambahkan",
-            data: { id_pelanggan: result.insertId, kode_pelanggan: kode, member_tier: tierVal }
+            data: { id_pelanggan: result.insertId, id_user: idUser, kode_pelanggan: kode, member_tier: tierVal }
         });
     } catch (error) {
         console.error("TAMBAH PELANGGAN ERROR:", error);
@@ -306,10 +342,11 @@ exports.tambahPesanan = async (req, res) => {
         }
         total = Math.round((total + Number.EPSILON) * 100) / 100;
         const kode = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const estSelesai = new Date(Date.now() + 48 * 60 * 60 * 1000);
         const [created] = await connection.execute(
-            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, total_berat, total_harga, status, catatan)
-             VALUES (?, ?, ?, ?, ?, 'MENUNGGU', ?)`,
-            [kode, Number(id_pelanggan), idPegawai, semuaLayananKg ? totalBeratKg : null, total, catatan || null]
+            `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_selesai, total_berat, total_harga, status, catatan, bukti_bayar)
+             VALUES (?, ?, ?, ?, ?, ?, 'MENUNGGU', ?, ?)`,
+            [kode, Number(id_pelanggan), idPegawai || 1, estSelesai, totalBeratKg > 0 ? totalBeratKg : 1, total, catatan || 'Pakaian reguler', `KASIR-${kode}`]
         );
         for (const item of rincian) {
             await connection.execute(
@@ -576,7 +613,7 @@ exports.konfirmasiPembayaran = async (req, res) => {
         const idParam = req.params.id;
         if (!idParam) return sendError(res, 400, "ID atau kode pesanan tidak valid");
 
-        const { statusPesanan = 'DIPROSES', metode = 'QRIS', catatan = 'Pembayaran diverifikasi dan pesanan dikonfirmasi oleh pegawai' } = req.body || {};
+        const { statusPesanan, metode = 'QRIS', catatan = 'Pembayaran diverifikasi dan invoice dikonfirmasi' } = req.body || {};
 
         connection = await db.getConnection();
         await connection.beginTransaction();
@@ -601,18 +638,19 @@ exports.konfirmasiPembayaran = async (req, res) => {
         const actualOrderId = orders[0].id_pesanan;
         const actualOrderCode = orders[0].kode_pesanan;
         const totalHarga = orders[0].total_harga;
+        const nextStatus = statusPesanan || (orders[0].status === 'MENUNGGU' ? 'DIPROSES' : orders[0].status);
 
-        // 1. Update status pesanan ke DIPROSES
+        // 1. Update status pesanan
         await connection.execute(
             "UPDATE pesanan SET status = ? WHERE id_pesanan = ?",
-            [statusPesanan, actualOrderId]
+            [nextStatus, actualOrderId]
         );
 
         // 2. Tambah catatan ke riwayat_status
         await connection.execute(
             `INSERT INTO riwayat_status (id_pesanan, id_pegawai, status, catatan)
              VALUES (?, ?, ?, ?)`,
-            [actualOrderId, idPegawai, statusPesanan, catatan]
+            [actualOrderId, idPegawai, nextStatus, catatan]
         );
 
         // 3. Update atau buat record pembayaran BERHASIL
@@ -625,17 +663,17 @@ exports.konfirmasiPembayaran = async (req, res) => {
         if (existingPayments.length > 0) {
             idPembayaran = existingPayments[0].id_pembayaran;
             await connection.execute(
-                "UPDATE pembayaran SET status = 'BERHASIL', tanggal_bayar = CURRENT_TIMESTAMP WHERE id_pembayaran = ?",
-                [idPembayaran]
+                "UPDATE pembayaran SET status = 'BERHASIL', jumlah_bayar = COALESCE(NULLIF(jumlah_bayar, 0), ?), tanggal_bayar = CURRENT_TIMESTAMP WHERE id_pembayaran = ?",
+                [totalHarga, idPembayaran]
             );
         } else {
             const normalizedMetode = ['TUNAI', 'TRANSFER', 'QRIS'].includes(String(metode).toUpperCase())
                 ? String(metode).toUpperCase()
                 : 'QRIS';
             const [newPayment] = await connection.execute(
-                `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, status, tanggal_bayar)
-                 VALUES (?, ?, ?, 'BERHASIL', CURRENT_TIMESTAMP)`,
-                [actualOrderId, totalHarga, normalizedMetode]
+                `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, status, referensi_bayar, bukti_bayar, tanggal_bayar)
+                 VALUES (?, ?, ?, 'BERHASIL', ?, ?, CURRENT_TIMESTAMP)`,
+                [actualOrderId, totalHarga, normalizedMetode, `VERIFIED-${actualOrderCode}`, `BUKTI-${actualOrderCode}`]
             );
             idPembayaran = newPayment.insertId;
         }
@@ -649,7 +687,7 @@ exports.konfirmasiPembayaran = async (req, res) => {
             data: {
                 id_pesanan: actualOrderId,
                 kode_pesanan: actualOrderCode,
-                status_pesanan: statusPesanan,
+                status_pesanan: nextStatus,
                 id_pembayaran: idPembayaran,
                 status_pembayaran: "BERHASIL"
             }

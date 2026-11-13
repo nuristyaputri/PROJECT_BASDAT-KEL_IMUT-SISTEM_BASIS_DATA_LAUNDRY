@@ -61,32 +61,36 @@ function seedPesanan({ id_pelanggan, id_pegawai, hariLalu, items, status, catata
   }
 
   const tanggal = daysAgo(hariLalu);
+  const dSelesai = new Date(new Date(tanggal).getTime() + 48 * 60 * 60 * 1000);
+  const tanggalSelesai = (status === 'SELESAI' || status === 'DIAMBIL') ? tanggal : fmt(dSelesai);
+  const buktiDefault = (bayar && (bayar.bukti_bayar || bayar.referensi_bayar)) || '-';
   db.pesanan.push({
     id_pesanan,
     kode_pesanan: (bayar && bayar.kode_pesanan) || `TRX-${String(id_pesanan).padStart(4, '0')}`,
     id_pelanggan,
-    id_pegawai,
+    id_pegawai: id_pegawai || 1,
     tanggal_pesanan: tanggal,
-    tanggal_selesai: (status === 'SELESAI' || status === 'DIAMBIL') ? tanggal : null,
-    total_berat: semuaKg ? berat : null,
+    tanggal_selesai: tanggalSelesai,
+    total_berat: berat > 0 ? berat : 1,
     total_harga: total,
     status,
-    catatan: catatan || null
+    catatan: catatan || '-',
+    bukti_bayar: buktiDefault
   });
 
   if (status === 'DIBATALKAN') {
     db.riwayat_status.push(
-      { id_riwayat: nextId('riwayat_status'), id_pesanan, id_pegawai, status: 'MENUNGGU', catatan: 'Pesanan dibuat', waktu_perubahan: tanggal },
-      { id_riwayat: nextId('riwayat_status'), id_pesanan, id_pegawai, status: 'DIBATALKAN', catatan: 'Dibatalkan pelanggan', waktu_perubahan: tanggal }
+      { id_riwayat: nextId('riwayat_status'), id_pesanan, id_pegawai: id_pegawai || 1, status: 'MENUNGGU', catatan: 'Pesanan dibuat', waktu_perubahan: tanggal },
+      { id_riwayat: nextId('riwayat_status'), id_pesanan, id_pegawai: id_pegawai || 1, status: 'DIBATALKAN', catatan: 'Dibatalkan pelanggan', waktu_perubahan: tanggal }
     );
   } else {
     ALUR_STATUS.slice(0, ALUR_STATUS.indexOf(status) + 1).forEach(s => {
       db.riwayat_status.push({
         id_riwayat: nextId('riwayat_status'),
         id_pesanan,
-        id_pegawai,
+        id_pegawai: id_pegawai || 1,
         status: s,
-        catatan: s === 'MENUNGGU' ? 'Pesanan dibuat' : null,
+        catatan: s === 'MENUNGGU' ? 'Pesanan dibuat' : `Tahap ${s}`,
         waktu_perubahan: tanggal
       });
     });
@@ -100,7 +104,8 @@ function seedPesanan({ id_pelanggan, id_pegawai, hariLalu, items, status, catata
       metode: bayar.metode,
       tanggal_bayar: tanggal,
       status: bayar.status,
-      referensi_bayar: bayar.referensi_bayar || null
+      referensi_bayar: bayar.referensi_bayar || '-',
+      bukti_bayar: buktiDefault
     });
   }
 }
@@ -115,7 +120,8 @@ function seed() {
     { username: 'budi.operator', email: 'budi.operator@bersihin.id', no_telp: '081377889900', password: 'password123', role: 'PEGAWAI' },
     { username: 'andipratama', email: 'andi.pratama@email.com', no_telp: '081234567821', password: 'password123', role: 'PELANGGAN' },
     { username: 'rinamarlina', email: 'rina.marlina@example.com', no_telp: '081111111111', password: 'password123', role: 'PELANGGAN' },
-    { username: 'dedikurniawan', email: 'dedi.kurniawan@example.com', no_telp: '082222222222', password: 'password123', role: 'PELANGGAN' }
+    { username: 'dedikurniawan', email: 'dedi.kurniawan@example.com', no_telp: '082222222222', password: 'password123', role: 'PELANGGAN' },
+    { username: 'mayaanggraini', email: 'maya@example.com', no_telp: '083333333333', password: 'password123', role: 'PELANGGAN' }
   ];
 
   users.forEach(u => db.users.push({
@@ -149,7 +155,7 @@ function seed() {
     { id_pelanggan: nextId('pelanggan'), id_user: 4, kode_pelanggan: 'PLG-08129', nama: 'Andi Pratama', telepon: '081234567821', email: 'andi.pratama@email.com', alamat: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan', member_tier: 'SILVER', created_at: now },
     { id_pelanggan: nextId('pelanggan'), id_user: 5, kode_pelanggan: 'PLG-08130', nama: 'Rina Marlina', telepon: '081111111111', email: 'rina.marlina@example.com', alamat: 'Jl. Kukusan Raya No. 5, Beji, Depok', member_tier: 'GOLD', created_at: now },
     { id_pelanggan: nextId('pelanggan'), id_user: 6, kode_pelanggan: 'PLG-08131', nama: 'Dedi Kurniawan', telepon: '082222222222', email: 'dedi.kurniawan@example.com', alamat: 'Jl. Beji Timur No. 12, Depok', member_tier: 'REGULER', created_at: now },
-    { id_pelanggan: nextId('pelanggan'), id_user: null, kode_pelanggan: 'PLG-08132', nama: 'Maya Anggraini', telepon: '083333333333', email: 'maya@example.com', alamat: 'Jl. Pondok Cina No. 7, Beji, Depok', member_tier: 'REGULER', created_at: now }
+    { id_pelanggan: nextId('pelanggan'), id_user: 7, kode_pelanggan: 'PLG-08132', nama: 'Maya Anggraini', telepon: '083333333333', email: 'maya@example.com', alamat: 'Jl. Pondok Cina No. 7, Beji, Depok', member_tier: 'REGULER', created_at: now }
   );
 
   db.layanan.push(

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Laundry - Bersihin Owner Console</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,7 +83,7 @@
         <div class="w-full flex flex-col justify-start items-start">
 
             <!-- Logo Brand Bersihin Laundry -->
-            <div class="w-full px-2 pb-6 flex justify-between items-center gap-2.5">
+            <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
                 <a href="dashboard.html"
                     class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                     <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
@@ -204,7 +207,7 @@
                 </ul>
 
                 <!-- Kelompok: AKUN -->
-                <div class="w-full px-2.5 pt-5 pb-2">
+                <div class="w-full px-2.5 pt-6 pb-2">
                     <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
                         AKUN
                     </span>
@@ -227,7 +230,7 @@
         </div>
 
         <!-- Bagian Bawah Sidebar: Tombol Keluar -->
-        <div class="w-full pt-4 flex flex-col justify-end items-start gap-2">
+        <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
             <a href="../login.html"
                 onclick="if(window.logoutOwner){logoutOwner(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}"
                 class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
@@ -245,9 +248,9 @@
     <!-- MAIN CONTENT WRAPPER -->
     <div class="flex-1 flex flex-col min-w-0">
         <!-- TOPBAR -->
-        <header class="h-20 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20 no-print">
+        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20 no-print">
             <div>
-                <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">Laporan Laundry</h1>
+                <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Laporan Laundry</h1>
                 <p class="text-xs text-slate-400">Analisis performa dan pendapatan bisnis</p>
             </div>
 
@@ -261,8 +264,7 @@
                         </svg>
                     </div>
                     <div class="text-left">
-                        <span class="block text-[10px] text-slate-400 font-medium">Periode aktif</span>
-                        <span class="block text-xs font-semibold text-slate-700">Mei 2024</span>
+                        <span class="block text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
                     </div>
                 </div>
 
@@ -442,161 +444,6 @@
                         <span id="kpiSub4">8,1% dari periode sebelumnya</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- CHARTS SECTION: 2 COLUMNS (AREA CHART & BEST SELLERS) -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- CHART 1: STATISTIK PENDAPATAN (2 COLUMNS) -->
-                <div class="lg:col-span-2 card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-sm md:text-base font-bold text-slate-800">Statistik Pendapatan</h3>
-                                <p id="reportChartSubtitle" class="text-xs text-slate-400">Klik titik atau bulan untuk melihat detail pendapatan</p>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span id="reportPointBadge" class="hidden text-xs font-semibold text-cyan-700 bg-sky-50 px-2.5 py-1 rounded-lg"></span>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-3 h-3 rounded-full bg-sky-500"></span>
-                                    <span class="text-xs text-slate-500 font-medium">Pendapatan</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SVG REVENUE AREA CHART -->
-                        <div class="w-full h-64 pt-2">
-                            <svg class="w-full h-full overflow-visible" viewBox="0 0 700 220" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
-                                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
-                                    </linearGradient>
-                                </defs>
-
-                                <!-- Horizontal Guide Lines -->
-                                <line x1="40" y1="20" x2="690" y2="20" stroke="#f1f5f9" stroke-width="1" />
-                                <line x1="40" y1="70" x2="690" y2="70" stroke="#f1f5f9" stroke-width="1" />
-                                <line x1="40" y1="120" x2="690" y2="120" stroke="#f1f5f9" stroke-width="1" />
-                                <line x1="40" y1="170" x2="690" y2="170" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4" />
-
-                                <!-- Y-Axis Text Labels -->
-                                <text x="10" y="24" fill="#94a3b8" font-size="10" font-family="Poppins">15jt</text>
-                                <text x="10" y="74" fill="#94a3b8" font-size="10" font-family="Poppins">10jt</text>
-                                <text x="10" y="124" fill="#94a3b8" font-size="10" font-family="Poppins">5jt</text>
-                                <text x="18" y="174" fill="#94a3b8" font-size="10" font-family="Poppins">0</text>
-
-                                <!-- Area Fill Path -->
-                                <path id="reportAreaPath" d="M 60 145 
-                                         C 120 135, 150 120, 200 110 
-                                         C 250 100, 290 85, 340 70 
-                                         C 390 55, 430 45, 480 35 
-                                         C 530 40, 580 50, 630 45 
-                                         C 660 42, 680 40, 690 38
-                                         L 690 170 L 60 170 Z" 
-                                      fill="url(#revenueGrad)" />
-
-                                <!-- Line Curve Path -->
-                                <path id="reportLinePath" d="M 60 145 
-                                         C 120 135, 150 120, 200 110 
-                                         C 250 100, 290 85, 340 70 
-                                         C 390 55, 430 45, 480 35 
-                                         C 530 40, 580 50, 630 45 
-                                         C 660 42, 680 40, 690 38" 
-                                      fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round" />
-
-                                <!-- Interactive Data Points -->
-                                <circle data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)" cx="60" cy="145" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)" cx="200" cy="110" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)" cx="340" cy="70" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)" cx="480" cy="35" r="6" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" class="cursor-pointer transition-all" />
-                                <circle data-month-point="Agustus 2024 (Proyeksi)" data-month-rev="Rp23.900.000 (650 trx)" cx="630" cy="45" r="5" fill="#ffffff" stroke="#0ea5e9" stroke-width="2.5" class="cursor-pointer transition-all" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- X-Axis Month Labels (Clickable) -->
-                    <div class="flex justify-between pl-8 pr-2 pt-2 text-[10px] md:text-xs text-slate-400 font-medium border-t border-slate-100">
-                        <button type="button" data-month-point="Januari 2024" data-month-rev="Rp17.310.000 (515 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jan</button>
-                        <button type="button" data-month-point="Februari 2024" data-month-rev="Rp18.230.000 (542 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Feb</button>
-                        <button type="button" data-month-point="Maret 2024" data-month-rev="Rp19.350.000 (579 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Mar</button>
-                        <button type="button" data-month-point="April 2024" data-month-rev="Rp20.980.000 (612 trx)" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Apr</button>
-                        <button type="button" data-month-point="Mei 2024" data-month-rev="Rp24.800.000 (684 trx)" class="month-axis-btn text-sky-600 font-bold cursor-pointer px-1">Mei</button>
-                        <button type="button" data-month-point="Juni 2024 (Target)" data-month-rev="Rp25.400.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jun</button>
-                        <button type="button" data-month-point="Juli 2024 (Target)" data-month-rev="Rp24.600.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Jul</button>
-                        <button type="button" data-month-point="Agustus 2024 (Target)" data-month-rev="Rp23.900.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Agu</button>
-                        <button type="button" data-month-point="September 2024 (Target)" data-month-rev="Rp25.800.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Sep</button>
-                        <button type="button" data-month-point="Oktober 2024 (Target)" data-month-rev="Rp26.500.000" class="month-axis-btn hover:text-sky-600 cursor-pointer px-1">Okt</button>
-                    </div>
-                </div>
-
-                <!-- CHART 2: LAYANAN TERLARIS (1 COLUMN, Interactive) -->
-                <div class="card-report bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-sm md:text-base font-bold text-slate-800">Layanan Terlaris</h3>
-                        <p class="text-xs text-slate-400 mb-6">Klik paket untuk melihat kontribusi pendapatan</p>
-
-                        <!-- Progress Bars (Clickable) -->
-                        <div class="space-y-4">
-                            <!-- Service 1: Cuci + Setrika -->
-                            <button type="button" data-service-name="Cuci + Setrika" data-service-share="41,8%" data-service-rev="Rp10.366.000 (286 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer ring-1 ring-sky-200 bg-sky-50/30">
-                                <div class="flex justify-between items-center text-xs mb-1.5">
-                                    <span class="font-semibold text-slate-700">Cuci + Setrika</span>
-                                    <span class="font-bold text-slate-900">286 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
-                                </div>
-                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full" style="width: 72%;"></div>
-                                </div>
-                            </button>
-
-                            <!-- Service 2: Cuci Kering -->
-                            <button type="button" data-service-name="Cuci Kering" data-service-share="28,4%" data-service-rev="Rp7.043.000 (194 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
-                                <div class="flex justify-between items-center text-xs mb-1.5">
-                                    <span class="font-semibold text-slate-700">Cuci Kering</span>
-                                    <span class="font-bold text-slate-900">194 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
-                                </div>
-                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full" style="width: 52%;"></div>
-                                </div>
-                            </button>
-
-                            <!-- Service 3: Express -->
-                            <button type="button" data-service-name="Express" data-service-share="17,8%" data-service-rev="Rp4.414.000 (122 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
-                                <div class="flex justify-between items-center text-xs mb-1.5">
-                                    <span class="font-semibold text-slate-700">Express</span>
-                                    <span class="font-bold text-slate-900">122 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
-                                </div>
-                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full" style="width: 38%;"></div>
-                                </div>
-                            </button>
-
-                            <!-- Service 4: Setrika Saja -->
-                            <button type="button" data-service-name="Setrika Saja" data-service-share="12,0%" data-service-rev="Rp2.977.000 (82 transaksi)" class="service-bar-btn w-full text-left p-2 -mx-2 rounded-xl hover:bg-slate-50 transition cursor-pointer">
-                                <div class="flex justify-between items-center text-xs mb-1.5">
-                                    <span class="font-semibold text-slate-700">Setrika Saja</span>
-                                    <span class="font-bold text-slate-900">82 <span class="text-[10px] text-slate-400 font-normal">transaksi</span></span>
-                                </div>
-                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style="width: 25%;"></div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Highlight summary -->
-                    <div class="mt-6 p-3 bg-sky-50/60 rounded-xl border border-sky-100 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                            </svg>
-                        </div>
-                        <p id="serviceHighlightText" class="text-[11px] text-slate-600 leading-snug">
-                            Paket <strong class="text-slate-800">Cuci + Setrika</strong> menyumbang <strong class="text-cyan-700">41,8%</strong> dari total seluruh transaksi.
-                        </p>
-                    </div>
-                </div>
-
             </div>
 
             <!-- BOTTOM TABLE: RINCIAN PENDAPATAN BULANAN -->
