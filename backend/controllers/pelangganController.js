@@ -386,6 +386,8 @@ async function getPesanan(req, res) {
                COALESCE(MAX(pem.status), 'MENUNGGU') AS status_pembayaran,
                MAX(pem.metode) AS metode_pembayaran,
                MAX(pem.referensi_bayar) AS referensi_bayar,
+               COALESCE(MAX(pem.bukti_bayar), MAX(p.bukti_bayar)) AS bukti_bayar,
+               COALESCE(MAX(pem.bukti_bayar), MAX(p.bukti_bayar)) AS bukti_transfer,
                COALESCE(GROUP_CONCAT(DISTINCT l.nama_layanan ORDER BY dp.id_detail SEPARATOR ', '), 'Cuci Komplit (Cuci + Setrika)') AS layanan,
                MAX(dp.harga_satuan) AS harga_satuan,
                SUM(dp.subtotal) AS subtotal
@@ -446,28 +448,19 @@ async function getPesanan(req, res) {
 
 /**
  * GET /api/pelanggan/layanan
- * Mengambil daftar 4 layanan laundry aktif untuk portal pelanggan
+ * Mengambil daftar seluruh katalog layanan laundry aktif untuk portal pelanggan
  */
 async function getLayanan(req, res) {
   try {
-    const showAll = req.query && (req.query.all === '1' || req.query.all === 'true');
     try {
-      const sql = showAll
-        ? `SELECT id_layanan, nama_layanan, kategori, satuan, harga, estimasi_waktu, status, deskripsi
-           FROM layanan
-           WHERE status = 'AKTIF'
-           ORDER BY id_layanan ASC`
-        : `SELECT id_layanan, nama_layanan, kategori, satuan, harga, estimasi_waktu, status, deskripsi
-           FROM layanan
-           WHERE status = 'AKTIF' AND satuan = 'kg'
-           ORDER BY FIELD(id_layanan, 1, 2, 3, 5), id_layanan ASC
-           LIMIT 4`;
+      const sql = `SELECT id_layanan, nama_layanan, kategori, satuan, harga, estimasi_waktu, status, deskripsi
+         FROM layanan
+         WHERE status = 'AKTIF'
+         ORDER BY id_layanan ASC`;
       const [rows] = await pool.query(sql);
       return res.json({ success: true, data: rows });
     } catch (_) {
-      const activeServices = showAll
-        ? mockDb.layanan.filter(l => l.status === 'AKTIF')
-        : mockDb.layanan.filter(l => l.status === 'AKTIF' && l.satuan === 'kg').slice(0, 4);
+      const activeServices = (mockDb.layanan || []).filter(l => l.status === 'AKTIF');
       return res.json({ success: true, data: activeServices });
     }
   } catch (error) {
@@ -550,8 +543,22 @@ async function createPesanan(req, res) {
       nama,
       telepon,
       alamat,
-      kode_pesanan
+      kode_pesanan,
+      metode_pembayaran,
+      bukti_transfer,
+      bukti_bayar
     } = req.body || {};
+
+    const proofOfPayment = bukti_transfer || bukti_bayar || null;
+    let payMethod = 'TRANSFER';
+    if (metode_pembayaran) {
+      const pmUpper = String(metode_pembayaran).toUpperCase();
+      if (pmUpper.includes('TUNAI') || pmUpper.includes('CASH')) payMethod = 'TUNAI';
+      else if (pmUpper.includes('QRIS')) payMethod = 'QRIS';
+      else payMethod = 'TRANSFER';
+    } else if (!proofOfPayment) {
+      payMethod = 'TUNAI';
+    }
 
     const beratVal = Number(berat || total_berat || 3);
     if (!Number.isFinite(beratVal) || beratVal <= 0) {
@@ -581,6 +588,7 @@ async function createPesanan(req, res) {
     let serviceId = Number(id_layanan) || 2;
     let serviceName = layanan || 'Cuci Komplit (Cuci + Setrika)';
     let unitPrice = 9000;
+    let serviceUnit = (req.body && req.body.satuan) ? String(req.body.satuan).trim() : (serviceId === 4 ? 'pcs' : serviceId === 6 ? 'pasang' : 'kg');
 
     const svcLowerInput = String(serviceName).toLowerCase();
     if (!id_layanan) {
@@ -588,22 +596,27 @@ async function createPesanan(req, res) {
         unitPrice = 7000;
         serviceId = 1;
         serviceName = 'Cuci Kering Lipat';
+        serviceUnit = 'kg';
       } else if (svcLowerInput.includes('setrika') && !svcLowerInput.includes('cuci')) {
         unitPrice = 6000;
         serviceId = 3;
         serviceName = 'Setrika Uap Saja';
+        serviceUnit = 'kg';
       } else if (svcLowerInput.includes('bedcover')) {
         unitPrice = 25000;
         serviceId = 4;
         serviceName = 'Cuci Bedcover Besar';
+        serviceUnit = 'pcs';
       } else if (svcLowerInput.includes('express') || svcLowerInput.includes('kilat') || svcLowerInput.includes('4 jam')) {
         unitPrice = 16000;
         serviceId = 5;
         serviceName = 'Cuci Kilat Express (4 Jam)';
+        serviceUnit = 'kg';
       } else if (svcLowerInput.includes('sepatu')) {
         unitPrice = 30000;
         serviceId = 6;
         serviceName = 'Cuci Sepatu Premium';
+        serviceUnit = 'pasang';
       }
     }
 
@@ -645,6 +658,14 @@ async function createPesanan(req, res) {
           [srvRows] = await connection.query(
             "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 3 OR nama_layanan LIKE 'Setrika%' LIMIT 1"
           );
+        } else if (svcLowerInput.includes('bedcover')) {
+          [srvRows] = await connection.query(
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 4 OR nama_layanan LIKE '%Bedcover%' LIMIT 1"
+          );
+        } else if (svcLowerInput.includes('sepatu')) {
+          [srvRows] = await connection.query(
+            "SELECT id_layanan, nama_layanan, harga, satuan, estimasi_waktu FROM layanan WHERE id_layanan = 6 OR nama_layanan LIKE '%Sepatu%' LIMIT 1"
+          );
         }
         if (!srvRows || srvRows.length === 0) {
           [srvRows] = await connection.query(
@@ -656,6 +677,7 @@ async function createPesanan(req, res) {
       if (srvRows && srvRows.length > 0) {
         serviceId = srvRows[0].id_layanan;
         serviceName = srvRows[0].nama_layanan;
+        if (srvRows[0].satuan) serviceUnit = srvRows[0].satuan;
         unitPrice = Number(srvRows[0].harga);
         serviceSubtotal = round2(beratVal * unitPrice);
         calculatedTotal = round2(serviceSubtotal + deliveryFee);
@@ -717,11 +739,11 @@ async function createPesanan(req, res) {
 
       const estDate = new Date(now.getTime() + durationHours * 60 * 60 * 1000);
 
-      // A. Insert ke tabel pesanan (termasuk tanggal_selesai estimasi)
+      // A. Insert ke tabel pesanan (termasuk tanggal_selesai estimasi dan bukti_bayar)
       const [resPesanan] = await connection.execute(
-        `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan)
-         VALUES (?, ?, NULL, NOW(), ?, ?, ?, 'MENUNGGU', ?)`,
-        [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes]
+        `INSERT INTO pesanan (kode_pesanan, id_pelanggan, id_pegawai, tanggal_pesanan, tanggal_selesai, total_berat, total_harga, status, catatan, bukti_bayar)
+         VALUES (?, ?, NULL, NOW(), ?, ?, ?, 'MENUNGGU', ?, ?)`,
+        [orderCode, idPelanggan, estDate, beratVal, calculatedTotal, customerNotes, proofOfPayment]
       );
       newOrderId = resPesanan.insertId;
 
@@ -734,17 +756,18 @@ async function createPesanan(req, res) {
 
       // C. Insert ke tabel riwayat_status
       const deliveryMethodStr = metode_pengantaran ? ` (Metode: ${metode_pengantaran})` : '';
+      const payMethodStr = ` (Metode Bayar: ${payMethod}${proofOfPayment ? ', Bukti Transfer Terlampir' : ''})`;
       await connection.execute(
         `INSERT INTO riwayat_status (id_pesanan, id_pegawai, status, catatan, waktu_perubahan)
          VALUES (?, NULL, 'MENUNGGU', ?, NOW())`,
-        [newOrderId, `Pesanan dibuat oleh pelanggan${deliveryMethodStr}`]
+        [newOrderId, `Pesanan dibuat oleh pelanggan${deliveryMethodStr}${payMethodStr}`]
       );
 
       // D. Insert ke tabel pembayaran
       await connection.execute(
-        `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, tanggal_bayar, status)
-         VALUES (?, ?, 'TUNAI', NOW(), 'MENUNGGU')`,
-        [newOrderId, calculatedTotal]
+        `INSERT INTO pembayaran (id_pesanan, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar)
+         VALUES (?, ?, ?, NOW(), 'MENUNGGU', ?, ?)`,
+        [newOrderId, calculatedTotal, payMethod, orderCode, proofOfPayment]
       );
 
       await connection.commit();
@@ -797,6 +820,10 @@ async function createPesanan(req, res) {
       total_harga: calculatedTotal,
       status: 'MENUNGGU',
       status_pembayaran: 'MENUNGGU',
+      metode_pembayaran: payMethod,
+      paymentMethod: payMethod,
+      bukti_bayar: proofOfPayment,
+      bukti_transfer: proofOfPayment,
       catatan: customerNotes,
       metode_pengantaran: metode_pengantaran || 'Antar sendiri'
     };
@@ -825,9 +852,10 @@ async function createPesanan(req, res) {
       alamat: resolvedCust.alamat || '',
       layanan: serviceName,
       berat: beratVal,
-      berat_formatted: `${beratVal},0 kg`,
+      satuan: serviceUnit,
+      berat_formatted: serviceUnit === 'kg' ? `${beratVal},0 kg` : `${beratVal} ${serviceUnit}`,
       tarif_per_kg: unitPrice,
-      tarif_per_kg_formatted: `Rp${Number(unitPrice).toLocaleString('id-ID')}`,
+      tarif_per_kg_formatted: `Rp${Number(unitPrice).toLocaleString('id-ID')}/${serviceUnit}`,
       subtotal_layanan: serviceSubtotal,
       subtotal_layanan_formatted: `Rp${Number(serviceSubtotal).toLocaleString('id-ID')}`,
       metode_pengantaran: metode_pengantaran || 'Antar sendiri',
@@ -836,6 +864,9 @@ async function createPesanan(req, res) {
       total_harga: calculatedTotal,
       total_harga_formatted: `Rp${Number(calculatedTotal).toLocaleString('id-ID')}`,
       catatan: customerNotes,
+      metode_pembayaran: payMethod,
+      bukti_bayar: proofOfPayment,
+      bukti_transfer: proofOfPayment,
       status: 'MENUNGGU',
       status_label: 'Menunggu Konfirmasi Pegawai',
       saved_to_db: dbSaved
@@ -895,7 +926,7 @@ async function getPesananDetail(req, res) {
           [order.id_pesanan]
         );
         const [pembayaran] = await pool.query(
-          `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
+          `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar
            FROM pembayaran
            WHERE id_pesanan = ?
            ORDER BY id_pembayaran DESC`,
@@ -906,12 +937,15 @@ async function getPesananDetail(req, res) {
           ? serviceNames.join(', ')
           : (String(order.catatan || '').toLowerCase().includes('express') ? 'Cuci Kilat Express (4 Jam)' : 'Cuci Komplit (Cuci + Setrika)');
         const latestPay = pembayaran && pembayaran[0] ? pembayaran[0] : null;
+        const proofImg = order.bukti_bayar || (latestPay ? latestPay.bukti_bayar : null);
         return res.json({
           success: true,
           data: {
             ...order,
             layanan: serviceTitle,
             service: serviceTitle,
+            bukti_bayar: proofImg,
+            bukti_transfer: proofImg,
             status_pembayaran: latestPay ? latestPay.status : 'MENUNGGU',
             metode_pembayaran: latestPay ? latestPay.metode : null,
             referensi_bayar: latestPay ? latestPay.referensi_bayar : null,

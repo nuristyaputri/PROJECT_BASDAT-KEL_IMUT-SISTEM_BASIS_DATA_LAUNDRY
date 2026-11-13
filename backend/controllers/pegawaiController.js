@@ -200,7 +200,10 @@ exports.daftarPesanan = async (req, res) => {
                         SELECT pb.status FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1
                     ), 'MENUNGGU') AS status_pembayaran,
                     (SELECT pb.metode FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1) AS metode_pembayaran,
-                    (SELECT pb.referensi_bayar FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1) AS referensi_bayar
+                    (SELECT pb.referensi_bayar FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan ORDER BY pb.id_pembayaran DESC LIMIT 1) AS referensi_bayar,
+                    COALESCE((
+                        SELECT pb.bukti_bayar FROM pembayaran pb WHERE pb.id_pesanan = p.id_pesanan AND pb.bukti_bayar IS NOT NULL ORDER BY pb.id_pembayaran DESC LIMIT 1
+                    ), p.bukti_bayar) AS bukti_bayar
              FROM pesanan p
              INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
              ORDER BY p.id_pesanan DESC`
@@ -230,7 +233,7 @@ exports.detailPesanan = async (req, res) => {
              WHERE d.id_pesanan = ? ORDER BY d.id_detail`, [id]
         );
         const [pembayaran] = await db.execute(
-            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
+            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar
              FROM pembayaran WHERE id_pesanan = ? ORDER BY id_pembayaran DESC`, [id]
         );
         const [riwayat] = await db.execute(
@@ -436,7 +439,8 @@ exports.daftarTransaksi = async (req, res) => {
             `SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan,
                     p.total_harga, p.status AS status_pesanan,
                     pb.id_pembayaran, pb.jumlah_bayar, pb.metode,
-                    pb.tanggal_bayar, pb.status AS status_pembayaran, pb.referensi_bayar
+                    pb.tanggal_bayar, pb.status AS status_pembayaran, pb.referensi_bayar,
+                    COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_bayar
              FROM pesanan p INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
              LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
                  SELECT pb2.id_pembayaran FROM pembayaran pb2
@@ -458,13 +462,14 @@ exports.detailTransaksi = async (req, res) => {
         if (!validId(req.params.id)) return sendError(res, 400, "ID pesanan tidak valid");
         const [orders] = await db.execute(
             `SELECT p.id_pesanan, p.kode_pesanan, p.total_harga, p.status AS status_pesanan,
+                    p.bukti_bayar,
                     pl.nama AS nama_pelanggan
              FROM pesanan p INNER JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
              WHERE p.id_pesanan = ? LIMIT 1`, [Number(req.params.id)]
         );
         if (!orders.length) return sendError(res, 404, "Pesanan tidak ditemukan");
         const [payments] = await db.execute(
-            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar
+            `SELECT id_pembayaran, jumlah_bayar, metode, tanggal_bayar, status, referensi_bayar, bukti_bayar
              FROM pembayaran WHERE id_pesanan = ? ORDER BY id_pembayaran DESC`, [Number(req.params.id)]
         );
         return res.json({ success: true, message: "Detail transaksi berhasil diambil", data: { pesanan: orders[0], pembayaran: payments } });

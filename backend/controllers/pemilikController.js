@@ -733,7 +733,9 @@ exports.daftarPesanan = async (req, res) => {
                        p.tanggal_pesanan, p.tanggal_selesai, p.total_berat, p.total_harga,
                        p.status, p.catatan, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan,
                        COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Layanan Standar') AS layanan_nama,
-                       pb.metode AS metode_bayar, pb.status AS status_bayar
+                       pb.metode AS metode_bayar, pb.status AS status_bayar,
+                       COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_bayar,
+                       COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_transfer
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
                 LEFT JOIN pembayaran pb ON pb.id_pembayaran = (

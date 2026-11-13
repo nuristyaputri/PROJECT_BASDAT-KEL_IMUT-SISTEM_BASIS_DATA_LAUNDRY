@@ -651,6 +651,8 @@
                 paymentStatus: isPaid ? 'Lunas' : 'Menunggu',
                 rawPaymentStatus: o.status_pembayaran || (isPaid ? 'BERHASIL' : 'MENUNGGU'),
                 referensi_bayar: o.referensi_bayar || null,
+                bukti_transfer: o.bukti_bayar || o.bukti_transfer || null,
+                bukti_bayar: o.bukti_bayar || o.bukti_transfer || null,
                 date: dateStr,
                 time: timeStr,
                 rawDate: dateObj,
@@ -674,6 +676,10 @@
                 if (lo.customerAddress) existing.customerAddress = lo.customerAddress;
                 if (lo.notes) existing.notes = lo.notes;
                 if (lo.paymentMethod) existing.paymentMethod = lo.paymentMethod;
+                if (lo.bukti_transfer || lo.bukti_bayar) {
+                    existing.bukti_transfer = lo.bukti_transfer || lo.bukti_bayar;
+                    existing.bukti_bayar = existing.bukti_transfer;
+                }
             } else {
                 const st = normalizeOrderStatus(lo.status || 'MENUNGGU');
                 const beratNum = Number(lo.weightKg) || Number(String(lo.weight || '3.5').replace(/[^\d.]/g, '')) || 3.5;
@@ -699,6 +705,8 @@
                     rawStatus: lo.status || 'MENUNGGU',
                     paymentMethod: lo.paymentMethod || 'QRIS',
                     paymentStatus: (st === 'Menunggu konfirmasi') ? 'Menunggu' : 'Lunas',
+                    bukti_transfer: lo.bukti_transfer || lo.bukti_bayar || null,
+                    bukti_bayar: lo.bukti_bayar || lo.bukti_transfer || null,
                     date: dateStr,
                     time: timeStr,
                     rawDate: dateObj,
@@ -725,16 +733,445 @@
     let activeModalOrderId = null;
 
     function injectInvoiceModal() {
+<<<<<<< HEAD
+        if (document.getElementById('invoiceVerificationModal')) return;
+
+        const modalDiv = document.createElement('div');
+        modalDiv.id = 'invoiceVerificationModal';
+        modalDiv.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs hidden';
+        modalDiv.setAttribute('role', 'dialog');
+        modalDiv.setAttribute('aria-modal', 'true');
+        modalDiv.innerHTML = `
+            <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col max-h-[92vh] animate-in fade-in duration-200">
+                <!-- Header Gradient Elegan -->
+                <div class="px-5 py-4 bg-gradient-to-r from-blue-950 to-cyan-800 text-white flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-cyan-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold leading-tight">Pemeriksaan Invoice & Verifikasi Pembayaran</h3>
+                            <p class="text-[11px] text-cyan-200/90 mt-0.5">Konfirmasi penerimaan pembayaran pelanggan</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeInvoiceModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition" aria-label="Tutup">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Isi Modal Invoice / Struk -->
+                <div class="p-5 md:p-6 overflow-y-auto space-y-4 text-xs text-slate-700" id="invoiceModalContentArea">
+                    <!-- Status & No. Pesanan Real-Time -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status Pesanan & Pembayaran</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span id="modalInvoiceBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-bold border border-amber-200/60">
+                                    <span id="modalInvoiceDot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                    <span id="modalInvoiceStatusText">Menunggu Konfirmasi Pegawai</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sm:text-right">
+                            <span class="text-[10px] text-slate-400 block">Kode Transaksi / Invoice</span>
+                            <span id="modalInvoiceOrderCode" class="text-xs font-extrabold text-blue-950 font-mono tracking-tight block mt-0.5">TRX-0000</span>
+                        </div>
+                    </div>
+
+                    <!-- Informasi Pelanggan -->
+                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2">
+                        <div class="text-[11px] font-bold text-slate-800 pb-1 border-b border-slate-100 flex items-center justify-between">
+                            <span>Informasi Pelanggan</span>
+                            <span id="modalInvoiceDateText" class="text-[10px] text-slate-400 font-normal">9 November 2026</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-[11px]">
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">Nama Pelanggan:</span>
+                                <span id="modalInvoiceCustName" class="font-bold text-slate-800 block">Nuristya</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block text-[10px]">No. WhatsApp / HP:</span>
+                                <span id="modalInvoiceCustPhone" class="font-bold text-slate-800 block">0889 8080 8098</span>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <span class="text-slate-400 block text-[10px]">Alamat Pengambilan / Antar:</span>
+                                <span id="modalInvoiceCustAddress" class="text-slate-700 block mt-0.5">Jl. Margonda Raya No. 45, Beji, Depok</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rincian Layanan & Biaya -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-600 text-[11px] font-semibold border-b border-slate-200">
+                                    <th class="py-2.5 px-3">Layanan</th>
+                                    <th class="py-2.5 px-3 text-center">Berat</th>
+                                    <th class="py-2.5 px-3 text-right">Tarif</th>
+                                    <th class="py-2.5 px-3 text-right">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-xs">
+                                <tr>
+                                    <td class="py-2.5 px-3">
+                                        <span id="modalInvoiceServiceName" class="font-bold text-slate-800 block">Cuci + Setrika</span>
+                                        <span class="text-[10px] text-slate-400">Pakaian harian & seragam</span>
+                                    </td>
+                                    <td id="modalInvoiceWeight" class="py-2.5 px-3 text-center font-medium text-slate-700">3.5 kg</td>
+                                    <td id="modalInvoiceUnitPrice" class="py-2.5 px-3 text-right font-medium text-slate-600">Rp10.000</td>
+                                    <td id="modalInvoiceSubtotal" class="py-2.5 px-3 text-right font-bold text-slate-800">Rp35.000</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-sky-50/80 border-t border-sky-100">
+                                    <td colspan="3" class="py-2.5 px-3 text-right font-bold text-slate-800 text-xs">TOTAL TAGIHAN</td>
+                                    <td id="modalInvoiceTotal" class="py-2.5 px-3 text-right font-extrabold text-blue-950 text-sm">Rp35.000</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Metode & Verifikasi Bukti Pembayaran -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-slate-800">Status & Metode Pembayaran</span>
+                            <span id="modalInvoicePaymentStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Menunggu Konfirmasi</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60">
+                            <span class="text-slate-500">Kanal Pembayaran:</span>
+                            <span id="modalInvoicePaymentMethod" class="font-bold text-cyan-800">QRIS (Gopay / ShopeePay / BCA)</span>
+                        </div>
+                        <div class="p-2.5 bg-white rounded-lg border border-slate-200/80 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="text-[11px]">
+                                <span class="font-semibold text-slate-800 block">Verifikasi Pegawai</span>
+                                <span id="modalInvoiceVerifyHint" class="text-slate-500 block">Periksa saldo masuk / uang tunai di kasir sebelum menekan tombol konfirmasi di bawah.</span>
+                            </div>
+                        </div>
+
+                        <!-- Bukti Transfer Pelanggan (Untuk Diperiksa Pegawai) -->
+                        <div id="modalBuktiTransferSection" class="p-3 bg-white rounded-lg border border-slate-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-xs font-bold text-slate-800">Bukti Transfer Pelanggan</span>
+                                </div>
+                                <span id="modalBuktiStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Perlu Dicek</span>
+                            </div>
+                            <!-- Jika Ada Bukti Gambar -->
+                            <div id="modalBuktiContent" class="flex items-center gap-3">
+                                <img id="modalBuktiImg" src="" alt="Bukti Transfer" class="w-14 h-14 object-cover rounded-lg border border-slate-200 shrink-0 cursor-pointer hover:opacity-90 transition shadow-2xs" onclick="window.zoomBuktiTransfer(this.src)">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-semibold text-slate-800 block truncate">Bukti Pembayaran Digital</span>
+                                    <span class="text-[10px] text-slate-400 block mt-0.5">Unggahan dari device pelanggan (JPG/PNG)</span>
+                                    <button type="button" onclick="window.zoomBuktiTransfer(document.getElementById('modalBuktiImg').src)" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:text-cyan-900 mt-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <span>Lihat Ukuran Penuh (Zoom)</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Jika Tanpa Bukti / Tunai -->
+                            <div id="modalNoBuktiMsg" class="hidden text-[11px] text-slate-500 italic py-1">
+                                Pelanggan memilih metode Tunai (COD) atau belum mengunggah struk transfer.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Catatan Pelanggan -->
+                    <div class="p-3 rounded-lg bg-amber-50/70 border border-amber-200/60 text-[11px]">
+                        <span class="font-bold text-amber-900 block">Catatan Khusus Pelanggan:</span>
+                        <p id="modalInvoiceNotes" class="text-amber-800 mt-0.5 italic">-</p>
+                    </div>
+
+                    <!-- Ubah Tahap Cucian Langsung (Fitur Pegawai Terpadu) -->
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800 block">Ubah Tahap Pesanan:</span>
+                            <span class="text-[10px] text-slate-400 block">Langsung tersinkron ke akun pelanggan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="modalQuickStatusSelect" class="bg-white border border-slate-300 rounded-lg text-xs py-1.5 px-2.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                                <option value="Menunggu konfirmasi">Menunggu konfirmasi</option>
+                                <option value="Diproses">Diproses</option>
+                                <option value="Dicuci">Dicuci</option>
+                                <option value="Disetrika">Disetrika</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
+                            <button type="button" onclick="applyModalQuickStatus()" class="px-3 py-1.5 bg-cyan-700 hover:bg-cyan-800 text-white font-semibold rounded-lg text-xs shadow-xs transition">
+                                Terapkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Aksi Pegawai -->
+                <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="printInvoiceFromPegawai()" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition">
+                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak Struk</span>
+                        </button>
+                        <a id="modalOpenFullPageBtn" href="invoice.html" class="px-3.5 py-2 text-xs font-bold text-cyan-800 bg-sky-50 border border-sky-200 rounded-lg hover:bg-sky-100 flex items-center gap-1.5 transition">
+                            <svg class="w-3.5 h-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            <span>Buka Halaman Penuh</span>
+                        </a>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="modalRejectBtn" onclick="rejectCurrentOrder()" class="px-3.5 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
+                            Tolak / Batal
+                        </button>
+                        <button type="button" id="modalConfirmBtn" onclick="confirmCurrentOrder()" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-900 rounded-lg hover:brightness-110 shadow-md flex items-center gap-1.5 transition">
+                            <svg class="w-4 h-4 text-cyan-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span id="modalConfirmBtnText">Konfirmasi Pembayaran & Mulai Proses</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modalDiv);
+
+        modalDiv.addEventListener('click', (e) => {
+            if (e.target === modalDiv) closeInvoiceModal();
+        });
+=======
         // Pemeriksaan Invoice & Verifikasi Pembayaran langsung dibuka pada halaman penuh invoice.html
         return;
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
     }
 
     async function openInvoiceModal(orderId) {
         const orders = await fetchUnifiedOrders();
         const order = orders.find(o => o.id === orderId || o.code === orderId || String(o.dbId) === String(orderId));
+<<<<<<< HEAD
+
+        if (!order) {
+            showToast(`Data pesanan ${orderId} tidak ditemukan`, true);
+            return;
+        }
+
+        activeModalOrderId = order.id;
+
+        const setVal = (id, text) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        };
+
+        setVal('modalInvoiceOrderCode', order.code);
+        setVal('modalInvoiceDateText', `${order.date} • ${order.time}`);
+        setVal('modalInvoiceCustName', order.customerName);
+        setVal('modalInvoiceCustPhone', order.customerPhone);
+        setVal('modalInvoiceCustAddress', order.customerAddress);
+        setVal('modalInvoiceServiceName', order.service);
+        setVal('modalInvoiceWeight', order.weight);
+        setVal('modalInvoiceSubtotal', order.totalFormatted);
+        setVal('modalInvoiceTotal', order.totalFormatted);
+        setVal('modalInvoicePaymentMethod', order.paymentMethod || 'QRIS');
+        setVal('modalInvoiceNotes', order.notes || 'Tidak ada catatan khusus.');
+
+        const fullPageBtn = document.getElementById('modalOpenFullPageBtn');
+        if (fullPageBtn) {
+            fullPageBtn.href = `invoice.html?id=${encodeURIComponent(order.code || order.id)}`;
+        }
+
+        const badgeCfg = getStatusBadgeConfig(order.status);
+        const badgeEl = document.getElementById('modalInvoiceBadge');
+        const dotEl = document.getElementById('modalInvoiceDot');
+        const statusTextEl = document.getElementById('modalInvoiceStatusText');
+
+        if (badgeEl) badgeEl.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${badgeCfg.badgeClass}`;
+        if (dotEl) dotEl.className = `w-2 h-2 rounded-full ${badgeCfg.dotClass}`;
+        if (statusTextEl) statusTextEl.textContent = order.status;
+
+        const payBadge = document.getElementById('modalInvoicePaymentStatusBadge');
+        const confirmBtnText = document.getElementById('modalConfirmBtnText');
+        const confirmBtn = document.getElementById('modalConfirmBtn');
+        const verifyHint = document.getElementById('modalInvoiceVerifyHint');
+        const quickSelect = document.getElementById('modalQuickStatusSelect');
+
+        if (quickSelect) {
+            quickSelect.value = order.status;
+        }
+
+        // Tentukan tahap selanjutnya dan label tombol konfirmasi cerdas
+        let nextStage = 'Diproses';
+        if (order.status === 'Menunggu konfirmasi') {
+            nextStage = 'Diproses';
+            if (payBadge) {
+                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200';
+                payBadge.textContent = 'Menunggu Konfirmasi Pegawai';
+            }
+            if (confirmBtnText) confirmBtnText.textContent = 'Konfirmasi Pembayaran & Mulai Proses';
+            if (confirmBtn) {
+                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-900 rounded-lg hover:brightness-110 shadow-md flex items-center gap-1.5 transition cursor-pointer ring-2 ring-cyan-400/40';
+            }
+            if (verifyHint) {
+                verifyHint.textContent = `Tagihan ${order.totalFormatted} via ${order.paymentMethod}. Tekan tombol konfirmasi setelah memeriksa dana diterima.`;
+            }
+        } else if (order.status === 'Diproses') {
+            nextStage = 'Dicuci';
+            if (payBadge) {
+                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
+                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
+            }
+            if (confirmBtnText) confirmBtnText.textContent = 'Lanjut ke Tahap Cuci';
+            if (confirmBtn) {
+                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-cyan-700 hover:bg-cyan-800 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
+            }
+            if (verifyHint) {
+                verifyHint.textContent = `Pesanan sedang disiapkan. Klik tombol untuk memindahkan status ke pencucian di mesin cuci.`;
+            }
+        } else if (order.status === 'Dicuci') {
+            nextStage = 'Disetrika';
+            if (payBadge) {
+                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
+                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
+            }
+            if (confirmBtnText) confirmBtnText.textContent = 'Lanjut ke Tahap Setrika';
+            if (confirmBtn) {
+                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-indigo-700 hover:bg-indigo-800 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
+            }
+            if (verifyHint) {
+                verifyHint.textContent = `Pakaian selesai dicuci. Klik tombol untuk melanjutkan ke proses setrika uap rapi.`;
+            }
+        } else if (order.status === 'Disetrika') {
+            nextStage = 'Selesai';
+            if (payBadge) {
+                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
+                payBadge.textContent = 'Pembayaran Lunas (Terverifikasi)';
+            }
+            if (confirmBtnText) confirmBtnText.textContent = 'Tandai Selesai & Siap Diambil';
+            if (confirmBtn) {
+                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer';
+            }
+            if (verifyHint) {
+                verifyHint.textContent = `Pakaian telah rapi disetrika dan dikemas. Klik tombol untuk memberitahu pelanggan siap diambil.`;
+            }
+        } else {
+            nextStage = 'Selesai';
+            if (payBadge) {
+                payBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-teal-800 border border-emerald-200';
+                payBadge.textContent = 'Pesanan Selesai';
+            }
+            if (confirmBtnText) confirmBtnText.textContent = 'Pesanan Telah Selesai';
+            if (confirmBtn) {
+                confirmBtn.className = 'px-4 py-2 text-xs font-bold text-white bg-slate-500 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-default';
+            }
+            if (verifyHint) {
+                verifyHint.textContent = `Pesanan telah selesai diproses dan siap diambil oleh pelanggan.`;
+            }
+        }
+
+        if (confirmBtn) {
+            confirmBtn.onclick = async () => {
+                if (order.status === 'Menunggu konfirmasi') {
+                    await confirmOrderPayment(order.id);
+                } else if (order.status !== 'Selesai') {
+                    await updateOrderStatus(order.id, nextStage);
+                }
+                await openInvoiceModal(order.id);
+            };
+        }
+
+        const modal = document.getElementById('invoiceVerificationModal');
+        if (modal) modal.classList.remove('hidden');
+
+        // Tampilkan Bukti Transfer jika ada
+        const buktiSrc = order.bukti_transfer || order.bukti_bayar;
+        const buktiContent = document.getElementById('modalBuktiContent');
+        const noBuktiMsg = document.getElementById('modalNoBuktiMsg');
+        const buktiImg = document.getElementById('modalBuktiImg');
+        const buktiBadge = document.getElementById('modalBuktiStatusBadge');
+
+        if (buktiSrc && String(order.paymentMethod || '').toUpperCase() !== 'TUNAI') {
+            if (buktiImg) buktiImg.src = buktiSrc;
+            if (buktiContent) buktiContent.classList.remove('hidden');
+            if (noBuktiMsg) noBuktiMsg.classList.add('hidden');
+            if (buktiBadge) {
+                if (order.status === 'Menunggu konfirmasi') {
+                    buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
+                    buktiBadge.textContent = 'Perlu Dicek Pegawai';
+                } else {
+                    buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    buktiBadge.textContent = 'Bukti Terverifikasi';
+                }
+            }
+        } else {
+            if (buktiContent) buktiContent.classList.add('hidden');
+            if (noBuktiMsg) {
+                noBuktiMsg.classList.remove('hidden');
+                noBuktiMsg.textContent = String(order.paymentMethod || '').toUpperCase() === 'TUNAI'
+                    ? 'Pembayaran Tunai (COD) - Dibayar saat serah terima pakaian.'
+                    : 'Belum ada bukti transfer digital yang diunggah.';
+            }
+            if (buktiBadge) {
+                buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+                buktiBadge.textContent = String(order.paymentMethod || '').toUpperCase() === 'TUNAI' ? 'Tunai / COD' : 'Tanpa Bukti';
+            }
+        }
+=======
         const targetId = order ? (order.code || order.id) : orderId;
         window.location.href = `invoice.html?id=${encodeURIComponent(targetId || '')}`;
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
     }
+
+    // Modal Zoom Lightbox Bukti Transfer untuk Pegawai
+    window.zoomBuktiTransfer = function(src) {
+        if (!src) return;
+        let lightbox = document.getElementById('staffBuktiLightbox');
+        if (!lightbox) {
+            lightbox = document.createElement('div');
+            lightbox.id = 'staffBuktiLightbox';
+            lightbox.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+            lightbox.innerHTML = `
+                <div class="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                    <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-emerald-400"></span>
+                            <span class="text-xs font-bold tracking-wide">Pemeriksaan Struk Bukti Transfer Pelanggan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a id="staffBuktiDownloadLink" href="#" target="_blank" download="bukti_transfer.jpg" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] rounded-lg transition">Buka Tab Baru</a>
+                            <button type="button" onclick="document.getElementById('staffBuktiLightbox').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition">✕</button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[80vh] overflow-auto">
+                        <img id="staffBuktiLightboxImg" src="" alt="Bukti Transfer Penuh" class="max-w-full max-h-[75vh] rounded-lg shadow-lg object-contain">
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(lightbox);
+            lightbox.addEventListener('click', (ev) => {
+                if (ev.target === lightbox) lightbox.classList.add('hidden');
+            });
+        }
+        const img = document.getElementById('staffBuktiLightboxImg');
+        const dlLink = document.getElementById('staffBuktiDownloadLink');
+        if (img) img.src = src;
+        if (dlLink) dlLink.href = src;
+        lightbox.classList.remove('hidden');
+    };
 
     function closeInvoiceModal() {
         const modal = document.getElementById('invoiceVerificationModal');

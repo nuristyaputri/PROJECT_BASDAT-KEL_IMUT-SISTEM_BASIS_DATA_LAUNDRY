@@ -380,8 +380,8 @@
         </button>
       </div>
 
-      <!-- GRID 4 KARTU LAYANAN LAUNDRY (Sesuai Figma) -->
-      <div id="pilihLayananGrid" class="w-full pt-7 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+      <!-- GRID 6 KARTU LAYANAN LAUNDRY (Sesuai Database & Backend bersihinlaundry) -->
+      <div id="pilihLayananGrid" class="w-full pt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
         <!-- KARTU 1: Cuci Kering Lipat (ID 1) -->
         <article data-layanan-id="1"
@@ -592,7 +592,76 @@
           </div>
         </article>
 
-        <!-- KARTU 4: Cuci Kilat Express (4 Jam) (ID 5) -->
+        <!-- KARTU 4: Cuci Bedcover Besar (ID 4) -->
+        <article data-layanan-id="4"
+          class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-teal-50 rounded-xl flex justify-center items-center text-teal-600">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+                <path d="M4 12H24" stroke="currentColor" stroke-width="2" />
+                <circle cx="9" cy="9" r="1" fill="currentColor" />
+                <circle cx="12" cy="9" r="1" fill="currentColor" />
+                <path d="M7 16H21M7 19H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Bedcover Besar
+            </h3>
+
+            <!-- Deskripsi -->
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Perawatan khusus bedcover ukuran King/Queen bersih maksimal.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span data-service-est>3 Hari</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 1 pcs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp25.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/pcs</span>
+              </div>
+            </div>
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Cuci Bedcover Besar', 25000, '3 Hari', 'Minimal 1 pcs', 'Perawatan khusus bedcover ukuran King/Queen bersih maksimal.', 4, 'pcs')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- KARTU 5: Cuci Kilat Express (4 Jam) (ID 5) -->
         <article data-layanan-id="5"
           class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
           <div class="w-full flex flex-col items-start">
@@ -647,7 +716,73 @@
               </div>
             </div>
             <button type="button" data-service-select-btn
-              onclick="openServiceOrderModal('Cuci Kilat Express (4 Jam)', 16000, '4 Jam', 'Minimal 3 kg', 'Solusi pakaian darurat cepat kering dan bersih dalam 4 jam.', 5)"
+              onclick="openServiceOrderModal('Cuci Kilat Express (4 Jam)', 16000, '4 Jam', 'Minimal 3 kg', 'Solusi pakaian darurat cepat kering dan bersih dalam 4 jam.', 5, 'kg')"
+              class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
+              <span>Pilih</span>
+              <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.5 8H12.5M9 4.5L12.5 8L9 11.5" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </article>
+
+        <!-- KARTU 6: Cuci Sepatu Premium (ID 6) -->
+        <article data-layanan-id="6"
+          class="service-card-item p-5 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-md transition flex flex-col justify-between items-start">
+          <div class="w-full flex flex-col items-start">
+            <!-- Icon Box -->
+            <div class="size-12 bg-purple-50 rounded-xl flex justify-center items-center text-purple-600">
+              <svg class="size-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                <path d="M4 18L7 12L13 13L16 10H22C23.1 10 24 10.9 24 12V18C24 19.1 23.1 20 22 20H6C4.9 20 4 19.1 4 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M10 13L9 18M13 13L13 18M16 13L17 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <!-- Nama Layanan -->
+            <h3 data-service-title class="pt-4 text-slate-800 text-sm font-semibold font-['Poppins'] leading-5">
+              Cuci Sepatu Premium
+            </h3>
+
+            <!-- Deskripsi -->
+            <p data-service-desc class="pt-1.5 min-h-[40px] text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">
+              Deep cleaning sepatu sneakers / canvas / formal.
+            </p>
+
+            <!-- Spesifikasi Waktu & Berat Minimal -->
+            <div class="w-full pt-3.5">
+              <div class="w-full pb-4 border-b border-slate-100 flex flex-col items-start gap-1.5">
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" />
+                    <path d="M8 4.8V8L10 9.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  </svg>
+                  <span data-service-est>2 Hari</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 text-slate-500 text-[11px]">
+                  <svg class="size-4 text-slate-500 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6.5H12L13 13.5H3L4 6.5Z" stroke="currentColor" stroke-width="1.3"
+                      stroke-linejoin="round" />
+                    <path d="M6 6.5V5C6 3.9 6.9 3 8 3C9.1 3 10 3.9 10 5V6.5" stroke="currentColor"
+                      stroke-width="1.3" />
+                  </svg>
+                  <span>Minimal 1 pasang</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Harga & Tombol Pilih -->
+          <div class="w-full pt-4 flex justify-between items-end">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-[10px] font-normal font-['Poppins'] leading-3">Mulai dari</span>
+              <div class="pt-0.5">
+                <span data-service-price class="text-slate-800 text-base font-bold font-['Poppins'] leading-6">Rp30.000</span><span
+                  data-service-unit class="text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">/pasang</span>
+              </div>
+            </div>
+            <button type="button" data-service-select-btn
+              onclick="openServiceOrderModal('Cuci Sepatu Premium', 30000, '2 Hari', 'Minimal 1 pasang', 'Deep cleaning sepatu sneakers / canvas / formal.', 6, 'pasang')"
               class="px-3 py-2 bg-blue-50 hover:bg-cyan-600 text-cyan-700 hover:text-white rounded-lg inline-flex items-center gap-1.5 text-[11px] font-semibold font-['Poppins'] leading-3 transition">
               <span>Pilih</span>
               <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -897,9 +1032,10 @@
       serviceModalTotalCost.textContent = formatRupiah(total);
     }
 
-    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description, idLayanan) {
+    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description, idLayanan, unit) {
       let url = 'pesanan.html?service=' + encodeURIComponent(name);
       if (idLayanan) url += '&id_layanan=' + encodeURIComponent(idLayanan);
+      if (unit) url += '&unit=' + encodeURIComponent(unit);
       window.location.href = url;
     };
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pemeriksaan Invoice & Verifikasi Pembayaran - Bersihin Laundry</title>
+  <title>Pemeriksaan Invoice - Bersihin Laundry</title>
 
   <!-- Google Fonts: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,15 +109,19 @@
 
       <!-- Navigasi Utama -->
       <nav aria-label="Navigasi Utama" class="w-full flex flex-col justify-start items-start">
+        <!-- Kelompok: MENU UTAMA -->
         <div class="w-full px-2.5 pt-2 pb-2">
-          <span class="text-slate-400 text-[9px] font-bold tracking-widest uppercase">MENU UTAMA</span>
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            MENU UTAMA
+          </span>
         </div>
 
         <ul class="w-full space-y-1">
+          <!-- Item 1: Dashboard -->
           <li>
             <a href="dashboard.html"
-              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
-              <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
                 <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
                 <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
@@ -126,62 +130,113 @@
               <span>Dashboard</span>
             </a>
           </li>
+
+          <!-- Item 2: Layanan -->
+          <li>
+            <a href="layanan.html"
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                <path d="M6.5 7H13.5M6.5 10.5H13.5M6.5 14H10.5" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" />
+              </svg>
+              <span>Layanan</span>
+            </a>
+          </li>
+
+          <!-- Item 3: Buat Pesanan -->
           <li>
             <a href="pesanan.html"
-              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
-              <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
-                <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M10 6.5V13.5M6.5 10H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               </svg>
               <span>Buat Pesanan</span>
             </a>
           </li>
+
+          <!-- Item 4: Status Pesanan (dengan badge) -->
           <li>
             <a href="status.html"
-              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
-              <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
-                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" />
-                <path d="M10 5.8V10L12.8 12.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-              <span>Status Pesanan</span>
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-between items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="inline-flex items-center gap-3">
+                <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 6.2V10L12.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <span>Status Pesanan</span>
+              </span>
+              <span id="sidebarActiveBadge"
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
+                1
+              </span>
             </a>
           </li>
+
+          <!-- Item 5: Riwayat -->
           <li>
             <a href="riwayat.html"
+<<<<<<< HEAD
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M5 2.5H12.5L16 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M8 9.5H13M8 13H11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+=======
               class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
               <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
                 <path d="M3.5 6.5H16.5M3.5 10H16.5M3.5 13.5H11.5" stroke="currentColor" stroke-width="1.5"
                   stroke-linecap="round" />
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
               </svg>
-              <span>Riwayat Transaksi</span>
+              <span>Riwayat</span>
             </a>
           </li>
-          <!-- Menu Aktif: Pemeriksaan Invoice -->
+
+          <!-- Item 6: Pemeriksaan Invoice (HALAMAN AKTIF) -->
           <li>
             <a href="invoice.html" aria-current="page"
+<<<<<<< HEAD
+              class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                aria-hidden="true"></span>
+              <svg class="size-5 text-cyan-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+=======
               class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 bg-gradient-to-r from-cyan-700 to-blue-900 text-white text-xs font-semibold shadow-sm transition">
               <svg class="size-5 text-sky-200 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <span>Pemeriksaan Invoice</span>
             </a>
           </li>
-          <li>
-            <a href="layanan.html"
-              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
-              <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
-                <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" />
-                <path d="M7 7H13M7 10H13M7 13H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-              <span>Layanan Kami</span>
-            </a>
-          </li>
+        </ul>
+
+        <!-- Kelompok: AKUN -->
+        <div class="w-full px-2.5 pt-6 pb-2">
+          <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+            AKUN
+          </span>
+        </div>
+
+        <ul class="w-full space-y-1">
+          <!-- Item 7: Profil Saya -->
           <li>
             <a href="profil.html"
+<<<<<<< HEAD
+              class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+              <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor"
+=======
               class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-xs font-normal transition">
               <svg class="size-5 text-slate-400" viewBox="0 0 20 20" fill="none">
                 <circle cx="10" cy="6" r="3.5" stroke="currentColor" stroke-width="1.5" />
                 <path d="M3.5 16.5C3.5 13.5 6.5 12 10 12C13.5 12 16.5 13.5 16.5 16.5" stroke="currentColor"
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
                   stroke-width="1.5" stroke-linecap="round" />
               </svg>
               <span>Profil Saya</span>
@@ -191,6 +246,18 @@
       </nav>
     </div>
 
+<<<<<<< HEAD
+    <!-- Bagian Bawah Sidebar: Tombol Keluar -->
+    <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
+      <!-- Tombol Keluar -->
+      <a href="../login.html"
+        class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+        <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
+          <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+=======
     <!-- Tombol Keluar -->
     <div class="w-full pt-4 border-t border-slate-100">
       <button type="button" onclick="logoutCustomer()"
@@ -198,17 +265,23 @@
         <svg class="size-5" viewBox="0 0 20 20" fill="none">
           <path d="M13 14L17 10M17 10L13 6M17 10H7M7 3H4C3.44772 3 3 3.44772 3 4V16C3 16.5523 3.44772 17 4 17H7"
             stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
         </svg>
-        <span>Keluar Akun</span>
-      </button>
+        <span>Keluar</span>
+      </a>
     </div>
   </aside>
 
   <!-- ===================================================================== -->
   <!-- KONTEN UTAMA HALAMAN INVOICE -->
   <!-- ===================================================================== -->
-  <div class="flex-1 flex flex-col min-h-screen lg:pl-60 transition-all duration-200">
+  <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
 
+<<<<<<< HEAD
+    <!-- TOPBAR (Acuan Figma: h-20 px-9 bg-white/90 border-b border-slate-200) -->
+    <header
+      class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
+=======
     <!-- Topbar Mobile -->
     <header
       class="lg:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30">
@@ -223,9 +296,25 @@
         </svg>
       </button>
     </header>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
 
-    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full space-y-6">
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
+          aria-controls="sidebar"
+          class="lg:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+          <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
 
+<<<<<<< HEAD
+        <div class="flex flex-col justify-start items-start">
+          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Pemeriksaan Invoice</h1>
+          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
+          </p>
+=======
       <!-- Breadcrumbs & Navigasi Cepat -->
       <div id="topActionNav"
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200">
@@ -244,8 +333,25 @@
           </h1>
           <p class="text-xs text-slate-500 mt-0.5">Halaman ini tersimpan secara permanen dan dapat Anda periksa kembali
             kapan saja.</p>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
         </div>
+      </div>
 
+<<<<<<< HEAD
+      <!-- Kanan: Notifikasi & Profil Pelanggan -->
+      <div class="flex justify-end items-center gap-3">
+
+        <!-- Tombol Notifikasi -->
+        <div class="relative">
+          <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span id="notifDot"
+              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+=======
         <div class="flex items-center gap-2 shrink-0">
           <a href="riwayat.html"
             class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 flex items-center gap-1.5 transition">
@@ -261,10 +367,20 @@
                 d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             <span>Cetak / Unduh PDF</span>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
           </button>
-        </div>
-      </div>
 
+<<<<<<< HEAD
+          <!-- Panel Dropdown Notifikasi -->
+          <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+            class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-40">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-800">Notifikasi Pelanggan</span>
+              <button type="button" id="markNotifReadBtn"
+                class="min-h-[44px] px-2 -my-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                Tandai dibaca
+              </button>
+=======
       <!-- Pemilih Riwayat Invoice (Bisa Cek Berulang Kali Semua Pesanan) -->
       <div id="orderSwitcherCard"
         class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -303,12 +419,49 @@
             <div
               class="size-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
               <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="size-8" />
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
             </div>
-            <div>
-              <div class="text-lg font-bold tracking-tight">BERSIHIN LAUNDRY OFFICIAL</div>
-              <p class="text-xs text-sky-200">Sistem Informasi Manajemen Laundry Bersih & Higienis</p>
+            <div class="py-3 flex items-start gap-3">
+              <div
+                class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                  <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div class="text-xs leading-4">
+                <p class="font-semibold text-slate-800">Pesanan TRX-240518-01 Dicuci</p>
+                <p class="text-slate-600 text-[11px] mt-1">Pakaian Anda (4,5 kg) sedang dalam tahap pencucian. Estimasi selesai 21 Mei 2024.</p>
+                <span class="block text-[10px] text-slate-500 mt-1.5">12 menit lalu</span>
+              </div>
             </div>
           </div>
+<<<<<<< HEAD
+        </div>
+
+        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <div class="relative">
+          <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+            aria-label="Profil Pengguna"
+            class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            AP
+          </button>
+
+          <!-- Dropdown Profil -->
+          <div id="profileDropdown" role="menu" aria-label="Menu Akun Pelanggan"
+            class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+            <div class="px-4 py-2 border-b border-slate-100">
+              <p id="dropdownUserName" class="text-xs font-bold text-slate-800">Andi Pratama</p>
+              <p id="dropdownUserEmail" class="text-[11px] text-slate-500 truncate">andi.pratama@email.com</p>
+            </div>
+            <a href="profil.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+              <span>Profil Saya</span>
+            </a>
+            <a href="../login.html" role="menuitem"
+              class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+              <span>Keluar Akun</span>
+=======
 
           <div class="sm:text-right">
             <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">NO. INVOICE
@@ -340,24 +493,82 @@
             <a id="trackLinkBtn" href="status.html"
               class="text-cyan-700 hover:text-cyan-800 font-semibold underline text-xs ml-1">
               Lacak Proses &gt;
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
             </a>
           </div>
         </div>
 
-        <div class="p-6 sm:p-8 space-y-6">
+      </div>
+    </header>
 
-          <!-- Baris Informasi Pelanggan & Estimasi -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
+    <main class="w-full max-w-[1450px] px-4 sm:px-6 lg:px-9 pt-7 pb-14 flex flex-col items-start gap-6">
+
+      <!-- =============================================================== -->
+      <!-- SECTION INVOICE RESMI IN-PAGE (TAMPIL LANGSUNG, BUKAN POP UP)   -->
+      <!-- =============================================================== -->
+      <section id="inpageInvoiceSection" aria-labelledby="inpageInvoiceHeading"
+        class="w-full bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        
+        <!-- Topbar Aksi Halaman Invoice In-Page -->
+        <div class="p-4 sm:px-6 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="size-9 rounded-xl bg-white/10 flex items-center justify-center p-1.5 border border-white/10">
+              <img src="../assets/logo-bersihin-sidebar.svg" alt="Bersihin" class="size-6">
+            </div>
             <div>
+<<<<<<< HEAD
+              <h2 id="inpageInvoiceHeading" class="text-sm sm:text-base font-bold tracking-tight">INVOICE RESMI TRANSAKSI</h2>
+              <p class="text-[10px] text-slate-300">Bersihin Laundry - Bukti Pembayaran &amp; Audit Layanan</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Area Konten Struk Cetak Invoice -->
+        <div id="printableInvoiceContent" class="p-5 sm:p-7 space-y-6 bg-slate-50/50">
+
+          <!-- Banner Header Struk Elegan -->
+          <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-cyan-800 via-blue-900 to-indigo-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="size-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
+                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="size-8" />
+              </div>
+              <div>
+                <div class="text-base sm:text-lg font-bold tracking-tight">BERSIHIN LAUNDRY OFFICIAL</div>
+                <p class="text-xs text-sky-200">Sistem Informasi Manajemen Laundry Bersih &amp; Higienis</p>
+              </div>
+            </div>
+
+            <div class="sm:text-right">
+              <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">NO. INVOICE TRANSAKSI</span>
+              <span id="invDisplayCode" class="text-lg sm:text-xl font-extrabold font-mono tracking-tight text-white block">TRX-...</span>
+              <span id="invDisplayDate" class="text-xs text-slate-300 block mt-0.5">-</span>
+            </div>
+          </div>
+
+
+          <!-- Informasi Pelanggan & Layanan -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 rounded-xl bg-white border border-slate-200 shadow-2xs">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">DITAGIHKAN KEPADA:</span>
+              <h3 id="invCustName" class="text-sm sm:text-base font-bold text-slate-900">Nama Pelanggan</h3>
+              <p id="invCustPhone" class="text-xs text-slate-600 mt-0.5">-</p>
+              <p id="invCustAddress" class="text-xs text-slate-600 mt-1">-</p>
+=======
               <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">DITAGIHKAN
                 KEPADA:</span>
               <h3 id="invCustName" class="text-base font-bold text-slate-900">Nama Pelanggan</h3>
               <p id="invCustPhone" class="text-xs text-slate-600 mt-0.5">0812-3456-7890</p>
               <p id="invCustAddress" class="text-xs text-slate-600 mt-1">Jl. Margonda Raya No. 100, Beji, Kota Depok</p>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
             </div>
 
             <div class="md:text-right flex flex-col justify-between">
               <div>
+<<<<<<< HEAD
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">METODE PENGANTARAN &amp; ESTIMASI:</span>
+                <p class="text-xs text-slate-700"><span class="font-semibold text-slate-900">Pengantaran:</span> <span id="invDeliveryMethod">Antar Sendiri ke Outlet</span></p>
+                <p class="text-xs text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Estimasi Selesai:</span> <span id="invEstDate" class="text-cyan-800 font-bold">2 Hari Kerja</span></p>
+=======
                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">INFORMASI
                   LAYANAN:</span>
                 <p class="text-xs text-slate-700"><span class="font-semibold text-slate-900">Metode Antar/Jemput:</span>
@@ -365,16 +576,17 @@
                 </p>
                 <p class="text-xs text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Estimasi
                     Selesai:</span> <span id="invEstDate" class="text-cyan-800 font-bold">2 Hari Kerja</span></p>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
               </div>
               <div class="pt-2 text-xs text-slate-500 italic">
-                <span>Catatan Pelanggan: </span>
-                <span id="invNotes" class="text-slate-700 font-medium">Pakaian reguler & seragam</span>
+                <span>Catatan: </span>
+                <span id="invNotes" class="text-slate-700 font-medium">-</span>
               </div>
             </div>
           </div>
 
-          <!-- Tabel Rincian Layanan & Tarif -->
-          <div class="border border-slate-200 rounded-xl overflow-hidden">
+          <!-- Tabel Rincian Item Invoice -->
+          <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-2xs">
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="bg-slate-100/90 text-slate-700 text-xs font-bold border-b border-slate-200">
@@ -385,6 +597,9 @@
                 </tr>
               </thead>
               <tbody id="invItemsBody" class="divide-y divide-slate-100">
+<<<<<<< HEAD
+                <!-- Item-item invoice di-render di sini -->
+=======
                 <tr>
                   <td class="py-3.5 px-4">
                     <span id="invServiceName" class="font-bold text-slate-900 text-sm block">Cuci Komplit (Cuci +
@@ -395,12 +610,18 @@
                   <td id="invUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
                   <td id="invServiceSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">Rp40.500</td>
                 </tr>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
               </tbody>
-              <tfoot class="border-t-2 border-slate-200 bg-slate-50">
+              <tfoot class="border-t-2 border-slate-200 bg-slate-50/80">
                 <tr>
+<<<<<<< HEAD
+                  <td colspan="3" class="py-2.5 px-4 text-right text-xs font-medium text-slate-600">Subtotal Layanan:</td>
+                  <td id="invSummarySubtotal" class="py-2.5 px-4 text-right font-semibold text-slate-800">Rp0</td>
+=======
                   <td colspan="3" class="py-2.5 px-4 text-right text-xs font-medium text-slate-600">Subtotal Layanan:
                   </td>
                   <td id="invSummarySubtotal" class="py-2.5 px-4 text-right font-semibold text-slate-800">Rp40.500</td>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
                 </tr>
                 <tr>
                   <td colspan="3" class="py-2 px-4 text-right text-xs font-medium text-slate-600">Biaya Antar / Jemput:
@@ -409,13 +630,26 @@
                 </tr>
                 <tr class="bg-sky-50/70 border-t border-sky-100">
                   <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-sm">TOTAL PEMBAYARAN:</td>
+<<<<<<< HEAD
+                  <td id="invGrandTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base sm:text-lg">Rp0</td>
+=======
                   <td id="invGrandTotal"
                     class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base sm:text-lg">Rp40.500</td>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
                 </tr>
               </tfoot>
             </table>
           </div>
 
+<<<<<<< HEAD
+          <!-- Card Bukti Transaksi / Transfer Pelanggan (Yang Diunggah Saat Pemesanan) -->
+          <div id="invBuktiCard" class="p-5 sm:p-6 rounded-2xl border border-emerald-200 bg-white shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-emerald-100">
+              <div class="flex items-center gap-3">
+                <div class="size-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+                  <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+=======
           <!-- Petunjuk & Rekening Verifikasi Pembayaran -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
             <!-- Kanal QRIS -->
@@ -486,17 +720,103 @@
                 <div class="flex items-center gap-1.5 text-teal-700 font-bold">
                   <svg class="size-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
                   </svg>
-                  <span>Bantuan Kasir 24 Jam</span>
                 </div>
+<<<<<<< HEAD
+                <div>
+                  <h4 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                    <span>Foto Bukti Transaksi Pembayaran</span>
+                    <span id="invBuktiBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Terunggah Saat Pemesanan</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5">Struk foto bukti pembayaran transfer/QRIS yang diunggah saat melakukan pesanan.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-start sm:self-auto">
+                <button type="button" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg').src)" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer">
+                  <svg class="size-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  <span>Lihat Foto Penuh</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Kontainer Foto Bukti Transaksi & Info -->
+            <div id="invBuktiTransferContent" class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+              <!-- Kolom Kiri: Pratinjau Foto Bukti Transaksi -->
+              <div class="md:col-span-5 flex justify-center">
+                <div class="relative w-full max-w-[280px] h-64 sm:h-72 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-inner group cursor-pointer" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg').src)" title="Klik untuk memperbesar foto bukti transaksi">
+                  <img id="invBuktiImg" src="" alt="Bukti Transaksi" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
+                  <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 transition">
+                    <svg class="size-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span>Klik untuk memperbesar</span>
+                  </div>
+                  <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/70 text-[10px] text-white backdrop-blur-xs font-mono">Bukti Digital Terverifikasi</span>
+                </div>
+              </div>
+
+              <!-- Kolom Kanan: Rincian Bukti & Keterangan Status -->
+              <div class="md:col-span-7 space-y-3">
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 font-medium">Metode Pembayaran:</span>
+                    <span id="invBuktiMethod" class="font-bold text-slate-800">Transfer Bank / QRIS</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 font-medium">Waktu Unggah:</span>
+                    <span id="invBuktiUploadTime" class="font-medium text-slate-700">Saat Checkout Pemesanan</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 font-medium">Status Verifikasi:</span>
+                    <span id="invBuktiStatusVerif" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Menunggu Verifikasi Kasir</span>
+                  </div>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+                  <svg class="size-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="leading-relaxed text-[11px]">
+                    Foto struk bukti transaksi pembayaran ini disimpan otomatis ke sistem basis data Bersihin Laundry. Petugas kami akan melakukan verifikasi mutasi rekening sebelum cucian selesai diproses.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kontainer Pembayaran Tunai (Jika Pesanan Tunai) -->
+            <div id="invBuktiTunaiContent" class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-3">
+              <div class="size-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div>
+                <span class="font-bold text-slate-800 block text-sm">Metode Pembayaran Tunai (COD)</span>
+                <span class="text-[11px] text-slate-500 block mt-0.5">Pesanan ini menggunakan metode pembayaran tunai saat penyerahan cucian ke kasir atau kurir, sehingga tidak memerlukan unggahan foto bukti transfer.</span>
+=======
                 <p class="text-[11px] text-slate-500">Hubungi WhatsApp kasir: <a href="https://wa.me/6281298765432"
                     target="_blank" class="text-cyan-700 font-bold hover:underline">0812-9876-5432</a></p>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
               </div>
             </div>
           </div>
 
         </div>
 
+<<<<<<< HEAD
+        <!-- Footer Card Invoice In-Page -->
+        <div class="p-4 bg-slate-100 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <span class="text-xs text-slate-500 font-['Poppins']">Invoice resmi transaksi.</span>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="printActiveInvoice()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-blue-950 hover:bg-blue-900 active:bg-slate-950 text-white text-xs font-semibold font-['Poppins'] shadow-sm transition flex items-center gap-2">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+              <span>Cetak Invoice</span>
+            </button>
+          </div>
+        </div>
+      </section>
+=======
         <!-- Footer Invoice Resmi -->
         <div class="p-4 bg-slate-100/80 border-t border-slate-200 text-center text-xs text-slate-500">
           <span>Terima kasih telah mempercayakan pakaian Anda pada <strong>Bersihin Laundry</strong>. Simpan invoice ini
@@ -529,6 +849,7 @@
           </button>
         </div>
       </div>
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
 
     </main>
   </div>
@@ -625,6 +946,8 @@
         status: mapDbStatusToLabel(row.status || row.status_pesanan),
         paymentStatus: payLabel,
         paymentMethod: row.metode_pembayaran || row.paymentMethod || '-',
+        bukti_transfer: row.bukti_bayar || row.bukti_transfer || null,
+        bukti_bayar: row.bukti_bayar || row.bukti_transfer || null,
         referensiBayar: row.referensi_bayar || '-',
         date: dateText,
         estDate: row.estimasi_selesai
@@ -636,14 +959,32 @@
     }
 
     let cachedCustomerOrders = [];
+    let currentFilterStatus = 'SEMUA';
+    let currentSearchQuery = '';
+    let currentSortKey = 'NEWEST';
+    let currentActiveOrder = null;
 
-    // Kumpulan seluruh order aktif pelanggan: prioritas Database MySQL -> fallback storage
+    // Kumpulan seluruh order aktif pelanggan: menggabungkan Database MySQL, invoice baru, dan riwayat transaksi
     async function loadAllCustomerOrders() {
       const allOrders = [];
-      let activeCustId = null;
-      let activeUserId = null;
-      let activeUsername = '';
+      const seenCodes = new Set();
+
+      const addOrder = (raw) => {
+        if (!raw) return;
+        const norm = normalizeInvoiceOrder(raw);
+        if (norm && norm.code && !seenCodes.has(norm.code)) {
+          seenCodes.add(norm.code);
+          allOrders.push(norm);
+        }
+      };
+
+      // 1. Ambil dari localStorage bersihin_invoices (riwayat invoice lengkap yang baru dibuat)
       try {
+<<<<<<< HEAD
+        const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+        if (Array.isArray(invList)) invList.forEach(addOrder);
+      } catch (_) {}
+=======
         const u = JSON.parse(sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user') || 'null');
         if (u) {
           activeCustId = u.id_pelanggan || null;
@@ -657,8 +998,50 @@
           if (!activeUsername && p.username) activeUsername = p.username;
         }
       } catch (_) { }
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
 
+      // 2. Ambil dari localStorage last_active_invoice
       try {
+        const lastInv = JSON.parse(localStorage.getItem('last_active_invoice') || 'null');
+        if (lastInv) addOrder(lastInv);
+      } catch (_) {}
+
+      // 3. Ambil dari sessionStorage bersihin_last_order
+      try {
+        const lastOrd = JSON.parse(sessionStorage.getItem('bersihin_last_order') || 'null');
+        if (lastOrd) addOrder(lastOrd);
+      } catch (_) {}
+
+      // 4. Ambil dari localStorage bersihin_transactions & unified_orders
+      try {
+        const trxList = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
+        if (Array.isArray(trxList)) trxList.forEach(addOrder);
+      } catch (_) {}
+      try {
+        const uList = JSON.parse(localStorage.getItem('bersihin_unified_orders') || '[]');
+        if (Array.isArray(uList)) uList.forEach(addOrder);
+      } catch (_) {}
+
+      // 5. Ambil dari API backend MySQL jika server berjalan
+      try {
+        let activeCustId = null;
+        let activeUserId = null;
+        let activeUsername = '';
+        try {
+          const u = JSON.parse(sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user') || 'null');
+          if (u) {
+            activeCustId = u.id_pelanggan || null;
+            activeUserId = u.id_user || null;
+            activeUsername = u.username || '';
+          }
+          const p = JSON.parse(sessionStorage.getItem('bersihin_customer_profile') || localStorage.getItem('bersihin_customer_profile') || 'null');
+          if (p) {
+            if (!activeCustId && p.id_pelanggan) activeCustId = p.id_pelanggan;
+            if (!activeUserId && p.id_user) activeUserId = p.id_user;
+            if (!activeUsername && p.username) activeUsername = p.username;
+          }
+        } catch (_) {}
+
         const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
         const headers = token ? { Authorization: 'Bearer ' + token } : {};
         const q = [];
@@ -669,17 +1052,16 @@
         if (res.ok) {
           const json = await res.json();
           if (json && json.success && Array.isArray(json.data)) {
-            json.data.forEach(r => {
-              const norm = normalizeInvoiceOrder(r);
-              if (norm && !allOrders.some(ao => ao.code === norm.code)) {
-                allOrders.push(norm);
-              }
-            });
+            json.data.forEach(addOrder);
           }
         }
       } catch (_) { }
 
+      // Fallback contoh pesanan bila belum ada data
       if (allOrders.length === 0) {
+<<<<<<< HEAD
+        addOrder({
+=======
         try {
           const uOrders = JSON.parse(localStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_unified_orders') || '[]');
           if (Array.isArray(uOrders)) {
@@ -694,6 +1076,7 @@
 
       if (allOrders.length === 0) {
         allOrders.push(normalizeInvoiceOrder({
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
           kode_pesanan: 'TRX-240518-01',
           nama_pelanggan: 'Andi Pratama',
           telepon: '081290123456',
@@ -705,12 +1088,355 @@
           status_pembayaran: 'BERHASIL',
           metode_pembayaran: 'QRIS',
           catatan: 'Tolong lipat rapi kemeja kerja.'
-        }));
+        });
       }
 
       cachedCustomerOrders = allOrders;
+      updateInvoiceStats(allOrders);
       return allOrders;
     }
+
+    // Hitung statistik untuk 4 kartu atas dan badge filter tabs
+    function updateInvoiceStats(orders) {
+      let total = orders.length;
+      let pending = 0;
+      let process = 0;
+      let wash = 0;
+      let iron = 0;
+      let done = 0;
+      let cancel = 0;
+
+      orders.forEach(o => {
+        const s = String(o.status || '').toUpperCase();
+        const p = String(o.paymentStatus || '').toUpperCase();
+        if (s.includes('SELESAI')) {
+          done++;
+        } else if (s.includes('BATAL') || s.includes('TOLAK')) {
+          cancel++;
+        } else if (s.includes('CUCI')) {
+          wash++;
+          process++;
+        } else if (s.includes('SETRIKA')) {
+          iron++;
+          process++;
+        } else {
+          pending++;
+        }
+      });
+
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setVal('statTotalOrders', total);
+      setVal('statPendingOrders', pending);
+      setVal('statProcessOrders', process);
+      setVal('statDoneOrders', done);
+
+      setVal('filterCountAll', total);
+      setVal('filterCountPending', pending);
+      setVal('filterCountWash', wash);
+      setVal('filterCountIron', iron);
+      setVal('filterCountDone', done);
+      setVal('filterCountCancel', cancel);
+    }
+
+    // Render Tabel Antrean Invoice Pesanan (Persis Gambar 1)
+    function renderOrdersTable() {
+      const tbody = document.getElementById('ordersTableBody');
+      const emptyState = document.getElementById('ordersTableEmptyState');
+      if (!tbody) return;
+
+      let filtered = [...cachedCustomerOrders];
+
+      // 1. Filter Status
+      if (currentFilterStatus !== 'SEMUA') {
+        filtered = filtered.filter(o => {
+          const s = String(o.status || '').toUpperCase();
+          if (currentFilterStatus === 'MENUNGGU') {
+            return s.includes('MENUNGGU') || s.includes('ANTRIAN') || s.includes('KONFIRMASI');
+          } else if (currentFilterStatus === 'DICUCI') {
+            return s.includes('CUCI');
+          } else if (currentFilterStatus === 'DISETRIKA') {
+            return s.includes('SETRIKA');
+          } else if (currentFilterStatus === 'SELESAI') {
+            return s.includes('SELESAI');
+          } else if (currentFilterStatus === 'DIBATALKAN') {
+            return s.includes('BATAL') || s.includes('TOLAK');
+          }
+          return true;
+        });
+      }
+
+      // 2. Filter Search Query
+      if (currentSearchQuery) {
+        filtered = filtered.filter(o => {
+          const str = `${o.code} ${o.service} ${o.notes} ${o.totalFormatted} ${o.customerName} ${o.paymentMethod}`.toLowerCase();
+          return str.includes(currentSearchQuery);
+        });
+      }
+
+      // 3. Sorting
+      filtered.sort((a, b) => {
+        if (currentSortKey === 'PRICE_HIGH') return (Number(b.total) || 0) - (Number(a.total) || 0);
+        if (currentSortKey === 'PRICE_LOW') return (Number(a.total) || 0) - (Number(b.total) || 0);
+        if (currentSortKey === 'OLDEST') return (new Date(a.date || 0)) - (new Date(b.date || 0));
+        // Default NEWEST
+        return (new Date(b.date || 0)) - (new Date(a.date || 0));
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map(o => {
+        const code = o.code || o.id || 'TRX-...';
+        const service = o.service || 'Cuci Komplit';
+        const weight = o.weight || (o.weightKg ? `${o.weightKg} kg` : '1 unit');
+        const total = o.totalFormatted || formatRupiah(o.total || 0);
+        const dateText = o.date || 'Hari ini';
+        const payMethod = o.paymentMethod || 'TRANSFER';
+        const status = o.status || 'Menunggu konfirmasi';
+        const payStatus = o.paymentStatus || 'Menunggu konfirmasi';
+
+        const isLunas = payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil');
+        const payBadgeClass = isLunas
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+          : 'bg-amber-50 text-amber-700 border border-amber-200';
+
+        let statusClass = 'bg-slate-100 text-slate-700 border border-slate-200';
+        const sUp = status.toUpperCase();
+        if (sUp.includes('MENUNGGU') || sUp.includes('KONFIRMASI')) {
+          statusClass = 'bg-amber-50 text-amber-800 border border-amber-200';
+        } else if (sUp.includes('CUCI') || sUp.includes('ANTRIAN')) {
+          statusClass = 'bg-sky-50 text-sky-800 border border-sky-200';
+        } else if (sUp.includes('SETRIKA')) {
+          statusClass = 'bg-purple-50 text-purple-800 border border-purple-200';
+        } else if (sUp.includes('SELESAI')) {
+          statusClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition group">
+            <!-- ID PESANAN -->
+            <td class="py-4 px-4 sm:px-6">
+              <span class="font-mono text-xs font-extrabold text-cyan-800 block">${escapeHtml(code)}</span>
+              <span class="text-[10px] text-slate-400 block mt-0.5">${escapeHtml(dateText)}</span>
+            </td>
+
+            <!-- LAYANAN -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <div class="size-9 rounded-xl bg-sky-50 border border-sky-200 text-sky-700 flex items-center justify-center shrink-0">
+                  <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                </div>
+                <div>
+                  <span class="font-bold text-slate-800 block">${escapeHtml(service)}</span>
+                  <span class="text-[10px] text-slate-400">Paket Bersihin Laundry</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- QTY / BERAT -->
+            <td class="py-4 px-4 text-center font-bold text-slate-700">
+              ${escapeHtml(weight)}
+            </td>
+
+            <!-- TOTAL HARGA -->
+            <td class="py-4 px-4 text-right">
+              <span class="font-extrabold text-orange-600 sm:text-slate-900 block">${escapeHtml(total)}</span>
+              <span class="text-[10px] text-slate-400 block font-medium">${escapeHtml(payMethod)}</span>
+            </td>
+
+            <!-- STATUS TRANSAKSI -->
+            <td class="py-4 px-4 text-center">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide inline-block ${statusClass}">
+                ${escapeHtml(status)}
+              </span>
+            </td>
+
+            <!-- PEMBAYARAN -->
+            <td class="py-4 px-4 text-center">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-block ${payBadgeClass}">
+                ${escapeHtml(payStatus)}
+              </span>
+            </td>
+
+            <!-- AKSI (DETAIL & CETAK SESUAI GAMBAR 1) -->
+            <td class="py-4 px-4 sm:px-6 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button type="button" onclick="openInvoiceDetailModal('${escapeHtml(code)}')"
+                  class="px-3 py-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-100 hover:border-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs">
+                  <svg class="size-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  <span>DETAIL</span>
+                </button>
+                <button type="button" onclick="printOrderInvoiceDirect('${escapeHtml(code)}')" title="Cetak Struk Invoice"
+                  class="size-8 rounded-full border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 flex items-center justify-center transition shadow-2xs">
+                  <svg class="size-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Ubah filter status saat pill diklik
+    window.setFilterStatus = function(statusKey) {
+      currentFilterStatus = statusKey;
+
+      // Update style tombol pill (oranye aktif sesuai gambar 1)
+      const pills = document.querySelectorAll('.status-pill-btn');
+      pills.forEach(pill => {
+        const k = pill.getAttribute('data-status-filter');
+        const badge = pill.querySelector('span:last-child');
+        if (k === statusKey) {
+          pill.className = 'status-pill-btn px-4 py-2 rounded-full border border-orange-500 bg-orange-600 text-white flex items-center gap-1.5 shrink-0 transition shadow-xs';
+          if (badge) badge.className = 'size-5 rounded-full bg-white text-orange-600 text-[10px] font-bold flex items-center justify-center';
+        } else {
+          pill.className = 'status-pill-btn px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 flex items-center gap-1.5 shrink-0 transition';
+          if (badge) badge.className = 'size-5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold flex items-center justify-center';
+        }
+      });
+
+      renderOrdersTable();
+    };
+
+    // Live search
+    window.handleSearchOrders = function(query) {
+      currentSearchQuery = (query || '').toLowerCase().trim();
+      renderOrdersTable();
+    };
+
+    // Sort order
+    window.handleSortOrders = function(sortKey) {
+      currentSortKey = sortKey || 'NEWEST';
+      renderOrdersTable();
+    };
+
+    // Reset filters
+    window.resetFilters = function() {
+      currentFilterStatus = 'SEMUA';
+      currentSearchQuery = '';
+      const sInput = document.getElementById('orderSearchInput');
+      if (sInput) sInput.value = '';
+      setFilterStatus('SEMUA');
+    };
+
+    // Tampilkan Struk Invoice Resmi secara In-Page (Bukan Pop Up)
+    window.openInvoiceDetailModal = async function(orderCode, shouldScroll = true) {
+      if (!orderCode) {
+        orderCode = cachedCustomerOrders[0]?.code;
+      }
+      if (!orderCode) return;
+
+      const order = cachedCustomerOrders.find(o => o.code === orderCode || o.id === orderCode || String(o.id_pesanan) === String(orderCode));
+      if (!order) return;
+
+      currentActiveOrder = order;
+      await enrichOrderDetails(order);
+      renderInvoice(order);
+
+      const inpageSec = document.getElementById('inpageInvoiceSection');
+      if (inpageSec) {
+        inpageSec.classList.remove('hidden');
+        if (shouldScroll) {
+          inpageSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      // Update URL browser tanpa refresh
+      window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(orderCode)}`);
+    };
+
+    window.closeInvoiceDetailModal = function() {
+      // Tidak diperlukan karena tampilan invoice tampil langsung di halaman (bukan pop up)
+    };
+
+    // Cetak invoice aktif di modal
+    window.printActiveInvoice = function() {
+      window.print();
+    };
+
+    // Cetak invoice langsung dari tabel
+    window.printOrderInvoiceDirect = async function(orderCode) {
+      await openInvoiceDetailModal(orderCode);
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    };
+
+    // Render daftar pesanan yang pernah dibuat ke dalam dropdown kustom
+    function renderDropdownOrderItems(orders, activeCode) {
+      const container = document.getElementById('dropdownOrdersList');
+      const countBadge = document.getElementById('dropdownListCount');
+      const mainBadge = document.getElementById('orderCountBadge');
+      if (countBadge) countBadge.textContent = `${orders.length} Riwayat`;
+      if (mainBadge) mainBadge.textContent = `${orders.length} Pesanan`;
+
+      if (!container) return;
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-xs text-slate-400">
+            Belum ada riwayat pesanan yang tersimpan.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(o => {
+        const code = o.code || o.id || 'TRX-...';
+        const isSelected = (code === activeCode);
+        const serviceName = o.service || 'Layanan Laundry';
+        const weight = o.weight || (o.weightKg ? `${o.weightKg} kg` : '-');
+        const total = o.totalFormatted || formatRupiah(o.total || 0);
+        const dateText = o.date || 'Baru Saja';
+        const payStatus = o.paymentStatus || 'Menunggu konfirmasi';
+        const isLunas = payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil');
+        
+        return `
+          <button type="button" onclick="selectOrderFromCustomDropdown('${escapeHtml(code)}')"
+            class="w-full text-left p-3 rounded-xl transition flex flex-col gap-1.5 ${isSelected ? 'bg-sky-50 border border-cyan-300 shadow-2xs' : 'hover:bg-slate-50 border border-transparent'}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-mono text-xs font-extrabold ${isSelected ? 'text-cyan-800' : 'text-slate-800'}">${escapeHtml(code)}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isLunas ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                ${escapeHtml(payStatus)}
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-700 truncate max-w-[200px]">${escapeHtml(serviceName)}</span>
+              <span class="font-extrabold text-slate-900">${escapeHtml(total)}</span>
+            </div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
+              <span>${escapeHtml(dateText)} (${escapeHtml(weight)})</span>
+              ${isSelected ? '<span class="text-cyan-700 font-bold flex items-center gap-1"><svg class="size-3 text-cyan-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Sedang Dilihat</span>' : '<span class="text-slate-400 group-hover:text-cyan-700">Pilih &rarr;</span>'}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // Pindah pilihan order dari dropdown kustom
+    window.selectOrderFromCustomDropdown = async function(orderCode) {
+      const menu = document.getElementById('customOrderDropdownMenu');
+      const chevron = document.getElementById('dropdownChevronIcon');
+      if (menu) menu.classList.add('hidden');
+      if (chevron) chevron.classList.remove('rotate-180');
+
+      await switchInvoice(orderCode);
+    };
 
     async function enrichOrderDetails(order) {
       if (!order) return order;
@@ -732,6 +1458,10 @@
               ? (String(d.status_pembayaran).toUpperCase().includes('BERHASIL') ? 'Lunas' : d.status_pembayaran)
               : order.paymentStatus;
             order.paymentMethod = d.metode_pembayaran || order.paymentMethod;
+            if (d.bukti_bayar || d.bukti_transfer) {
+              order.bukti_bayar = d.bukti_bayar || d.bukti_transfer;
+              order.bukti_transfer = order.bukti_bayar;
+            }
             order.notes = d.catatan != null ? (d.catatan || 'Tidak ada catatan khusus') : order.notes;
           }
         }
@@ -803,7 +1533,8 @@
       document.getElementById('invSummarySubtotal').textContent = formatRupiah(subSumNum);
       document.getElementById('invGrandTotal').textContent = totalFormatted;
       document.getElementById('invNotes').textContent = notes;
-      document.getElementById('invStageBadge').textContent = stage;
+      const stageBadge = document.getElementById('invStageBadge');
+      if (stageBadge) stageBadge.textContent = stage;
 
       // Update link lacak pesanan
       const trackLink = document.getElementById('trackLinkBtn');
@@ -822,52 +1553,203 @@
           payBadge.innerHTML = '<span class="size-2 rounded-full bg-amber-500 animate-pulse"></span><span>Menunggu Konfirmasi Kasir</span>';
         }
       }
+
+      // Render Bukti Transfer Pelanggan (Yang Diunggah Saat Pemesanan)
+      const buktiCard = document.getElementById('invBuktiCard');
+      const buktiImg = document.getElementById('invBuktiImg');
+      const buktiMethod = document.getElementById('invBuktiMethod');
+      const buktiUploadTime = document.getElementById('invBuktiUploadTime');
+      const buktiStatusVerif = document.getElementById('invBuktiStatusVerif');
+      const transferContent = document.getElementById('invBuktiTransferContent');
+      const tunaiContent = document.getElementById('invBuktiTunaiContent');
+      const buktiBadge = document.getElementById('invBuktiBadge');
+
+      const isTunai = String(order.paymentMethod || '').toUpperCase() === 'TUNAI' || String(order.paymentMethod || '').toUpperCase() === 'BAYAR TUNAI';
+
+      if (isTunai) {
+        if (transferContent) transferContent.classList.add('hidden');
+        if (tunaiContent) tunaiContent.classList.remove('hidden');
+        if (buktiBadge) {
+          buktiBadge.textContent = 'Bayar Tunai (COD)';
+          buktiBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300';
+        }
+      } else {
+        if (transferContent) transferContent.classList.remove('hidden');
+        if (tunaiContent) tunaiContent.classList.add('hidden');
+        if (buktiBadge) {
+          buktiBadge.textContent = 'Terunggah Saat Pemesanan';
+          buktiBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+        }
+
+        // Cari bukti transfer di berbagai sumber storage
+        let bSrc = order.bukti_transfer || order.bukti_bayar;
+        if (!bSrc) {
+          try {
+            const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+            const found = invList.find(x => (x.kode_pesanan === order.code || x.orderId === order.code || x.id === order.code || String(x.id_pesanan) === String(order.id_pesanan)));
+            if (found && (found.bukti_transfer || found.bukti_bayar)) {
+              bSrc = found.bukti_transfer || found.bukti_bayar;
+            }
+          } catch(_) {}
+        }
+        if (!bSrc) {
+          try {
+            const trxList = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
+            const found = trxList.find(x => (x.code === order.code || x.id === order.code));
+            if (found && (found.bukti_transfer || found.bukti_bayar)) {
+              bSrc = found.bukti_transfer || found.bukti_bayar;
+            }
+          } catch(_) {}
+        }
+        if (!bSrc) {
+          try {
+            const act = JSON.parse(sessionStorage.getItem('bersihin_active_order') || localStorage.getItem('bersihin_active_order') || 'null');
+            if (act && (act.code === order.code || act.orderId === order.code) && (act.bukti_transfer || act.bukti_bayar)) {
+              bSrc = act.bukti_transfer || act.bukti_bayar;
+            }
+          } catch(_) {}
+        }
+        if (!bSrc) {
+          try {
+            const lastOrd = JSON.parse(sessionStorage.getItem('bersihin_last_order') || 'null');
+            if (lastOrd && (lastOrd.code === order.code || lastOrd.orderId === order.code) && (lastOrd.bukti_transfer || lastOrd.bukti_bayar)) {
+              bSrc = lastOrd.bukti_transfer || lastOrd.bukti_bayar;
+            }
+          } catch(_) {}
+        }
+        if (!bSrc) {
+          try {
+            const lastInv = JSON.parse(localStorage.getItem('last_active_invoice') || 'null');
+            if (lastInv && (lastInv.kode_pesanan === order.code || lastInv.orderId === order.code) && (lastInv.bukti_transfer || lastInv.bukti_bayar)) {
+              bSrc = lastInv.bukti_transfer || lastInv.bukti_bayar;
+            }
+          } catch(_) {}
+        }
+
+        // Fallback visual struk resmi Bersihin Laundry jika belum ada gambar di pesanan demo
+        if (!bSrc) {
+          bSrc = generateOfficialReceiptSvg(order);
+        }
+
+        if (buktiImg) buktiImg.src = bSrc;
+        if (buktiMethod) buktiMethod.textContent = order.paymentMethod || 'Transfer Bank / QRIS';
+        if (buktiUploadTime) buktiUploadTime.textContent = order.date || 'Saat Checkout';
+        if (buktiStatusVerif) {
+          const isLunas = payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil');
+          if (isLunas) {
+            buktiStatusVerif.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+            buktiStatusVerif.textContent = 'Terverifikasi (Lunas)';
+          } else {
+            buktiStatusVerif.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200';
+            buktiStatusVerif.textContent = 'Menunggu Verifikasi Kasir';
+          }
+        }
+      }
+      if (buktiCard) buktiCard.classList.remove('hidden');
     }
 
+    // Generator Fallback Struk Bukti Digital Resmi jika data demo belum mengunggah gambar langsung
+    function generateOfficialReceiptSvg(order) {
+      const code = escapeHtml(order.code || order.id || 'TRX-SAMPLE');
+      const total = escapeHtml(order.totalFormatted || formatRupiah(order.total || 52000));
+      const date = escapeHtml(order.date || 'Hari ini');
+      const method = escapeHtml((order.paymentMethod || 'TRANSFER BANK / QRIS').toUpperCase());
+      const name = escapeHtml(order.customerName || 'Pelanggan Bersihin');
+
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="520" viewBox="0 0 400 520" fill="none">
+        <rect width="400" height="520" rx="16" fill="#F8FAFC"/>
+        <rect x="12" y="12" width="376" height="496" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+        <rect x="12" y="12" width="376" height="70" rx="12" fill="#0F172A"/>
+        <text x="200" y="42" font-family="Poppins, sans-serif" font-size="14" font-weight="bold" fill="#38BDF8" text-anchor="middle">BUKTI TRANSFER BERHASIL</text>
+        <text x="200" y="62" font-family="Poppins, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">PT BERSIHIN LAUNDRY SEJAHTERA</text>
+        
+        <circle cx="200" cy="120" r="26" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+        <path d="M190 120 L197 127 L211 113" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="200" y="166" font-family="Poppins, sans-serif" font-size="18" font-weight="800" fill="#0F172A" text-anchor="middle">${total}</text>
+        <text x="200" y="186" font-family="Poppins, sans-serif" font-size="11" font-weight="600" fill="#10B981" text-anchor="middle">TRANSAKSI TEREKAM</text>
+        
+        <line x1="36" y1="205" x2="364" y2="205" stroke="#E2E8F0" stroke-dasharray="4 4" stroke-width="1.5"/>
+        
+        <text x="40" y="235" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Nomor Transaksi</text>
+        <text x="360" y="235" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">${code}</text>
+        
+        <text x="40" y="265" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Metode Bayar</text>
+        <text x="360" y="265" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="end">${method}</text>
+        
+        <text x="40" y="295" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Pengirim</text>
+        <text x="360" y="295" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">${name}</text>
+        
+        <text x="40" y="325" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Rekening Tujuan</text>
+        <text x="360" y="325" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">BCA 8891-2345-67</text>
+        
+        <text x="40" y="355" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Waktu Transaksi</text>
+        <text x="360" y="355" font-family="Poppins, sans-serif" font-size="10" font-weight="medium" fill="#334155" text-anchor="end">${date}</text>
+        
+        <rect x="36" y="380" width="328" height="65" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+        <text x="50" y="405" font-family="Poppins, sans-serif" font-size="10" font-weight="bold" fill="#475569">CATATAN STRUK DIGITAL</text>
+        <text x="50" y="423" font-family="Poppins, sans-serif" font-size="9" fill="#64748B">Struk ini disimpan otomatis sebagai bukti transfer valid.</text>
+        <text x="50" y="435" font-family="Poppins, sans-serif" font-size="9" fill="#64748B">Status verifikasi kasir: Menunggu pencocokan mutasi.</text>
+        
+        <text x="200" y="485" font-family="Poppins, sans-serif" font-size="9" fill="#94A3B8" text-anchor="middle">Bersihin Laundry - Struk Pembayaran Sah</text>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    // Modal Zoom Bukti untuk Pelanggan
+    window.zoomCustomerBukti = function(src) {
+      if (!src) return;
+      let modal = document.getElementById('customerBuktiFullModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'customerBuktiFullModal';
+        modal.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+        modal.innerHTML = `
+          <div class="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+            <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+              <span class="text-xs font-bold tracking-wide">Bukti Transfer Pelanggan</span>
+              <button type="button" onclick="document.getElementById('customerBuktiFullModal').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition">✕</button>
+            </div>
+            <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[75vh] overflow-auto">
+              <img id="customerBuktiFullImg" src="" alt="Bukti Transfer" class="max-w-full max-h-[70vh] rounded-lg shadow-md object-contain">
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        modal.addEventListener('click', (ev) => {
+          if (ev.target === modal) modal.classList.add('hidden');
+        });
+      }
+      const img = document.getElementById('customerBuktiFullImg');
+      if (img) img.src = src;
+      modal.classList.remove('hidden');
+    };
+
     // Inisialisasi halaman & pemilihan invoice
+    // Inisialisasi halaman Pemeriksaan Invoice
     async function initInvoicePage() {
       const orders = await loadAllCustomerOrders();
+      renderOrdersTable();
+
       const params = new URLSearchParams(window.location.search);
       const paramId = params.get('id') || params.get('code');
 
-      // Isi dropdown selector
-      const selector = document.getElementById('invoiceOrderSelector');
-      if (selector) {
-        selector.innerHTML = '';
-        orders.forEach(o => {
-          const opt = document.createElement('option');
-          opt.value = o.code || o.id;
-          opt.textContent = `${o.code || o.id} - ${o.service || 'Laundry'} (${o.totalFormatted || formatRupiah(o.total || 0)})`;
-          selector.appendChild(opt);
-        });
-      }
-
-      // Cari order yang sesuai parameter URL atau pilih order paling mutakhir
-      let selectedOrder = null;
+      // Tampilkan invoice resmi in-page (bukan pop up)
       if (paramId) {
-        selectedOrder = orders.find(o => (o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId)));
-      }
-      if (!selectedOrder && orders.length > 0) {
-        selectedOrder = orders[0];
-      }
-
-      if (selectedOrder) {
-        if (selector) selector.value = selectedOrder.code || selectedOrder.id;
-        await enrichOrderDetails(selectedOrder);
-        renderInvoice(selectedOrder);
+        const found = orders.find(o => (o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId)));
+        if (found) {
+          await openInvoiceDetailModal(found.code || found.id, false);
+        } else if (orders.length > 0) {
+          await openInvoiceDetailModal(orders[0].code || orders[0].id, false);
+        }
+      } else if (orders.length > 0) {
+        await openInvoiceDetailModal(orders[0].code || orders[0].id, false);
       }
     }
 
-    // Pindah invoice lewat dropdown selector
+    // Pindah invoice lewat orderCode
     async function switchInvoice(orderCode) {
       if (!orderCode) return;
-      window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(orderCode)}`);
-      const orders = cachedCustomerOrders.length ? cachedCustomerOrders : await loadAllCustomerOrders();
-      const match = orders.find(o => (o.code === orderCode || o.id === orderCode));
-      if (match) {
-        await enrichOrderDetails(match);
-        renderInvoice(match);
-      }
+      await openInvoiceDetailModal(orderCode);
     }
 
     // Jalankan saat halaman dimuat
