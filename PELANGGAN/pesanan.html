@@ -2026,10 +2026,15 @@
         banner.classList.remove('hidden');
       }
 
+<<<<<<< HEAD
       // Pop-up modal struk dinonaktifkan sesuai alur langsung ke riwayat
       if (orderInvoiceModal) {
         orderInvoiceModal.classList.add('hidden');
       }
+=======
+      // Langsung arahkan ke halaman penuh Pemeriksaan Invoice & Verifikasi Pembayaran (tanpa pop-up modal)
+      window.location.href = `invoice.html?id=${encodeURIComponent(orderCodeVal)}`;
+>>>>>>> 88e7ddcfcd3f8332ea1bd57b8018dfdbc6a73b0f
     }
 
     // Submit Buat Pesanan Terintegrasi ke Backend MySQL & Modal Invoice

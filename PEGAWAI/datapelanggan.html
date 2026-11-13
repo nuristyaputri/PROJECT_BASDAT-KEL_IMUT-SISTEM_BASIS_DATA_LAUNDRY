@@ -41,7 +41,7 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-clip">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
     <header
@@ -77,9 +77,9 @@
 
     <!-- SIDEBAR -->
     <aside id="sidebar"
-        class="fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:static md:inset-auto md:z-10 px-5 pt-7 pb-5 shrink-0">
+        class="fixed inset-y-0 left-0 z-50 w-60 bg-white border-r border-slate-200 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out md:sticky md:top-0 md:self-start md:min-h-screen md:inset-auto md:z-10 px-5 pt-7 pb-5 shrink-0">
 
-        <div class="flex flex-col flex-1 overflow-y-auto">
+        <div class="flex flex-col">
             <!-- Brand Logo -->
             <div class="hidden md:flex items-center gap-2.5 pl-1.5 pb-7">
                 <div
@@ -98,21 +98,8 @@
                     </span>
                 </div>
             </div>
-
-            <!-- Shift Aktif Card -->
-            <div class="p-2.5 bg-emerald-50 rounded-[10px] border border-slate-200/80 flex items-center gap-2.5">
-                <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center shrink-0">
-                    <span
-                        class="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_0_4px_rgba(50,164,125,0.14)]"></span>
-                </div>
-                <div>
-                    <div class="text-teal-700 text-[11px] font-bold leading-tight">Shift Aktif</div>
-                    <div class="text-slate-500 text-[10px] font-normal leading-tight mt-0.5">08.00 - 16.00 WIB</div>
-                </div>
-            </div>
-
             <!-- Navigation Links -->
-            <nav class="mt-6 space-y-6">
+            <nav class="space-y-6">
                 <!-- Operasional -->
                 <div>
                     <p class="px-2.5 text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-2">
@@ -216,24 +203,17 @@
             </nav>
         </div>
 
-        <!-- Sidebar Footer User Info -->
-        <div class="pt-3.5 border-t border-slate-200 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <div
-                    class="w-8 h-8 bg-sky-100 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold shrink-0">
-                    DN
-                </div>
-                <div class="truncate">
-                    <div class="text-slate-800 text-xs font-bold leading-tight truncate">Dina Nurhaliza</div>
-                    <div class="text-slate-400 text-[10px] font-normal leading-tight mt-0.5">Kasir · Shift Pagi</div>
-                </div>
-            </div>
+        <!-- Bagian Bawah Sidebar: Tombol Keluar -->
+        <div class="w-full mt-16 pt-4 flex flex-col justify-end items-start gap-2 shrink-0">
             <a href="../login.html" title="Keluar"
-                class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
+                <span>Keluar</span>
             </a>
         </div>
     </aside>
@@ -526,7 +506,7 @@
                 <!-- PAGINATION FOOTER -->
                 <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <div class="text-gray-400 text-xs font-normal" id="showingInfo">
-                        Menampilkan 5 dari 5 data
+                        Menampilkan 0 dari 0 data
                     </div>
                     <div class="flex items-center gap-1">
                         <button type="button"
