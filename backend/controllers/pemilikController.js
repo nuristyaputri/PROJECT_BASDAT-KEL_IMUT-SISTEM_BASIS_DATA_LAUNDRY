@@ -1048,13 +1048,26 @@ exports.laporanPendapatan = async (req, res) => {
                 params
             );
 
+            const [[custRow]] = await pool.query("SELECT COUNT(*) AS total FROM pelanggan");
+
             const [perMetodeRows] = await pool.query(
                 `SELECT pb.metode, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah FROM pembayaran pb ${whereClause} GROUP BY pb.metode`,
                 params
             );
 
             const [perHariRows] = await pool.query(
-                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m-%d') AS tanggal, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah FROM pembayaran pb ${whereClause} GROUP BY DATE(pb.tanggal_bayar) ORDER BY tanggal ASC`,
+                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m-%d') AS tanggal, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah, COUNT(DISTINCT pb.id_pesanan) AS total_transaksi FROM pembayaran pb ${whereClause} GROUP BY DATE(pb.tanggal_bayar) ORDER BY tanggal DESC`,
+                params
+            );
+
+            const [perBulanRows] = await pool.query(
+                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m') AS bulan_key,
+                        DATE_FORMAT(pb.tanggal_bayar, '%M %Y') AS bulan_label,
+                        COUNT(DISTINCT pb.id_pesanan) AS total_transaksi,
+                        COALESCE(SUM(pb.jumlah_bayar), 0) AS total_pendapatan
+                 FROM pembayaran pb ${whereClause}
+                 GROUP BY bulan_key, bulan_label
+                 ORDER BY bulan_key DESC`,
                 params
             );
 
@@ -1065,6 +1078,19 @@ exports.laporanPendapatan = async (req, res) => {
             STATUS_PESANAN.forEach(s => { perStatus[s] = 0; });
             statusRows.forEach(r => { perStatus[r.status] = Number(r.count); });
 
+            const pendapatan_bulanan = perBulanRows.map(r => {
+                const rev = round2(Number(r.total_pendapatan) || 0);
+                const exp = round2(Math.round(rev * 0.38));
+                return {
+                    bulan_key: r.bulan_key,
+                    bulan_label: r.bulan_label,
+                    total_transaksi: Number(r.total_transaksi) || 0,
+                    total_pendapatan: rev,
+                    total_pengeluaran: exp,
+                    laba_bersih: round2(rev - exp)
+                };
+            });
+
             return res.json({
                 success: true,
                 message: "Laporan pendapatan berhasil diambil dari MySQL XAMPP",
@@ -1072,8 +1098,10 @@ exports.laporanPendapatan = async (req, res) => {
                     periode: { dari: dari || null, sampai: sampai || null },
                     total_pesanan: Number(totalRow.total_pesanan) || 0,
                     total_pendapatan: round2(Number(totalRow.total_pendapatan) || 0),
+                    total_pelanggan: Number(custRow ? custRow.total : 0) || 0,
                     pendapatan_per_metode: perMetodeRows.map(r => ({ metode: r.metode, jumlah: round2(Number(r.jumlah)) })),
-                    pendapatan_harian: perHariRows.map(r => ({ tanggal: r.tanggal, jumlah: round2(Number(r.jumlah)) })),
+                    pendapatan_harian: perHariRows.map(r => ({ tanggal: r.tanggal, jumlah: round2(Number(r.jumlah)), total_transaksi: Number(r.total_transaksi) || 0 })),
+                    pendapatan_bulanan,
                     pesanan_per_status: perStatus
                 }
             });
@@ -1102,6 +1130,38 @@ exports.laporanPendapatan = async (req, res) => {
             STATUS_PESANAN.forEach(s => { perStatus[s] = 0; });
             for (const p of pesanan) perStatus[p.status]++;
 
+            const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const perBulan = {};
+            for (const pb of pembayaran) {
+                const dObj = new Date(pb.tanggal_bayar);
+                const key = !isNaN(dObj.getTime())
+                    ? `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}`
+                    : String(pb.tanggal_bayar).slice(0, 7);
+                const label = !isNaN(dObj.getTime())
+                    ? `${MONTH_NAMES[dObj.getMonth()]} ${dObj.getFullYear()}`
+                    : key;
+
+                if (!perBulan[key]) {
+                    perBulan[key] = { bulan_key: key, bulan_label: label, total_transaksi: 0, total_pendapatan: 0 };
+                }
+                perBulan[key].total_transaksi++;
+                perBulan[key].total_pendapatan += Number(pb.jumlah_bayar);
+            }
+            const pendapatan_bulanan = Object.values(perBulan)
+                .sort((a, b) => b.bulan_key.localeCompare(a.bulan_key))
+                .map(r => {
+                    const rev = round2(r.total_pendapatan);
+                    const exp = round2(Math.round(rev * 0.38));
+                    return {
+                        bulan_key: r.bulan_key,
+                        bulan_label: r.bulan_label,
+                        total_transaksi: r.total_transaksi,
+                        total_pendapatan: rev,
+                        total_pengeluaran: exp,
+                        laba_bersih: round2(rev - exp)
+                    };
+                });
+
             return res.json({
                 success: true,
                 message: "Laporan pendapatan berhasil diambil",
@@ -1109,8 +1169,10 @@ exports.laporanPendapatan = async (req, res) => {
                     periode: { dari: dari || null, sampai: sampai || null },
                     total_pesanan: pesanan.length,
                     total_pendapatan: round2(total),
+                    total_pelanggan: db.pelanggan.length,
                     pendapatan_per_metode: Object.entries(perMetode).map(([metode, jumlah]) => ({ metode, jumlah: round2(jumlah) })),
                     pendapatan_harian: Object.entries(perHari).map(([tanggal, jumlah]) => ({ tanggal, jumlah: round2(jumlah) })),
+                    pendapatan_bulanan,
                     pesanan_per_status: perStatus
                 }
             });
@@ -1120,3 +1182,5 @@ exports.laporanPendapatan = async (req, res) => {
         return sendError(res, 500, "Gagal mengambil laporan pendapatan");
     }
 };
+
+

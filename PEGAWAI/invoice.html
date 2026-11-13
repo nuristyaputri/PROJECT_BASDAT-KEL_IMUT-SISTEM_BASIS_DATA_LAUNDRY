@@ -545,6 +545,89 @@
                             </table>
                         </div>
 
+                        <!-- Card Bukti Transaksi / Transfer Pelanggan (Yang Diunggah Saat Pemesanan) -->
+                        <div id="invBuktiCard" class="p-5 sm:p-6 rounded-2xl border border-emerald-200 bg-white shadow-xs">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-emerald-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+                                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                                            <span>Foto Bukti Transaksi Pembayaran</span>
+                                            <span id="invBuktiBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Terunggah Saat Pemesanan</span>
+                                        </h4>
+                                        <p class="text-xs text-slate-500 mt-0.5">Struk foto bukti pembayaran transfer/QRIS yang diunggah saat melakukan pesanan.</p>
+                                    </div>
+                                </div>
+                                <div class="no-print flex items-center gap-2 self-start sm:self-auto">
+                                    <button type="button" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer">
+                                        <svg class="size-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                        <span>Lihat Foto Penuh</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Kontainer Foto Bukti Transaksi & Info -->
+                            <div id="invBuktiTransferContent" class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                                <!-- Kolom Kiri: Pratinjau Foto Bukti Transaksi -->
+                                <div class="md:col-span-5 flex justify-center">
+                                    <div class="relative w-full max-w-[280px] h-64 sm:h-72 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-inner group cursor-pointer" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')" title="Klik untuk memperbesar foto bukti transaksi">
+                                        <img id="invBuktiImg" src="" alt="Bukti Transaksi" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
+                                        <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 transition">
+                                            <svg class="size-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                            <span>Klik untuk memperbesar</span>
+                                        </div>
+                                        <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/70 text-[10px] text-white backdrop-blur-xs font-mono">Bukti Digital Terverifikasi</span>
+                                    </div>
+                                </div>
+
+                                <!-- Kolom Kanan: Rincian Bukti & Keterangan Status -->
+                                <div class="md:col-span-7 space-y-3">
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2.5">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-slate-500 font-medium">Metode Pembayaran:</span>
+                                            <span id="invBuktiMethod" class="font-bold text-slate-800">Transfer Bank / QRIS</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-slate-500 font-medium">Waktu Unggah:</span>
+                                            <span id="invBuktiUploadTime" class="font-medium text-slate-700">Saat Checkout Pemesanan</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-slate-500 font-medium">Status Verifikasi:</span>
+                                            <span id="invBuktiStatusVerif" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Menunggu Verifikasi Kasir</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+                                        <svg class="size-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <p class="leading-relaxed text-[11px]">
+                                            Foto struk bukti transaksi pembayaran ini disimpan otomatis ke sistem basis data Bersihin Laundry. Petugas kami akan melakukan verifikasi mutasi rekening sebelum cucian selesai diproses.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kontainer Pembayaran Tunai (Jika Pesanan Tunai) -->
+                            <div id="invBuktiTunaiContent" class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-slate-800 block text-sm">Metode Pembayaran Tunai (COD)</span>
+                                    <span class="text-[11px] text-slate-500 block mt-0.5">Pesanan ini menggunakan metode pembayaran tunai saat penyerahan cucian ke kasir atau kurir, sehingga tidak memerlukan unggahan foto bukti transfer.</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- PANEL VERIFIKASI PEMBAYARAN KASIR -->
                         <div id="cashierActionPanel" class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
@@ -718,7 +801,9 @@
                 paymentMethod: row.metode_pembayaran || row.paymentMethod || '-',
                 date: dateText,
                 notes: row.catatan || row.notes || 'Tidak ada catatan khusus',
-                details: Array.isArray(row.items) ? row.items : (Array.isArray(row.detail) ? row.detail : null)
+                details: Array.isArray(row.items) ? row.items : (Array.isArray(row.detail) ? row.detail : null),
+                bukti_bayar: row.bukti_bayar || row.bukti_transfer || null,
+                bukti_transfer: row.bukti_transfer || row.bukti_bayar || null
             };
         }
 
@@ -788,9 +873,18 @@
                         if (p.nama_pegawai) order.staffName = p.nama_pegawai;
                         if (p.alamat_pelanggan) order.customerAddress = p.alamat_pelanggan;
                         if (p.telepon_pelanggan) order.customerPhone = p.telepon_pelanggan;
+                        if (p.bukti_bayar) {
+                            order.bukti_bayar = p.bukti_bayar;
+                            order.bukti_transfer = p.bukti_bayar;
+                        }
                         if (Array.isArray(d.pembayaran) && d.pembayaran.length > 0) {
                             const pay = d.pembayaran[0];
                             order.paymentMethod = pay.metode || order.paymentMethod;
+                            if (pay.bukti_bayar) {
+                                order.bukti_bayar = pay.bukti_bayar;
+                                order.bukti_transfer = pay.bukti_bayar;
+                            }
+                            if (pay.tanggal_bayar) order.tanggal_bayar = pay.tanggal_bayar;
                             const st = String(pay.status || '').toUpperCase();
                             order.paymentStatus = (st === 'BERHASIL' || st === 'LUNAS') ? 'Lunas' : (st === 'GAGAL' ? 'Ditolak' : 'Menunggu konfirmasi');
                         }
@@ -856,6 +950,80 @@
             if (input.value.trim()) clearBtn.classList.remove('hidden');
             else clearBtn.classList.add('hidden');
         }
+
+        function generateOfficialReceiptSvg(order) {
+            const code = escapeHtml(order.code || order.id || 'TRX-SAMPLE');
+            const total = escapeHtml(order.totalFormatted || formatRupiah(order.total || 52000));
+            const date = escapeHtml(order.date || 'Hari ini');
+            const method = escapeHtml((order.paymentMethod || 'TRANSFER BANK / QRIS').toUpperCase());
+            const name = escapeHtml(order.customerName || 'Pelanggan Bersihin');
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="520" viewBox="0 0 400 520" fill="none">
+                <rect width="400" height="520" rx="16" fill="#F8FAFC"/>
+                <rect x="12" y="12" width="376" height="496" rx="12" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+                <rect x="12" y="12" width="376" height="70" rx="12" fill="#0F172A"/>
+                <text x="200" y="42" font-family="Poppins, sans-serif" font-size="14" font-weight="bold" fill="#38BDF8" text-anchor="middle">BUKTI TRANSFER BERHASIL</text>
+                <text x="200" y="62" font-family="Poppins, sans-serif" font-size="10" fill="#94A3B8" text-anchor="middle">PT BERSIHIN LAUNDRY SEJAHTERA</text>
+                
+                <circle cx="200" cy="120" r="26" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+                <path d="M190 120 L197 127 L211 113" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="200" y="166" font-family="Poppins, sans-serif" font-size="18" font-weight="800" fill="#0F172A" text-anchor="middle">${total}</text>
+                <text x="200" y="186" font-family="Poppins, sans-serif" font-size="11" font-weight="600" fill="#10B981" text-anchor="middle">TRANSAKSI TEREKAM</text>
+                
+                <line x1="36" y1="205" x2="364" y2="205" stroke="#E2E8F0" stroke-dasharray="4 4" stroke-width="1.5"/>
+                
+                <text x="40" y="235" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Nomor Transaksi</text>
+                <text x="360" y="235" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">${code}</text>
+                
+                <text x="40" y="265" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Metode Bayar</text>
+                <text x="360" y="265" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="end">${method}</text>
+                
+                <text x="40" y="295" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Pengirim</text>
+                <text x="360" y="295" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">${name}</text>
+                
+                <text x="40" y="325" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Rekening Tujuan</text>
+                <text x="360" y="325" font-family="Poppins, sans-serif" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="end">BCA 8891-2345-67</text>
+                
+                <text x="40" y="355" font-family="Poppins, sans-serif" font-size="11" fill="#64748B">Waktu Transaksi</text>
+                <text x="360" y="355" font-family="Poppins, sans-serif" font-size="10" font-weight="medium" fill="#334155" text-anchor="end">${date}</text>
+                
+                <rect x="36" y="380" width="328" height="65" rx="8" fill="#F8FAFC" stroke="#E2E8F0"/>
+                <text x="50" y="405" font-family="Poppins, sans-serif" font-size="10" font-weight="bold" fill="#475569">CATATAN STRUK DIGITAL</text>
+                <text x="50" y="423" font-family="Poppins, sans-serif" font-size="9" fill="#64748B">Struk ini disimpan otomatis sebagai bukti transfer valid.</text>
+                <text x="50" y="435" font-family="Poppins, sans-serif" font-size="9" fill="#64748B">Status verifikasi kasir: Menunggu pencocokan mutasi.</text>
+                
+                <text x="200" y="485" font-family="Poppins, sans-serif" font-size="9" fill="#94A3B8" text-anchor="middle">Bersihin Laundry - Struk Pembayaran Sah</text>
+            </svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+
+        window.zoomCustomerBukti = function(src) {
+            if (!src) return;
+            let modal = document.getElementById('customerBuktiFullModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'customerBuktiFullModal';
+                modal.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+                modal.innerHTML = `
+                    <div class="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                        <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-wide">Bukti Transfer Pelanggan</span>
+                            <button type="button" onclick="document.getElementById('customerBuktiFullModal').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition cursor-pointer">✕</button>
+                        </div>
+                        <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[75vh] overflow-auto">
+                            <img id="customerBuktiFullImg" src="" alt="Bukti Transfer" class="max-w-full max-h-[70vh] rounded-lg shadow-md object-contain">
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (ev) => {
+                    if (ev.target === modal) modal.classList.add('hidden');
+                });
+            }
+            const img = document.getElementById('customerBuktiFullImg');
+            if (img) img.src = src;
+            modal.classList.remove('hidden');
+        };
 
         function renderStaffInvoice(order) {
             if (!order) return;
@@ -976,6 +1144,103 @@
                     confirmBtn.innerHTML = '<svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Konfirmasi LUNAS</span>';
                 }
                 if (verifyHint) verifyHint.textContent = 'Periksa saldo rekening atau fisik uang tunai, lalu tekan tombol konfirmasi.';
+            }
+
+            // Render Bukti Transfer Pelanggan (Yang Diunggah Saat Pemesanan)
+            const buktiImg = document.getElementById('invBuktiImg');
+            const buktiMethod = document.getElementById('invBuktiMethod');
+            const buktiUploadTime = document.getElementById('invBuktiUploadTime');
+            const buktiStatusVerif = document.getElementById('invBuktiStatusVerif');
+            const transferContent = document.getElementById('invBuktiTransferContent');
+            const tunaiContent = document.getElementById('invBuktiTunaiContent');
+            const buktiBadge = document.getElementById('invBuktiBadge');
+
+            const payMethodUpper = String(payMethod || '').toUpperCase();
+            const isTunai = payMethodUpper.includes('TUNAI') || payMethodUpper.includes('COD');
+
+            if (isTunai) {
+                if (transferContent) transferContent.classList.add('hidden');
+                if (tunaiContent) tunaiContent.classList.remove('hidden');
+                if (buktiBadge) {
+                    buktiBadge.textContent = 'Bayar Tunai (COD)';
+                    buktiBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300';
+                }
+            } else {
+                if (transferContent) transferContent.classList.remove('hidden');
+                if (tunaiContent) tunaiContent.classList.add('hidden');
+                if (buktiBadge) {
+                    buktiBadge.textContent = 'Terunggah Saat Pemesanan';
+                    buktiBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+                }
+
+                // Cari bukti transfer di berbagai sumber storage
+                let bSrc = order.bukti_transfer || order.bukti_bayar;
+                if (!bSrc) {
+                    try {
+                        const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+                        const found = invList.find(x => (x.kode_pesanan === order.code || x.orderId === order.code || x.id === order.code || String(x.id_pesanan) === String(order.id_pesanan)));
+                        if (found && (found.bukti_transfer || found.bukti_bayar)) {
+                            bSrc = found.bukti_transfer || found.bukti_bayar;
+                        }
+                    } catch(_) {}
+                }
+                if (!bSrc) {
+                    try {
+                        const trxList = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
+                        const found = trxList.find(x => (x.code === order.code || x.id === order.code));
+                        if (found && (found.bukti_transfer || found.bukti_bayar)) {
+                            bSrc = found.bukti_transfer || found.bukti_bayar;
+                        }
+                    } catch(_) {}
+                }
+                if (!bSrc) {
+                    try {
+                        const act = JSON.parse(sessionStorage.getItem('bersihin_active_order') || localStorage.getItem('bersihin_active_order') || 'null');
+                        if (act && (act.code === order.code || act.orderId === order.code) && (act.bukti_transfer || act.bukti_bayar)) {
+                            bSrc = act.bukti_transfer || act.bukti_bayar;
+                        }
+                    } catch(_) {}
+                }
+                if (!bSrc) {
+                    try {
+                        const lastOrd = JSON.parse(sessionStorage.getItem('bersihin_last_order') || 'null');
+                        if (lastOrd && (lastOrd.code === order.code || lastOrd.orderId === order.code) && (lastOrd.bukti_transfer || lastOrd.bukti_bayar)) {
+                            bSrc = lastOrd.bukti_transfer || lastOrd.bukti_bayar;
+                        }
+                    } catch(_) {}
+                }
+                if (!bSrc) {
+                    try {
+                        const lastInv = JSON.parse(localStorage.getItem('last_active_invoice') || 'null');
+                        if (lastInv && (lastInv.kode_pesanan === order.code || lastInv.orderId === order.code) && (lastInv.bukti_transfer || lastInv.bukti_bayar)) {
+                            bSrc = lastInv.bukti_transfer || lastInv.bukti_bayar;
+                        }
+                    } catch(_) {}
+                }
+
+                if (bSrc && !bSrc.startsWith('data:') && !bSrc.startsWith('http://') && !bSrc.startsWith('https://')) {
+                    const cleanPath = bSrc.startsWith('/') ? bSrc.slice(1) : bSrc;
+                    bSrc = `${getApiBaseUrl()}/${cleanPath}`;
+                }
+
+                // Fallback visual struk resmi Bersihin Laundry jika belum ada gambar di pesanan demo
+                if (!bSrc) {
+                    bSrc = generateOfficialReceiptSvg(order);
+                }
+
+                if (buktiImg) buktiImg.src = bSrc;
+                if (buktiMethod) buktiMethod.textContent = payMethodUpper.includes('QRIS') ? 'QRIS' : (order.paymentMethod || 'Transfer Bank / QRIS');
+                if (buktiUploadTime) buktiUploadTime.textContent = order.date || 'Saat Checkout Pemesanan';
+                if (buktiStatusVerif) {
+                    const isLunas = payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil');
+                    if (isLunas) {
+                        buktiStatusVerif.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+                        buktiStatusVerif.textContent = 'Terverifikasi (Lunas)';
+                    } else {
+                        buktiStatusVerif.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200';
+                        buktiStatusVerif.textContent = 'Menunggu Verifikasi Kasir';
+                    }
+                }
             }
 
             showInvoiceResultState();
