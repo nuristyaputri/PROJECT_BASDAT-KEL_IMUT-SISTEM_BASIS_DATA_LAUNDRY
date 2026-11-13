@@ -428,6 +428,24 @@
                                 Pisahkan pakaian putih dan gunakan pewangi lembut.
                             </div>
                         </div>
+
+                        <!-- Bukti Pembayaran / Transfer -->
+                        <div id="detailBuktiSection" class="hidden p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-stone-500 text-[11px] font-normal">Bukti Transfer Pelanggan</span>
+                                <span id="detailBuktiBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Perlu Dicek</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <img id="detailBuktiImg" src="" alt="Bukti Transfer" class="w-14 h-14 object-cover rounded-lg border border-slate-200 cursor-pointer shadow-xs hover:opacity-90" onclick="if(window.zoomBuktiTransfer) window.zoomBuktiTransfer(this.src)">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-semibold text-slate-800 block">Struk Transfer Terlampir</span>
+                                    <span class="text-[10px] text-slate-400 block mt-0.5">Unggahan dari device pelanggan</span>
+                                    <button type="button" onclick="if(window.zoomBuktiTransfer) window.zoomBuktiTransfer(document.getElementById('detailBuktiImg').src)" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:text-cyan-900 mt-1">
+                                        Periksa Ukuran Penuh &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -636,6 +654,15 @@
             document.getElementById('orderNote').textContent = o.note;
             document.getElementById('summarySubtotal').textContent = o.price;
             document.getElementById('summaryTotal').textContent = o.price;
+
+            const bSec = document.getElementById('detailBuktiSection');
+            const bImg = document.getElementById('detailBuktiImg');
+            if (o.bukti_transfer || o.bukti_bayar) {
+                if (bImg) bImg.src = o.bukti_transfer || o.bukti_bayar;
+                if (bSec) bSec.classList.remove('hidden');
+            } else if (bSec) {
+                bSec.classList.add('hidden');
+            }
         }
 
         // Sinkronisasi data live dari database backend MySQL jika terhubung
@@ -691,6 +718,16 @@
                         document.getElementById('orderNote').textContent = d.catatan || 'Pakaian reguler';
                         document.getElementById('summarySubtotal').textContent = harga;
                         document.getElementById('summaryTotal').textContent = harga;
+
+                        const bSec = document.getElementById('detailBuktiSection');
+                        const bImg = document.getElementById('detailBuktiImg');
+                        const bSrc = d.bukti_bayar || d.bukti_transfer;
+                        if (bSrc && String(d.metode_pembayaran || '').toUpperCase() !== 'TUNAI') {
+                            if (bImg) bImg.src = bSrc;
+                            if (bSec) bSec.classList.remove('hidden');
+                        } else if (bSec) {
+                            bSec.classList.add('hidden');
+                        }
                     }
                 }).catch(() => {});
         }

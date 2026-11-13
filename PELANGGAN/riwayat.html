@@ -566,25 +566,16 @@
               class="font-semibold text-slate-700">24</span> transaksi
           </p>
 
-          <nav aria-label="Navigasi Halaman" class="inline-flex items-center gap-1">
-            <button type="button" id="prevPageBtn" disabled
-              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed">
+          <nav id="paginationNav" aria-label="Navigasi Halaman" class="inline-flex items-center gap-1">
+            <button type="button" id="prevPageBtn"
+              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 active:bg-slate-200 text-xs font-medium text-slate-700 transition cursor-pointer shadow-2xs">
               Sebelumnya
             </button>
-            <button type="button"
-              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold">
-              1
-            </button>
-            <button type="button"
-              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
-              2
-            </button>
-            <button type="button"
-              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium">
-              3
-            </button>
+            <div id="pageNumbersContainer" class="inline-flex items-center gap-1">
+              <!-- Tombol halaman di-render dinamis sesuai jumlah data riwayat pesanan -->
+            </div>
             <button type="button" id="nextPageBtn"
-              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50">
+              class="min-h-[36px] px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 active:bg-slate-200 text-xs font-medium text-slate-700 transition cursor-pointer shadow-2xs">
               Selanjutnya
             </button>
           </nav>
@@ -651,19 +642,8 @@
       okHelpModalBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
     }
 
-    // 4. Logika Interaktif Filter Status, Pencarian, Urutkan, & Rendering Dinamis
+    // 4. Logika Interaktif Filter Status, Pencarian, Urutkan, & Pagination Dinamis
     // Dikelola secara terpusat oleh ../JS/pelanggan.js (fungsi initRiwayatPage)
-
-    // 5. Pagination Dummy Buttons
-    const pageNumBtns = document.querySelectorAll('.page-num-btn');
-    pageNumBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        pageNumBtns.forEach(b => {
-          b.className = 'page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-medium';
-        });
-        btn.className = 'page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg bg-cyan-700 text-white text-xs font-semibold';
-      });
-    });
   </script>
 </body>
 

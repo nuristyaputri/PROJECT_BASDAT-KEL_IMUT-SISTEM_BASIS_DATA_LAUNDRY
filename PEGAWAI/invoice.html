@@ -339,6 +339,52 @@
                         </table>
                     </div>
 
+                    <!-- KARTU BUKTI TRANSFER PELANGGAN (UNTUK DICEK PEGAWAI) -->
+                    <div id="staffBuktiTransferBox" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-sky-50 text-cyan-700 flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800">Bukti Transfer Pembayaran Pelanggan</h4>
+                                    <span class="text-[10px] text-slate-400">Diunggah dari perangkat laptop atau ponsel pemesan</span>
+                                </div>
+                            </div>
+                            <span id="staffBuktiBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                                Perlu Dicek Kasir
+                            </span>
+                        </div>
+
+                        <!-- Konten Bukti Transfer Gambar -->
+                        <div id="staffBuktiHasImage" class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <img id="staffBuktiImg" src="" alt="Bukti Transfer" class="w-16 h-16 object-cover rounded-xl border border-slate-200 shadow-xs shrink-0 cursor-pointer hover:opacity-90 transition" onclick="zoomStaffBukti(this.src)">
+                                <div class="min-w-0">
+                                    <span class="font-bold text-xs text-slate-800 block">Struk / Bukti Mutasi Bank</span>
+                                    <span class="text-[11px] text-slate-500 block mt-0.5">Format gambar digital tersimpan aman</span>
+                                    <span class="text-[10px] text-emerald-600 font-semibold block mt-1">✓ Berhasil diterima sistem</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="zoomStaffBukti(document.getElementById('staffBuktiImg').src)" class="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition">
+                                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <span>Periksa Penuh (Zoom)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pesan Jika Tidak Ada Gambar / COD -->
+                        <div id="staffBuktiNoImage" class="hidden p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-500 italic">
+                            Tidak ada lampiran bukti transfer untuk transaksi ini (metode Bayar Tunai / COD).
+                        </div>
+                    </div>
+
                     <!-- PANEL VERIFIKASI PEMBAYARAN KASIR -->
                     <div id="cashierActionPanel" class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
                         <div class="flex items-center justify-between pb-3 border-b border-slate-200">
@@ -502,6 +548,8 @@
                 status: mapStageFromDb(row.status),
                 paymentStatus: payStatus,
                 paymentMethod: row.metode_pembayaran || row.paymentMethod || '-',
+                bukti_transfer: row.bukti_bayar || row.bukti_transfer || null,
+                bukti_bayar: row.bukti_bayar || row.bukti_transfer || null,
                 date: dateText,
                 notes: row.catatan || row.notes || 'Tidak ada catatan khusus',
                 details: Array.isArray(row.items) ? row.items : (Array.isArray(row.detail) ? row.detail : null)
@@ -574,9 +622,17 @@
                         if (p.nama_pegawai) order.staffName = p.nama_pegawai;
                         if (p.alamat_pelanggan) order.customerAddress = p.alamat_pelanggan;
                         if (p.telepon_pelanggan) order.customerPhone = p.telepon_pelanggan;
+                        if (p.bukti_bayar || d.bukti_bayar) {
+                            order.bukti_bayar = p.bukti_bayar || d.bukti_bayar;
+                            order.bukti_transfer = order.bukti_bayar;
+                        }
                         if (Array.isArray(d.pembayaran) && d.pembayaran.length > 0) {
                             const pay = d.pembayaran[0];
                             order.paymentMethod = pay.metode || order.paymentMethod;
+                            if (pay.bukti_bayar) {
+                                order.bukti_bayar = pay.bukti_bayar;
+                                order.bukti_transfer = pay.bukti_bayar;
+                            }
                             const st = String(pay.status || '').toUpperCase();
                             order.paymentStatus = (st === 'BERHASIL' || st === 'LUNAS') ? 'Lunas' : (st === 'GAGAL' ? 'Ditolak' : 'Menunggu konfirmasi');
                         }
@@ -702,6 +758,77 @@
                 }
                 if (verifyHint) verifyHint.textContent = 'Periksa saldo rekening atau fisik uang tunai, lalu tekan tombol konfirmasi.';
             }
+
+            // Render Bukti Transfer Pelanggan
+            const buktiImg = document.getElementById('staffBuktiImg');
+            const buktiHasImage = document.getElementById('staffBuktiHasImage');
+            const buktiNoImage = document.getElementById('staffBuktiNoImage');
+            const buktiBadge = document.getElementById('staffBuktiBadge');
+            const buktiSrc = order.bukti_transfer || order.bukti_bayar;
+
+            if (buktiSrc && String(payMethod || '').toUpperCase() !== 'TUNAI') {
+                if (buktiImg) buktiImg.src = buktiSrc;
+                if (buktiHasImage) buktiHasImage.classList.remove('hidden');
+                if (buktiNoImage) buktiNoImage.classList.add('hidden');
+                if (buktiBadge) {
+                    if (payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil')) {
+                        buktiBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+                        buktiBadge.textContent = 'Bukti Terverifikasi Valid';
+                    } else {
+                        buktiBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
+                        buktiBadge.textContent = 'Perlu Dicek Kasir';
+                    }
+                }
+            } else {
+                if (buktiHasImage) buktiHasImage.classList.add('hidden');
+                if (buktiNoImage) {
+                    buktiNoImage.classList.remove('hidden');
+                    buktiNoImage.textContent = String(payMethod || '').toUpperCase() === 'TUNAI'
+                        ? 'Transaksi menggunakan metode Bayar Tunai (COD). Tidak ada unggahan bukti transfer.'
+                        : 'Belum ada bukti transfer digital yang diunggah oleh pelanggan.';
+                }
+                if (buktiBadge) {
+                    buktiBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+                    buktiBadge.textContent = String(payMethod || '').toUpperCase() === 'TUNAI' ? 'Bayar Tunai (COD)' : 'Tanpa Bukti';
+                }
+            }
+        }
+
+        // Modal Zoom Lightbox Bukti Transfer untuk Pegawai
+        function zoomStaffBukti(src) {
+            if (!src) return;
+            let lightbox = document.getElementById('staffBuktiInvoiceLightbox');
+            if (!lightbox) {
+                lightbox = document.createElement('div');
+                lightbox.id = 'staffBuktiInvoiceLightbox';
+                lightbox.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+                lightbox.innerHTML = `
+                    <div class="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                        <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="size-2 rounded-full bg-emerald-400"></span>
+                                <span class="text-xs font-bold tracking-wide">Pemeriksaan Bukti Transfer (Ukuran Penuh)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a id="staffBuktiInvoiceDlLink" href="#" target="_blank" download="bukti_transfer.jpg" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] rounded-lg transition">Buka Tab Baru</a>
+                                <button type="button" onclick="document.getElementById('staffBuktiInvoiceLightbox').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition">✕</button>
+                            </div>
+                        </div>
+                        <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[80vh] overflow-auto">
+                            <img id="staffBuktiInvoiceLightboxImg" src="" alt="Bukti Transfer Penuh" class="max-w-full max-h-[75vh] rounded-lg shadow-lg object-contain">
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(lightbox);
+                lightbox.addEventListener('click', (ev) => {
+                    if (ev.target === lightbox) lightbox.classList.add('hidden');
+                });
+            }
+            const img = document.getElementById('staffBuktiInvoiceLightboxImg');
+            const dlLink = document.getElementById('staffBuktiInvoiceDlLink');
+            if (img) img.src = src;
+            if (dlLink) dlLink.href = src;
+            lightbox.classList.remove('hidden');
         }
 
         async function initStaffInvoice() {

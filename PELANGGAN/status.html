@@ -649,10 +649,10 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-slate-800 text-xs font-bold font-['Poppins'] leading-4">
-                  Bersihin Laundry Dago
+                  Bersihin Laundry Margonda Depok
                 </span>
                 <span class="pt-0.5 text-slate-400 text-[10px] font-normal font-['Poppins'] leading-3">
-                  Jl. Melati No. 24, Bandung
+                  Jl. Margonda Raya No. 188, Depok (Perbatasan Jaksel)
                 </span>
               </div>
             </div>
@@ -776,7 +776,7 @@
     class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
       <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-        <h3 id="directionsModalTitle" class="text-sm font-bold text-slate-800">Lokasi Bersihin Laundry Dago</h3>
+        <h3 id="directionsModalTitle" class="text-sm font-bold text-slate-800">Lokasi Bersihin Laundry Margonda Depok</h3>
         <button type="button" id="closeDirectionsModalBtn" aria-label="Tutup petunjuk arah"
           class="size-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 flex items-center justify-center">
           <svg class="size-4" viewBox="0 0 16 16" fill="none">
@@ -785,8 +785,8 @@
         </button>
       </div>
       <div class="p-6 space-y-3 text-xs text-slate-600">
-        <p class="font-semibold text-slate-800">Jl. Melati No. 24, Dago, Kota Bandung</p>
-        <p>Patokan: 150 meter dari Simpang Dago Atas, sebelah kanan jalan (gedung biru putih Bersihin Laundry).</p>
+        <p class="font-semibold text-slate-800">Jl. Margonda Raya No. 188, Pondok Cina, Beji, Kota Depok</p>
+        <p>Patokan: Perbatasan Jakarta Selatan - Depok, 200 meter dari Flyover UI / Halte Universitas Pancasila, ruko biru putih Bersihin Laundry.</p>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
           <p class="font-semibold text-slate-700">Jam Pengambilan Cucian:</p>
           <p class="text-[11px] text-slate-500">Senin - Minggu: 07.00 - 21.00 WIB</p>
@@ -924,17 +924,20 @@
       }
 
       const params = new URLSearchParams(window.location.search);
-      const urlId = params.get('id');
+      const urlId = params.get('id') || params.get('code');
       let order = null;
 
       if (urlId) {
         try {
-          const allRaw = localStorage.getItem('bersihin_transactions');
+          const allRaw = sessionStorage.getItem('bersihin_transactions') || localStorage.getItem('bersihin_transactions');
           if (allRaw) {
             const list = JSON.parse(allRaw);
-            order = list.find(x => (x.code || x.id || x.orderId) === urlId) || null;
+            order = list.find(x => (x.code === urlId || x.id === urlId || x.orderId === urlId || x.kode_pesanan === urlId || String(x.id_pesanan) === urlId)) || null;
           }
         } catch (_) { }
+        if (order && typeof setCustomerActiveOrder === 'function') {
+          try { setCustomerActiveOrder(order); } catch (_) { }
+        }
       }
 
       if (!order) {

@@ -316,11 +316,14 @@
       expSub.textContent = `Sejak ${mShort} ${y}`;
     }
 
-    // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna
+    // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna (Stabil & Tidak Berkedip)
     const greetingHeading = document.getElementById('greetingHeading');
     if (greetingHeading) {
       const firstName = (profile.fullName || profile.username || 'Pelanggan').trim().split(/\s+/)[0];
-      greetingHeading.textContent = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      const targetGreeting = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      if (greetingHeading.textContent !== targetGreeting) {
+        greetingHeading.textContent = targetGreeting;
+      }
     }
 
     // 3.2 Sidebar Drawer Mobile
@@ -1320,14 +1323,14 @@
     if (s.includes('MENUNGGU')) {
       return `
         <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5">
-          <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="size-1.5 bg-amber-500 rounded-full" aria-hidden="true"></span>
           <span class="text-amber-800 text-[10px] font-semibold leading-3">Menunggu konfirmasi</span>
         </span>
       `;
     }
     return `
       <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-[20px] inline-flex items-center gap-1.5 shadow-2xs">
-        <span class="size-1.5 bg-blue-600 rounded-full animate-pulse" aria-hidden="true"></span>
+        <span class="size-1.5 bg-blue-600 rounded-full" aria-hidden="true"></span>
         <span class="text-blue-800 text-[10px] font-semibold leading-3">Terkonfirmasi &bull; Diproses</span>
       </span>
     `;
@@ -1394,19 +1397,15 @@
     // Pastikan berada di dashboard dengan memeriksa elemen unik
     if (!document.getElementById('pesananAktifSection') && !document.getElementById('orderDetailModal')) return;
 
-    // 5.1 Ucapan Waktu Dinamis & Profil Pengguna
+    // 5.1 Ucapan Waktu Dinamis & Profil Pengguna (Stabil & Tidak Berkedip)
     const profile = getCustomerProfile();
-    const hour = new Date().getHours();
-    let greeting = 'Selamat Datang';
-    if (hour >= 4 && hour < 11) greeting = 'Selamat Pagi';
-    else if (hour >= 11 && hour < 15) greeting = 'Selamat Siang';
-    else if (hour >= 15 && hour < 18) greeting = 'Selamat Sore';
-    else greeting = 'Selamat Malam';
-
     const greetingHeading = document.getElementById('greetingHeading') || document.querySelector('h2.font-normal');
-    if (greetingHeading && greetingHeading.textContent.includes('Halo,')) {
-      const firstName = profile.fullName ? profile.fullName.split(' ')[0] : 'Andi';
-      greetingHeading.textContent = `${greeting}, ${firstName}! Semoga harimu menyenangkan.`;
+    if (greetingHeading) {
+      const firstName = profile.fullName ? profile.fullName.trim().split(/\s+/)[0] : 'Andi';
+      const targetGreeting = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      if (greetingHeading.textContent !== targetGreeting) {
+        greetingHeading.textContent = targetGreeting;
+      }
     }
 
     const loggedAsEl = document.getElementById('loggedAsName');
@@ -1420,22 +1419,27 @@
     const stats = getCustomerStats(allTrx);
 
     const statTotalEl = document.getElementById('statTotalTransaksi');
-    if (statTotalEl) statTotalEl.textContent = stats.total;
+    if (statTotalEl && statTotalEl.textContent !== String(stats.total)) statTotalEl.textContent = stats.total;
 
     const statSedangEl = document.getElementById('statSedangDiproses');
-    if (statSedangEl) statSedangEl.textContent = stats.processing;
+    if (statSedangEl && statSedangEl.textContent !== String(stats.processing)) statSedangEl.textContent = stats.processing;
 
     const statProcessSub = document.getElementById('statSedangDiprosesSub');
-    if (statProcessSub) statProcessSub.textContent = `${stats.processing} pesanan berjalan`;
+    if (statProcessSub) {
+      if (!stats.processing || stats.processing === 0) {
+        if (statProcessSub.textContent !== 'Tidak ada pesanan aktif') statProcessSub.textContent = 'Tidak ada pesanan aktif';
+      }
+      // Jangan timpa jika sudah diisi tahap spesifik oleh syncDashboardActiveOrder (mis. Tahap penyetrikaan)
+    }
 
     const statSelesaiEl = document.getElementById('statPesananSelesai');
-    if (statSelesaiEl) statSelesaiEl.textContent = stats.completed;
+    if (statSelesaiEl && statSelesaiEl.textContent !== String(stats.completed)) statSelesaiEl.textContent = stats.completed;
 
     const statExpenseEl = document.getElementById('statTotalPengeluaran');
-    if (statExpenseEl) statExpenseEl.textContent = stats.totalExpenseFormatted;
+    if (statExpenseEl && statExpenseEl.textContent !== stats.totalExpenseFormatted) statExpenseEl.textContent = stats.totalExpenseFormatted;
 
     const statExpenseSub = document.getElementById('statTotalPengeluaranSub');
-    if (statExpenseSub) statExpenseSub.textContent = 'Akumulasi pengeluaran';
+    if (statExpenseSub && statExpenseSub.textContent !== 'Akumulasi pengeluaran') statExpenseSub.textContent = 'Akumulasi pengeluaran';
 
     // 5.3 Render Tabel Riwayat Transaksi Terbaru (Dinamis dari Storage)
     const recentBody = document.getElementById('recentTransactionsBody');
@@ -1444,42 +1448,44 @@
 
     if (recentBody) {
       const recentList = allTrx.slice(0, 4); // Ambil 4 transaksi terbaru
-      if (recentList.length === 0) {
-        if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
-        if (recentEmpty) recentEmpty.classList.remove('hidden');
-      } else {
-        if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
-        if (recentEmpty) recentEmpty.classList.add('hidden');
+      const recentKey = recentList.map(t => `${t.code}_${t.status}_${t.total}`).join('|');
+      if (recentBody.getAttribute('data-recent-key') !== recentKey) {
+        recentBody.setAttribute('data-recent-key', recentKey);
+        if (recentList.length === 0) {
+          if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
+          if (recentEmpty) recentEmpty.classList.remove('hidden');
+          recentBody.innerHTML = '';
+        } else {
+          if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
+          if (recentEmpty) recentEmpty.classList.add('hidden');
 
-        recentBody.innerHTML = recentList.map(trx => `
-          <tr class="hover:bg-slate-50/80 transition">
-            <td class="px-3 py-3 font-bold text-slate-800">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
-            </td>
-            <td class="px-3 py-3 text-slate-600">${trx.date}</td>
-            <td class="px-3 py-3 text-slate-600">${trx.service}</td>
-            <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
-            <td class="px-3 py-3">
-              ${getStatusBadgeHtml(trx.status)}
-            </td>
-            <td class="px-3 py-1.5 text-right">
-              <div class="flex items-center justify-end gap-1">
-                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
-                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
-                  class="px-2 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-semibold inline-flex items-center gap-1 transition">
-                  <span>Invoice</span>
+          recentBody.innerHTML = recentList.map(trx => `
+            <tr class="hover:bg-slate-50/80">
+              <td class="px-3 py-3 font-bold text-slate-800">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700">${trx.code}</a>
+              </td>
+              <td class="px-3 py-3 text-slate-600">${trx.date}</td>
+              <td class="px-3 py-3 text-slate-600">${trx.service}</td>
+              <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
+              <td class="px-3 py-3">
+                <a href="status.html?id=${encodeURIComponent(trx.code)}"
+                  title="Klik untuk melacak perjalanan pesanan ${trx.code}"
+                  class="inline-block transition hover:opacity-85 hover:scale-[1.02] active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
+                  ${getStatusBadgeHtml(trx.status)}
                 </a>
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                  aria-label="Lihat detail transaksi ${trx.code}"
-                  class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 transition">
+              </td>
+              <td class="px-3 py-1.5 text-right">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                  aria-label="Lihat invoice transaksi ${trx.code}"
+                  class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50">
                   <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </a>
-              </div>
-            </td>
-          </tr>
-        `).join('');
+              </td>
+            </tr>
+          `).join('');
+        }
       }
     }
 
@@ -1523,7 +1529,7 @@
     let currentServiceName = 'Cuci Komplit (Cuci + Setrika)';
     let currentServiceId = 2;
 
-    // Sinkronisasi 4 layanan aktif pelanggan langsung dari MySQL (GET /api/pelanggan/layanan)
+    // Sinkronisasi katalog layanan aktif pelanggan langsung dari MySQL (GET /api/pelanggan/layanan)
     (async function hydrateCustomerServiceCards() {
       try {
         const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/layanan`);
@@ -1540,12 +1546,14 @@
           card.setAttribute('data-service-est', svc.estimasi_waktu || '');
           const titleEl = card.querySelector('[data-service-title]');
           const descEl = card.querySelector('[data-service-desc]');
-          const priceEl = card.querySelector('[data-service-price-label]');
-          const estEl = card.querySelector('[data-service-est-label]');
+          const priceEl = card.querySelector('[data-service-price]') || card.querySelector('[data-service-price-label]');
+          const unitEl = card.querySelector('[data-service-unit]');
+          const estEl = card.querySelector('[data-service-est]') || card.querySelector('[data-service-est-label]');
           if (titleEl) titleEl.textContent = svc.nama_layanan;
           if (descEl && svc.deskripsi) descEl.textContent = svc.deskripsi;
           if (priceEl) priceEl.textContent = formatRupiah(svc.harga);
-          if (estEl && svc.estimasi_waktu) estEl.textContent = `Estimasi ${svc.estimasi_waktu}`;
+          if (unitEl && svc.satuan) unitEl.textContent = `/${svc.satuan}`;
+          if (estEl && svc.estimasi_waktu) estEl.textContent = svc.estimasi_waktu;
         });
       } catch (_) {}
     })();
@@ -1784,10 +1792,11 @@
           btn.setAttribute('data-service-option', svc.nama_layanan);
           btn.setAttribute('data-price', String(priceNum));
           btn.setAttribute('data-est', estText);
-          const nameEl = btn.querySelector('.font-semibold');
-          const subEl = btn.querySelector('.text-\\[11px\\]');
+          btn.setAttribute('data-unit', svc.satuan || 'kg');
+          const nameEl = btn.querySelector('[data-opt-name]') || btn.querySelector('.font-semibold') || btn.querySelector('.font-bold');
+          const priceEl = btn.querySelector('[data-opt-price]') || btn.querySelector('.text-\\[11px\\]');
           if (nameEl) nameEl.textContent = svc.nama_layanan;
-          if (subEl) subEl.textContent = `${svc.estimasi_waktu || '2 Hari'} • ${formatRupiah(priceNum)}/${svc.satuan || 'kg'}`;
+          if (priceEl) priceEl.textContent = `${formatRupiah(priceNum)}/${svc.satuan || 'kg'}`;
         });
         const activeBtn = document.querySelector('.service-option-btn[aria-checked="true"]');
         if (activeBtn) selectServiceOption(activeBtn);
@@ -1892,6 +1901,8 @@
     let currentFilter = 'all';
     let currentSearch = '';
     let currentSort = 'newest';
+    let currentPage = 1;
+    const itemsPerPage = 8;
 
     // Sinkronisasi pesanan langsung dari database MySQL XAMPP secara real-time
     (async function syncWithDatabase() {
@@ -1992,7 +2003,16 @@
         return 0;
       });
 
-      // 3. Render ke tabel
+      // 3. Hitung pagination dinamis
+      const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, filtered.length);
+      const pageItems = filtered.slice(startIndex, endIndex);
+
+      // 4. Render ke tabel
       if (filtered.length === 0) {
         tableBody.innerHTML = '';
         if (tableBody.parentElement) tableBody.parentElement.classList.add('hidden');
@@ -2001,7 +2021,7 @@
         if (tableBody.parentElement) tableBody.parentElement.classList.remove('hidden');
         if (emptySearchState) emptySearchState.classList.add('hidden');
 
-        tableBody.innerHTML = filtered.map(trx => `
+        tableBody.innerHTML = pageItems.map(trx => `
           <tr class="trx-row hover:bg-slate-50/80 transition"
             data-code="${trx.code}"
             data-service="${trx.service}"
@@ -2009,26 +2029,24 @@
             data-amount="${trx.amount}"
             data-timestamp="${trx.timestamp}">
             <td class="px-4 py-3.5 font-bold text-slate-800">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+              <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
             </td>
             <td class="px-4 py-3.5 text-slate-600">${trx.date}</td>
             <td class="px-4 py-3.5 text-slate-700 font-medium">${trx.service}</td>
             <td class="px-4 py-3.5 text-slate-600">${trx.weight}</td>
             <td class="px-4 py-3.5 font-bold text-slate-800">${trx.total}</td>
             <td class="px-4 py-3.5">
-              ${getStatusBadgeHtml(trx.status)}
+              <a href="status.html?id=${encodeURIComponent(trx.code)}"
+                title="Klik untuk melacak perjalanan pesanan ${trx.code}"
+                class="inline-block transition hover:opacity-85 hover:scale-[1.02] active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
+                ${getStatusBadgeHtml(trx.status)}
+              </a>
             </td>
             <td class="px-4 py-2 text-right">
-              <div class="flex items-center justify-end gap-1.5">
+              <div class="flex items-center justify-end">
                 <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
-                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
-                  class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold inline-flex items-center gap-1 transition">
-                  <svg class="size-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  <span>Invoice</span>
-                </a>
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                  aria-label="Lihat rincian transaksi ${trx.code}"
-                  class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                  aria-label="Lihat invoice & bukti pembayaran transaksi ${trx.code}"
+                  class="min-h-[36px] px-3.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                   <span>Detail</span>
                   <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -2040,9 +2058,75 @@
         `).join('');
       }
 
-      // 4. Update Info Text
+      // 5. Update Info Text secara akurat
       if (tableInfoText) {
-        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${filtered.length}</span> dari <span class="font-semibold text-slate-700">${allTrx.length}</span> transaksi`;
+        if (filtered.length === 0) {
+          tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">0</span> dari <span class="font-semibold text-slate-700">${allTrx.length}</span> transaksi`;
+        } else {
+          tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${startIndex + 1} - ${endIndex}</span> dari <span class="font-semibold text-slate-700">${filtered.length}</span> transaksi`;
+        }
+      }
+
+      // 6. Render Tombol Angka Halaman Dinamis (Sesuai Jumlah Riwayat Pesanan)
+      renderPaginationControls(totalPages);
+    }
+
+    // Fungsi Render Tombol Pagination 1, 2, 3 Sesuai Data Riwayat Pesanan
+    function renderPaginationControls(totalPages) {
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
+      const pageContainer = document.getElementById('pageNumbersContainer');
+
+      if (prevBtn) {
+        prevBtn.disabled = false;
+        prevBtn.removeAttribute('disabled');
+        prevBtn.onclick = () => {
+          if (currentPage > 1) {
+            currentPage--;
+            renderRows();
+          } else if (totalPages > 1) {
+            currentPage = totalPages;
+            renderRows();
+          }
+        };
+      }
+
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.removeAttribute('disabled');
+        nextBtn.onclick = () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            renderRows();
+          } else if (totalPages > 1) {
+            currentPage = 1;
+            renderRows();
+          }
+        };
+      }
+
+      if (pageContainer) {
+        let pagesHtml = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const isActive = (i === currentPage);
+          pagesHtml += `
+            <button type="button" data-page="${i}"
+              class="page-num-btn min-w-[36px] min-h-[36px] px-2 rounded-lg text-xs font-semibold transition ${isActive ? 'bg-cyan-700 text-white' : 'border border-slate-200 bg-white hover:bg-slate-100 text-slate-600'}">
+              ${i}
+            </button>
+          `;
+        }
+        pageContainer.innerHTML = pagesHtml;
+
+        pageContainer.querySelectorAll('.page-num-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const p = parseInt(btn.getAttribute('data-page'), 10);
+            if (p && p !== currentPage) {
+              currentPage = p;
+              renderRows();
+            }
+          });
+        });
       }
     }
 
@@ -2062,6 +2146,7 @@
         tab.classList.remove('text-slate-600');
 
         currentFilter = tab.getAttribute('data-filter') || 'all';
+        currentPage = 1;
         renderRows();
       });
     });
@@ -2070,6 +2155,7 @@
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         currentSearch = e.target.value.trim().toLowerCase();
+        currentPage = 1;
         renderRows();
       });
     }
@@ -2079,6 +2165,7 @@
       resetFilterBtn.addEventListener('click', () => {
         currentFilter = 'all';
         currentSearch = '';
+        currentPage = 1;
         if (searchInput) searchInput.value = '';
 
         filterTabs.forEach((t, idx) => {
@@ -2101,6 +2188,7 @@
     if (sortSelect) {
       sortSelect.addEventListener('change', (e) => {
         currentSort = e.target.value;
+        currentPage = 1;
         renderRows();
       });
     }
@@ -2194,12 +2282,43 @@
         statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
       } else if (data.status === 'Menunggu konfirmasi') {
         statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
+        statusDot.className = 'size-1.5 bg-amber-500 rounded-full';
         statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
       } else {
         statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
         statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
         statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+      }
+    }
+
+    // Hubungkan Bukti Transaksi dan Tombol Invoice langsung ke Pemeriksaan Invoice (Bukan Pop Up)
+    const dtlBuktiLink = document.getElementById('dtlBuktiLink');
+    if (dtlBuktiLink) {
+      dtlBuktiLink.href = `invoice.html?id=${encodeURIComponent(data.code)}`;
+    }
+
+    const viewFullInvoiceBtn = document.getElementById('viewFullInvoiceBtn');
+    if (viewFullInvoiceBtn) {
+      viewFullInvoiceBtn.href = `invoice.html?id=${encodeURIComponent(data.code)}`;
+    }
+
+    // Tampilkan Bukti Transfer Riil jika tersimpan
+    let proofImgSrc = data.bukti_transfer || data.bukti_bayar || null;
+    try {
+      const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+      const found = invList.find(x => (x.kode_pesanan === data.code || x.orderId === data.code || x.id === data.code));
+      if (found && (found.bukti_transfer || found.bukti_bayar)) {
+        proofImgSrc = found.bukti_transfer || found.bukti_bayar;
+      }
+    } catch(_) {}
+
+    const dtlBuktiImg = document.getElementById('dtlBuktiImg');
+    const dtlBuktiBadge = document.getElementById('dtlBuktiBadge');
+    if (proofImgSrc && dtlBuktiImg) {
+      dtlBuktiImg.src = proofImgSrc;
+      if (dtlBuktiBadge) {
+        dtlBuktiBadge.textContent = 'Terlampir';
+        dtlBuktiBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700';
       }
     }
 

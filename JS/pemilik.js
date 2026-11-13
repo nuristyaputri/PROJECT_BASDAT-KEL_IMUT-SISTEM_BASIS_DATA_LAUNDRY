@@ -839,6 +839,97 @@
   }
 
   /**
+   * Helper untuk merender ikon layanan yang identik dengan portal pelanggan (PELANGGAN/layanan.html)
+   */
+  function getLayananIconHtml(lay) {
+    const id = Number(lay.id_layanan) || 0;
+    const name = String(lay.nama_layanan || '').toLowerCase();
+
+    // 1. Cuci Kering Lipat (ID 1)
+    if (id === 1 || (name.includes('kering') && !name.includes('setrika'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-blue-50 text-cyan-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="2" />
+            <circle cx="14" cy="15" r="5" stroke="currentColor" stroke-width="2" />
+            <circle cx="8" cy="7.5" r="1" fill="currentColor" />
+            <circle cx="11.5" cy="7.5" r="1" fill="currentColor" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 2. Cuci Komplit (Cuci + Setrika) (ID 2)
+    if (id === 2 || name.includes('komplit') || (name.includes('cuci') && name.includes('setrika'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M9 4.5L14 7L19 4.5L23.5 8.5L20.5 12.5L19 11.5V22.5C19 23.05 18.55 23.5 18 23.5H10C9.45 23.5 9 23.05 9 22.5V11.5L7.5 12.5L4.5 8.5L9 4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 3. Setrika Uap Saja (ID 3)
+    if (id === 3 || (name.includes('setrika') && !name.includes('cuci'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-400 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M10 8H18.5C20.43 8 22 9.57 22 11.5V14H7.5L4.5 19.5H23.5V16.5C23.5 14 22 12 19 12H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 4. Cuci Bedcover Besar (ID 4)
+    if (id === 4 || name.includes('bedcover')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+            <path d="M4 12H24" stroke="currentColor" stroke-width="2" />
+            <circle cx="9" cy="9" r="1" fill="currentColor" />
+            <circle cx="12" cy="9" r="1" fill="currentColor" />
+            <path d="M7 16H21M7 19H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 5. Cuci Kilat Express (4 Jam) (ID 5)
+    if (id === 5 || name.includes('express') || name.includes('kilat') || name.includes('4 jam')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-orange-50 text-red-400 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M15.5 3.5L6.5 15.5H14L12.5 24.5L21.5 12.5H14L15.5 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 6. Cuci Sepatu Premium (ID 6)
+    if (id === 6 || name.includes('sepatu')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M4 18L7 12L13 13L16 10H22C23.1 10 24 10.9 24 12V18C24 19.1 23.1 20 22 20H6C4.9 20 4 19.1 4 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 13L9 18M13 13L13 18M16 13L17 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // Default icon
+    return `
+      <div class="w-12 h-12 rounded-xl bg-sky-100 text-cyan-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+        <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M9 4.5L14 7L19 4.5L23.5 8.5L20.5 12.5L19 11.5V22.5C19 23.05 18.55 23.5 18 23.5H10C9.45 23.5 9 23.05 9 22.5V11.5L7.5 12.5L4.5 8.5L9 4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+        </svg>
+      </div>
+    `;
+  }
+
+  /**
    * Mengambil data layanan dari MySQL XAMPP dan merender ke grid kartu secara dinamis
    */
   async function syncPemilikLayananFromDatabase() {
@@ -854,6 +945,7 @@
       if (!res.ok) return;
       const json = await res.json();
       if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5';
         grid.innerHTML = '';
         json.data.forEach((lay, idx) => {
           const card = document.createElement('div');
@@ -869,11 +961,7 @@
           card.innerHTML = `
             <div>
               <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-sky-100 text-cyan-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                  </svg>
-                </div>
+                ${getLayananIconHtml(lay)}
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold ${isActive ? 'bg-emerald-50 text-teal-700 border border-emerald-200/60' : 'bg-slate-100 text-slate-500 border border-slate-200'}">
                   <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-teal-600' : 'bg-slate-400'}"></span>
                   ${isActive ? 'Aktif' : 'Nonaktif'}

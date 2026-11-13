@@ -547,7 +547,38 @@
             <!-- Metode Pembayaran -->
             <div class="w-full mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
               <span class="text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">Metode</span>
-              <span class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">QRIS</span>
+              <span id="paymentMethod" class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">QRIS</span>
+            </div>
+
+            <!-- Bagian Bukti Transaksi (Klik langsung menuju pemeriksaan invoice, tanpa popup) -->
+            <div class="w-full mt-4 pt-3 border-t border-slate-100 flex flex-col gap-2">
+              <div class="w-full flex justify-between items-center">
+                <span class="text-slate-600 text-[11px] font-semibold font-['Poppins'] flex items-center gap-1.5">
+                  <svg class="size-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  Bukti Transaksi
+                </span>
+                <span id="dtlBuktiBadge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700">Tersedia</span>
+              </div>
+
+              <!-- Tautan Bukti Transaksi langsung buka Pemeriksaan Invoice penuh (Bukan Pop Up) -->
+              <a href="invoice.html" id="dtlBuktiLink"
+                title="Buka bukti transaksi langsung di fitur pemeriksaan invoice"
+                class="group w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-cyan-50/70 hover:border-cyan-400 active:scale-[0.99] transition flex items-center gap-3">
+                <div class="size-12 rounded-lg bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center relative">
+                  <img id="dtlBuktiImg" src="../assets/sample-receipt.png" alt="Bukti Transaksi" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" onerror="this.src='../assets/sample-receipt.png'">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p id="dtlBuktiTitle" class="text-[11px] font-bold text-slate-800 truncate group-hover:text-cyan-800">Bukti Transfer &amp; Invoice</p>
+                  <p class="text-[10px] text-cyan-700 font-medium flex items-center gap-1 mt-0.5">
+                    <span>Periksa di Invoice</span>
+                    <svg class="size-3 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="none">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
 
@@ -759,6 +790,32 @@
           statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
           statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
           statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+        }
+
+        // Hubungkan Bukti Transaksi langsung ke Pemeriksaan Invoice (Bukan Pop Up)
+        const dtlBuktiLink = document.getElementById('dtlBuktiLink');
+        if (dtlBuktiLink) {
+          dtlBuktiLink.href = `invoice.html?id=${encodeURIComponent(item.code)}`;
+        }
+
+        // Cari Bukti Transfer Nyata dari Storage
+        let proofImgSrc = item.bukti_transfer || item.bukti_bayar || null;
+        try {
+          const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+          const found = invList.find(x => (x.kode_pesanan === item.code || x.orderId === item.code || x.id === item.code));
+          if (found && (found.bukti_transfer || found.bukti_bayar)) {
+            proofImgSrc = found.bukti_transfer || found.bukti_bayar;
+          }
+        } catch(_) {}
+
+        const dtlBuktiImg = document.getElementById('dtlBuktiImg');
+        const dtlBuktiBadge = document.getElementById('dtlBuktiBadge');
+        if (proofImgSrc && dtlBuktiImg) {
+          dtlBuktiImg.src = proofImgSrc;
+          if (dtlBuktiBadge) {
+            dtlBuktiBadge.textContent = 'Terlampir';
+            dtlBuktiBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700';
+          }
         }
       }
     }

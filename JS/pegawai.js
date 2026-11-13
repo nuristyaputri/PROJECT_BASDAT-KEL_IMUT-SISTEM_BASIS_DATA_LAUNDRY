@@ -651,6 +651,8 @@
                 paymentStatus: isPaid ? 'Lunas' : 'Menunggu',
                 rawPaymentStatus: o.status_pembayaran || (isPaid ? 'BERHASIL' : 'MENUNGGU'),
                 referensi_bayar: o.referensi_bayar || null,
+                bukti_transfer: o.bukti_bayar || o.bukti_transfer || null,
+                bukti_bayar: o.bukti_bayar || o.bukti_transfer || null,
                 date: dateStr,
                 time: timeStr,
                 rawDate: dateObj,
@@ -674,6 +676,10 @@
                 if (lo.customerAddress) existing.customerAddress = lo.customerAddress;
                 if (lo.notes) existing.notes = lo.notes;
                 if (lo.paymentMethod) existing.paymentMethod = lo.paymentMethod;
+                if (lo.bukti_transfer || lo.bukti_bayar) {
+                    existing.bukti_transfer = lo.bukti_transfer || lo.bukti_bayar;
+                    existing.bukti_bayar = existing.bukti_transfer;
+                }
             } else {
                 const st = normalizeOrderStatus(lo.status || 'MENUNGGU');
                 const beratNum = Number(lo.weightKg) || Number(String(lo.weight || '3.5').replace(/[^\d.]/g, '')) || 3.5;
@@ -699,6 +705,8 @@
                     rawStatus: lo.status || 'MENUNGGU',
                     paymentMethod: lo.paymentMethod || 'QRIS',
                     paymentStatus: (st === 'Menunggu konfirmasi') ? 'Menunggu' : 'Lunas',
+                    bukti_transfer: lo.bukti_transfer || lo.bukti_bayar || null,
+                    bukti_bayar: lo.bukti_bayar || lo.bukti_transfer || null,
                     date: dateStr,
                     time: timeStr,
                     rawDate: dateObj,
@@ -846,6 +854,38 @@
                             <div class="text-[11px]">
                                 <span class="font-semibold text-slate-800 block">Verifikasi Pegawai</span>
                                 <span id="modalInvoiceVerifyHint" class="text-slate-500 block">Periksa saldo masuk / uang tunai di kasir sebelum menekan tombol konfirmasi di bawah.</span>
+                            </div>
+                        </div>
+
+                        <!-- Bukti Transfer Pelanggan (Untuk Diperiksa Pegawai) -->
+                        <div id="modalBuktiTransferSection" class="p-3 bg-white rounded-lg border border-slate-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-xs font-bold text-slate-800">Bukti Transfer Pelanggan</span>
+                                </div>
+                                <span id="modalBuktiStatusBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Perlu Dicek</span>
+                            </div>
+                            <!-- Jika Ada Bukti Gambar -->
+                            <div id="modalBuktiContent" class="flex items-center gap-3">
+                                <img id="modalBuktiImg" src="" alt="Bukti Transfer" class="w-14 h-14 object-cover rounded-lg border border-slate-200 shrink-0 cursor-pointer hover:opacity-90 transition shadow-2xs" onclick="window.zoomBuktiTransfer(this.src)">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-semibold text-slate-800 block truncate">Bukti Pembayaran Digital</span>
+                                    <span class="text-[10px] text-slate-400 block mt-0.5">Unggahan dari device pelanggan (JPG/PNG)</span>
+                                    <button type="button" onclick="window.zoomBuktiTransfer(document.getElementById('modalBuktiImg').src)" class="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:text-cyan-900 mt-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <span>Lihat Ukuran Penuh (Zoom)</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Jika Tanpa Bukti / Tunai -->
+                            <div id="modalNoBuktiMsg" class="hidden text-[11px] text-slate-500 italic py-1">
+                                Pelanggan memilih metode Tunai (COD) atau belum mengunggah struk transfer.
                             </div>
                         </div>
                     </div>
@@ -1051,7 +1091,78 @@
 
         const modal = document.getElementById('invoiceVerificationModal');
         if (modal) modal.classList.remove('hidden');
+
+        // Tampilkan Bukti Transfer jika ada
+        const buktiSrc = order.bukti_transfer || order.bukti_bayar;
+        const buktiContent = document.getElementById('modalBuktiContent');
+        const noBuktiMsg = document.getElementById('modalNoBuktiMsg');
+        const buktiImg = document.getElementById('modalBuktiImg');
+        const buktiBadge = document.getElementById('modalBuktiStatusBadge');
+
+        if (buktiSrc && String(order.paymentMethod || '').toUpperCase() !== 'TUNAI') {
+            if (buktiImg) buktiImg.src = buktiSrc;
+            if (buktiContent) buktiContent.classList.remove('hidden');
+            if (noBuktiMsg) noBuktiMsg.classList.add('hidden');
+            if (buktiBadge) {
+                if (order.status === 'Menunggu konfirmasi') {
+                    buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
+                    buktiBadge.textContent = 'Perlu Dicek Pegawai';
+                } else {
+                    buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    buktiBadge.textContent = 'Bukti Terverifikasi';
+                }
+            }
+        } else {
+            if (buktiContent) buktiContent.classList.add('hidden');
+            if (noBuktiMsg) {
+                noBuktiMsg.classList.remove('hidden');
+                noBuktiMsg.textContent = String(order.paymentMethod || '').toUpperCase() === 'TUNAI'
+                    ? 'Pembayaran Tunai (COD) - Dibayar saat serah terima pakaian.'
+                    : 'Belum ada bukti transfer digital yang diunggah.';
+            }
+            if (buktiBadge) {
+                buktiBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+                buktiBadge.textContent = String(order.paymentMethod || '').toUpperCase() === 'TUNAI' ? 'Tunai / COD' : 'Tanpa Bukti';
+            }
+        }
     }
+
+    // Modal Zoom Lightbox Bukti Transfer untuk Pegawai
+    window.zoomBuktiTransfer = function(src) {
+        if (!src) return;
+        let lightbox = document.getElementById('staffBuktiLightbox');
+        if (!lightbox) {
+            lightbox = document.createElement('div');
+            lightbox.id = 'staffBuktiLightbox';
+            lightbox.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+            lightbox.innerHTML = `
+                <div class="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                    <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="size-2 rounded-full bg-emerald-400"></span>
+                            <span class="text-xs font-bold tracking-wide">Pemeriksaan Struk Bukti Transfer Pelanggan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a id="staffBuktiDownloadLink" href="#" target="_blank" download="bukti_transfer.jpg" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white text-[11px] rounded-lg transition">Buka Tab Baru</a>
+                            <button type="button" onclick="document.getElementById('staffBuktiLightbox').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition">✕</button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[80vh] overflow-auto">
+                        <img id="staffBuktiLightboxImg" src="" alt="Bukti Transfer Penuh" class="max-w-full max-h-[75vh] rounded-lg shadow-lg object-contain">
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(lightbox);
+            lightbox.addEventListener('click', (ev) => {
+                if (ev.target === lightbox) lightbox.classList.add('hidden');
+            });
+        }
+        const img = document.getElementById('staffBuktiLightboxImg');
+        const dlLink = document.getElementById('staffBuktiDownloadLink');
+        if (img) img.src = src;
+        if (dlLink) dlLink.href = src;
+        lightbox.classList.remove('hidden');
+    };
 
     function closeInvoiceModal() {
         const modal = document.getElementById('invoiceVerificationModal');
