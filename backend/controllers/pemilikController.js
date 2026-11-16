@@ -1080,7 +1080,7 @@ exports.laporanPendapatan = async (req, res) => {
 
             const pendapatan_bulanan = perBulanRows.map(r => {
                 const rev = round2(Number(r.total_pendapatan) || 0);
-                const exp = round2(Math.round(rev * 0.38));
+                const exp = 0; // belum ada tabel pengeluaran di database
                 return {
                     bulan_key: r.bulan_key,
                     bulan_label: r.bulan_label,
@@ -1151,7 +1151,7 @@ exports.laporanPendapatan = async (req, res) => {
                 .sort((a, b) => b.bulan_key.localeCompare(a.bulan_key))
                 .map(r => {
                     const rev = round2(r.total_pendapatan);
-                    const exp = round2(Math.round(rev * 0.38));
+                    const exp = 0; // belum ada tabel pengeluaran di database
                     return {
                         bulan_key: r.bulan_key,
                         bulan_label: r.bulan_label,

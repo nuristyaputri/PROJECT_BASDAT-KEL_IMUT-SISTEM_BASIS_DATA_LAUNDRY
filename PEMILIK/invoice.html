@@ -548,11 +548,7 @@
 
                 </div>
 
-                <!-- Footer Pembukuan -->
-                <div class="p-4 bg-slate-100 text-center text-xs text-slate-500 border-t border-slate-200">
-                    <span>Dokumen Audit Resmi Bersihin Laundry • Hanya untuk Kepentingan Pemilik &amp; Akuntansi
-                        Bisnis</span>
-                </div>
+                
             </div>
 
             <!-- Navigasi Bawah -->
@@ -657,9 +653,13 @@
                 }
             };
 
-            // 1. Ambil dari API Pemilik
+            // 1. Ambil dari API Pemilik (MySQL XAMPP)
             try {
-                const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+                const token = (typeof ensurePemilikToken === 'function' ? await ensurePemilikToken() : null) ||
+                              sessionStorage.getItem('bersihin_owner_token') ||
+                              localStorage.getItem('bersihin_owner_token') ||
+                              sessionStorage.getItem('bersihin_token') ||
+                              localStorage.getItem('bersihin_token');
                 const headers = token ? { Authorization: 'Bearer ' + token } : {};
                 const res = await fetch(`${getApiBaseUrl()}/api/pemilik/pesanan`, { headers });
                 if (res.ok) {
@@ -668,16 +668,27 @@
                         json.data.forEach(add);
                     }
                 }
+                const resTrx = await fetch(`${getApiBaseUrl()}/api/pemilik/transaksi`, { headers });
+                if (resTrx.ok) {
+                    const jsonTrx = await resTrx.json();
+                    if (jsonTrx && jsonTrx.success && Array.isArray(jsonTrx.data)) {
+                        jsonTrx.data.forEach(add);
+                    }
+                }
             } catch (_) {}
 
-            // 2. Ambil dari invoices & transaksi pelanggan lokal
+            // 2. Ambil dari transaksi lokal dan pesanan aktif Pelanggan & Pegawai
             try {
-                const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
-                if (Array.isArray(invList)) invList.forEach(add);
+                const act = JSON.parse(localStorage.getItem('bersihin_active_order') || 'null');
+                if (act) add(act);
             } catch (_) {}
             try {
                 const trxList = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
                 if (Array.isArray(trxList)) trxList.forEach(add);
+            } catch (_) {}
+            try {
+                const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+                if (Array.isArray(invList)) invList.forEach(add);
             } catch (_) {}
             try {
                 const u = JSON.parse(localStorage.getItem('bersihin_unified_orders') || localStorage.getItem('bersihin_orders') || '[]');
@@ -708,7 +719,11 @@
         async function enrichOwnerOrderDetail(order) {
             if (!order || !order.id_pesanan) return order;
             try {
-                const token = sessionStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_token');
+                const token = (typeof ensurePemilikToken === 'function' ? await ensurePemilikToken() : null) ||
+                              sessionStorage.getItem('bersihin_owner_token') ||
+                              localStorage.getItem('bersihin_owner_token') ||
+                              sessionStorage.getItem('bersihin_token') ||
+                              localStorage.getItem('bersihin_token');
                 const headers = token ? { Authorization: 'Bearer ' + token } : {};
                 const res = await fetch(`${getApiBaseUrl()}/api/pemilik/pesanan/${encodeURIComponent(order.id_pesanan)}`, { headers });
                 if (res.ok) {
@@ -899,6 +914,15 @@
                 if (selector) selector.value = found.code || found.id;
                 await enrichOwnerOrderDetail(found);
                 renderOwnerInvoice(found);
+            }
+
+            if (!window.hasOwnerInvoiceStorageListener) {
+                window.hasOwnerInvoiceStorageListener = true;
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+                        initOwnerInvoice();
+                    }
+                });
             }
         }
 

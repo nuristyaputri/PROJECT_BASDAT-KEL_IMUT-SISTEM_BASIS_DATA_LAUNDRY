@@ -167,8 +167,7 @@
                                 <span>Kelola Status</span>
                             </span>
                             <span id="sidebarBadge"
-                                class="min-w-[18px] h-[18px] px-1 bg-red-400 rounded-full inline-flex justify-center items-center text-white text-[9px] font-semibold leading-none">
-                                4
+                                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none hidden">
                             </span>
                         </a>
                     </li>
@@ -269,7 +268,7 @@
                     </div>
                 </div>
 
-                <!-- Tombol & Dropdown Notifikasi -->
+                                <!-- Tombol & Dropdown Notifikasi -->
                 <div class="relative">
                     <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
                         class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
@@ -277,22 +276,57 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        <span id="notifDot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
                     </button>
-                    <!-- Notification Dropdown -->
-                    <div id="pegawaiNotifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
-                        <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
-                            <span class="font-semibold text-xs text-slate-700">Notifikasi</span>
-                            <span class="text-[10px] bg-cyan-100 text-cyan-700 font-bold px-1.5 py-0.5 rounded-full">3 Baru</span>
+
+                    <!-- Panel Dropdown Notifikasi -->
+                    <div id="notifDropdown" role="region" aria-label="Daftar Notifikasi"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-slate-200 shadow-lg p-4 z-50">
+                        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                            <span class="text-xs font-bold text-slate-800">Notifikasi Pegawai</span>
+                            <button type="button" id="markNotifReadBtn"
+                                class="min-h-[36px] px-2 rounded-lg text-[11px] font-semibold text-cyan-700 hover:bg-cyan-50 cursor-pointer">
+                                Tandai dibaca
+                            </button>
                         </div>
-                        <div class="max-h-64 overflow-y-auto divide-y divide-slate-50 text-xs">
-                            <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
-                                <p class="font-semibold text-slate-800 text-[11px]">Pesanan Masuk #ORD-2026-081</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Cuci Komplit 3.5 kg baru saja masuk antrean.</p>
+                        <div id="pegawaiNotifList" class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-orange-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                                        <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan Masuk TRX-240520-05</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Cuci Komplit 3,5 kg menunggu konfirmasi kasir.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">Baru saja</span>
+                                </div>
                             </div>
-                            <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
-                                <p class="font-semibold text-slate-800 text-[11px]">Status Siap Diambil</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Pesanan #ORD-2026-079 telah selesai disetrika.</p>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4" />
+                                        <path d="M8 5V8L10 9.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan TRX-240519-02 Disetrika</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Pakaian selesai dicuci dan masuk tahap setrika uap.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">15 menit lalu</span>
+                                </div>
+                            </div>
+                            <div class="py-3 flex items-start gap-3">
+                                <div class="size-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                        <path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <div class="text-xs leading-4">
+                                    <p class="font-bold text-slate-800">Pesanan TRX-240517-03 Siap Diambil</p>
+                                    <p class="text-slate-600 text-[11px] mt-1">Cucian bersih &amp; rapi, siap diserahkan ke pelanggan.</p>
+                                    <span class="block text-[10px] text-slate-400 mt-1.5">1 jam lalu</span>
+                                </div>
                             </div>
                         </div>
                     </div>

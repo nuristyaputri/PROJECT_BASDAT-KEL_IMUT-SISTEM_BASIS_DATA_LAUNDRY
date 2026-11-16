@@ -67,12 +67,43 @@
     return 'http://localhost:5000';
   }
 
-  async function ensurePemilikToken() {
-    const sessionToken = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_owner_token');
-    if (sessionToken) return sessionToken;
+  function isOwnerToken(token) {
+    if (!token || typeof token !== 'string') return false;
+    try {
+      const parts = token.split('.');
+      if (parts.length < 2) return false;
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(decodeURIComponent(escape(atob(b64))));
+      if (!payload) return false;
+      if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+      return payload.role === 'PEMILIK';
+    } catch (_) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload && payload.role === 'PEMILIK';
+      } catch (_) {
+        return false;
+      }
+    }
+  }
 
-    const localToken = localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_owner_token');
-    if (localToken) return localToken;
+  async function ensurePemilikToken() {
+    const sessionOwner = sessionStorage.getItem('bersihin_owner_token');
+    if (isOwnerToken(sessionOwner)) return sessionOwner;
+
+    const sessionGeneric = sessionStorage.getItem('bersihin_token');
+    if (isOwnerToken(sessionGeneric)) {
+      sessionStorage.setItem('bersihin_owner_token', sessionGeneric);
+      return sessionGeneric;
+    }
+
+    const localOwner = localStorage.getItem('bersihin_owner_token');
+    if (isOwnerToken(localOwner)) return localOwner;
+
+    const localGeneric = localStorage.getItem('bersihin_token');
+    if (isOwnerToken(localGeneric)) {
+      return localGeneric;
+    }
 
     try {
       const res = await fetch(`${getBackendBaseUrl()}/api/auth/login`, {
@@ -80,16 +111,178 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: 'pemilik', password: 'password123' })
       });
-      const json = await res.json();
-      if (json && json.success && json.data && json.data.token) {
-        sessionStorage.setItem('bersihin_owner_token', json.data.token);
-        sessionStorage.setItem('bersihin_token', json.data.token);
-        localStorage.setItem('bersihin_owner_token', json.data.token);
-        return json.data.token;
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data && json.data.token) {
+          const token = json.data.token;
+          sessionStorage.setItem('bersihin_owner_token', token);
+          sessionStorage.setItem('bersihin_token', token);
+          localStorage.setItem('bersihin_owner_token', token);
+          return token;
+        }
       }
     } catch (_) {}
     return null;
   }
+  window.ensurePemilikToken = ensurePemilikToken;
+  window.isOwnerToken = isOwnerToken;
+
+  function normalizeOwnerStatus(st) {
+    const s = String(st || '').toUpperCase().trim();
+    if (s.includes('BATAL')) return 'DIBATALKAN';
+    if (s.includes('SELESAI')) return 'SELESAI';
+    if (s.includes('SIAP') || s.includes('DIAMBIL')) return 'SIAP_DIAMBIL';
+    if (s.includes('SETRIKA')) return 'DISETRIKA';
+    if (s.includes('CUCI')) return 'DICUCI';
+    if (s.includes('PROSES')) return 'DIPROSES';
+    return 'MENUNGGU';
+  }
+
+  /**
+   * Mengambil dan menyatukan seluruh pesanan dari Database MySQL XAMPP
+   * serta transaksi lokal antar-aktor (Pelanggan & Pegawai) agar sinkron real-time.
+   */
+  async function fetchUnifiedOwnerOrders() {
+    const token = await ensurePemilikToken();
+    const headers = {};
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    let backendOrders = [];
+    try {
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/transaksi`, { headers });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data)) {
+          backendOrders = json.data;
+        }
+      }
+    } catch (_) {}
+
+    if (backendOrders.length === 0) {
+      try {
+        const res2 = await fetch(`${getBackendBaseUrl()}/api/pemilik/pesanan`, { headers });
+        if (res2.ok) {
+          const json2 = await res2.json();
+          if (json2 && json2.success && Array.isArray(json2.data)) {
+            backendOrders = json2.data;
+          }
+        }
+      } catch (_) {}
+    }
+
+    let localOrders = [];
+    try {
+      const raw = localStorage.getItem('bersihin_transactions');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) localOrders = parsed;
+      }
+      const rawActive = localStorage.getItem('bersihin_active_order');
+      if (rawActive) {
+        const act = JSON.parse(rawActive);
+        if (act && act.orderId && !localOrders.some(x => (x.orderId || x.code) === act.orderId)) {
+          localOrders.unshift(act);
+        }
+      }
+      const rawInvoices = localStorage.getItem('bersihin_invoices');
+      if (rawInvoices) {
+        const invs = JSON.parse(rawInvoices);
+        if (Array.isArray(invs)) {
+          invs.forEach(inv => {
+            if (!localOrders.some(x => (x.orderId || x.code) === (inv.orderId || inv.code))) {
+              localOrders.push(inv);
+            }
+          });
+        }
+      }
+    } catch (_) {}
+
+    const mapById = new Map();
+
+    // 1. Masukkan pesanan dari backend MySQL XAMPP
+    backendOrders.forEach(trx => {
+      const code = trx.kode_pesanan || (trx.id_pesanan ? `TRX-${String(trx.id_pesanan).padStart(4, '0')}` : `ORD-${Date.now()}`);
+      const stPesanan = normalizeOwnerStatus(trx.status_pesanan || trx.status || 'MENUNGGU');
+      const stBayar = String(trx.status_pembayaran || 'MENUNGGU').toUpperCase();
+      const beratNum = Number(trx.total_berat) || 3.5;
+      const totalNum = Number(trx.total_harga) || (beratNum * 9000);
+      const rawDate = trx.tanggal_pesanan || trx.tanggal_bayar || trx.created_at;
+      const dateObj = rawDate ? new Date(rawDate) : new Date();
+      const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const layananText = trx.nama_layanan || trx.layanan || 'Cuci Komplit (Cuci + Setrika)';
+
+      mapById.set(code, {
+        id: code,
+        code: code,
+        id_pesanan: trx.id_pesanan || null,
+        customerName: trx.nama_pelanggan || 'Pelanggan Bersihin',
+        service: layananText,
+        weight: `${beratNum.toFixed(1).replace('.', ',')} kg`,
+        weightKg: beratNum,
+        total: totalNum,
+        totalFormatted: formatRupiah(totalNum),
+        status: stPesanan,
+        status_pesanan: stPesanan,
+        paymentStatus: stBayar === 'BERHASIL' ? 'Lunas' : 'Menunggu',
+        rawPaymentStatus: stBayar,
+        paymentMethod: trx.metode || trx.metode_pembayaran || 'QRIS',
+        date: dateStr,
+        rawDate: dateObj,
+        notes: trx.catatan || 'Pakaian reguler higienis'
+      });
+    });
+
+    // 2. Gabungkan transaksi lokal dari Pelanggan dan Pegawai
+    localOrders.forEach(lo => {
+      const code = lo.code || lo.orderId || lo.id || `TRX-${Date.now()}`;
+      if (mapById.has(code)) {
+        // Data MySQL adalah sumber kebenaran; data lokal hanya melengkapi field kosong
+        const existing = mapById.get(code);
+        if (!existing.customerName && lo.customerName) existing.customerName = lo.customerName;
+      } else {
+        const st = normalizeOwnerStatus(lo.status || 'MENUNGGU');
+        const beratNum = Number(lo.weightKg) || Number(String(lo.weight || '3.5').replace(/[^\d.]/g, '')) || 3.5;
+        const totalNum = Number(lo.total) || (typeof lo.amount === 'number' ? lo.amount : (beratNum * 9000));
+        const dateObj = new Date(lo.createdAt || lo.timestamp || Date.now());
+        const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+        mapById.set(code, {
+          id: code,
+          code: code,
+          id_pesanan: lo.id_pesanan || null,
+          customerName: lo.customerName || lo.nama_pelanggan || 'Pelanggan',
+          service: lo.service || lo.layanan || 'Cuci Komplit (Cuci + Setrika)',
+          weight: lo.weight || `${beratNum.toFixed(1).replace('.', ',')} kg`,
+          weightKg: beratNum,
+          total: totalNum,
+          totalFormatted: lo.totalFormatted || formatRupiah(totalNum),
+          status: st,
+          status_pesanan: st,
+          paymentStatus: (st === 'SELESAI' || lo.paymentStatus === 'Lunas') ? 'Lunas' : 'Menunggu',
+          rawPaymentStatus: (st === 'SELESAI' || lo.paymentStatus === 'Lunas') ? 'BERHASIL' : 'MENUNGGU',
+          paymentMethod: lo.paymentMethod || 'QRIS',
+          date: dateStr,
+          rawDate: dateObj,
+          notes: lo.notes || lo.catatan || 'Pakaian reguler'
+        });
+      }
+    });
+
+    const list = Array.from(mapById.values());
+    list.sort((a, b) => {
+      const idA = Number(a.id_pesanan) || 0;
+      const idB = Number(b.id_pesanan) || 0;
+      if (idA && idB && idA !== idB) return idB - idA;
+      return (b.rawDate?.getTime() || 0) - (a.rawDate?.getTime() || 0);
+    });
+
+    try {
+      localStorage.setItem('bersihin_unified_orders', JSON.stringify(list));
+    } catch (_) {}
+
+    return list;
+  }
+  window.fetchUnifiedOwnerOrders = fetchUnifiedOwnerOrders;
 
   function updatePemilikRealtimeDate() {
     const now = new Date();
@@ -278,11 +471,21 @@
       });
     }
 
-    // 3.3 Topbar Notification Dropdown
+    // 3.3 Topbar Notification Dropdown (Gaya Identik Pelanggan)
     const notifToggleBtn = document.getElementById('notifToggleBtn');
     const notifDropdown = document.getElementById('notifDropdown');
     const notifDot = document.getElementById('notifDot');
     const markNotifReadBtn = document.getElementById('markNotifReadBtn');
+
+    // Cek status dibaca dari localStorage
+    const isOwnerRead = localStorage.getItem('bersihin_notif_read_pemilik') === 'true';
+    if (isOwnerRead) {
+      if (notifDot) notifDot.classList.add('hidden');
+      if (markNotifReadBtn) markNotifReadBtn.textContent = 'Semua dibaca';
+    } else {
+      if (notifDot) notifDot.classList.remove('hidden');
+      if (markNotifReadBtn) markNotifReadBtn.textContent = 'Tandai dibaca';
+    }
 
     if (notifToggleBtn && notifDropdown && !notifToggleBtn.dataset.hasNotifListener) {
       notifToggleBtn.dataset.hasNotifListener = 'true';
@@ -301,8 +504,9 @@
       markNotifReadBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (notifDot) notifDot.classList.add('hidden');
-        if (notifDropdown) notifDropdown.classList.add('hidden');
-        showToast('Semua notifikasi pemilik telah ditandai dibaca.');
+        localStorage.setItem('bersihin_notif_read_pemilik', 'true');
+        markNotifReadBtn.textContent = 'Semua dibaca';
+        showToast('Notifikasi ditandai telah dibaca.');
       });
     }
 
@@ -570,178 +774,194 @@
   }
 
   /**
-   * Mengambil data dashboard ringkasan bisnis dari MySQL XAMPP secara dinamis
+   * Mengambil data dashboard ringkasan bisnis dari MySQL XAMPP & sinkronisasi antar-aktor
    */
   async function syncPemilikDashboardFromDatabase() {
     try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const orders = await fetchUnifiedOwnerOrders();
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/dashboard`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && json.data) {
-        const d = json.data;
+      const elRev = document.getElementById('ownerTotalPendapatan');
+      const elTrx = document.getElementById('ownerTotalTransaksi');
+      const elCust = document.getElementById('ownerTotalPelanggan');
+      const elEmp = document.getElementById('ownerTotalPegawai');
+      const elIn = document.getElementById('ownerPesananMasuk');
+      const elDone = document.getElementById('ownerPesananSelesai');
+      const elProc = document.getElementById('ownerDalamProses');
 
-        const elRev = document.getElementById('ownerTotalPendapatan');
-        const elTrx = document.getElementById('ownerTotalTransaksi');
-        const elCust = document.getElementById('ownerTotalPelanggan');
-        const elEmp = document.getElementById('ownerTotalPegawai');
-        const elIn = document.getElementById('ownerPesananMasuk');
-        const elDone = document.getElementById('ownerPesananSelesai');
-        const elProc = document.getElementById('ownerDalamProses');
+      // Kalkulasi dari pesanan tersinkron (MySQL + pesanan aktor yang belum masuk DB)
+      let calcRev = 0;
+      let calcDone = 0;
+      let calcProc = 0;
+      let calcValid = 0;
+      orders.forEach(o => {
+        if (o.status === 'DIBATALKAN') return;
+        calcValid++;
+        if (o.paymentStatus === 'Lunas') calcRev += (Number(o.total) || 0);
+        if (o.status === 'SELESAI') calcDone++;
+        else calcProc++;
+      });
 
-        if (elRev) elRev.textContent = formatRupiah(d.pendapatan_total);
-        if (elTrx) elTrx.textContent = String(d.total_pesanan);
-        if (elCust) elCust.textContent = String(d.total_pelanggan);
-        if (elEmp) elEmp.textContent = String(d.total_pegawai);
-        if (elIn) elIn.textContent = String(d.total_pesanan);
-        if (elDone) elDone.textContent = String(d.pesanan_selesai);
-        if (elProc) elProc.textContent = String(d.pesanan_diproses);
+      if (elRev) elRev.textContent = formatRupiah(calcRev);
+      if (elTrx) elTrx.textContent = String(calcValid);
+      if (elIn) elIn.textContent = String(orders.length);
+      if (elDone) elDone.textContent = String(calcDone);
+      if (elProc) elProc.textContent = String(calcProc);
 
-        // Render Aktivitas Terbaru Real-Time dari MySQL
-        if (Array.isArray(d.aktivitas_terbaru) && d.aktivitas_terbaru.length > 0) {
-          const actContainer = document.getElementById('ownerRecentActivitiesContainer');
-          if (actContainer) {
-            actContainer.innerHTML = '';
-            d.aktivitas_terbaru.forEach(act => {
-              const item = document.createElement('div');
-              item.className = 'flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition';
-              let statusText = `Pesanan ${act.kode_pesanan} sedang diproses`;
-              if (act.status === 'SELESAI') {
-                statusText = `Pesanan ${act.kode_pesanan} telah selesai`;
-              } else if (act.status === 'SIAP_DIAMBIL') {
-                statusText = `Pesanan ${act.kode_pesanan} siap diambil`;
-              } else if (act.status === 'MENUNGGU') {
-                statusText = `Pesanan ${act.kode_pesanan} menunggu proses`;
-              }
-
-              item.innerHTML = `
-                <div>
-                  <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
-                  <p class="text-xs text-slate-500">${act.nama_pelanggan || 'Pelanggan'} · ${act.nama_layanan || 'Layanan Laundry'} · ${formatRupiah(act.total_harga)}</p>
-                </div>
-              `;
-              actContainer.appendChild(item);
-            });
-          }
-
-          const notifList = document.getElementById('ownerNotifDropdownList');
-          if (notifList) {
-            notifList.innerHTML = '';
-            d.aktivitas_terbaru.slice(0, 4).forEach(act => {
-              const notifLink = document.createElement('a');
-              notifLink.href = 'transaksi.html';
-              notifLink.className = 'py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition';
-              notifLink.innerHTML = `
-                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div class="text-xs leading-4">
-                  <p class="font-semibold text-slate-800">Pesanan ${act.kode_pesanan} (${act.status})</p>
-                  <p class="text-slate-500 text-[11px] mt-0.5">${act.nama_pelanggan} - ${formatRupiah(act.total_harga)}</p>
-                </div>
-              `;
-              notifList.appendChild(notifLink);
-            });
+      // Sinkronisasi data resmi dari endpoint /api/pemilik/dashboard MySQL XAMPP jika backend aktif
+      try {
+        const token = await ensurePemilikToken();
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+        const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/dashboard`, { headers });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            const d = json.data;
+            // Jumlah pelanggan, pegawai & pendapatan resmi langsung dari tabel MySQL
+            if (elCust) elCust.textContent = String(Number(d.total_pelanggan) || 0);
+            if (elEmp) elEmp.textContent = String(Number(d.total_pegawai) || 0);
+            if (elRev) elRev.textContent = formatRupiah(Math.max(Number(d.pendapatan_total) || 0, calcRev));
           }
         }
+      } catch (_) {}
+
+      // Render Aktivitas Terbaru Real-Time Sesuai Pesanan yang Terjadi
+      const actContainer = document.getElementById('ownerRecentActivitiesContainer');
+      if (actContainer && orders.length > 0) {
+        actContainer.innerHTML = '';
+        orders.slice(0, 5).forEach(act => {
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition';
+          let statusText = `Pesanan ${act.code} sedang diproses`;
+          if (act.status === 'SELESAI') {
+            statusText = `Pesanan ${act.code} telah selesai`;
+          } else if (act.status === 'SIAP_DIAMBIL') {
+            statusText = `Pesanan ${act.code} siap diambil`;
+          } else if (act.status === 'MENUNGGU') {
+            statusText = `Pesanan ${act.code} menunggu konfirmasi`;
+          } else if (act.status === 'DICUCI') {
+            statusText = `Pesanan ${act.code} dalam tahap pencucian`;
+          } else if (act.status === 'DISETRIKA') {
+            statusText = `Pesanan ${act.code} dalam tahap penyetrikaan`;
+          }
+
+          item.innerHTML = `
+            <div>
+              <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
+              <p class="text-xs text-slate-500">${act.customerName || 'Pelanggan'} · ${act.service || 'Layanan Laundry'} · ${act.totalFormatted || formatRupiah(act.total)}</p>
+            </div>
+          `;
+          actContainer.appendChild(item);
+        });
+      }
+
+      // Render Notifikasi Dropdown Pemilik
+      const notifList = document.getElementById('ownerNotifDropdownList');
+      if (notifList && orders.length > 0) {
+        notifList.innerHTML = '';
+        orders.slice(0, 4).forEach(act => {
+          const notifLink = document.createElement('a');
+          notifLink.href = 'transaksi.html';
+          notifLink.className = 'py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition';
+          notifLink.innerHTML = `
+            <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div class="text-xs leading-4">
+              <p class="font-semibold text-slate-800">Pesanan ${act.code} (${act.status})</p>
+              <p class="text-slate-500 text-[11px] mt-0.5">${act.customerName} - ${act.totalFormatted || formatRupiah(act.total)}</p>
+            </div>
+          `;
+          notifList.appendChild(notifLink);
+        });
       }
     } catch (_) {}
   }
 
   /**
-   * Mengambil data transaksi dari MySQL XAMPP dan merender ke tabel secara dinamis
+   * Mengambil data transaksi dari MySQL XAMPP & disinkronkan dengan seluruh pesanan aktor
    */
   async function syncPemilikTransaksiFromDatabase() {
     const tbody = document.getElementById('trxTableBody') || document.querySelector('#trxTable tbody');
     if (!tbody) return;
 
     try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const orders = await fetchUnifiedOwnerOrders();
+      if (!Array.isArray(orders) || orders.length === 0) return;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/transaksi`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        tbody.innerHTML = '';
-        json.data.forEach(trx => {
-          const statusPesanan = String(trx.status_pesanan || 'MENUNGGU').toUpperCase();
-          const statusBayar = String(trx.status_pembayaran || 'MENUNGGU').toUpperCase();
-          const layananText = trx.nama_layanan || 'Cuci Komplit (Cuci + Setrika)';
-          const beratText = trx.total_berat ? `${parseFloat(trx.total_berat)} kg` : '1 kg';
-          const metodeText = trx.metode ? `${statusBayar} (${trx.metode})` : statusBayar;
+      tbody.innerHTML = '';
+      orders.forEach(trx => {
+        const statusPesanan = normalizeOwnerStatus(trx.status || trx.status_pesanan);
+        const statusBayar = (trx.paymentStatus === 'Lunas' || statusPesanan === 'SELESAI') ? 'BERHASIL' : 'MENUNGGU';
+        const layananText = trx.service || trx.nama_layanan || 'Cuci Komplit (Cuci + Setrika)';
+        const beratText = trx.weight || (trx.weightKg ? `${trx.weightKg} kg` : '3,5 kg');
+        const metodeText = trx.paymentMethod ? `${statusBayar} (${trx.paymentMethod})` : statusBayar;
 
-          const tr = document.createElement('tr');
-          tr.className = 'trx-row hover:bg-slate-50/60 transition group';
-          tr.setAttribute('data-code', trx.kode_pesanan || '');
-          tr.setAttribute('data-name', trx.nama_pelanggan || '');
-          tr.setAttribute('data-service', layananText);
-          tr.setAttribute('data-price', formatRupiah(trx.total_harga));
-          tr.setAttribute('data-status', statusPesanan);
+        const tr = document.createElement('tr');
+        tr.className = 'trx-row hover:bg-slate-50/60 transition group';
+        tr.setAttribute('data-code', trx.code || '');
+        tr.setAttribute('data-name', trx.customerName || '');
+        tr.setAttribute('data-service', layananText);
+        tr.setAttribute('data-price', trx.totalFormatted || formatRupiah(trx.total));
+        tr.setAttribute('data-status', statusPesanan);
 
-          const rawDate = trx.tanggal_pesanan || trx.tanggal_bayar;
-          const tgl = rawDate ? new Date(rawDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Hari ini';
+        const tgl = trx.date || 'Hari ini';
 
-          let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>${statusPesanan}</span>`;
-          if (statusPesanan === 'SELESAI') {
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
-          } else if (statusPesanan === 'SIAP_DIAMBIL') {
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
-          } else if (statusPesanan === 'MENUNGGU') {
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>${statusPesanan}</span>`;
-          } else if (statusPesanan === 'DIBATALKAN') {
-            statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>${statusPesanan}</span>`;
-          }
+        let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>${statusPesanan}</span>`;
+        if (statusPesanan === 'SELESAI') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'SIAP_DIAMBIL') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'MENUNGGU') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'DIBATALKAN') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>${statusPesanan}</span>`;
+        }
 
-          const invoiceSubBadge = statusBayar === 'BERHASIL'
-            ? `<span class="text-[10px] font-semibold text-emerald-600">Invoice: BERHASIL</span>`
-            : `<span class="text-[10px] font-semibold text-amber-600">Invoice: ${statusBayar}</span>`;
+        const invoiceSubBadge = statusBayar === 'BERHASIL'
+          ? `<span class="text-[10px] font-semibold text-emerald-600">Invoice: BERHASIL</span>`
+          : `<span class="text-[10px] font-semibold text-amber-600">Invoice: ${statusBayar}</span>`;
 
-          const safeName = (trx.nama_pelanggan || 'Pelanggan').replace(/'/g, "\\'");
-          const safeService = layananText.replace(/'/g, "\\'");
+        const safeName = (trx.customerName || 'Pelanggan').replace(/'/g, "\\'");
+        const safeService = layananText.replace(/'/g, "\\'");
+        const priceStr = trx.totalFormatted || formatRupiah(trx.total);
 
-          tr.innerHTML = `
-            <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.kode_pesanan}</td>
-            <td class="py-4 px-5 text-slate-700 font-medium">${trx.nama_pelanggan || 'Pelanggan'}</td>
-            <td class="py-4 px-5 text-slate-600">${layananText}</td>
-            <td class="py-4 px-5 font-bold text-slate-800">${formatRupiah(trx.total_harga)}</td>
-            <td class="py-4 px-5 text-slate-500">${tgl}</td>
-            <td class="py-4 px-5">
-              <div class="flex flex-col items-start gap-1">
-                ${statusBadge}
-                ${invoiceSubBadge}
-              </div>
-            </td>
-            <td class="py-4 px-5 text-right">
-              <div class="flex items-center justify-end gap-1.5">
-                <a href="invoice.html?id=${encodeURIComponent(trx.kode_pesanan)}"
-                  class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-lg text-xs font-semibold transition"
-                  title="Periksa Invoice & Pembukuan">
-                  Invoice
-                </a>
-                <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${safeName}', '${safeService}', '${beratText}', '${formatRupiah(trx.total_harga)}', '${tgl}', '${statusPesanan}', '${metodeText}')"
-                  class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
-                  Detail
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+        tr.innerHTML = `
+          <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.code}</td>
+          <td class="py-4 px-5 text-slate-700 font-medium">${trx.customerName || 'Pelanggan'}</td>
+          <td class="py-4 px-5 text-slate-600">${layananText}</td>
+          <td class="py-4 px-5 font-bold text-slate-800">${priceStr}</td>
+          <td class="py-4 px-5 text-slate-500">${tgl}</td>
+          <td class="py-4 px-5">
+            <div class="flex flex-col items-start gap-1">
+              ${statusBadge}
+              ${invoiceSubBadge}
+            </div>
+          </td>
+          <td class="py-4 px-5 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-lg text-xs font-semibold transition"
+                title="Periksa Invoice & Pembukuan">
+                Invoice
+              </a>
+              <button onclick="if(typeof showDetail==='function') showDetail('${trx.code}', '${safeName}', '${safeService}', '${beratText}', '${priceStr}', '${tgl}', '${statusPesanan}', '${metodeText}')"
+                class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
+                Detail
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
 
-        if (typeof window.filterTransactions === 'function') {
-          window.filterTransactions();
-        } else {
-          const paginationInfo = document.getElementById('paginationInfo');
-          if (paginationInfo) {
-            paginationInfo.innerHTML = `Menampilkan <strong class="text-slate-700 font-semibold">${json.data.length}</strong> dari <strong class="text-slate-700 font-semibold">${json.data.length}</strong> data`;
-          }
+      if (typeof window.filterTransactions === 'function') {
+        window.filterTransactions();
+      } else {
+        const paginationInfo = document.getElementById('paginationInfo');
+        if (paginationInfo) {
+          paginationInfo.innerHTML = `Menampilkan <strong class="text-slate-700 font-semibold">${orders.length}</strong> dari <strong class="text-slate-700 font-semibold">${orders.length}</strong> data`;
         }
       }
     } catch (_) {}
@@ -870,19 +1090,48 @@
     const tbody = document.getElementById('customerTableBody') || document.querySelector('#pelangganTable tbody') || document.querySelector('#customerTable tbody');
     if (!tbody) return;
 
+    let custList = [];
     try {
       const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
       const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/pelanggan`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        cachedOwnerCustomers = json.data;
-        renderOwnerCustomerTablePage();
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          custList = json.data;
+        }
       }
     } catch (_) {}
+
+    try {
+      const rawLocal = localStorage.getItem('bersihin_customers');
+      if (rawLocal) {
+        const parsed = JSON.parse(rawLocal);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(c => {
+            if (!custList.some(x => (x.id_pelanggan && x.id_pelanggan === c.id_pelanggan) || (x.nama && x.nama.toLowerCase() === (c.nama || '').toLowerCase()))) {
+              custList.push(c);
+            }
+          });
+        }
+      }
+    } catch (_) {}
+
+    if (custList.length === 0) return;
+
+    // Total pesanan per pelanggan mengikuti pesanan terbaru (termasuk yang baru dibuat pelanggan)
+    try {
+      const orders = await fetchUnifiedOwnerOrders();
+      custList.forEach(cu => {
+        const nm = String(cu.nama || '').toLowerCase().trim();
+        const cnt = orders.filter(o => String(o.customerName || '').toLowerCase().trim() === nm).length;
+        cu.total_pesanan = Math.max(Number(cu.total_pesanan) || 0, cnt);
+      });
+    } catch (_) {}
+
+    cachedOwnerCustomers = custList;
+    renderOwnerCustomerTablePage();
   }
 
   /**
@@ -922,10 +1171,9 @@
             <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${emp.telepon || '-'}</td>
             <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${emp.email || '-'}</td>
             <td class="py-3.5 px-5 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                Aktif
-              </span>
+              ${String(emp.status || 'AKTIF').toUpperCase() === 'NONAKTIF'
+                ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Nonaktif</span>'
+                : '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>Aktif</span>'}
             </td>
           `;
           tbody.appendChild(tr);
@@ -1170,27 +1418,10 @@
    * Mengambil laporan finansial dari MySQL XAMPP secara dinamis
    */
   async function syncPemilikLaporanFromDatabase() {
-    try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/laporan/pendapatan`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && json.data) {
-        const d = json.data;
-        const kpi1 = document.getElementById('kpiValue1');
-        const kpi2 = document.getElementById('kpiValue2');
-        const kpi3 = document.getElementById('kpiValue3');
-
-        if (kpi1) kpi1.textContent = formatRupiah(d.total_pendapatan);
-        if (kpi2) kpi2.textContent = String(d.total_pesanan);
-        if (kpi3 && d.total_pesanan > 0) {
-          kpi3.textContent = formatRupiah(Math.round(d.total_pendapatan / d.total_pesanan));
-        }
-      }
-    } catch (_) {}
+    // Laporan dihitung oleh laporan.html dari transaksi asli database (per periode)
+    if (typeof window.fetchLaporanData === 'function') {
+      try { await window.fetchLaporanData(); } catch (_) {}
+    }
   }
 
   // ===========================================================================
@@ -1344,6 +1575,24 @@
         const email = emailInput && emailInput.value.trim() ? emailInput.value.trim() : (nama.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com');
         const telepon = teleponInput && teleponInput.value.trim() ? teleponInput.value.trim() : ('08' + Math.floor(1000000000 + Math.random() * 9000000000));
 
+        const newCustObj = {
+          id_pelanggan: Date.now(),
+          kode_pelanggan: 'PLG-' + Math.floor(1000 + Math.random() * 9000),
+          nama: nama,
+          email: email,
+          telepon: telepon,
+          alamat: (alamatInput ? alamatInput.value.trim() : '') || 'Alamat Belum Diisi',
+          total_pesanan: 0,
+          member_tier: 'REGULER',
+          created_at: new Date().toISOString()
+        };
+        try {
+          const stored = JSON.parse(localStorage.getItem('bersihin_customers') || '[]');
+          stored.unshift(newCustObj);
+          localStorage.setItem('bersihin_customers', JSON.stringify(stored));
+          localStorage.setItem('bersihin_order_updated', Date.now().toString());
+        } catch (_) {}
+
         try {
           const res = await fetch(`${getBackendBaseUrl()}/api/auth/register`, {
             method: 'POST',
@@ -1351,17 +1600,14 @@
             body: JSON.stringify({ nama, email, telepon, password: 'password123' })
           });
           const d = await res.json();
-          if (d.success) {
+          if (d && d.success) {
             showToast('Pelanggan ' + nama + ' berhasil didaftarkan ke database MySQL!');
-            setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 1000);
+            setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 800);
             return;
-          } else {
-            showToast(d.message || 'Gagal mendaftar pelanggan', true);
           }
-        } catch (_) {
-          showToast('Data pelanggan ' + nama + ' berhasil didaftarkan.');
-          setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 1000);
-        }
+        } catch (_) {}
+        showToast('Data pelanggan ' + nama + ' berhasil didaftarkan.');
+        setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 800);
       });
     }
   }
@@ -2030,12 +2276,14 @@
     }
     try {
       localStorage.removeItem('bersihin_token');
+      localStorage.removeItem('bersihin_owner_token');
       localStorage.removeItem('bersihin_staff_token');
       localStorage.removeItem('bersihin_user');
       localStorage.removeItem('bersihin_active_role');
       localStorage.removeItem('bersihin_owner_logged_in');
       localStorage.removeItem('bersihin_pemilik_profile');
       sessionStorage.removeItem('bersihin_token');
+      sessionStorage.removeItem('bersihin_owner_token');
       sessionStorage.removeItem('bersihin_staff_token');
       sessionStorage.removeItem('bersihin_user');
       sessionStorage.removeItem('bersihin_active_role');
@@ -2078,7 +2326,7 @@
 
     // 1. Sinkronisasi instan antar-tab saat Pelanggan atau Pegawai update order di database
     window.addEventListener('storage', (e) => {
-      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order' || e.key === 'bersihin_customers' || e.key === 'bersihin_employees' || e.key === 'bersihin_services') {
         refreshActivePemilikPage();
       }
     });
