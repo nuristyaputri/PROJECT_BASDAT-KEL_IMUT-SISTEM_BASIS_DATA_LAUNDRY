@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemeriksaan Invoice & Verifikasi Pembayaran - Bersihin Staff Portal</title>
-  <!-- Favicon Logo Bersihin -->
-  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
-  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
+    <!-- Favicon Logo Bersihin -->
+    <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+    <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
     <!-- Google Fonts: Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +60,7 @@
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
             }
+
             aside,
             header,
             #pegawaiTopNav,
@@ -71,14 +72,17 @@
             .no-print {
                 display: none !important;
             }
+
             body {
                 background: #ffffff !important;
             }
+
             main {
                 padding: 0 !important;
                 margin: 0 !important;
                 max-width: 100% !important;
             }
+
             .invoice-card {
                 border: 1px solid #cbd5e1 !important;
                 box-shadow: none !important;
@@ -90,9 +94,11 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-clip">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
-    <header class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
         <div class="flex items-center gap-2.5">
-            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36"
+                class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
             <div>
                 <div class="leading-none">
                     <span class="text-lg font-bold text-blue-950 tracking-tight">Bersih</span><span
@@ -103,7 +109,9 @@
                 </span>
             </div>
         </div>
-        <button id="sidebarToggle" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle Menu">
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -133,7 +141,8 @@
                         </div>
                         <div class="pt-1 flex flex-col justify-start items-start">
                             <span
-                                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[3px]">STAFF PORTAL</span>
+                                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[3px]">STAFF
+                                PORTAL</span>
                         </div>
                     </div>
                 </a>
@@ -144,7 +153,8 @@
                     aria-label="Tutup menu navigasi"
                     class="md:hidden min-w-[44px] min-h-[44px] -mr-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                     <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                        <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
                     </svg>
                 </button>
             </div>
@@ -154,7 +164,8 @@
 
                 <!-- Kelompok: OPERASIONAL -->
                 <div class="w-full px-2.5 pt-2 pb-2">
-                    <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+                    <span
+                        class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
                         OPERASIONAL
                     </span>
                 </div>
@@ -164,12 +175,17 @@
                     <li>
                         <a href="dashboard.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
-                    <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
-                    <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
-                    <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
-                </svg>
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none"
+                                aria-hidden="true">
+                                <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor"
+                                    stroke-width="1.5" />
+                                <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor"
+                                    stroke-width="1.5" />
+                                <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor"
+                                    stroke-width="1.5" />
+                                <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor"
+                                    stroke-width="1.5" />
+                            </svg>
                             <span>Dashboard</span>
                         </a>
                     </li>
@@ -178,12 +194,15 @@
                     <li>
                         <a href="datapelanggan.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <circle cx="7.5" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
-                    <path d="M2 16.5C2 13.7 4.69 11.5 8 11.5C11.31 11.5 14 13.7 14 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                    <circle cx="14" cy="6.5" r="2.2" stroke="currentColor" stroke-width="1.3" />
-                    <path d="M14.5 11.6C16.3 12.2 17.5 13.7 17.5 15.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                </svg>
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none"
+                                aria-hidden="true">
+                                <circle cx="7.5" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M2 16.5C2 13.7 4.69 11.5 8 11.5C11.31 11.5 14 13.7 14 16.5"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                <circle cx="14" cy="6.5" r="2.2" stroke="currentColor" stroke-width="1.3" />
+                                <path d="M14.5 11.6C16.3 12.2 17.5 13.7 17.5 15.5" stroke="currentColor"
+                                    stroke-width="1.3" stroke-linecap="round" />
+                            </svg>
                             <span>Data Pelanggan</span>
                         </a>
                     </li>
@@ -192,9 +211,11 @@
                     <li>
                         <a href="datapesanan.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
                             <span>Data Pesanan</span>
                         </a>
                     </li>
@@ -204,9 +225,11 @@
                         <a href="statuspesanan.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-between items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
                             <span class="inline-flex items-center gap-3">
-                                <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
+                                <svg class="size-5 text-slate-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
                                 <span>Kelola Status</span>
                             </span>
                             <span id="sidebarBadge"
@@ -220,9 +243,11 @@
                     <li>
                         <a href="datatransaksi.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                             <span>Data Transaksi</span>
                         </a>
                     </li>
@@ -231,11 +256,14 @@
                     <li>
                         <a href="invoice.html" aria-current="page"
                             class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                            <span
+                                class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
                                 aria-hidden="true"></span>
-                            <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                            <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                             <span>Pemeriksaan Invoice</span>
                         </a>
                     </li>
@@ -243,7 +271,8 @@
 
                 <!-- Kelompok: AKUN -->
                 <div class="w-full px-2.5 pt-6 pb-2">
-                    <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+                    <span
+                        class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
                         AKUN
                     </span>
                 </div>
@@ -253,10 +282,12 @@
                     <li>
                         <a href="profil.html"
                             class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
-                    <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                </svg>
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none"
+                                aria-hidden="true">
+                                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
                             <span>Profil Saya</span>
                         </a>
                     </li>
@@ -271,8 +302,8 @@
                 <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
                         stroke-width="1.5" stroke-linecap="round" />
-                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <span>Keluar</span>
             </a>
@@ -282,7 +313,7 @@
     <!-- KONTEN UTAMA HALAMAN INVOICE PEGAWAI -->
     <div class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
 
-                <!-- TOPBAR -->
+        <!-- TOPBAR -->
         <header
             class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
             <!-- Kiri: Mobile Menu Toggle + Judul & Subtitle -->
@@ -290,7 +321,8 @@
                 <button type="button" id="sidebarToggle" aria-label="Buka menu navigasi" aria-expanded="false"
                     class="md:hidden min-w-[44px] min-h-[44px] -ml-1 inline-flex items-center justify-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 active:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                     <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
                     </svg>
                 </button>
                 <div class="flex flex-col justify-start items-start">
@@ -310,7 +342,8 @@
                         </svg>
                     </div>
                     <div>
-                        <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+                        <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November
+                            2026</span>
                     </div>
                 </div>
 
@@ -322,22 +355,27 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        <span
+                            class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
                     </button>
                     <!-- Notification Dropdown -->
-                    <div id="pegawaiNotifDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
+                    <div id="pegawaiNotifDropdown"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
                         <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
                             <span class="font-semibold text-xs text-slate-700">Notifikasi</span>
-                            <span class="text-[10px] bg-cyan-100 text-cyan-700 font-bold px-1.5 py-0.5 rounded-full">3 Baru</span>
+                            <span class="text-[10px] bg-cyan-100 text-cyan-700 font-bold px-1.5 py-0.5 rounded-full">3
+                                Baru</span>
                         </div>
                         <div class="max-h-64 overflow-y-auto divide-y divide-slate-50 text-xs">
                             <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
                                 <p class="font-semibold text-slate-800 text-[11px]">Pesanan Masuk #ORD-2026-081</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Cuci Komplit 3.5 kg baru saja masuk antrean.</p>
+                                <p class="text-slate-500 text-[10px] mt-0.5">Cuci Komplit 3.5 kg baru saja masuk
+                                    antrean.</p>
                             </div>
                             <div class="p-3 hover:bg-slate-50 transition cursor-pointer">
                                 <p class="font-semibold text-slate-800 text-[11px]">Status Siap Diambil</p>
-                                <p class="text-slate-500 text-[10px] mt-0.5">Pesanan #ORD-2026-079 telah selesai disetrika.</p>
+                                <p class="text-slate-500 text-[10px] mt-0.5">Pesanan #ORD-2026-079 telah selesai
+                                    disetrika.</p>
                             </div>
                         </div>
                     </div>
@@ -356,7 +394,8 @@
                         class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-50">
                         <div class="px-4 py-2 border-b border-slate-100">
                             <p id="dropdownStaffName" class="text-xs font-bold text-slate-800">Dina Nurhaliza</p>
-                            <p id="dropdownStaffEmail" class="text-[11px] text-slate-500 truncate">dina.nurhaliza@bersihin.id</p>
+                            <p id="dropdownStaffEmail" class="text-[11px] text-slate-500 truncate">
+                                dina.nurhaliza@bersihin.id</p>
                         </div>
                         <a href="profil.html" role="menuitem"
                             class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50 transition">
@@ -374,11 +413,14 @@
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full space-y-6">
 
             <!-- HERO PENCARIAN INVOICE PELANGGAN -->
-            <section id="invoiceSearchHero" class="no-print relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 via-white to-cyan-50/80 border border-sky-200/80 shadow-xs p-6 sm:p-8">
+            <section id="invoiceSearchHero"
+                class="no-print relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-50 via-white to-cyan-50/80 border border-sky-200/80 shadow-xs p-6 sm:p-8">
                 <div class="max-w-3xl space-y-4">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/90 text-cyan-800 text-[11px] font-bold uppercase tracking-wider border border-cyan-200">
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/90 text-cyan-800 text-[11px] font-bold uppercase tracking-wider border border-cyan-200">
                         <svg class="w-3.5 h-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         <span>Pusat Pemeriksaan Invoice</span>
                     </span>
@@ -388,25 +430,38 @@
                             Cari Invoice Pelanggan
                         </h2>
                         <p class="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
-                            Masukkan ID Pesanan pelanggan (contoh: <span class="font-mono font-semibold text-slate-700">TRX-...</span> atau <span class="font-mono font-semibold text-slate-700">ORD-...</span>) untuk memeriksa rincian tagihan, progres cucian, dan memverifikasi pembayaran kasir.
+                            Masukkan ID Pesanan pelanggan (contoh: <span
+                                class="font-mono font-semibold text-slate-700">TRX-...</span> atau <span
+                                class="font-mono font-semibold text-slate-700">ORD-...</span>) untuk memeriksa rincian
+                            tagihan, progres cucian, dan memverifikasi pembayaran kasir.
                         </p>
                     </div>
 
-                    <form id="invoiceSearchForm" onsubmit="searchStaffInvoice(event)" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
+                    <form id="invoiceSearchForm" onsubmit="searchStaffInvoice(event)"
+                        class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
                         <div class="relative flex-1">
-                            <svg class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <svg class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
-                            <input type="text" id="invoiceSearchInput" autocomplete="off" placeholder="Masukkan ID Pesanan pelanggan (mis. TRX-20261112-001)..." class="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition">
-                            <button type="button" id="clearInvoiceSearchBtn" onclick="resetStaffInvoiceSearch()" title="Bersihkan pencarian" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+                            <input type="text" id="invoiceSearchInput" autocomplete="off"
+                                placeholder="Masukkan ID Pesanan pelanggan (mis. TRX-20261112-001)..."
+                                class="w-full pl-11 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal shadow-xs focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-600 transition">
+                            <button type="button" id="clearInvoiceSearchBtn" onclick="resetStaffInvoiceSearch()"
+                                title="Bersihkan pencarian"
+                                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
-                        <button type="submit" id="invoiceSearchBtn" class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-700 hover:brightness-110 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2 shrink-0">
+                        <button type="submit" id="invoiceSearchBtn"
+                            class="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-700 hover:brightness-110 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2 shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <span>Cari Invoice</span>
                         </button>
@@ -415,34 +470,44 @@
             </section>
 
             <!-- PROMPT AWAL (SEBELUM ADA ID PESANAN YANG DICARI) -->
-            <div id="invoiceEmptyPrompt" class="no-print bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center space-y-3">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-sky-50 border border-sky-100 text-cyan-700 flex items-center justify-center">
+            <div id="invoiceEmptyPrompt"
+                class="no-print bg-white rounded-2xl border border-dashed border-slate-300 p-10 text-center space-y-3">
+                <div
+                    class="w-14 h-14 mx-auto rounded-2xl bg-sky-50 border border-sky-100 text-cyan-700 flex items-center justify-center">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
                 <div class="max-w-md mx-auto space-y-1">
                     <h3 class="text-sm sm:text-base font-bold text-slate-800">Belum Ada Invoice Ditampilkan</h3>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Ketikkan <span class="font-semibold text-slate-700">ID Pesanan pelanggan</span> pada kolom pencarian di atas, lalu tekan <span class="font-semibold text-cyan-700">Cari Invoice</span> untuk membuka lembar detail &amp; verifikasi pembayaran.
+                        Ketikkan <span class="font-semibold text-slate-700">ID Pesanan pelanggan</span> pada kolom
+                        pencarian di atas, lalu tekan <span class="font-semibold text-cyan-700">Cari Invoice</span>
+                        untuk membuka lembar detail &amp; verifikasi pembayaran.
                     </p>
                 </div>
             </div>
 
             <!-- ALERT TIDAK DITEMUKAN -->
-            <div id="invoiceNotFoundBanner" class="hidden no-print bg-rose-50 rounded-2xl border border-rose-200 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div id="invoiceNotFoundBanner"
+                class="hidden no-print bg-rose-50 rounded-2xl border border-rose-200 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
                         <h3 class="text-sm font-bold text-rose-900">ID Pesanan Tidak Ditemukan</h3>
-                        <p id="invoiceNotFoundMsg" class="text-xs text-rose-700 mt-0.5">Pesanan dengan kode tersebut tidak ditemukan dalam sistem. Periksa kembali ID Pesanan pelanggan.</p>
+                        <p id="invoiceNotFoundMsg" class="text-xs text-rose-700 mt-0.5">Pesanan dengan kode tersebut
+                            tidak ditemukan dalam sistem. Periksa kembali ID Pesanan pelanggan.</p>
                     </div>
                 </div>
-                <button type="button" onclick="resetStaffInvoiceSearch()" class="px-4 py-2 bg-white border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-bold rounded-xl transition shrink-0">
+                <button type="button" onclick="resetStaffInvoiceSearch()"
+                    class="px-4 py-2 bg-white border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-bold rounded-xl transition shrink-0">
                     Reset Pencarian
                 </button>
             </div>
@@ -452,37 +517,46 @@
 
                 <!-- KARTU INVOICE RESMI (CETAK / FULL DETAIL - TAMPILAN LAMA) -->
                 <div class="invoice-card bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-                    
+
                     <!-- Header Invoice Kasir -->
-                    <div class="p-6 bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div
+                        class="p-6 bg-gradient-to-r from-blue-950 via-slate-900 to-cyan-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md p-2 flex items-center justify-center border border-white/20">
                                 <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="size-8">
                             </div>
                             <div>
                                 <div class="text-base font-bold tracking-tight">BERSIHIN LAUNDRY - POS KASIR</div>
-                                <p class="text-xs text-sky-200">Lembar Pemeriksaan Invoice &amp; Verifikasi Transaksi Staf</p>
+                                <p class="text-xs text-sky-200">Lembar Pemeriksaan Invoice &amp; Verifikasi Transaksi
+                                    Staf</p>
                             </div>
                         </div>
                         <div class="sm:text-right">
-                            <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">KODE PESANAN:</span>
-                            <span id="staffInvCode" class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
-                            <span id="staffInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30 WIB</span>
+                            <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">KODE
+                                PESANAN:</span>
+                            <span id="staffInvCode"
+                                class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
+                            <span id="staffInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30
+                                WIB</span>
                         </div>
                     </div>
 
                     <!-- Status Strip -->
-                    <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div
+                        class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div class="flex items-center gap-2">
                             <span class="text-slate-500 font-semibold">Status Pembayaran:</span>
-                            <span id="staffPaymentBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5">
+                            <span id="staffPaymentBadge"
+                                class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                                 <span id="staffPaymentText">Menunggu Konfirmasi</span>
                             </span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-slate-500 font-semibold">Tahap Cucian Saat Ini:</span>
-                            <span id="staffStageBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                            <span id="staffStageBadge"
+                                class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
                                 Menunggu konfirmasi
                             </span>
                         </div>
@@ -491,25 +565,37 @@
                     <div class="p-6 sm:p-8 space-y-6">
 
                         <!-- Data Pelanggan & Petugas Kasir -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
                             <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">DATA PELANGGAN:</span>
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">DATA
+                                    PELANGGAN:</span>
                                 <h4 id="staffCustName" class="text-sm font-bold text-slate-900">Nama Pelanggan</h4>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span id="staffCustPhone" class="text-slate-600 font-medium">0812-3456-7890</span>
-                                    <a id="staffWaLink" href="https://wa.me/" target="_blank" class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold text-[10px] hover:bg-emerald-200 transition">
+                                    <a id="staffWaLink" href="https://wa.me/" target="_blank"
+                                        class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold text-[10px] hover:bg-emerald-200 transition">
                                         Chat WA
                                     </a>
                                 </div>
-                                <p id="staffCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji, Depok</p>
+                                <p id="staffCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji,
+                                    Depok</p>
                             </div>
                             <div class="md:text-right">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PETUGAS &amp; KASIR:</span>
-                                <p class="text-slate-700"><span class="font-semibold text-slate-900">Kasir Bertugas:</span> <span id="staffStaffName">Dina Nurhaliza (Kasir Utama)</span></p>
-                                <p class="text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Metode Pembayaran:</span> <span id="staffPayMethod" class="font-bold text-cyan-800">QRIS</span></p>
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PETUGAS
+                                    &amp; KASIR:</span>
+                                <p class="text-slate-700"><span class="font-semibold text-slate-900">Kasir
+                                        Bertugas:</span> <span id="staffStaffName">Dina Nurhaliza (Kasir Utama)</span>
+                                </p>
+                                <p class="text-slate-700 mt-0.5"><span class="font-semibold text-slate-900">Metode
+                                        Pembayaran:</span> <span id="staffPayMethod"
+                                        class="font-bold text-cyan-800">QRIS</span></p>
                                 <div class="mt-2 text-slate-500 italic">
                                     <span>Catatan Pelanggan: </span>
-                                    <span id="staffNotes" class="text-slate-700 font-medium">Pakaian reguler &amp; seragam</span>
+                                    <span id="staffNotes" class="text-slate-700 font-medium">Pakaian reguler &amp;
+                                        seragam</span>
                                 </div>
                             </div>
                         </div>
@@ -528,61 +614,91 @@
                                 <tbody id="staffItemsBody" class="divide-y divide-slate-100">
                                     <tr>
                                         <td class="py-3 px-4">
-                                            <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci Komplit (Cuci + Setrika)</span>
+                                            <span id="staffServiceName" class="font-bold text-slate-900 block">Cuci
+                                                Komplit (Cuci + Setrika)</span>
                                             <span class="text-[10px] text-slate-400">Pakaian harian &amp; seragam</span>
                                         </td>
-                                        <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">4,5 kg</td>
-                                        <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">Rp9.000 / kg</td>
-                                        <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">Rp40.500</td>
+                                        <td id="staffWeight" class="py-3 px-4 text-center font-medium text-slate-700">
+                                            4,5 kg</td>
+                                        <td id="staffUnitPrice" class="py-3 px-4 text-right font-medium text-slate-600">
+                                            Rp9.000 / kg</td>
+                                        <td id="staffSubtotal" class="py-3 px-4 text-right font-bold text-slate-800">
+                                            Rp40.500</td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="border-t-2 border-slate-200 bg-sky-50/70">
                                     <tr>
-                                        <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">TOTAL TAGIHAN TRANSAKSI:</td>
-                                        <td id="staffTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">Rp40.000</td>
+                                        <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">
+                                            TOTAL TAGIHAN TRANSAKSI:</td>
+                                        <td id="staffTotal"
+                                            class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">
+                                            Rp40.000</td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
 
                         <!-- Card Bukti Transaksi / Transfer Pelanggan (Yang Diunggah Saat Pemesanan) -->
-                        <div id="invBuktiCard" class="p-5 sm:p-6 rounded-2xl border border-emerald-200 bg-white shadow-xs">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-emerald-100">
+                        <div id="invBuktiCard"
+                            class="p-5 sm:p-6 rounded-2xl border border-emerald-200 bg-white shadow-xs">
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-emerald-100">
                                 <div class="flex items-center gap-3">
-                                    <div class="size-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
+                                    <div
+                                        class="size-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
                                         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                                        <h4
+                                            class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
                                             <span>Foto Bukti Transaksi Pembayaran</span>
-                                            <span id="invBuktiBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Terunggah Saat Pemesanan</span>
+                                            <span id="invBuktiBadge"
+                                                class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">Terunggah
+                                                Saat Pemesanan</span>
                                         </h4>
-                                        <p class="text-xs text-slate-500 mt-0.5">Struk foto bukti pembayaran transfer/QRIS yang diunggah saat melakukan pesanan.</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">Struk foto bukti pembayaran
+                                            transfer/QRIS yang diunggah saat melakukan pesanan.</p>
                                     </div>
                                 </div>
                                 <div class="no-print flex items-center gap-2 self-start sm:self-auto">
-                                    <button type="button" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer">
-                                        <svg class="size-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                    <button type="button"
+                                        onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')"
+                                        class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 border border-emerald-300 rounded-xl text-xs font-bold text-emerald-800 flex items-center gap-1.5 transition shadow-2xs cursor-pointer">
+                                        <svg class="size-4 text-emerald-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
                                         <span>Lihat Foto Penuh</span>
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Kontainer Foto Bukti Transaksi & Info -->
-                            <div id="invBuktiTransferContent" class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                            <div id="invBuktiTransferContent"
+                                class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
                                 <!-- Kolom Kiri: Pratinjau Foto Bukti Transaksi -->
                                 <div class="md:col-span-5 flex justify-center">
-                                    <div class="relative w-full max-w-[280px] h-64 sm:h-72 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-inner group cursor-pointer" onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')" title="Klik untuk memperbesar foto bukti transaksi">
-                                        <img id="invBuktiImg" src="" alt="Bukti Transaksi" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
-                                        <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 transition">
-                                            <svg class="size-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    <div class="relative w-full max-w-[280px] h-64 sm:h-72 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-inner group cursor-pointer"
+                                        onclick="window.zoomCustomerBukti && window.zoomCustomerBukti(document.getElementById('invBuktiImg') ? document.getElementById('invBuktiImg').src : '')"
+                                        title="Klik untuk memperbesar foto bukti transaksi">
+                                        <img id="invBuktiImg" src="" alt="Bukti Transaksi"
+                                            class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300">
+                                        <div
+                                            class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 transition">
+                                            <svg class="size-6 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                             </svg>
                                             <span>Klik untuk memperbesar</span>
                                         </div>
-                                        <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/70 text-[10px] text-white backdrop-blur-xs font-mono">Bukti Digital Terverifikasi</span>
+                                        <span
+                                            class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/70 text-[10px] text-white backdrop-blur-xs font-mono">Bukti
+                                            Digital Terverifikasi</span>
                                     </div>
                                 </div>
 
@@ -591,58 +707,82 @@
                                     <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2.5">
                                         <div class="flex items-center justify-between">
                                             <span class="text-slate-500 font-medium">Metode Pembayaran:</span>
-                                            <span id="invBuktiMethod" class="font-bold text-slate-800">Transfer Bank / QRIS</span>
+                                            <span id="invBuktiMethod" class="font-bold text-slate-800">Transfer Bank /
+                                                QRIS</span>
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <span class="text-slate-500 font-medium">Waktu Unggah:</span>
-                                            <span id="invBuktiUploadTime" class="font-medium text-slate-700">Saat Checkout Pemesanan</span>
+                                            <span id="invBuktiUploadTime" class="font-medium text-slate-700">Saat
+                                                Checkout Pemesanan</span>
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <span class="text-slate-500 font-medium">Status Verifikasi:</span>
-                                            <span id="invBuktiStatusVerif" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Menunggu Verifikasi Kasir</span>
+                                            <span id="invBuktiStatusVerif"
+                                                class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Menunggu
+                                                Verifikasi Kasir</span>
                                         </div>
                                     </div>
 
-                                    <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
-                                        <svg class="size-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <div
+                                        class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+                                        <svg class="size-4 text-emerald-600 shrink-0 mt-0.5" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <p class="leading-relaxed text-[11px]">
-                                            Foto struk bukti transaksi pembayaran ini disimpan otomatis ke sistem basis data Bersihin Laundry. Petugas kami akan melakukan verifikasi mutasi rekening sebelum cucian selesai diproses.
+                                            Foto struk bukti transaksi pembayaran ini disimpan otomatis ke sistem basis
+                                            data Bersihin Laundry. Petugas kami akan melakukan verifikasi mutasi
+                                            rekening sebelum cucian selesai diproses.
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Kontainer Pembayaran Tunai (Jika Pesanan Tunai) -->
-                            <div id="invBuktiTunaiContent" class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-3">
-                                <div class="size-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+                            <div id="invBuktiTunaiContent"
+                                class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-3">
+                                <div
+                                    class="size-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center shrink-0">
                                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <span class="font-bold text-slate-800 block text-sm">Metode Pembayaran Tunai (COD)</span>
-                                    <span class="text-[11px] text-slate-500 block mt-0.5">Pesanan ini menggunakan metode pembayaran tunai saat penyerahan cucian ke kasir atau kurir, sehingga tidak memerlukan unggahan foto bukti transfer.</span>
+                                    <span class="font-bold text-slate-800 block text-sm">Metode Pembayaran Tunai
+                                        (COD)</span>
+                                    <span class="text-[11px] text-slate-500 block mt-0.5">Pesanan ini menggunakan metode
+                                        pembayaran tunai saat penyerahan cucian ke kasir atau kurir, sehingga tidak
+                                        memerlukan unggahan foto bukti transfer.</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- PANEL VERIFIKASI PEMBAYARAN KASIR -->
-                        <div id="cashierActionPanel" class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                        <div id="cashierActionPanel"
+                            class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 no-print">
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
                                 <div>
-                                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <h3
+                                        class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-cyan-700" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         <span>Tindakan Verifikasi Kasir &amp; Tahapan Cucian</span>
                                     </h3>
-                                    <p class="text-[11px] text-slate-500 mt-0.5">Pastikan uang tunai atau mutasi QRIS/Bank telah valid sebelum mengonfirmasi pembayaran lunas.</p>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">Pastikan uang tunai atau mutasi
+                                        QRIS/Bank telah valid sebelum mengonfirmasi pembayaran lunas.</p>
                                 </div>
-                                <button type="button" onclick="window.print()" class="px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-xs flex items-center justify-center gap-1.5 transition shrink-0">
-                                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                <button type="button" onclick="window.print()"
+                                    class="px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-xs flex items-center justify-center gap-1.5 transition shrink-0">
+                                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                     </svg>
                                     <span>Cetak Struk Kasir</span>
                                 </button>
@@ -653,7 +793,8 @@
                                 <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-2">
                                     <label class="font-bold text-slate-800 block">Perbarui Tahap Pengerjaan:</label>
                                     <div class="flex items-center gap-2">
-                                        <select id="staffStageSelect" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg text-xs py-2 px-3 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
+                                        <select id="staffStageSelect"
+                                            class="flex-1 bg-slate-50 border border-slate-300 rounded-lg text-xs py-2 px-3 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-600">
                                             <option value="Menunggu konfirmasi">Menunggu konfirmasi</option>
                                             <option value="Diproses">Diproses</option>
                                             <option value="Sedang Dicuci">Sedang Dicuci</option>
@@ -661,26 +802,36 @@
                                             <option value="Siap Diambil">Siap Diambil</option>
                                             <option value="Selesai">Selesai</option>
                                         </select>
-                                        <button type="button" onclick="applyStaffStageUpdate()" class="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
+                                        <button type="button" onclick="applyStaffStageUpdate()"
+                                            class="px-3.5 py-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
                                             Terapkan
                                         </button>
                                     </div>
-                                    <span class="text-[10px] text-slate-400 block">Status akan otomatis diperbarui di aplikasi pelanggan &amp; owner.</span>
+                                    <span class="text-[10px] text-slate-400 block">Status akan otomatis diperbarui di
+                                        aplikasi pelanggan &amp; owner.</span>
                                 </div>
 
                                 <!-- Tombol Verifikasi Pembayaran Lunas -->
-                                <div class="p-4 bg-white rounded-xl border border-slate-200 flex flex-col justify-between gap-3">
+                                <div
+                                    class="p-4 bg-white rounded-xl border border-slate-200 flex flex-col justify-between gap-3">
                                     <div>
                                         <span class="font-bold text-slate-800 block">Status Verifikasi Kasir:</span>
-                                        <span id="cashierVerifyHint" class="text-[11px] text-slate-500 block mt-0.5">Tekan tombol di bawah untuk menetapkan transaksi ini sebagai LUNAS.</span>
+                                        <span id="cashierVerifyHint"
+                                            class="text-[11px] text-slate-500 block mt-0.5">Tekan tombol di bawah untuk
+                                            menetapkan transaksi ini sebagai LUNAS.</span>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <button type="button" onclick="rejectStaffOrder()" class="px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
+                                        <button type="button" onclick="rejectStaffOrder()"
+                                            class="px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition">
                                             Tolak / Batal
                                         </button>
-                                        <button type="button" id="confirmStaffOrderBtn" onclick="confirmStaffOrderPayment()" class="flex-1 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-800 rounded-lg hover:brightness-110 shadow-sm flex items-center justify-center gap-1.5 transition">
-                                            <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                        <button type="button" id="confirmStaffOrderBtn"
+                                            onclick="confirmStaffOrderPayment()"
+                                            class="flex-1 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-800 rounded-lg hover:brightness-110 shadow-sm flex items-center justify-center gap-1.5 transition">
+                                            <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                             <span>Konfirmasi LUNAS</span>
                                         </button>
@@ -699,10 +850,12 @@
 
                 <!-- Navigasi Bawah -->
                 <div id="bottomNavPegawai" class="flex items-center justify-between gap-3 no-print">
-                    <a href="datapesanan.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                    <a href="datapesanan.html"
+                        class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
                         &larr; Kembali ke Data Pesanan
                     </a>
-                    <a href="datatransaksi.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                    <a href="datatransaksi.html"
+                        class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
                         Daftar Semua Transaksi &rarr;
                     </a>
                 </div>
@@ -763,7 +916,7 @@
             try {
                 const u = JSON.parse(sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user') || 'null');
                 if (u && u.nama) return { nama: u.nama, jabatan: u.jabatan || 'Pegawai', id_pegawai: u.id_pegawai || null };
-            } catch (_) {}
+            } catch (_) { }
             return { nama: 'Dina Nurhaliza', jabatan: 'Kasir Utama', id_pegawai: 1 };
         }
 
@@ -824,7 +977,7 @@
                         });
                     }
                 }
-            } catch (_) {}
+            } catch (_) { }
 
             if (list.length === 0) {
                 try {
@@ -833,7 +986,7 @@
                         const norm = normalizeStaffOrder(r);
                         if (norm && !list.some(lo => lo.code === norm.code)) list.push(norm);
                     });
-                } catch (_) {}
+                } catch (_) { }
             }
 
             if (list.length === 0) {
@@ -890,7 +1043,7 @@
                         }
                     }
                 }
-            } catch (_) {}
+            } catch (_) { }
             return order;
         }
 
@@ -997,7 +1150,7 @@
             return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
         }
 
-        window.zoomCustomerBukti = function(src) {
+        window.zoomCustomerBukti = function (src) {
             if (!src) return;
             let modal = document.getElementById('customerBuktiFullModal');
             if (!modal) {
@@ -1182,7 +1335,7 @@
                         if (found && (found.bukti_transfer || found.bukti_bayar)) {
                             bSrc = found.bukti_transfer || found.bukti_bayar;
                         }
-                    } catch(_) {}
+                    } catch (_) { }
                 }
                 if (!bSrc) {
                     try {
@@ -1191,7 +1344,7 @@
                         if (found && (found.bukti_transfer || found.bukti_bayar)) {
                             bSrc = found.bukti_transfer || found.bukti_bayar;
                         }
-                    } catch(_) {}
+                    } catch (_) { }
                 }
                 if (!bSrc) {
                     try {
@@ -1199,7 +1352,7 @@
                         if (act && (act.code === order.code || act.orderId === order.code) && (act.bukti_transfer || act.bukti_bayar)) {
                             bSrc = act.bukti_transfer || act.bukti_bayar;
                         }
-                    } catch(_) {}
+                    } catch (_) { }
                 }
                 if (!bSrc) {
                     try {
@@ -1207,7 +1360,7 @@
                         if (lastOrd && (lastOrd.code === order.code || lastOrd.orderId === order.code) && (lastOrd.bukti_transfer || lastOrd.bukti_bayar)) {
                             bSrc = lastOrd.bukti_transfer || lastOrd.bukti_bayar;
                         }
-                    } catch(_) {}
+                    } catch (_) { }
                 }
                 if (!bSrc) {
                     try {
@@ -1215,7 +1368,7 @@
                         if (lastInv && (lastInv.kode_pesanan === order.code || lastInv.orderId === order.code) && (lastInv.bukti_transfer || lastInv.bukti_bayar)) {
                             bSrc = lastInv.bukti_transfer || lastInv.bukti_bayar;
                         }
-                    } catch(_) {}
+                    } catch (_) { }
                 }
 
                 if (bSrc && !bSrc.startsWith('data:') && !bSrc.startsWith('http://') && !bSrc.startsWith('https://')) {
@@ -1413,4 +1566,3 @@
 </body>
 
 </html>
-
