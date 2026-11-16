@@ -453,14 +453,12 @@
                             <tr class="bg-slate-50/75 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                                 <th class="py-3.5 px-6">Bulan</th>
                                 <th class="py-3.5 px-6">Transaksi</th>
-                                <th class="py-3.5 px-6">Pendapatan</th>
-                                <th class="py-3.5 px-6">Pengeluaran</th>
-                                <th class="py-3.5 px-6 text-right">Laba Bersih</th>
+                                <th class="py-3.5 px-6 text-right">Pendapatan</th>
                             </tr>
                         </thead>
                         <tbody id="reportTableBody" class="divide-y divide-slate-100 text-xs md:text-sm text-slate-600 font-medium">
                             <tr>
-                                <td colspan="5" class="py-8 px-6 text-center text-slate-400 font-medium italic">
+                                <td colspan="3" class="py-8 px-6 text-center text-slate-400 font-medium italic">
                                     Memuat data laporan keuangan dari database...
                                 </td>
                             </tr>
@@ -732,8 +730,13 @@
             if (displayList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
+<<<<<<< HEAD
+                        <td colspan="3" class="py-8 px-6 text-center text-slate-400 font-medium italic">
+                            Belum ada riwayat transaksi database pada periode yang dipilih.
+=======
                         <td colspan="5" class="py-8 px-6 text-center text-slate-400 font-medium italic">
                             ${reportState.apiOk ? 'Belum ada transaksi lunas pada periode yang dipilih.' : 'Tidak dapat terhubung ke database. Pastikan server backend & XAMPP aktif.'}
+>>>>>>> origin/dev
                         </td>
                     </tr>
                 `;
@@ -744,9 +747,7 @@
                 <tr class="hover:bg-slate-50/60 transition">
                     <td class="py-4 px-6 font-bold text-slate-800">${escapeHtml(item.bulan_label)}</td>
                     <td class="py-4 px-6 text-slate-700 font-semibold">${Number(item.total_transaksi).toLocaleString('id-ID')}</td>
-                    <td class="py-4 px-6 text-slate-900 font-bold">${formatRupiah(item.total_pendapatan)}</td>
-                    <td class="py-4 px-6 text-slate-500">${formatRupiah(item.total_pengeluaran)}</td>
-                    <td class="py-4 px-6 text-right text-teal-700 font-bold">${formatRupiah(item.laba_bersih)}</td>
+                    <td class="py-4 px-6 text-right text-slate-900 font-bold">${formatRupiah(item.total_pendapatan)}</td>
                 </tr>
             `).join('');
         }
@@ -759,9 +760,9 @@
                 return;
             }
 
-            let csv = 'Bulan,Transaksi,Pendapatan,Pengeluaran,Laba Bersih\r\n';
+            let csv = 'Bulan,Transaksi,Pendapatan\r\n';
             list.forEach(item => {
-                csv += `"${item.bulan_label}",${item.total_transaksi},${item.total_pendapatan},${item.total_pengeluaran},${item.laba_bersih}\r\n`;
+                csv += `"${item.bulan_label}",${item.total_transaksi},${item.total_pendapatan}\r\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
