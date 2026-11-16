@@ -157,3 +157,14 @@ Rancangan ini belum mencakup pembayaran online, notifikasi otomatis, layanan ant
 ## 5. Kesimpulan
 
 Rancangan basis data sistem laundry ini diharapkan dapat membantu proses pencatatan pelanggan, pegawai, layanan, dan transaksi secara lebih teratur. Dengan adanya ERD dan rancangan kebutuhan sistem, struktur data yang akan digunakan menjadi lebih mudah dipahami sebelum dikembangkan menjadi aplikasi.
+
+## 📚 Dokumentasi Proyek
+
+Dokumentasi lengkap sistem Laundry:
+
+1. [API Documentation](docs/API_DOCUMENTATION.md)
+2. [Frontend Documentation](docs/FRONTEND_DOCUMENTATION.md)
+3. [API Integration](docs/API_INTEGRATION.md)
+4. [Database API Mapping](docs/DATABASE_API_MAPPING.md)
+5. [System Flow](docs/SYSTEM_FLOW.md)
+6. [API Testing Guide](docs/API_TESTING_GUIDE.md)
