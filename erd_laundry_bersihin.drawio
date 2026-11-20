@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Antigravity" version="24.7.17">
+  <diagram name="ERD Sistem Basis Data Laundry Bersihin" id="erd-laundry-bersihin-01">
+    <mxGraphModel dx="1650" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="1260" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="ENTITY RELATIONSHIP DIAGRAM (ERD) - SISTEM BASIS DATA BERSIHIN LAUNDRY (MySQL: bersihinlaundry)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#0f172a;" vertex="1" parent="1">
+          <mxGeometry x="240" y="15" width="1200" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Notasi Crow's Foot | 9 Tabel Relasional InnoDB | PK = Primary Key, FK = Foreign Key, UQ = Unique Key" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=0;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="340" y="48" width="1000" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_pemilik" value="pemilik" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="95" width="380" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pemilik_pk" value="[PK] id_pemilik : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#e9d5ff;fillColor=#faf5ff;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#6b21a8;" vertex="1" parent="tbl_pemilik">
+          <mxGeometry y="34" width="380" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pemilik_cols" value="[FK] id_user : INT UNSIGNED NOT NULL&#xa;[UQ] kode_pemilik : VARCHAR(20) NOT NULL&#xa;     nama : VARCHAR(100) NOT NULL&#xa;     telepon : VARCHAR(20) NOT NULL&#xa;     alamat : TEXT NULL&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_pemilik">
+          <mxGeometry y="64" width="380" height="166" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_users" value="users" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e3a8a;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="590" y="95" width="420" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_users_pk" value="[PK] id_user : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#bfdbfe;fillColor=#eff6ff;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#1e40af;" vertex="1" parent="tbl_users">
+          <mxGeometry y="34" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_users_cols" value="[UQ] username : VARCHAR(50) NOT NULL&#xa;[UQ] email : VARCHAR(100) NULL&#xa;     no_telp : VARCHAR(20) NULL&#xa;     password : VARCHAR(255) NOT NULL&#xa;     role : ENUM('PEMILIK','PEGAWAI','PELANGGAN')&#xa;     status : ENUM('AKTIF','NONAKTIF') DEFAULT 'AKTIF'&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP&#xa;     updated_at : DATETIME ON UPDATE CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_users">
+          <mxGeometry y="64" width="420" height="206" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_pelanggan" value="pelanggan" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e0f2fe;strokeColor=#0284c7;fontColor=#0c4a6e;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="95" width="420" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pelanggan_pk" value="[PK] id_pelanggan : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#bae6fd;fillColor=#f0f9ff;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#0369a1;" vertex="1" parent="tbl_pelanggan">
+          <mxGeometry y="34" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pelanggan_cols" value="[FK] id_user : INT UNSIGNED NULL&#xa;[UQ] kode_pelanggan : VARCHAR(20) NOT NULL&#xa;     nama : VARCHAR(100) NOT NULL&#xa;     telepon : VARCHAR(20) NOT NULL&#xa;     email : VARCHAR(100) NULL&#xa;     alamat : TEXT NULL&#xa;     member_tier : ENUM('REGULER','SILVER','GOLD')&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_pelanggan">
+          <mxGeometry y="64" width="420" height="206" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_pegawai" value="pegawai" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="470" width="380" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pegawai_pk" value="[PK] id_pegawai : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#a7f3d0;fillColor=#ecfdf5;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#047857;" vertex="1" parent="tbl_pegawai">
+          <mxGeometry y="34" width="380" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pegawai_cols" value="[FK] id_user : INT UNSIGNED NOT NULL&#xa;[UQ] kode_pegawai : VARCHAR(20) NOT NULL&#xa;     nama : VARCHAR(100) NOT NULL&#xa;     telepon : VARCHAR(20) NOT NULL&#xa;     alamat : TEXT NULL&#xa;     jabatan : VARCHAR(50) DEFAULT 'Kasir'&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_pegawai">
+          <mxGeometry y="64" width="380" height="186" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_pesanan" value="pesanan" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="570" y="450" width="460" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pesanan_pk" value="[PK] id_pesanan : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#fde68a;fillColor=#fffbeb;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#b45309;" vertex="1" parent="tbl_pesanan">
+          <mxGeometry y="34" width="460" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pesanan_cols" value="[UQ] kode_pesanan : VARCHAR(30) NOT NULL&#xa;[FK] id_pelanggan : INT UNSIGNED NOT NULL&#xa;[FK] id_pegawai : INT UNSIGNED NULL&#xa;     tanggal_pesanan : DATETIME DEFAULT CURRENT_TIMESTAMP&#xa;     tanggal_selesai : DATETIME NULL&#xa;     total_berat : DECIMAL(8,2) NULL&#xa;     total_harga : DECIMAL(12,2) NOT NULL DEFAULT 0.00&#xa;     status : ENUM('MENUNGGU','DIPROSES','DICUCI','DISETRIKA',&#xa;                   'SIAP_DIAMBIL','SELESAI','DIBATALKAN')&#xa;     catatan : TEXT NULL&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP&#xa;     updated_at : DATETIME ON UPDATE CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_pesanan">
+          <mxGeometry y="64" width="460" height="276" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_layanan" value="layanan" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e0e7ff;strokeColor=#4f46e5;fontColor=#312e81;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="470" width="420" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_layanan_pk" value="[PK] id_layanan : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#c7d2fe;fillColor=#eef2ff;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#4338ca;" vertex="1" parent="tbl_layanan">
+          <mxGeometry y="34" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_layanan_cols" value="     nama_layanan : VARCHAR(100) NOT NULL&#xa;     kategori : ENUM('KILOAN','SATUAN','EXPRESS','SPECIAL')&#xa;     satuan : VARCHAR(20) NOT NULL DEFAULT 'kg'&#xa;     harga : DECIMAL(10,2) NOT NULL DEFAULT 0.00&#xa;     estimasi_waktu : VARCHAR(50) DEFAULT '2 Hari'&#xa;     status : ENUM('AKTIF','NONAKTIF') DEFAULT 'AKTIF'&#xa;     deskripsi : TEXT NULL&#xa;     created_at : DATETIME DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_layanan">
+          <mxGeometry y="64" width="420" height="206" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_riwayat" value="riwayat_status" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#0f172a;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="900" width="380" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_riwayat_pk" value="[PK] id_riwayat : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#cbd5e1;fillColor=#f8fafc;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#334155;" vertex="1" parent="tbl_riwayat">
+          <mxGeometry y="34" width="380" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_riwayat_cols" value="[FK] id_pesanan : INT UNSIGNED NOT NULL&#xa;[FK] id_pegawai : INT UNSIGNED NULL&#xa;     status : VARCHAR(30) NOT NULL&#xa;     catatan : VARCHAR(255) NULL&#xa;     waktu_perubahan : DATETIME DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_riwayat">
+          <mxGeometry y="64" width="380" height="156" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_pembayaran" value="pembayaran" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="590" y="900" width="420" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pembayaran_pk" value="[PK] id_pembayaran : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#bbf7d0;fillColor=#f0fdf4;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#15803d;" vertex="1" parent="tbl_pembayaran">
+          <mxGeometry y="34" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_pembayaran_cols" value="[FK] id_pesanan : INT UNSIGNED NOT NULL&#xa;     jumlah_bayar : DECIMAL(12,2) NOT NULL DEFAULT 0.00&#xa;     metode : ENUM('TUNAI','QRIS','TRANSFER') DEFAULT 'TUNAI'&#xa;     tanggal_bayar : DATETIME DEFAULT CURRENT_TIMESTAMP&#xa;     status : ENUM('MENUNGGU','BERHASIL','GAGAL')&#xa;     referensi_bayar : VARCHAR(100) NULL" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_pembayaran">
+          <mxGeometry y="64" width="420" height="176" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl_detail" value="detail_pesanan" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=34;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=14;strokeWidth=1.5;rounded=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="900" width="420" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_detail_pk" value="[PK] id_detail : INT UNSIGNED AUTO_INCREMENT" style="text;strokeColor=#fecdd3;fillColor=#fff1f2;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;fontColor=#be123c;" vertex="1" parent="tbl_detail">
+          <mxGeometry y="34" width="420" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_detail_cols" value="[FK] id_pesanan : INT UNSIGNED NOT NULL&#xa;[FK] id_layanan : INT UNSIGNED NOT NULL&#xa;     jumlah : DECIMAL(8,2) NOT NULL DEFAULT 1.00&#xa;     harga_satuan : DECIMAL(10,2) NOT NULL DEFAULT 0.00&#xa;     subtotal : DECIMAL(12,2) NOT NULL DEFAULT 0.00" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=top;spacingLeft=10;spacingRight=6;spacingTop=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=11.5;fontColor=#1e293b;" vertex="1" parent="tbl_detail">
+          <mxGeometry y="64" width="420" height="156" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_users_pemilik" value="1 : 0..1&#xa;(fk_pemilik_user)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToOne;endFill=0;strokeColor=#2563eb;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#1e40af;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_users" target="tbl_pemilik">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_users_pelanggan" value="0..1 : 0..1&#xa;(fk_pelanggan_user)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERzeroToOne;startFill=0;endArrow=ERzeroToOne;endFill=0;strokeColor=#2563eb;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#1e40af;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_users" target="tbl_pelanggan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_users_pegawai" value="1 : 0..1&#xa;(fk_pegawai_user)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToOne;endFill=0;strokeColor=#2563eb;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#1e40af;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_users" target="tbl_pegawai">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="653" y="405" />
+              <mxPoint x="345" y="405" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_pelanggan_pesanan" value="1 : 0..N&#xa;(fk_pesanan_pelanggan)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#0284c7;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#0369a1;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pelanggan" target="tbl_pesanan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1254" y="405" />
+              <mxPoint x="961" y="405" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_pegawai_pesanan" value="0..1 : 0..N&#xa;(fk_pesanan_pegawai)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERzeroToOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#047857;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pegawai" target="tbl_pesanan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_pegawai_riwayat" value="0..1 : 0..N&#xa;(fk_riwayat_pegawai)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERzeroToOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#059669;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#047857;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pegawai" target="tbl_riwayat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_pesanan_riwayat" value="1 : 1..N&#xa;(fk_riwayat_pesanan)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERoneToMany;endFill=0;strokeColor=#d97706;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#b45309;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pesanan" target="tbl_riwayat">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="639" y="840" />
+              <mxPoint x="364" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_pesanan_pembayaran" value="1 : 0..N&#xa;(fk_pembayaran_pesanan)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#d97706;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#b45309;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pesanan" target="tbl_pembayaran">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel_pesanan_detail" value="1 : 1..N&#xa;(fk_detail_pesanan)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERoneToMany;endFill=0;strokeColor=#d97706;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#b45309;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_pesanan" target="tbl_detail">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="961" y="840" />
+              <mxPoint x="1254" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel_layanan_detail" value="1 : 0..N&#xa;(fk_detail_layanan)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#4f46e5;strokeWidth=1.8;fontSize=11;fontStyle=1;fontColor=#4338ca;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="tbl_layanan" target="tbl_detail">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
