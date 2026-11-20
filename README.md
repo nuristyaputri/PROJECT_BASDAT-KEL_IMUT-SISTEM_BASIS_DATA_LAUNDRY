@@ -470,11 +470,9 @@ Sistem dinyatakan memenuhi seluruh spesifikasi kebutuhan apabila:
 
 ## 5. Kesimpulan
 
-Perancangan dan implementasi **Sistem Basis Data BersihIn Laundry** mengintegrasikan pemodelan basis data relasional MySQL 9 tabel dengan arsitektur aplikasi web tiga portal (**Pelanggan**, **Pegawai**, dan **Pemilik**). Dengan dukungan ERD, Use Case Diagram, Class Diagram, Sequence Diagram di setiap halaman, serta transaksi database atomik, sistem ini memberikan solusi pengelolaan data operasional dan keuangan laundry yang akurat, transparan, dan mudah dikembangkan.
+Rancangan basis data sistem laundry ini diharapkan dapat membantu proses pencatatan pelanggan, pegawai, layanan, dan transaksi secara lebih teratur. Dengan adanya ERD dan rancangan kebutuhan sistem, struktur data yang akan digunakan menjadi lebih mudah dipahami sebelum dikembangkan menjadi aplikasi.
 
----
-
-## 6. 📚 Dokumentasi Proyek
+## 📚 Dokumentasi Proyek
 
 Dokumentasi lengkap sistem Laundry:
 
@@ -484,4 +482,3 @@ Dokumentasi lengkap sistem Laundry:
 4. [Database API Mapping](docs/DATABASE_API_MAPPING.md)
 5. [System Flow](docs/SYSTEM_FLOW.md)
 6. [API Testing Guide](docs/API_TESTING_GUIDE.md)
-

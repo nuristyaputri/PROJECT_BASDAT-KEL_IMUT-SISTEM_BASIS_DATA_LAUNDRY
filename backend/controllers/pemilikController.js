@@ -16,7 +16,7 @@ const STATUS_PESANAN = [
     "SIAP_DIAMBIL", "SELESAI", "DIBATALKAN"
 ];
 const STATUS_AKUN = ["AKTIF", "NONAKTIF"];
-const SATUAN_LAYANAN = ["kg", "pcs", "meter"];
+const SATUAN_LAYANAN = ["kg", "pcs", "meter", "pasang"];
 
 function sendError(res, status, message) {
     return res.status(status).json({ success: false, message, data: null });
@@ -534,7 +534,7 @@ exports.tambahLayanan = async (req, res) => {
         const katVal = (kategori && ["KILOAN", "SATUAN", "EXPRESS", "SPECIAL"].includes(String(kategori).toUpperCase()))
             ? String(kategori).toUpperCase()
             : "KILOAN";
-        const estimasiVal = estimasi_waktu || "2-3 hari";
+        const estimasiVal = estimasi_waktu || "2 Hari";
         const deskripsiVal = deskripsi || "Layanan laundry higienis dan wangi.";
 
         let id_layanan = null;
@@ -582,7 +582,7 @@ exports.updateLayanan = async (req, res) => {
         const katVal = (kategori && ["KILOAN", "SATUAN", "EXPRESS", "SPECIAL"].includes(String(kategori).toUpperCase()))
             ? String(kategori).toUpperCase()
             : "KILOAN";
-        const estimasiVal = estimasi_waktu || "2-3 hari";
+        const estimasiVal = estimasi_waktu || "2 Hari";
 
         try {
             await pool.query(
@@ -596,9 +596,11 @@ exports.updateLayanan = async (req, res) => {
         const l = db.layanan.find(x => x.id_layanan === id);
         if (l) {
             l.nama_layanan = nama_layanan.trim();
+            l.kategori = katVal;
             l.satuan = satuanVal;
             l.harga = round2(hargaNum);
             l.estimasi_waktu = estimasiVal;
+            l.deskripsi = deskripsi || '';
         }
 
         return res.json({ success: true, message: "Layanan berhasil diperbarui di database XAMPP", data: null });
@@ -728,13 +730,21 @@ exports.daftarPesanan = async (req, res) => {
         try {
             let sql = `
                 SELECT p.id_pesanan, p.kode_pesanan, p.id_pelanggan, p.id_pegawai,
-                       p.tanggal_pesanan, p.tanggal_selesai, p.total_berat, p.total_harga,
-                       p.status, p.catatan, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan,
-                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Layanan Standar') AS layanan_nama,
-                       pb.metode AS metode_bayar, pb.status AS status_bayar
+                       p.tanggal_pesanan, p.tanggal_pesanan AS tanggal_masuk, p.tanggal_selesai, p.total_berat, p.total_harga,
+                       p.status, p.catatan, pl.nama AS nama_pelanggan, pl.telepon AS telepon_pelanggan, pl.alamat AS alamat_pelanggan,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS layanan_nama,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS daftar_layanan,
+                       pb.metode AS metode_bayar, pb.metode AS metode_pembayaran,
+                       pb.status AS status_bayar, pb.status AS status_pembayaran,
+                       COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_bayar,
+                       COALESCE(pb.bukti_bayar, p.bukti_bayar) AS bukti_transfer
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
-                LEFT JOIN pembayaran pb ON pb.id_pesanan = p.id_pesanan
+                LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
+                    SELECT pb2.id_pembayaran FROM pembayaran pb2
+                    WHERE pb2.id_pesanan = p.id_pesanan
+                    ORDER BY pb2.id_pembayaran DESC LIMIT 1
+                )
             `;
             const params = [];
             if (status) {
@@ -870,11 +880,17 @@ exports.daftarTransaksi = async (req, res) => {
     try {
         try {
             const sql = `
-                SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan, p.total_harga, p.status AS status_pesanan,
+                SELECT p.id_pesanan, p.kode_pesanan, pl.nama AS nama_pelanggan,
+                       p.total_berat, p.total_harga, p.tanggal_pesanan, p.status AS status_pesanan,
+                       COALESCE((SELECT GROUP_CONCAT(l.nama_layanan SEPARATOR ', ') FROM detail_pesanan dp JOIN layanan l ON l.id_layanan = dp.id_layanan WHERE dp.id_pesanan = p.id_pesanan), 'Cuci Komplit (Cuci + Setrika)') AS nama_layanan,
                        pb.id_pembayaran, pb.jumlah_bayar, pb.metode, pb.tanggal_bayar, pb.status AS status_pembayaran
                 FROM pesanan p
                 LEFT JOIN pelanggan pl ON pl.id_pelanggan = p.id_pelanggan
-                LEFT JOIN pembayaran pb ON pb.id_pesanan = p.id_pesanan
+                LEFT JOIN pembayaran pb ON pb.id_pembayaran = (
+                    SELECT pb2.id_pembayaran FROM pembayaran pb2
+                    WHERE pb2.id_pesanan = p.id_pesanan
+                    ORDER BY pb2.id_pembayaran DESC LIMIT 1
+                )
                 ORDER BY p.id_pesanan DESC
             `;
             const [rows] = await pool.query(sql);
@@ -1032,13 +1048,26 @@ exports.laporanPendapatan = async (req, res) => {
                 params
             );
 
+            const [[custRow]] = await pool.query("SELECT COUNT(*) AS total FROM pelanggan");
+
             const [perMetodeRows] = await pool.query(
                 `SELECT pb.metode, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah FROM pembayaran pb ${whereClause} GROUP BY pb.metode`,
                 params
             );
 
             const [perHariRows] = await pool.query(
-                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m-%d') AS tanggal, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah FROM pembayaran pb ${whereClause} GROUP BY DATE(pb.tanggal_bayar) ORDER BY tanggal ASC`,
+                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m-%d') AS tanggal, COALESCE(SUM(pb.jumlah_bayar), 0) AS jumlah, COUNT(DISTINCT pb.id_pesanan) AS total_transaksi FROM pembayaran pb ${whereClause} GROUP BY DATE(pb.tanggal_bayar) ORDER BY tanggal DESC`,
+                params
+            );
+
+            const [perBulanRows] = await pool.query(
+                `SELECT DATE_FORMAT(pb.tanggal_bayar, '%Y-%m') AS bulan_key,
+                        DATE_FORMAT(pb.tanggal_bayar, '%M %Y') AS bulan_label,
+                        COUNT(DISTINCT pb.id_pesanan) AS total_transaksi,
+                        COALESCE(SUM(pb.jumlah_bayar), 0) AS total_pendapatan
+                 FROM pembayaran pb ${whereClause}
+                 GROUP BY bulan_key, bulan_label
+                 ORDER BY bulan_key DESC`,
                 params
             );
 
@@ -1049,6 +1078,19 @@ exports.laporanPendapatan = async (req, res) => {
             STATUS_PESANAN.forEach(s => { perStatus[s] = 0; });
             statusRows.forEach(r => { perStatus[r.status] = Number(r.count); });
 
+            const pendapatan_bulanan = perBulanRows.map(r => {
+                const rev = round2(Number(r.total_pendapatan) || 0);
+                const exp = 0; // belum ada tabel pengeluaran di database
+                return {
+                    bulan_key: r.bulan_key,
+                    bulan_label: r.bulan_label,
+                    total_transaksi: Number(r.total_transaksi) || 0,
+                    total_pendapatan: rev,
+                    total_pengeluaran: exp,
+                    laba_bersih: round2(rev - exp)
+                };
+            });
+
             return res.json({
                 success: true,
                 message: "Laporan pendapatan berhasil diambil dari MySQL XAMPP",
@@ -1056,8 +1098,10 @@ exports.laporanPendapatan = async (req, res) => {
                     periode: { dari: dari || null, sampai: sampai || null },
                     total_pesanan: Number(totalRow.total_pesanan) || 0,
                     total_pendapatan: round2(Number(totalRow.total_pendapatan) || 0),
+                    total_pelanggan: Number(custRow ? custRow.total : 0) || 0,
                     pendapatan_per_metode: perMetodeRows.map(r => ({ metode: r.metode, jumlah: round2(Number(r.jumlah)) })),
-                    pendapatan_harian: perHariRows.map(r => ({ tanggal: r.tanggal, jumlah: round2(Number(r.jumlah)) })),
+                    pendapatan_harian: perHariRows.map(r => ({ tanggal: r.tanggal, jumlah: round2(Number(r.jumlah)), total_transaksi: Number(r.total_transaksi) || 0 })),
+                    pendapatan_bulanan,
                     pesanan_per_status: perStatus
                 }
             });
@@ -1086,6 +1130,38 @@ exports.laporanPendapatan = async (req, res) => {
             STATUS_PESANAN.forEach(s => { perStatus[s] = 0; });
             for (const p of pesanan) perStatus[p.status]++;
 
+            const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const perBulan = {};
+            for (const pb of pembayaran) {
+                const dObj = new Date(pb.tanggal_bayar);
+                const key = !isNaN(dObj.getTime())
+                    ? `${dObj.getFullYear()}-${String(dObj.getMonth() + 1).padStart(2, '0')}`
+                    : String(pb.tanggal_bayar).slice(0, 7);
+                const label = !isNaN(dObj.getTime())
+                    ? `${MONTH_NAMES[dObj.getMonth()]} ${dObj.getFullYear()}`
+                    : key;
+
+                if (!perBulan[key]) {
+                    perBulan[key] = { bulan_key: key, bulan_label: label, total_transaksi: 0, total_pendapatan: 0 };
+                }
+                perBulan[key].total_transaksi++;
+                perBulan[key].total_pendapatan += Number(pb.jumlah_bayar);
+            }
+            const pendapatan_bulanan = Object.values(perBulan)
+                .sort((a, b) => b.bulan_key.localeCompare(a.bulan_key))
+                .map(r => {
+                    const rev = round2(r.total_pendapatan);
+                    const exp = 0; // belum ada tabel pengeluaran di database
+                    return {
+                        bulan_key: r.bulan_key,
+                        bulan_label: r.bulan_label,
+                        total_transaksi: r.total_transaksi,
+                        total_pendapatan: rev,
+                        total_pengeluaran: exp,
+                        laba_bersih: round2(rev - exp)
+                    };
+                });
+
             return res.json({
                 success: true,
                 message: "Laporan pendapatan berhasil diambil",
@@ -1093,8 +1169,10 @@ exports.laporanPendapatan = async (req, res) => {
                     periode: { dari: dari || null, sampai: sampai || null },
                     total_pesanan: pesanan.length,
                     total_pendapatan: round2(total),
+                    total_pelanggan: db.pelanggan.length,
                     pendapatan_per_metode: Object.entries(perMetode).map(([metode, jumlah]) => ({ metode, jumlah: round2(jumlah) })),
                     pendapatan_harian: Object.entries(perHari).map(([tanggal, jumlah]) => ({ tanggal, jumlah: round2(jumlah) })),
+                    pendapatan_bulanan,
                     pesanan_per_status: perStatus
                 }
             });
@@ -1104,3 +1182,5 @@ exports.laporanPendapatan = async (req, res) => {
         return sendError(res, 500, "Gagal mengambil laporan pendapatan");
     }
 };
+
+

@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detail Transaksi - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
 
   <!-- Google Fonts: Poppins (sesuai desain Figma) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -187,8 +190,7 @@
                 <span>Status Pesanan</span>
               </span>
               <span id="sidebarActiveBadge"
-                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
-                1
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none hidden">
               </span>
             </a>
           </li>
@@ -266,11 +268,11 @@
   <!-- ===================================================================== -->
   <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
 
-    <!-- TOPBAR (Acuan Figma: h-20 px-9 bg-white/90 border-b border-slate-200) -->
+        <!-- TOPBAR -->
     <header
       class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
 
-      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Subtitle -->
       <div class="flex items-center gap-3">
         <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
           aria-controls="sidebar"
@@ -281,25 +283,36 @@
         </button>
 
         <div class="flex flex-col justify-start items-start">
-          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Detail Transaksi</h1>
-          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
-          </p>
+          <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Detail Transaksi</h1>
+          <p class="text-xs text-slate-400">Rincian lengkap transaksi laundry</p>
         </div>
       </div>
-      <!-- Kanan: Notifikasi & Profil Pelanggan -->
-      <div class="flex justify-end items-center gap-3">
+
+      <!-- Kanan: Tanggal Real-Time + Notifikasi + Profil Pelanggan -->
+      <div class="flex items-center gap-4 md:gap-5">
+        <!-- Tanggal Real-Time -->
+        <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+          </div>
+        </div>
 
         <!-- Tombol Notifikasi -->
         <div class="relative">
           <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
-            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             <span id="notifDot"
-              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
           </button>
 
           <!-- Panel Dropdown Notifikasi -->
@@ -328,7 +341,7 @@
           </div>
         </div>
 
-        <!-- Profil Pengguna (Avatar Style Pegawai) -->
+        <!-- Profil Pengguna (Avatar Style Pemilik) -->
         <div class="relative">
           <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
             aria-label="Profil Pengguna"
@@ -353,7 +366,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </header>
 
@@ -547,7 +559,38 @@
             <!-- Metode Pembayaran -->
             <div class="w-full mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
               <span class="text-slate-400 text-[11px] font-normal font-['Poppins'] leading-4">Metode</span>
-              <span class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">QRIS</span>
+              <span id="paymentMethod" class="text-slate-700 text-[11px] font-bold font-['Poppins'] leading-4">QRIS</span>
+            </div>
+
+            <!-- Bagian Bukti Transaksi (Klik langsung menuju pemeriksaan invoice, tanpa popup) -->
+            <div class="w-full mt-4 pt-3 border-t border-slate-100 flex flex-col gap-2">
+              <div class="w-full flex justify-between items-center">
+                <span class="text-slate-600 text-[11px] font-semibold font-['Poppins'] flex items-center gap-1.5">
+                  <svg class="size-3.5 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  Bukti Transaksi
+                </span>
+                <span id="dtlBuktiBadge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700">Tersedia</span>
+              </div>
+
+              <!-- Tautan Bukti Transaksi langsung buka Pemeriksaan Invoice penuh (Bukan Pop Up) -->
+              <a href="invoice.html" id="dtlBuktiLink"
+                title="Buka bukti transaksi langsung di fitur pemeriksaan invoice"
+                class="group w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-cyan-50/70 hover:border-cyan-400 active:scale-[0.99] transition flex items-center gap-3">
+                <div class="size-12 rounded-lg bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center relative">
+                  <img id="dtlBuktiImg" src="../assets/sample-receipt.png" alt="Bukti Transaksi" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" onerror="this.src='../assets/sample-receipt.png'">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p id="dtlBuktiTitle" class="text-[11px] font-bold text-slate-800 truncate group-hover:text-cyan-800">Bukti Transfer &amp; Invoice</p>
+                  <p class="text-[10px] text-cyan-700 font-medium flex items-center gap-1 mt-0.5">
+                    <span>Periksa di Invoice</span>
+                    <svg class="size-3 transition-transform group-hover:translate-x-0.5" viewBox="0 0 16 16" fill="none">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
 
@@ -607,7 +650,7 @@
         <p>Tim layanan pelanggan Bersihin siap membantu pertanyaan seputar invoice dan transaksi Anda:</p>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
           <p class="font-semibold text-slate-800">WhatsApp Admin: 0812-3456-7890</p>
-          <p class="text-[11px] text-slate-500">Jam operasional: 07.00 - 21.00 WIB</p>
+          <p class="text-[11px] text-slate-500">Jam operasional: 08.00 - 16.00 WIB</p>
         </div>
         <div class="pt-2 flex justify-end">
           <button type="button" id="okHelpModalBtn"
@@ -639,27 +682,7 @@
       if (topbarDate) topbarDate.textContent = dateFormatted;
     })();
 
-    // 1. Toggle Sidebar Mobile
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-
-    function openSidebar() {
-      sidebar.classList.remove('-translate-x-full');
-      sidebarOverlay.classList.remove('hidden');
-      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'true');
-    }
-
-    function closeSidebar() {
-      sidebar.classList.add('-translate-x-full');
-      sidebarOverlay.classList.add('hidden');
-      if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
-    }
-
-    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    // 1. Toggle Sidebar Mobile dikelola terpusat oleh ../JS/pelanggan.js
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
     // 3. Data Transaksi Dinamis Murni Berdasarkan Database MySQL XAMPP
     const transactionsCatalog = {};
@@ -779,6 +802,32 @@
           statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
           statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
           statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+        }
+
+        // Hubungkan Bukti Transaksi langsung ke Pemeriksaan Invoice (Bukan Pop Up)
+        const dtlBuktiLink = document.getElementById('dtlBuktiLink');
+        if (dtlBuktiLink) {
+          dtlBuktiLink.href = `invoice.html?id=${encodeURIComponent(item.code)}`;
+        }
+
+        // Cari Bukti Transfer Nyata dari Storage
+        let proofImgSrc = item.bukti_transfer || item.bukti_bayar || null;
+        try {
+          const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+          const found = invList.find(x => (x.kode_pesanan === item.code || x.orderId === item.code || x.id === item.code));
+          if (found && (found.bukti_transfer || found.bukti_bayar)) {
+            proofImgSrc = found.bukti_transfer || found.bukti_bayar;
+          }
+        } catch(_) {}
+
+        const dtlBuktiImg = document.getElementById('dtlBuktiImg');
+        const dtlBuktiBadge = document.getElementById('dtlBuktiBadge');
+        if (proofImgSrc && dtlBuktiImg) {
+          dtlBuktiImg.src = proofImgSrc;
+          if (dtlBuktiBadge) {
+            dtlBuktiBadge.textContent = 'Terlampir';
+            dtlBuktiBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700';
+          }
         }
       }
     }

@@ -48,11 +48,11 @@
     },
     defaultProfile: {
       fullName: 'Rangga Saputra',
-      email: 'rangga.saputra@bersihin.id',
-      phone: '0811 2345 6789',
+      email: 'rangga@bersihin.id',
+      phone: '081211223344',
       role: 'Owner & General Manager',
-      location: 'Bandung Outlet Pusat',
-      joinDate: 'Januari 2023'
+      location: 'Jl. Margonda Raya No. 10, Depok, Jawa Barat',
+      joinDate: 'Januari 2024'
     }
   };
 
@@ -67,12 +67,43 @@
     return 'http://localhost:5000';
   }
 
-  async function ensurePemilikToken() {
-    const sessionToken = sessionStorage.getItem('bersihin_token') || sessionStorage.getItem('bersihin_owner_token');
-    if (sessionToken) return sessionToken;
+  function isOwnerToken(token) {
+    if (!token || typeof token !== 'string') return false;
+    try {
+      const parts = token.split('.');
+      if (parts.length < 2) return false;
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(decodeURIComponent(escape(atob(b64))));
+      if (!payload) return false;
+      if (payload.exp && payload.exp * 1000 < Date.now()) return false;
+      return payload.role === 'PEMILIK';
+    } catch (_) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload && payload.role === 'PEMILIK';
+      } catch (_) {
+        return false;
+      }
+    }
+  }
 
-    const localToken = localStorage.getItem('bersihin_token') || localStorage.getItem('bersihin_owner_token');
-    if (localToken) return localToken;
+  async function ensurePemilikToken() {
+    const sessionOwner = sessionStorage.getItem('bersihin_owner_token');
+    if (isOwnerToken(sessionOwner)) return sessionOwner;
+
+    const sessionGeneric = sessionStorage.getItem('bersihin_token');
+    if (isOwnerToken(sessionGeneric)) {
+      sessionStorage.setItem('bersihin_owner_token', sessionGeneric);
+      return sessionGeneric;
+    }
+
+    const localOwner = localStorage.getItem('bersihin_owner_token');
+    if (isOwnerToken(localOwner)) return localOwner;
+
+    const localGeneric = localStorage.getItem('bersihin_token');
+    if (isOwnerToken(localGeneric)) {
+      return localGeneric;
+    }
 
     try {
       const res = await fetch(`${getBackendBaseUrl()}/api/auth/login`, {
@@ -80,16 +111,178 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: 'pemilik', password: 'password123' })
       });
-      const json = await res.json();
-      if (json && json.success && json.data && json.data.token) {
-        sessionStorage.setItem('bersihin_owner_token', json.data.token);
-        sessionStorage.setItem('bersihin_token', json.data.token);
-        localStorage.setItem('bersihin_owner_token', json.data.token);
-        return json.data.token;
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data && json.data.token) {
+          const token = json.data.token;
+          sessionStorage.setItem('bersihin_owner_token', token);
+          sessionStorage.setItem('bersihin_token', token);
+          localStorage.setItem('bersihin_owner_token', token);
+          return token;
+        }
       }
     } catch (_) { }
     return null;
   }
+  window.ensurePemilikToken = ensurePemilikToken;
+  window.isOwnerToken = isOwnerToken;
+
+  function normalizeOwnerStatus(st) {
+    const s = String(st || '').toUpperCase().trim();
+    if (s.includes('BATAL')) return 'DIBATALKAN';
+    if (s.includes('SELESAI')) return 'SELESAI';
+    if (s.includes('SIAP') || s.includes('DIAMBIL')) return 'SIAP_DIAMBIL';
+    if (s.includes('SETRIKA')) return 'DISETRIKA';
+    if (s.includes('CUCI')) return 'DICUCI';
+    if (s.includes('PROSES')) return 'DIPROSES';
+    return 'MENUNGGU';
+  }
+
+  /**
+   * Mengambil dan menyatukan seluruh pesanan dari Database MySQL XAMPP
+   * serta transaksi lokal antar-aktor (Pelanggan & Pegawai) agar sinkron real-time.
+   */
+  async function fetchUnifiedOwnerOrders() {
+    const token = await ensurePemilikToken();
+    const headers = {};
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    let backendOrders = [];
+    try {
+      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/transaksi`, { headers });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data)) {
+          backendOrders = json.data;
+        }
+      }
+    } catch (_) { }
+
+    if (backendOrders.length === 0) {
+      try {
+        const res2 = await fetch(`${getBackendBaseUrl()}/api/pemilik/pesanan`, { headers });
+        if (res2.ok) {
+          const json2 = await res2.json();
+          if (json2 && json2.success && Array.isArray(json2.data)) {
+            backendOrders = json2.data;
+          }
+        }
+      } catch (_) { }
+    }
+
+    let localOrders = [];
+    try {
+      const raw = localStorage.getItem('bersihin_transactions');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) localOrders = parsed;
+      }
+      const rawActive = localStorage.getItem('bersihin_active_order');
+      if (rawActive) {
+        const act = JSON.parse(rawActive);
+        if (act && act.orderId && !localOrders.some(x => (x.orderId || x.code) === act.orderId)) {
+          localOrders.unshift(act);
+        }
+      }
+      const rawInvoices = localStorage.getItem('bersihin_invoices');
+      if (rawInvoices) {
+        const invs = JSON.parse(rawInvoices);
+        if (Array.isArray(invs)) {
+          invs.forEach(inv => {
+            if (!localOrders.some(x => (x.orderId || x.code) === (inv.orderId || inv.code))) {
+              localOrders.push(inv);
+            }
+          });
+        }
+      }
+    } catch (_) { }
+
+    const mapById = new Map();
+
+    // 1. Masukkan pesanan dari backend MySQL XAMPP
+    backendOrders.forEach(trx => {
+      const code = trx.kode_pesanan || (trx.id_pesanan ? `TRX-${String(trx.id_pesanan).padStart(4, '0')}` : `ORD-${Date.now()}`);
+      const stPesanan = normalizeOwnerStatus(trx.status_pesanan || trx.status || 'MENUNGGU');
+      const stBayar = String(trx.status_pembayaran || 'MENUNGGU').toUpperCase();
+      const beratNum = Number(trx.total_berat) || 3.5;
+      const totalNum = Number(trx.total_harga) || (beratNum * 9000);
+      const rawDate = trx.tanggal_pesanan || trx.tanggal_bayar || trx.created_at;
+      const dateObj = rawDate ? new Date(rawDate) : new Date();
+      const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const layananText = trx.nama_layanan || trx.layanan || 'Cuci Komplit (Cuci + Setrika)';
+
+      mapById.set(code, {
+        id: code,
+        code: code,
+        id_pesanan: trx.id_pesanan || null,
+        customerName: trx.nama_pelanggan || 'Pelanggan Bersihin',
+        service: layananText,
+        weight: `${beratNum.toFixed(1).replace('.', ',')} kg`,
+        weightKg: beratNum,
+        total: totalNum,
+        totalFormatted: formatRupiah(totalNum),
+        status: stPesanan,
+        status_pesanan: stPesanan,
+        paymentStatus: stBayar === 'BERHASIL' ? 'Lunas' : 'Menunggu',
+        rawPaymentStatus: stBayar,
+        paymentMethod: trx.metode || trx.metode_pembayaran || 'QRIS',
+        date: dateStr,
+        rawDate: dateObj,
+        notes: trx.catatan || 'Pakaian reguler higienis'
+      });
+    });
+
+    // 2. Gabungkan transaksi lokal dari Pelanggan dan Pegawai
+    localOrders.forEach(lo => {
+      const code = lo.code || lo.orderId || lo.id || `TRX-${Date.now()}`;
+      if (mapById.has(code)) {
+        // Data MySQL adalah sumber kebenaran; data lokal hanya melengkapi field kosong
+        const existing = mapById.get(code);
+        if (!existing.customerName && lo.customerName) existing.customerName = lo.customerName;
+      } else {
+        const st = normalizeOwnerStatus(lo.status || 'MENUNGGU');
+        const beratNum = Number(lo.weightKg) || Number(String(lo.weight || '3.5').replace(/[^\d.]/g, '')) || 3.5;
+        const totalNum = Number(lo.total) || (typeof lo.amount === 'number' ? lo.amount : (beratNum * 9000));
+        const dateObj = new Date(lo.createdAt || lo.timestamp || Date.now());
+        const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+        mapById.set(code, {
+          id: code,
+          code: code,
+          id_pesanan: lo.id_pesanan || null,
+          customerName: lo.customerName || lo.nama_pelanggan || 'Pelanggan',
+          service: lo.service || lo.layanan || 'Cuci Komplit (Cuci + Setrika)',
+          weight: lo.weight || `${beratNum.toFixed(1).replace('.', ',')} kg`,
+          weightKg: beratNum,
+          total: totalNum,
+          totalFormatted: lo.totalFormatted || formatRupiah(totalNum),
+          status: st,
+          status_pesanan: st,
+          paymentStatus: (st === 'SELESAI' || lo.paymentStatus === 'Lunas') ? 'Lunas' : 'Menunggu',
+          rawPaymentStatus: (st === 'SELESAI' || lo.paymentStatus === 'Lunas') ? 'BERHASIL' : 'MENUNGGU',
+          paymentMethod: lo.paymentMethod || 'QRIS',
+          date: dateStr,
+          rawDate: dateObj,
+          notes: lo.notes || lo.catatan || 'Pakaian reguler'
+        });
+      }
+    });
+
+    const list = Array.from(mapById.values());
+    list.sort((a, b) => {
+      const idA = Number(a.id_pesanan) || 0;
+      const idB = Number(b.id_pesanan) || 0;
+      if (idA && idB && idA !== idB) return idB - idA;
+      return (b.rawDate?.getTime() || 0) - (a.rawDate?.getTime() || 0);
+    });
+
+    try {
+      localStorage.setItem('bersihin_unified_orders', JSON.stringify(list));
+    } catch (_) { }
+
+    return list;
+  }
+  window.fetchUnifiedOwnerOrders = fetchUnifiedOwnerOrders;
 
   function updatePemilikRealtimeDate() {
     const now = new Date();
@@ -181,12 +374,23 @@
    */
   function getOwnerProfile() {
     try {
-      const stored = localStorage.getItem(PemilikConfig.storageKeys.profile) || localStorage.getItem('bersihin_pemilik_profile');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.nama && !parsed.fullName) parsed.fullName = parsed.nama;
-        return Object.assign({}, PemilikConfig.defaultProfile, parsed);
+      const rawUser = sessionStorage.getItem('bersihin_user') || localStorage.getItem('bersihin_user');
+      const parsedUser = rawUser ? JSON.parse(rawUser) : null;
+      const stored = sessionStorage.getItem(PemilikConfig.storageKeys.profile) || localStorage.getItem(PemilikConfig.storageKeys.profile);
+      let prof = stored
+        ? Object.assign({}, PemilikConfig.defaultProfile, JSON.parse(stored))
+        : Object.assign({}, PemilikConfig.defaultProfile);
+
+      if (parsedUser && parsedUser.role === 'PEMILIK') {
+        prof = Object.assign(prof, {
+          fullName: parsedUser.nama || prof.fullName,
+          email: parsedUser.email || prof.email,
+          phone: parsedUser.no_telp || parsedUser.telepon || prof.phone,
+          location: parsedUser.alamat || prof.location,
+          username: parsedUser.username || prof.username
+        });
       }
+      return prof;
     } catch (e) {
       console.warn('Gagal membaca storage profil pemilik:', e);
     }
@@ -200,6 +404,7 @@
     try {
       const current = getOwnerProfile();
       const updated = Object.assign({}, current, data);
+      sessionStorage.setItem(PemilikConfig.storageKeys.profile, JSON.stringify(updated));
       localStorage.setItem(PemilikConfig.storageKeys.profile, JSON.stringify(updated));
       return updated;
     } catch (e) {
@@ -212,9 +417,9 @@
   // 3. INISIALISASI KOMPONEN BERSAMA (SIDEBAR & TOPBAR DROPDOWNS)
   // ===========================================================================
   function initSharedComponents() {
-    // 3.1 Sinkronisasi Profil Pemilik di Header / Topbar
+    // 3.1 Sinkronisasi Profil Pemilik di Header / Topbar & Sidebar
     const profile = getOwnerProfile();
-    const ownerNameEls = document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName');
+    const ownerNameEls = document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName, #sidebarOwnerName');
     const ownerEmailEls = document.querySelectorAll('#topbarOwnerEmail, #profileOwnerEmail, #bannerOwnerEmail, #dropdownOwnerEmail');
 
     ownerNameEls.forEach(el => {
@@ -241,14 +446,46 @@
       if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
     }
 
-    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    if (sidebarToggle && !sidebarToggle.dataset.hasSidebarListener) {
+      sidebarToggle.dataset.hasSidebarListener = 'true';
+      sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+    if (sidebarOverlay && !sidebarOverlay.dataset.hasSidebarListener) {
+      sidebarOverlay.dataset.hasSidebarListener = 'true';
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    if (sidebar && !sidebar.dataset.hasSidebarLinkClose) {
+      sidebar.dataset.hasSidebarLinkClose = 'true';
+      sidebar.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        });
+      });
+    }
+    if (sidebar && !document.body.dataset.hasOwnerEscSidebar) {
+      document.body.dataset.hasOwnerEscSidebar = 'true';
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+          closeSidebar();
+        }
+      });
+    }
 
-    // 3.3 Topbar Notification Dropdown
+    // 3.3 Topbar Notification Dropdown (Gaya Identik Pelanggan)
     const notifToggleBtn = document.getElementById('notifToggleBtn');
     const notifDropdown = document.getElementById('notifDropdown');
     const notifDot = document.getElementById('notifDot');
     const markNotifReadBtn = document.getElementById('markNotifReadBtn');
+
+    // Cek status dibaca dari localStorage
+    const isOwnerRead = localStorage.getItem('bersihin_notif_read_pemilik') === 'true';
+    if (isOwnerRead) {
+      if (notifDot) notifDot.classList.add('hidden');
+      if (markNotifReadBtn) markNotifReadBtn.textContent = 'Semua dibaca';
+    } else {
+      if (notifDot) notifDot.classList.remove('hidden');
+      if (markNotifReadBtn) markNotifReadBtn.textContent = 'Tandai dibaca';
+    }
 
     if (notifToggleBtn && notifDropdown && !notifToggleBtn.dataset.hasNotifListener) {
       notifToggleBtn.dataset.hasNotifListener = 'true';
@@ -267,8 +504,9 @@
       markNotifReadBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (notifDot) notifDot.classList.add('hidden');
-        if (notifDropdown) notifDropdown.classList.add('hidden');
-        showToast('Semua notifikasi pemilik telah ditandai dibaca.');
+        localStorage.setItem('bersihin_notif_read_pemilik', 'true');
+        markNotifReadBtn.textContent = 'Semua dibaca';
+        showToast('Notifikasi ditandai telah dibaca.');
       });
     }
 
@@ -536,164 +774,194 @@
   }
 
   /**
-   * Mengambil data dashboard ringkasan bisnis dari MySQL XAMPP secara dinamis
+   * Mengambil data dashboard ringkasan bisnis dari MySQL XAMPP & sinkronisasi antar-aktor
    */
   async function syncPemilikDashboardFromDatabase() {
     try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const orders = await fetchUnifiedOwnerOrders();
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/dashboard`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && json.data) {
-        const d = json.data;
+      const elRev = document.getElementById('ownerTotalPendapatan');
+      const elTrx = document.getElementById('ownerTotalTransaksi');
+      const elCust = document.getElementById('ownerTotalPelanggan');
+      const elEmp = document.getElementById('ownerTotalPegawai');
+      const elIn = document.getElementById('ownerPesananMasuk');
+      const elDone = document.getElementById('ownerPesananSelesai');
+      const elProc = document.getElementById('ownerDalamProses');
 
-        const elRev = document.getElementById('ownerTotalPendapatan');
-        const elTrx = document.getElementById('ownerTotalTransaksi');
-        const elCust = document.getElementById('ownerTotalPelanggan');
-        const elEmp = document.getElementById('ownerTotalPegawai');
-        const elIn = document.getElementById('ownerPesananMasuk');
-        const elDone = document.getElementById('ownerPesananSelesai');
-        const elProc = document.getElementById('ownerDalamProses');
+      // Kalkulasi dari pesanan tersinkron (MySQL + pesanan aktor yang belum masuk DB)
+      let calcRev = 0;
+      let calcDone = 0;
+      let calcProc = 0;
+      let calcValid = 0;
+      orders.forEach(o => {
+        if (o.status === 'DIBATALKAN') return;
+        calcValid++;
+        if (o.paymentStatus === 'Lunas') calcRev += (Number(o.total) || 0);
+        if (o.status === 'SELESAI') calcDone++;
+        else calcProc++;
+      });
 
-        if (elRev) elRev.textContent = formatRupiah(d.pendapatan_total);
-        if (elTrx) elTrx.textContent = String(d.total_pesanan);
-        if (elCust) elCust.textContent = String(d.total_pelanggan);
-        if (elEmp) elEmp.textContent = String(d.total_pegawai);
-        if (elIn) elIn.textContent = String(d.total_pesanan);
-        if (elDone) elDone.textContent = String(d.pesanan_selesai);
-        if (elProc) elProc.textContent = String(d.pesanan_diproses);
+      if (elRev) elRev.textContent = formatRupiah(calcRev);
+      if (elTrx) elTrx.textContent = String(calcValid);
+      if (elIn) elIn.textContent = String(orders.length);
+      if (elDone) elDone.textContent = String(calcDone);
+      if (elProc) elProc.textContent = String(calcProc);
 
-        // Render Aktivitas Terbaru Real-Time dari MySQL
-        if (Array.isArray(d.aktivitas_terbaru) && d.aktivitas_terbaru.length > 0) {
-          const actContainer = document.getElementById('ownerRecentActivitiesContainer');
-          if (actContainer) {
-            actContainer.innerHTML = '';
-            d.aktivitas_terbaru.forEach(act => {
-              const item = document.createElement('div');
-              item.className = 'flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition';
-              let badgeBg = 'bg-sky-100 text-cyan-600';
-              let statusText = `Pesanan ${act.kode_pesanan} sedang diproses`;
-              if (act.status === 'SELESAI') {
-                badgeBg = 'bg-emerald-100 text-emerald-600';
-                statusText = `Pesanan ${act.kode_pesanan} telah selesai`;
-              } else if (act.status === 'SIAP_DIAMBIL') {
-                badgeBg = 'bg-teal-100 text-teal-600';
-                statusText = `Pesanan ${act.kode_pesanan} siap diambil`;
-              } else if (act.status === 'MENUNGGU') {
-                badgeBg = 'bg-amber-100 text-amber-600';
-                statusText = `Pesanan ${act.kode_pesanan} menunggu proses`;
-              }
-
-              item.innerHTML = `
-                <div class="flex items-center gap-3.5">
-                  <div class="w-10 h-10 rounded-xl ${badgeBg} flex items-center justify-center shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
-                    <p class="text-xs text-slate-500">${act.nama_pelanggan || 'Pelanggan'} · ${act.nama_layanan || 'Layanan Laundry'} · ${formatRupiah(act.total_harga)}</p>
-                  </div>
-                </div>
-                <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Real-time</span>
-              `;
-              actContainer.appendChild(item);
-            });
-          }
-
-          const notifList = document.getElementById('ownerNotifDropdownList');
-          if (notifList) {
-            notifList.innerHTML = '';
-            d.aktivitas_terbaru.slice(0, 4).forEach(act => {
-              const notifLink = document.createElement('a');
-              notifLink.href = 'transaksi.html';
-              notifLink.className = 'py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition';
-              notifLink.innerHTML = `
-                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div class="text-xs leading-4">
-                  <p class="font-semibold text-slate-800">Pesanan ${act.kode_pesanan} (${act.status})</p>
-                  <p class="text-slate-500 text-[11px] mt-0.5">${act.nama_pelanggan} - ${formatRupiah(act.total_harga)}</p>
-                  <span class="block text-[10px] text-slate-400 mt-1">Real-time DB</span>
-                </div>
-              `;
-              notifList.appendChild(notifLink);
-            });
+      // Sinkronisasi data resmi dari endpoint /api/pemilik/dashboard MySQL XAMPP jika backend aktif
+      try {
+        const token = await ensurePemilikToken();
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+        const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/dashboard`, { headers });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && json.data) {
+            const d = json.data;
+            // Jumlah pelanggan, pegawai & pendapatan resmi langsung dari tabel MySQL
+            if (elCust) elCust.textContent = String(Number(d.total_pelanggan) || 0);
+            if (elEmp) elEmp.textContent = String(Number(d.total_pegawai) || 0);
+            if (elRev) elRev.textContent = formatRupiah(Math.max(Number(d.pendapatan_total) || 0, calcRev));
           }
         }
+      } catch (_) { }
+
+      // Render Aktivitas Terbaru Real-Time Sesuai Pesanan yang Terjadi
+      const actContainer = document.getElementById('ownerRecentActivitiesContainer');
+      if (actContainer && orders.length > 0) {
+        actContainer.innerHTML = '';
+        orders.slice(0, 5).forEach(act => {
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl transition';
+          let statusText = `Pesanan ${act.code} sedang diproses`;
+          if (act.status === 'SELESAI') {
+            statusText = `Pesanan ${act.code} telah selesai`;
+          } else if (act.status === 'SIAP_DIAMBIL') {
+            statusText = `Pesanan ${act.code} siap diambil`;
+          } else if (act.status === 'MENUNGGU') {
+            statusText = `Pesanan ${act.code} menunggu konfirmasi`;
+          } else if (act.status === 'DICUCI') {
+            statusText = `Pesanan ${act.code} dalam tahap pencucian`;
+          } else if (act.status === 'DISETRIKA') {
+            statusText = `Pesanan ${act.code} dalam tahap penyetrikaan`;
+          }
+
+          item.innerHTML = `
+            <div>
+              <h4 class="text-xs md:text-sm font-semibold text-slate-800">${statusText}</h4>
+              <p class="text-xs text-slate-500">${act.customerName || 'Pelanggan'} · ${act.service || 'Layanan Laundry'} · ${act.totalFormatted || formatRupiah(act.total)}</p>
+            </div>
+          `;
+          actContainer.appendChild(item);
+        });
+      }
+
+      // Render Notifikasi Dropdown Pemilik
+      const notifList = document.getElementById('ownerNotifDropdownList');
+      if (notifList && orders.length > 0) {
+        notifList.innerHTML = '';
+        orders.slice(0, 4).forEach(act => {
+          const notifLink = document.createElement('a');
+          notifLink.href = 'transaksi.html';
+          notifLink.className = 'py-3 flex items-start gap-3 hover:bg-slate-50 rounded-lg px-1 transition';
+          notifLink.innerHTML = `
+            <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-600 flex items-center justify-center shrink-0 mt-0.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div class="text-xs leading-4">
+              <p class="font-semibold text-slate-800">Pesanan ${act.code} (${act.status})</p>
+              <p class="text-slate-500 text-[11px] mt-0.5">${act.customerName} - ${act.totalFormatted || formatRupiah(act.total)}</p>
+            </div>
+          `;
+          notifList.appendChild(notifLink);
+        });
       }
     } catch (_) { }
   }
 
   /**
-   * Mengambil data transaksi dari MySQL XAMPP dan merender ke tabel secara dinamis
+   * Mengambil data transaksi dari MySQL XAMPP & disinkronkan dengan seluruh pesanan aktor
    */
   async function syncPemilikTransaksiFromDatabase() {
     const tbody = document.getElementById('trxTableBody') || document.querySelector('#trxTable tbody');
     if (!tbody) return;
 
     try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const orders = await fetchUnifiedOwnerOrders();
+      if (!Array.isArray(orders) || orders.length === 0) return;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/transaksi`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        tbody.innerHTML = '';
-        json.data.forEach(trx => {
-          const tr = document.createElement('tr');
-          tr.className = 'trx-row hover:bg-slate-50/60 transition group';
-          tr.setAttribute('data-code', trx.kode_pesanan || '');
-          tr.setAttribute('data-name', trx.nama_pelanggan || '');
-          tr.setAttribute('data-service', 'Cuci Komplit');
-          tr.setAttribute('data-price', formatRupiah(trx.total_harga));
-          tr.setAttribute('data-status', trx.status_pesanan || 'Diproses');
+      tbody.innerHTML = '';
+      orders.forEach(trx => {
+        const statusPesanan = normalizeOwnerStatus(trx.status || trx.status_pesanan);
+        const statusBayar = (trx.paymentStatus === 'Lunas' || statusPesanan === 'SELESAI') ? 'BERHASIL' : 'MENUNGGU';
+        const layananText = trx.service || trx.nama_layanan || 'Cuci Komplit (Cuci + Setrika)';
+        const beratText = trx.weight || (trx.weightKg ? `${trx.weightKg} kg` : '3,5 kg');
+        const metodeText = trx.paymentMethod ? `${statusBayar} (${trx.paymentMethod})` : statusBayar;
 
-          const tgl = trx.tanggal_bayar ? new Date(trx.tanggal_bayar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Hari ini';
+        const tr = document.createElement('tr');
+        tr.className = 'trx-row hover:bg-slate-50/60 transition group';
+        tr.setAttribute('data-code', trx.code || '');
+        tr.setAttribute('data-name', trx.customerName || '');
+        tr.setAttribute('data-service', layananText);
+        tr.setAttribute('data-price', trx.totalFormatted || formatRupiah(trx.total));
+        tr.setAttribute('data-status', statusPesanan);
 
-          let statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>Diproses</span>';
-          if (trx.status_pesanan === 'SELESAI' || trx.status_pembayaran === 'BERHASIL') {
-            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>Selesai</span>';
-          } else if (trx.status_pesanan === 'MENUNGGU' || trx.status_pembayaran === 'MENUNGGU') {
-            statusBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Menunggu</span>';
-          }
+        const tgl = trx.date || 'Hari ini';
 
-          tr.innerHTML = `
-            <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.kode_pesanan}</td>
-            <td class="py-4 px-5 text-slate-700 font-medium">${trx.nama_pelanggan || 'Pelanggan'}</td>
-            <td class="py-4 px-5 text-slate-600">Layanan Laundry</td>
-            <td class="py-4 px-5 font-bold text-slate-800">${formatRupiah(trx.total_harga)}</td>
-            <td class="py-4 px-5 text-slate-500">${tgl}</td>
-            <td class="py-4 px-5">${statusBadge}</td>
-            <td class="py-4 px-5 text-right">
-              <div class="flex items-center justify-end gap-1.5">
-                <a href="invoice.html?id=${encodeURIComponent(trx.kode_pesanan)}"
-                  class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-lg text-xs font-semibold transition"
-                  title="Periksa Invoice & Pembukuan">
-                  Invoice
-                </a>
-                <button onclick="if(typeof showDetail==='function') showDetail('${trx.kode_pesanan}', '${trx.nama_pelanggan}', 'Layanan Laundry', '4 kg', '${formatRupiah(trx.total_harga)}', '${tgl}', '${trx.status_pesanan}', '${trx.status_pembayaran || 'Lunas'}')"
-                  class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
-                  Detail
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+        let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-sky-50 text-cyan-700 border border-sky-100"><span class="w-1.5 h-1.5 rounded-full bg-cyan-600"></span>${statusPesanan}</span>`;
+        if (statusPesanan === 'SELESAI') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'SIAP_DIAMBIL') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-teal-50 text-teal-700 border border-teal-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'MENUNGGU') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>${statusPesanan}</span>`;
+        } else if (statusPesanan === 'DIBATALKAN') {
+          statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200/60"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>${statusPesanan}</span>`;
+        }
 
+        const invoiceSubBadge = statusBayar === 'BERHASIL'
+          ? `<span class="text-[10px] font-semibold text-emerald-600">Invoice: BERHASIL</span>`
+          : `<span class="text-[10px] font-semibold text-amber-600">Invoice: ${statusBayar}</span>`;
+
+        const safeName = (trx.customerName || 'Pelanggan').replace(/'/g, "\\'");
+        const safeService = layananText.replace(/'/g, "\\'");
+        const priceStr = trx.totalFormatted || formatRupiah(trx.total);
+
+        tr.innerHTML = `
+          <td class="py-4 px-5 font-bold text-slate-800 font-mono">${trx.code}</td>
+          <td class="py-4 px-5 text-slate-700 font-medium">${trx.customerName || 'Pelanggan'}</td>
+          <td class="py-4 px-5 text-slate-600">${layananText}</td>
+          <td class="py-4 px-5 font-bold text-slate-800">${priceStr}</td>
+          <td class="py-4 px-5 text-slate-500">${tgl}</td>
+          <td class="py-4 px-5">
+            <div class="flex flex-col items-start gap-1">
+              ${statusBadge}
+              ${invoiceSubBadge}
+            </div>
+          </td>
+          <td class="py-4 px-5 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                class="px-2.5 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 rounded-lg text-xs font-semibold transition"
+                title="Periksa Invoice & Pembukuan">
+                Invoice
+              </a>
+              <button onclick="if(typeof showDetail==='function') showDetail('${trx.code}', '${safeName}', '${safeService}', '${beratText}', '${priceStr}', '${tgl}', '${statusPesanan}', '${metodeText}')"
+                class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold shadow-2xs transition">
+                Detail
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      if (typeof window.filterTransactions === 'function') {
+        window.filterTransactions();
+      } else {
         const paginationInfo = document.getElementById('paginationInfo');
         if (paginationInfo) {
-          paginationInfo.textContent = `Menampilkan ${json.data.length} dari ${json.data.length} transaksi`;
+          paginationInfo.innerHTML = `Menampilkan <strong class="text-slate-700 font-semibold">${orders.length}</strong> dari <strong class="text-slate-700 font-semibold">${orders.length}</strong> data`;
         }
       }
     } catch (_) { }
@@ -702,54 +970,168 @@
   /**
    * Mengambil data pelanggan dari MySQL XAMPP dan merender ke tabel secara dinamis
    */
-  async function syncPemilikPelangganFromDatabase() {
-    const tbody = document.getElementById('customerTableBody') || document.querySelector('#customerTable tbody');
+  let currentCustomerPage = 1;
+  const CUSTOMER_PAGE_SIZE = 5;
+  let cachedOwnerCustomers = [];
+
+  function renderOwnerCustomerTablePage() {
+    const tbody = document.getElementById('customerTableBody') || document.querySelector('#pelangganTable tbody') || document.querySelector('#customerTable tbody');
     if (!tbody) return;
 
+    const searchInput = document.getElementById('searchInput');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    const filtered = cachedOwnerCustomers.filter(cust => {
+      if (!query) return true;
+      const hay = `${cust.nama || ''} ${cust.kode_pelanggan || ''} ${cust.telepon || ''} ${cust.email || ''} ${cust.alamat || ''}`.toLowerCase();
+      return hay.includes(query);
+    });
+
+    const totalItems = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / CUSTOMER_PAGE_SIZE));
+    if (currentCustomerPage > totalPages) currentCustomerPage = totalPages;
+    if (currentCustomerPage < 1) currentCustomerPage = 1;
+
+    const startIdx = (currentCustomerPage - 1) * CUSTOMER_PAGE_SIZE;
+    const pageItems = filtered.slice(startIdx, startIdx + CUSTOMER_PAGE_SIZE);
+
+    tbody.innerHTML = '';
+    pageItems.forEach(cust => {
+      const inits = (cust.nama || 'PL').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PL';
+      const joinedDate = cust.created_at
+        ? new Date(cust.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+        : '1 Mar 2024';
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-slate-50/80 transition group customer-row';
+      tr.innerHTML = `
+        <td class="py-3.5 px-5 whitespace-nowrap">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
+              ${inits}
+            </div>
+            <div>
+              <div class="font-bold text-slate-800 text-xs md:text-sm group-hover:text-cyan-700 transition customer-name">${cust.nama}</div>
+              <span class="text-[11px] text-slate-400">${cust.kode_pelanggan || ('PLG-081' + cust.id_pelanggan)}</span>
+            </div>
+          </div>
+        </td>
+        <td class="py-3.5 px-4 font-medium text-slate-600 whitespace-nowrap customer-phone">${cust.telepon || '-'}</td>
+        <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap customer-email">${cust.email || '-'}</td>
+        <td class="py-3.5 px-4 text-slate-600 max-w-xs truncate" title="${(cust.alamat || '-').replace(/"/g, '&quot;')}">${cust.alamat || '-'}</td>
+        <td class="py-3.5 px-4 text-center">
+          <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+            ${cust.total_pesanan ?? 0}
+          </span>
+        </td>
+        <td class="py-3.5 px-4 text-slate-500 whitespace-nowrap">${joinedDate}</td>
+        <td class="py-3.5 px-5 text-center whitespace-nowrap">
+          <div class="inline-flex items-center gap-1.5">
+            <button type="button" onclick="window.showBersihinToast && window.showBersihinToast('Detail Pelanggan: ${(cust.nama || '').replace(/'/g, "\\'")} (${cust.kode_pelanggan || ''}) - Tier: ${cust.member_tier || 'REGULER'}')"
+              class="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:text-sky-600 hover:border-sky-300 hover:bg-sky-50 transition" title="Lihat Detail">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const totalCounter = document.getElementById('totalCounter');
+    if (totalCounter) totalCounter.textContent = `${totalItems} pelanggan`;
+
+    const paginationInfo = document.getElementById('customerPaginationInfo');
+    if (paginationInfo) {
+      paginationInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${pageItems.length}</span> dari <span class="font-semibold text-slate-700">${totalItems}</span> data`;
+    }
+
+    const paginationBtns = document.getElementById('customerPaginationButtons');
+    if (paginationBtns) {
+      let btnsHtml = `
+        <button type="button" data-cust-page="${currentCustomerPage - 1}" ${currentCustomerPage <= 1 ? 'disabled' : ''}
+          class="w-8 h-8 rounded-lg border border-slate-200 bg-white ${currentCustomerPage <= 1 ? 'text-slate-400 opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 text-slate-600'} flex items-center justify-center transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      `;
+      for (let p = 1; p <= totalPages; p++) {
+        if (p === currentCustomerPage) {
+          btnsHtml += `<button type="button" data-cust-page="${p}" class="w-8 h-8 rounded-lg bg-slate-900 text-white font-semibold flex items-center justify-center shadow-xs">${p}</button>`;
+        } else {
+          btnsHtml += `<button type="button" data-cust-page="${p}" class="w-8 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center transition">${p}</button>`;
+        }
+      }
+      btnsHtml += `
+        <button type="button" data-cust-page="${currentCustomerPage + 1}" ${currentCustomerPage >= totalPages ? 'disabled' : ''}
+          class="w-8 h-8 rounded-lg border border-slate-200 bg-white ${currentCustomerPage >= totalPages ? 'text-slate-400 opacity-50 cursor-not-allowed' : 'hover:bg-slate-50 text-slate-600'} flex items-center justify-center transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      `;
+      paginationBtns.innerHTML = btnsHtml;
+      paginationBtns.querySelectorAll('button[data-cust-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.disabled) return;
+          const targetPage = Number(btn.getAttribute('data-cust-page'));
+          if (targetPage >= 1 && targetPage <= totalPages) {
+            currentCustomerPage = targetPage;
+            renderOwnerCustomerTablePage();
+          }
+        });
+      });
+    }
+  }
+
+  async function syncPemilikPelangganFromDatabase() {
+    const tbody = document.getElementById('customerTableBody') || document.querySelector('#pelangganTable tbody') || document.querySelector('#customerTable tbody');
+    if (!tbody) return;
+
+    let custList = [];
     try {
       const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
       const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/pelanggan`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        tbody.innerHTML = '';
-        json.data.forEach(cust => {
-          const inits = (cust.nama || 'PL').trim().split(/\s+/).map(p => p[0]).join('').substring(0, 2).toUpperCase() || 'PL';
-          const tr = document.createElement('tr');
-          tr.className = 'hover:bg-slate-50/80 transition group customer-row';
-          tr.innerHTML = `
-            <td class="py-3.5 px-5 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-sky-100 text-cyan-700 flex items-center justify-center font-bold text-xs shrink-0">
-                  ${inits}
-                </div>
-                <div>
-                  <div class="font-bold text-slate-800 customer-name">${cust.nama}</div>
-                  <div class="text-[11px] text-slate-400">${cust.kode_pelanggan || ('PLG-00' + cust.id_pelanggan)}</div>
-                </div>
-              </div>
-            </td>
-            <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${cust.telepon || '-'}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${cust.email || '-'}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-700">${cust.total_pesanan || 0} order</td>
-            <td class="py-3.5 px-5 whitespace-nowrap font-bold text-slate-800">${formatRupiah(cust.total_belanja || 0)}</td>
-            <td class="py-3.5 px-5 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                ${cust.member_tier || 'Silver'}
-              </span>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        const totalCounter = document.getElementById('totalCounter');
-        if (totalCounter) totalCounter.textContent = `${json.data.length} Pelanggan`;
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          custList = json.data;
+        }
       }
     } catch (_) { }
+
+    try {
+      const rawLocal = localStorage.getItem('bersihin_customers');
+      if (rawLocal) {
+        const parsed = JSON.parse(rawLocal);
+        if (Array.isArray(parsed)) {
+          parsed.forEach(c => {
+            if (!custList.some(x => (x.id_pelanggan && x.id_pelanggan === c.id_pelanggan) || (x.nama && x.nama.toLowerCase() === (c.nama || '').toLowerCase()))) {
+              custList.push(c);
+            }
+          });
+        }
+      }
+    } catch (_) { }
+
+    if (custList.length === 0) return;
+
+    // Total pesanan per pelanggan mengikuti pesanan terbaru (termasuk yang baru dibuat pelanggan)
+    try {
+      const orders = await fetchUnifiedOwnerOrders();
+      custList.forEach(cu => {
+        const nm = String(cu.nama || '').toLowerCase().trim();
+        const cnt = orders.filter(o => String(o.customerName || '').toLowerCase().trim() === nm).length;
+        cu.total_pesanan = Math.max(Number(cu.total_pesanan) || 0, cnt);
+      });
+    } catch (_) { }
+
+    cachedOwnerCustomers = custList;
+    renderOwnerCustomerTablePage();
   }
 
   /**
@@ -789,19 +1171,113 @@
             <td class="py-3.5 px-5 whitespace-nowrap text-slate-600">${emp.telepon || '-'}</td>
             <td class="py-3.5 px-5 whitespace-nowrap text-slate-500">${emp.email || '-'}</td>
             <td class="py-3.5 px-5 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                Aktif
-              </span>
+              ${String(emp.status || 'AKTIF').toUpperCase() === 'NONAKTIF'
+              ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>Nonaktif</span>'
+              : '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-teal-700 border border-emerald-200/60"><span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>Aktif</span>'}
             </td>
           `;
           tbody.appendChild(tr);
         });
 
         const totalCounter = document.getElementById('totalCounter');
-        if (totalCounter) totalCounter.textContent = `${json.data.length} Pegawai`;
+        if (totalCounter) totalCounter.textContent = `${json.data.length} pegawai`;
+        const empPageInfo = document.getElementById('employeePaginationInfo');
+        if (empPageInfo) {
+          empPageInfo.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${json.data.length}</span> dari <span class="font-semibold text-slate-700">${json.data.length}</span> data`;
+        }
       }
     } catch (_) { }
+  }
+
+  /**
+   * Helper untuk merender ikon layanan yang identik dengan portal pelanggan (PELANGGAN/layanan.html)
+   */
+  function getLayananIconHtml(lay) {
+    const id = Number(lay.id_layanan) || 0;
+    const name = String(lay.nama_layanan || '').toLowerCase();
+
+    // 1. Cuci Kering Lipat (ID 1)
+    if (id === 1 || (name.includes('kering') && !name.includes('setrika'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-blue-50 text-cyan-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="21" height="21" rx="4" stroke="currentColor" stroke-width="2" />
+            <circle cx="14" cy="15" r="5" stroke="currentColor" stroke-width="2" />
+            <circle cx="8" cy="7.5" r="1" fill="currentColor" />
+            <circle cx="11.5" cy="7.5" r="1" fill="currentColor" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 2. Cuci Komplit (Cuci + Setrika) (ID 2)
+    if (id === 2 || name.includes('komplit') || (name.includes('cuci') && name.includes('setrika'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M9 4.5L14 7L19 4.5L23.5 8.5L20.5 12.5L19 11.5V22.5C19 23.05 18.55 23.5 18 23.5H10C9.45 23.5 9 23.05 9 22.5V11.5L7.5 12.5L4.5 8.5L9 4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 3. Setrika Uap Saja (ID 3)
+    if (id === 3 || (name.includes('setrika') && !name.includes('cuci'))) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-400 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M10 8H18.5C20.43 8 22 9.57 22 11.5V14H7.5L4.5 19.5H23.5V16.5C23.5 14 22 12 19 12H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 4. Cuci Bedcover Besar (ID 4)
+    if (id === 4 || name.includes('bedcover')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="4" y="6" width="20" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+            <path d="M4 12H24" stroke="currentColor" stroke-width="2" />
+            <circle cx="9" cy="9" r="1" fill="currentColor" />
+            <circle cx="12" cy="9" r="1" fill="currentColor" />
+            <path d="M7 16H21M7 19H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 5. Cuci Kilat Express (4 Jam) (ID 5)
+    if (id === 5 || name.includes('express') || name.includes('kilat') || name.includes('4 jam')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-orange-50 text-red-400 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M15.5 3.5L6.5 15.5H14L12.5 24.5L21.5 12.5H14L15.5 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // 6. Cuci Sepatu Premium (ID 6)
+    if (id === 6 || name.includes('sepatu')) {
+      return `
+        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+          <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M4 18L7 12L13 13L16 10H22C23.1 10 24 10.9 24 12V18C24 19.1 23.1 20 22 20H6C4.9 20 4 19.1 4 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 13L9 18M13 13L13 18M16 13L17 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </div>
+      `;
+    }
+
+    // Default icon
+    return `
+      <div class="w-12 h-12 rounded-xl bg-sky-100 text-cyan-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+        <svg class="w-7 h-7" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M9 4.5L14 7L19 4.5L23.5 8.5L20.5 12.5L19 11.5V22.5C19 23.05 18.55 23.5 18 23.5H10C9.45 23.5 9 23.05 9 22.5V11.5L7.5 12.5L4.5 8.5L9 4.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+        </svg>
+      </div>
+    `;
   }
 
   /**
@@ -820,32 +1296,33 @@
       if (!res.ok) return;
       const json = await res.json();
       if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5';
         grid.innerHTML = '';
         json.data.forEach((lay, idx) => {
           const card = document.createElement('div');
           card.className = 'bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group';
-          const kode = lay.kode_layanan || ('LYN-00' + (lay.id_layanan || (idx + 1)));
+          const kode = lay.kode_layanan || ('LYN-' + String(lay.id_layanan || (idx + 1)).padStart(3, '0'));
           const satuan = lay.satuan || 'kg';
           const hargaFmt = formatRupiah(lay.harga);
-          const estimasi = lay.estimasi_waktu || '2-3 hari';
+          const estimasi = lay.estimasi_waktu || '2 Hari';
+          const kategori = lay.kategori || 'KILOAN';
           const deskripsi = lay.deskripsi || 'Layanan laundry higienis dan wangi.';
           const isActive = lay.status === 'AKTIF';
 
           card.innerHTML = `
             <div>
               <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-sky-100 text-cyan-700 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                  </svg>
-                </div>
+                ${getLayananIconHtml(lay)}
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold ${isActive ? 'bg-emerald-50 text-teal-700 border border-emerald-200/60' : 'bg-slate-100 text-slate-500 border border-slate-200'}">
                   <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-teal-600' : 'bg-slate-400'}"></span>
                   ${isActive ? 'Aktif' : 'Nonaktif'}
                 </span>
               </div>
-              <span class="text-[10px] font-bold text-slate-400 tracking-wider">${kode}</span>
-              <h3 class="text-base font-bold text-slate-800 mt-0.5">${lay.nama_layanan}</h3>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[10px] font-bold text-slate-400 tracking-wider">${kode}</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200/70 uppercase">${kategori}</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-800 mt-1">${lay.nama_layanan}</h3>
               <p class="text-xs text-slate-500 mt-1 leading-relaxed">${deskripsi}</p>
               <div class="flex items-center justify-between py-3 my-3 border-y border-slate-100 text-xs text-slate-600 font-medium">
                 <div class="flex items-center gap-1.5">
@@ -872,8 +1349,8 @@
                 </svg>
                 <span>Edit</span>
               </a>
-              <button onclick="toggleServiceStatus(${lay.id_layanan}, '${lay.nama_layanan}', '${isActive ? 'NONAKTIF' : 'AKTIF'}')"
-                class="p-2 ${isActive ? 'bg-rose-50 hover:bg-rose-100 text-rose-500' : 'bg-emerald-50 hover:bg-emerald-100 text-teal-600'} rounded-xl transition" title="${isActive ? 'Nonaktifkan' : 'Aktifkan'}">
+              <button type="button" data-toggle-layanan-id="${lay.id_layanan}" data-toggle-layanan-name="${String(lay.nama_layanan || '').replace(/"/g, '&quot;')}" data-toggle-layanan-status="${isActive ? 'NONAKTIF' : 'AKTIF'}"
+                class="toggle-layanan-btn p-2 ${isActive ? 'bg-rose-50 hover:bg-rose-100 text-rose-500' : 'bg-emerald-50 hover:bg-emerald-100 text-teal-600'} rounded-xl transition" title="${isActive ? 'Nonaktifkan' : 'Aktifkan'}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -881,6 +1358,15 @@
             </div>
           `;
           grid.appendChild(card);
+        });
+        grid.querySelectorAll('.toggle-layanan-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.toggleServiceStatus(
+              btn.getAttribute('data-toggle-layanan-id'),
+              btn.getAttribute('data-toggle-layanan-name'),
+              btn.getAttribute('data-toggle-layanan-status')
+            );
+          });
         });
       }
     } catch (_) { }
@@ -907,6 +1393,7 @@
           username: p.username || 'pemilik',
           location: p.alamat || 'Jl. Margonda Raya No. 10, Depok, Jawa Barat'
         });
+        initSharedComponents();
 
         document.querySelectorAll('#topbarOwnerName, #profileOwnerName, #bannerOwnerName, #dropdownOwnerName, #profileFullName, #displayFullName').forEach(el => {
           if (el) el.textContent = profile.fullName;
@@ -931,27 +1418,10 @@
    * Mengambil laporan finansial dari MySQL XAMPP secara dinamis
    */
   async function syncPemilikLaporanFromDatabase() {
-    try {
-      const token = await ensurePemilikToken();
-      const headers = {};
-      if (token) headers['Authorization'] = 'Bearer ' + token;
-
-      const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/laporan/pendapatan`, { headers });
-      if (!res.ok) return;
-      const json = await res.json();
-      if (json && json.success && json.data) {
-        const d = json.data;
-        const kpi1 = document.getElementById('kpiValue1');
-        const kpi2 = document.getElementById('kpiValue2');
-        const kpi3 = document.getElementById('kpiValue3');
-
-        if (kpi1) kpi1.textContent = formatRupiah(d.total_pendapatan);
-        if (kpi2) kpi2.textContent = String(d.total_pesanan);
-        if (kpi3 && d.total_pesanan > 0) {
-          kpi3.textContent = formatRupiah(Math.round(d.total_pendapatan / d.total_pesanan));
-        }
-      }
-    } catch (_) { }
+    // Laporan dihitung oleh laporan.html dari transaksi asli database (per periode)
+    if (typeof window.fetchLaporanData === 'function') {
+      try { await window.fetchLaporanData(); } catch (_) { }
+    }
   }
 
   // ===========================================================================
@@ -1077,26 +1547,11 @@
 
     // 7.2 Live Search Pelanggan
     const searchInput = document.getElementById('searchInput');
-    const customerRows = document.querySelectorAll('.customer-row');
-    const totalCounter = document.getElementById('totalCounter');
-
-    if (searchInput && customerRows.length) {
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        let visibleCount = 0;
-
-        customerRows.forEach(row => {
-          const text = row.innerText.toLowerCase();
-          if (text.includes(query)) {
-            row.style.display = '';
-            visibleCount++;
-          } else {
-            row.style.display = 'none';
-          }
-        });
-
-        if (totalCounter) {
-          totalCounter.innerText = `${visibleCount} pelanggan`;
+    if (searchInput && document.getElementById('customerTableBody')) {
+      searchInput.addEventListener('input', () => {
+        if (cachedOwnerCustomers.length > 0) {
+          currentCustomerPage = 1;
+          renderOwnerCustomerTablePage();
         }
       });
     }
@@ -1120,6 +1575,24 @@
         const email = emailInput && emailInput.value.trim() ? emailInput.value.trim() : (nama.toLowerCase().replace(/[^a-z0-9]/g, '') + '@gmail.com');
         const telepon = teleponInput && teleponInput.value.trim() ? teleponInput.value.trim() : ('08' + Math.floor(1000000000 + Math.random() * 9000000000));
 
+        const newCustObj = {
+          id_pelanggan: Date.now(),
+          kode_pelanggan: 'PLG-' + Math.floor(1000 + Math.random() * 9000),
+          nama: nama,
+          email: email,
+          telepon: telepon,
+          alamat: (alamatInput ? alamatInput.value.trim() : '') || 'Alamat Belum Diisi',
+          total_pesanan: 0,
+          member_tier: 'REGULER',
+          created_at: new Date().toISOString()
+        };
+        try {
+          const stored = JSON.parse(localStorage.getItem('bersihin_customers') || '[]');
+          stored.unshift(newCustObj);
+          localStorage.setItem('bersihin_customers', JSON.stringify(stored));
+          localStorage.setItem('bersihin_order_updated', Date.now().toString());
+        } catch (_) { }
+
         try {
           const res = await fetch(`${getBackendBaseUrl()}/api/auth/register`, {
             method: 'POST',
@@ -1127,17 +1600,14 @@
             body: JSON.stringify({ nama, email, telepon, password: 'password123' })
           });
           const d = await res.json();
-          if (d.success) {
+          if (d && d.success) {
             showToast('Pelanggan ' + nama + ' berhasil didaftarkan ke database MySQL!');
-            setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 1000);
+            setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 800);
             return;
-          } else {
-            showToast(d.message || 'Gagal mendaftar pelanggan', true);
           }
-        } catch (_) {
-          showToast('Data pelanggan ' + nama + ' berhasil didaftarkan.');
-          setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 1000);
-        }
+        } catch (_) { }
+        showToast('Data pelanggan ' + nama + ' berhasil didaftarkan.');
+        setTimeout(() => { window.location.href = 'datapelanggan.html'; }, 800);
       });
     }
   }
@@ -1233,13 +1703,44 @@
     // Form Tambah / Edit Layanan mandiri di tambahlayanan.html atau editlayanan.html
     const formLayanan = document.querySelector('form[action*="layananpegawai.html"]') || document.getElementById('formLayanan');
     if (formLayanan) {
+      const namaInput = formLayanan.querySelector('[name="nama_layanan"], [name="nama"], #nama_layanan, #nama');
+      const hargaInput = formLayanan.querySelector('[name="harga"], #harga');
+      const satuanInput = formLayanan.querySelector('[name="satuan"], #satuan');
+      const estimasiInput = formLayanan.querySelector('[name="durasi"], [name="estimasi"], #durasi, #estimasi_waktu');
+      const kategoriInput = formLayanan.querySelector('[name="kategori"], #kategori');
+      const deskripsiInput = formLayanan.querySelector('[name="deskripsi"], #deskripsi');
+      const statusInput = formLayanan.querySelector('[name="status"], #status');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('id');
+
+      if (editId) {
+        (async () => {
+          try {
+            const token = await ensurePemilikToken();
+            const res = await fetch(`${getBackendBaseUrl()}/api/pemilik/layanan`, {
+              headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+            });
+            if (!res.ok) return;
+            const json = await res.json();
+            if (json && json.success && Array.isArray(json.data)) {
+              const target = json.data.find(l => Number(l.id_layanan) === Number(editId));
+              if (target) {
+                if (namaInput) namaInput.value = target.nama_layanan || '';
+                if (hargaInput) hargaInput.value = Number(target.harga) || 0;
+                if (satuanInput && target.satuan) satuanInput.value = target.satuan;
+                if (estimasiInput) estimasiInput.value = target.estimasi_waktu || '2 Hari';
+                if (kategoriInput && target.kategori) kategoriInput.value = target.kategori;
+                if (deskripsiInput) deskripsiInput.value = target.deskripsi || '';
+                if (statusInput && target.status) statusInput.value = target.status;
+              }
+            }
+          } catch (_) { }
+        })();
+      }
+
       formLayanan.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const namaInput = formLayanan.querySelector('[name="nama"]') || formLayanan.querySelector('#nama');
-        const hargaInput = formLayanan.querySelector('[name="harga"]') || formLayanan.querySelector('#harga');
-        const satuanInput = formLayanan.querySelector('[name="satuan"]') || formLayanan.querySelector('#satuan');
-        const estimasiInput = formLayanan.querySelector('[name="estimasi"]') || formLayanan.querySelector('#estimasi_waktu');
-        const deskripsiInput = formLayanan.querySelector('[name="deskripsi"]') || formLayanan.querySelector('#deskripsi');
 
         const nama = namaInput ? namaInput.value.trim() : '';
         if (!nama) {
@@ -1249,18 +1750,18 @@
 
         const harga = hargaInput ? Number(hargaInput.value) : 7000;
         const satuan = satuanInput ? satuanInput.value : 'kg';
-        const estimasi = estimasiInput ? estimasiInput.value : '2-3 hari';
-        const deskripsi = deskripsiInput ? deskripsiInput.value : 'Layanan laundry higienis';
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const editId = urlParams.get('id');
+        const estimasi = estimasiInput ? estimasiInput.value.trim() : '2 Hari';
+        const kategori = kategoriInput ? kategoriInput.value : 'KILOAN';
+        const deskripsi = deskripsiInput ? deskripsiInput.value.trim() : 'Layanan laundry higienis';
+        const statusRaw = statusInput ? String(statusInput.value).toUpperCase() : 'AKTIF';
+        const statusVal = statusRaw === 'NONAKTIF' ? 'NONAKTIF' : 'AKTIF';
 
         try {
           const token = await ensurePemilikToken();
           const endpoint = editId ? `${getBackendBaseUrl()}/api/pemilik/layanan/${editId}` : `${getBackendBaseUrl()}/api/pemilik/layanan`;
           const method = editId ? 'PUT' : 'POST';
 
-          await fetch(endpoint, {
+          const saveRes = await fetch(endpoint, {
             method,
             headers: {
               'Content-Type': 'application/json',
@@ -1272,14 +1773,29 @@
               satuan,
               estimasi_waktu: estimasi,
               deskripsi,
-              kategori: 'KILOAN'
+              kategori
             })
           });
+          if (!saveRes.ok) {
+            const errJson = await saveRes.json().catch(() => ({}));
+            showToast(errJson.message || 'Gagal menyimpan layanan.', true);
+            return;
+          }
+          if (editId) {
+            await fetch(`${getBackendBaseUrl()}/api/pemilik/layanan/${editId}/status`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({ status: statusVal })
+            });
+          }
           showToast(`Data layanan "${nama}" berhasil disimpan ke database MySQL!`);
-          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 1000);
+          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 800);
         } catch (_) {
           showToast('Data layanan ' + nama + ' berhasil disimpan.');
-          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 1000);
+          setTimeout(() => { window.location.href = 'layananpegawai.html'; }, 800);
         }
       });
     }
@@ -1292,10 +1808,10 @@
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const serviceFilter = document.getElementById('serviceFilter');
-    const trxRows = document.querySelectorAll('.trx-row');
     const paginationInfo = document.getElementById('paginationInfo');
 
     function filterTransactions() {
+      const trxRows = document.querySelectorAll('.trx-row');
       if (!trxRows.length) return;
       const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
       const status = statusFilter ? statusFilter.value : '';
@@ -1311,7 +1827,7 @@
 
         const matchesQuery = !query || code.includes(query) || name.includes(query);
         const matchesStatus = !status || rowStatus === status;
-        const matchesService = !service || rowService === service;
+        const matchesService = !service || rowService.includes(service);
 
         if (matchesQuery && matchesStatus && matchesService) {
           row.style.display = '';
@@ -1357,15 +1873,21 @@
 
       if (badge) {
         badge.innerText = status || '';
-        if (status === 'Diproses') {
+        const sUp = String(status || '').toUpperCase();
+        if (sUp === 'DIPROSES' || sUp === 'DICUCI' || sUp === 'DISETRIKA') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-50 text-cyan-700 border border-sky-100';
-        } else if (status === 'Menunggu') {
+        } else if (sUp === 'MENUNGGU') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/60';
-        } else if (status === 'Selesai') {
+        } else if (sUp === 'SELESAI' || sUp === 'SIAP_DIAMBIL') {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-teal-700 border border-emerald-200/60';
         } else {
           badge.className = 'inline-block mt-0.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
         }
+      }
+
+      const invLink = document.getElementById('modalOwnerInvoiceLink');
+      if (invLink) {
+        invLink.href = `invoice.html?id=${encodeURIComponent(code || '')}`;
       }
 
       detailModal.classList.remove('hidden');
@@ -1754,12 +2276,14 @@
     }
     try {
       localStorage.removeItem('bersihin_token');
+      localStorage.removeItem('bersihin_owner_token');
       localStorage.removeItem('bersihin_staff_token');
       localStorage.removeItem('bersihin_user');
       localStorage.removeItem('bersihin_active_role');
       localStorage.removeItem('bersihin_owner_logged_in');
       localStorage.removeItem('bersihin_pemilik_profile');
       sessionStorage.removeItem('bersihin_token');
+      sessionStorage.removeItem('bersihin_owner_token');
       sessionStorage.removeItem('bersihin_staff_token');
       sessionStorage.removeItem('bersihin_user');
       sessionStorage.removeItem('bersihin_active_role');
@@ -1781,6 +2305,7 @@
 
   function bootstrap() {
     initSharedComponents();
+    syncPemilikProfilFromDatabase();
     initLoginPage();
     initDashboardPage();
     initPegawaiPage();
@@ -1801,7 +2326,7 @@
 
     // 1. Sinkronisasi instan antar-tab saat Pelanggan atau Pegawai update order di database
     window.addEventListener('storage', (e) => {
-      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+      if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order' || e.key === 'bersihin_customers' || e.key === 'bersihin_employees' || e.key === 'bersihin_services') {
         refreshActivePemilikPage();
       }
     });

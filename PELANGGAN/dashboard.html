@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Pelanggan - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
 
   <!-- Google Fonts: Poppins (sesuai desain Figma) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,16 +69,44 @@
       background: linear-gradient(150deg, #eff6ff 0%, #f8fafc 100%);
     }
 
-    /* R-39: Hormati preferensi pengurangan gerakan (reduced motion) */
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
+    /* Nonaktifkan seluruh animasi, kedipan, dan transisi di dashboard pelanggan terutama pada panel pesanan aktif, statistik, transaksi terbaru, dan status badge */
+    #pesananAktifSection,
+    #pesananAktifSection *,
+    #transaksiTerbaruSection,
+    #transaksiTerbaruSection *,
+    #recentTransactionsTableWrapper,
+    #recentTransactionsTableWrapper *,
+    #recentTransactionsBody,
+    #recentTransactionsBody *,
+    #recentTransactionsBody tr,
+    #recentTransactionsBody td,
+    #recentTransactionsBody span,
+    #activeOrderReadyContent,
+    #activeOrderReadyContent *,
+    #activeOrderBadge,
+    #activeOrderBadge *,
+    #activeOrderStepper,
+    #activeOrderStepper *,
+    #statSedangDiproses,
+    #cardTotalPengeluaran,
+    #cardTotalPengeluaran *,
+    #statTotalPengeluaran,
+    #statTotalPengeluaran *,
+    [data-status-badge],
+    [data-status-badge] *,
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      -webkit-animation: none !important;
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      animation-iteration-count: 1 !important;
+      transition: none !important;
+      -webkit-transition: none !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+      scroll-behavior: auto !important;
     }
   </style>
 </head>
@@ -187,8 +218,7 @@
                 <span>Status Pesanan</span>
               </span>
               <span id="sidebarActiveBadge"
-                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none">
-                1
+                class="min-w-[18px] h-[18px] px-1 bg-red-600 rounded-md inline-flex justify-center items-center text-white text-[10px] font-semibold font-['Poppins'] leading-none hidden">
               </span>
             </a>
           </li>
@@ -264,11 +294,11 @@
   <!-- ===================================================================== -->
   <div class="flex-1 lg:pl-60 flex flex-col min-w-0">
 
-    <!-- TOPBAR -->
+        <!-- TOPBAR -->
     <header
       class="w-full h-20 px-4 sm:px-6 lg:px-9 bg-white/90 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 flex justify-between items-center gap-4">
 
-      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Tanggal -->
+      <!-- Kiri: Tombol Menu Mobile + Judul Halaman & Subtitle -->
       <div class="flex items-center gap-3">
         <button type="button" id="openSidebarBtn" aria-label="Buka menu navigasi" aria-expanded="false"
           aria-controls="sidebar"
@@ -279,26 +309,36 @@
         </button>
 
         <div class="flex flex-col justify-start items-start">
-          <h1 class="text-slate-800 text-base font-normal font-['Poppins'] leading-6">Dashboard</h1>
-          <p class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-            <time id="topbarDateDisplay" data-realtime-date>Hari ini</time>
-          </p>
+          <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Dashboard</h1>
+          <p class="text-xs text-slate-400">Ringkasan akun dan pesanan laundry Anda</p>
         </div>
       </div>
 
-      <!-- Kanan: Notifikasi & Profil Pelanggan -->
-      <div class="flex justify-end items-center gap-3">
+      <!-- Kanan: Tanggal Real-Time + Notifikasi + Profil Pelanggan -->
+      <div class="flex items-center gap-4 md:gap-5">
+        <!-- Tanggal Real-Time -->
+        <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+          </div>
+        </div>
 
         <!-- Tombol Notifikasi -->
         <div class="relative">
           <button type="button" id="notifToggleBtn" aria-label="Notifikasi" aria-expanded="false"
-            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+            class="relative w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             <span id="notifDot"
-              class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-red-400 rounded-full ring-2 ring-white"></span>
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
           </button>
 
           <!-- Panel Dropdown Notifikasi -->
@@ -327,7 +367,7 @@
           </div>
         </div>
 
-        <!-- Profil Pengguna (Avatar Style Pelanggan) -->
+        <!-- Profil Pengguna (Avatar Style Pemilik) -->
         <div class="relative">
           <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
             aria-label="Profil Pengguna"
@@ -352,7 +392,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </header>
 
@@ -382,10 +421,10 @@
           class="size-72 right-[180px] top-[-170px] absolute bg-white/0 rounded-full shadow-[0px_0px_0px_55px_rgba(255,255,255,0.02)] border border-white/10 pointer-events-none hidden sm:block"
           aria-hidden="true"></div>
 
-        <div class="w-44 h-40 right-6 lg:right-12 top-[17px] absolute pointer-events-none hidden md:block"
+        <div class="w-44 h-40 right-6 lg:right-12 bottom-0 absolute pointer-events-none hidden md:block"
           aria-hidden="true">
           <div
-            class="w-28 h-32 left-[35px] top-[32px] absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
+            class="w-28 h-32 left-[35px] bottom-0 absolute bg-figma-washer rounded-tl-2xl rounded-tr-2xl shadow-[0px_20px_35px_0px_rgba(20,57,87,0.27)] flex flex-col justify-start items-start">
             <div class="self-stretch h-7 relative border-b border-slate-300">
               <div class="size-1.5 left-[86px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
               <div class="size-1.5 left-[74px] top-[10px] absolute bg-blue-400 rounded-sm"></div>
@@ -426,10 +465,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Transaksi</h3>
             <div id="statTotalTransaksi" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">24</div>
-            <div id="statTotalTransaksiSub" class="pt-0.5 text-[10px] font-normal font-['Poppins'] leading-3">
-              <span class="text-emerald-700 font-semibold">+3</span>
-              <span class="text-slate-500"> bulan ini</span>
-            </div>
           </div>
         </article>
 
@@ -446,9 +481,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Sedang Diproses</h3>
             <div id="statSedangDiproses" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">1</div>
-            <div id="statSedangDiprosesSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              Estimasi selesai besok
-            </div>
           </div>
         </article>
 
@@ -464,14 +496,11 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Pesanan Selesai</h3>
             <div id="statPesananSelesai" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">22</div>
-            <div id="statPesananSelesaiSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              91% tepat waktu
-            </div>
           </div>
         </article>
 
         <!-- Kartu 4: Total Pengeluaran -->
-        <article
+        <article id="cardTotalPengeluaran"
           class="p-4 bg-white rounded-xl border border-slate-200 flex justify-start items-start gap-3">
           <div class="size-9 bg-purple-100 rounded-xl inline-flex justify-center items-center shrink-0">
             <svg class="size-5 text-violet-700" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -483,9 +512,6 @@
           <div class="flex flex-col justify-start items-start">
             <h3 class="text-slate-600 text-[10px] font-normal font-['Poppins'] leading-3">Total Pengeluaran</h3>
             <div id="statTotalPengeluaran" class="pt-1 text-slate-800 text-xl font-bold font-['Poppins'] leading-7">Rp842k</div>
-            <div id="statTotalPengeluaranSub" class="pt-0.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-              Akumulasi pengeluaran
-            </div>
           </div>
         </article>
       </section>
@@ -507,14 +533,14 @@
                 </span>
                 <h2 id="pesananAktifHeading"
                   class="pt-1 text-slate-800 text-base font-normal font-['Poppins'] leading-6">
-                  Cuci + Setrika
+                  Cuci Komplit (Cuci + Setrika), Cuci Bedcover Besar
                 </h2>
               </div>
-              <div id="activeOrderBadge">
+              <div id="activeOrderBadge" data-status-badge="DISETRIKA">
                 <span
-                  class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex justify-start items-center gap-1.5 shrink-0 shadow-2xs">
-                  <span class="size-1.5 bg-amber-700 rounded-full" aria-hidden="true"></span>
-                  <span class="text-amber-800 text-[10px] font-semibold font-['Poppins'] leading-3">Sedang dicuci</span>
+                  class="px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+                  <span class="size-1.5 bg-indigo-600 rounded-full" aria-hidden="true"></span>
+                  <span class="text-indigo-800 text-[10px] font-semibold font-['Poppins'] leading-3">Sedang disetrika</span>
                 </span>
               </div>
             </div>
@@ -524,31 +550,29 @@
               class="w-full mt-4 px-4 py-3 bg-slate-50 rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-0">
               <div class="flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">No. Transaksi</span>
-                <span id="activeOrderTrxCode" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">TRX-240518-01</span>
+                <span id="activeOrderTrxCode" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">TRX-240519-02</span>
               </div>
               <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Berat</span>
-                <span id="activeOrderWeight" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">4,5 kg</span>
+                <span id="activeOrderWeight" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">3,0 kg</span>
               </div>
               <div class="sm:pl-5 sm:border-l border-slate-200 flex flex-col justify-start items-start">
                 <span class="text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">Estimasi Selesai</span>
-                <span id="activeOrderEstDone" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">21 Mei 2024</span>
+                <span id="activeOrderEstDone" class="pt-1 text-slate-800 text-xs font-bold font-['Poppins'] leading-4">21 Mei 2024, 11:30 WIB (2 Hari)</span>
               </div>
             </div>
 
             <!-- 4 Tahap Progress Stepper (Dikonfirmasi -> Dicuci -> Disetrika -> Selesai) -->
-            <ol id="activeOrderStepper" aria-label="Tahapan Proses Laundry" class="w-full pt-6 pb-2 grid grid-cols-4 gap-2 relative">
+            <ol id="activeOrderStepper" data-current-step="4" aria-label="Tahapan Proses Laundry" class="w-full pt-6 pb-2 grid grid-cols-4 gap-2 relative">
               <!-- Tahap 1: Dikonfirmasi -->
               <li class="relative flex flex-col items-center text-center">
                 <div class="w-full h-0.5 left-1/2 top-3 absolute bg-blue-400" aria-hidden="true"></div>
-                <div
-                  class="size-6 relative z-10 bg-blue-400 rounded-xl inline-flex justify-center items-center text-white">
+                <div class="size-6 relative z-10 bg-blue-500 text-white rounded-xl inline-flex justify-center items-center">
                   <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                      stroke-linejoin="round" />
+                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </div>
-                <span class="pt-1.5 text-cyan-700 text-[10px] font-medium font-['Poppins'] leading-3">
+                <span class="pt-1.5 text-cyan-700 font-semibold text-[10px] leading-3">
                   Dikonfirmasi
                 </span>
               </li>
@@ -556,14 +580,12 @@
               <!-- Tahap 2: Dicuci -->
               <li class="relative flex flex-col items-center text-center">
                 <div class="w-full h-0.5 left-1/2 top-3 absolute bg-blue-400" aria-hidden="true"></div>
-                <div
-                  class="size-6 relative z-10 bg-blue-400 rounded-xl inline-flex justify-center items-center text-white">
+                <div class="size-6 relative z-10 bg-blue-500 text-white rounded-xl inline-flex justify-center items-center">
                   <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                      stroke-linejoin="round" />
+                    <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </div>
-                <span class="pt-1.5 text-cyan-700 text-[10px] font-semibold font-['Poppins'] leading-3">
+                <span class="pt-1.5 text-cyan-700 font-semibold text-[10px] leading-3">
                   Dicuci
                 </span>
               </li>
@@ -571,22 +593,20 @@
               <!-- Tahap 3: Disetrika -->
               <li class="relative flex flex-col items-center text-center">
                 <div class="w-full h-0.5 left-1/2 top-3 absolute bg-slate-200" aria-hidden="true"></div>
-                <div
-                  class="size-6 relative z-10 bg-white rounded-xl border-2 border-slate-300 inline-flex justify-center items-center">
-                  <span class="text-slate-500 text-[10px] font-bold font-['Poppins'] leading-3">3</span>
+                <div class="size-6 relative z-10 bg-indigo-600 text-white rounded-xl inline-flex justify-center items-center">
+                  <span class="text-white text-[10px] font-bold">3</span>
                 </div>
-                <span class="pt-1.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
-                  Disetrika
+                <span class="pt-1.5 text-indigo-700 font-bold text-[10px] leading-3">
+                  Sedang Disetrika
                 </span>
               </li>
 
               <!-- Tahap 4: Selesai -->
               <li class="relative flex flex-col items-center text-center">
-                <div
-                  class="size-6 relative z-10 bg-white rounded-xl border-2 border-slate-300 inline-flex justify-center items-center">
-                  <span class="text-slate-500 text-[10px] font-bold font-['Poppins'] leading-3">4</span>
+                <div class="size-6 relative z-10 bg-white rounded-xl border-2 border-slate-300 inline-flex justify-center items-center">
+                  <span class="text-slate-500 text-[10px] font-bold">4</span>
                 </div>
-                <span class="pt-1.5 text-slate-500 text-[10px] font-normal font-['Poppins'] leading-3">
+                <span class="pt-1.5 text-slate-400 font-normal text-[10px] leading-3">
                   Selesai
                 </span>
               </li>
@@ -726,7 +746,7 @@
           </div>
 
           <a href="riwayat.html"
-            class="min-h-[44px] px-2.5 -my-2 rounded-lg inline-flex justify-center items-center gap-1.5 text-cyan-700 hover:text-cyan-900 hover:bg-cyan-50 active:bg-cyan-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+            class="min-h-[44px] px-2.5 -my-2 rounded-lg inline-flex justify-center items-center gap-1.5 text-cyan-700 hover:text-cyan-900 hover:bg-cyan-50 active:bg-cyan-100 text-[11px] font-semibold font-['Poppins'] leading-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
             <span>Lihat Semua</span>
             <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3.5 8H12.5M12.5 8L9 4.5M12.5 8L9 11.5" stroke="currentColor" stroke-width="1.3"
@@ -762,12 +782,6 @@
       </section>
 
     </main>
-
-    <!-- FOOTER HALAMAN -->
-    <footer class="w-full px-6 lg:px-9 py-4 border-t border-slate-200/80 bg-white text-slate-500 text-[11px] flex flex-col sm:flex-row justify-between items-center gap-2">
-      <span>&copy; 2024 Bersihin Laundry. Sistem Basis Data Laundry - Modul Pelanggan.</span>
-      <span>Masuk sebagai: <strong id="loggedAsName" class="font-semibold text-slate-700">Andi Pratama</strong></span>
-    </footer>
   </div>
 
   <!-- ===================================================================== -->
@@ -962,21 +976,15 @@
       }
     };
 
-    // 1. Drawer Sidebar Mobile
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-
+    // 1. Drawer Sidebar Mobile (listener dikelola terpusat oleh ../JS/pelanggan.js)
     function setMobileSidebar(isOpen) {
-      sidebar.classList.toggle('-translate-x-full', !isOpen);
-      sidebarOverlay.classList.toggle('hidden', !isOpen);
-      openSidebarBtn.setAttribute('aria-expanded', String(isOpen));
+      const sb = document.getElementById('sidebar');
+      const ov = document.getElementById('sidebarOverlay');
+      const btn = document.getElementById('openSidebarBtn');
+      if (sb) sb.classList.toggle('-translate-x-full', !isOpen);
+      if (ov) ov.classList.toggle('hidden', !isOpen);
+      if (btn) btn.setAttribute('aria-expanded', String(isOpen));
     }
-
-    openSidebarBtn.addEventListener('click', () => setMobileSidebar(true));
-    closeSidebarBtn.addEventListener('click', () => setMobileSidebar(false));
-    sidebarOverlay.addEventListener('click', () => setMobileSidebar(false));
 
     // 2. Dropdown Notifikasi & Profil dikelola terpusat oleh ../JS/pelanggan.js
 
@@ -1055,7 +1063,7 @@
         e.preventDefault();
         const sectionEl = document.getElementById(sectionId);
         if (sectionEl) {
-          sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          sectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
           sectionEl.classList.add('ring-2', 'ring-cyan-600');
           setTimeout(() => sectionEl.classList.remove('ring-2', 'ring-cyan-600'), 1400);
         }
@@ -1135,12 +1143,19 @@
           document.getElementById('statSedangDiproses').textContent = stats.processing;
           document.getElementById('statPesananSelesai').textContent = stats.completed;
           document.getElementById('statTotalPengeluaran').textContent = stats.totalExpenseFormatted;
-          const procSub = document.getElementById('statSedangDiprosesSub');
-          if (procSub) procSub.textContent = `${stats.processing} pesanan berjalan`;
-          const expSub = document.getElementById('statTotalPengeluaranSub');
-          if (expSub) expSub.textContent = 'Akumulasi pengeluaran';
+          
+          
         }
-        sidebarActiveBadge.textContent = stats ? String(stats.processing) : '1';
+        if (sidebarActiveBadge) {
+          const procCount = stats ? (stats.processing || 0) : 0;
+          if (procCount > 0) {
+            sidebarActiveBadge.textContent = String(procCount);
+            sidebarActiveBadge.classList.remove('hidden');
+          } else {
+            sidebarActiveBadge.textContent = '';
+            sidebarActiveBadge.classList.add('hidden');
+          }
+        }
         activeOrderReadyContent.classList.remove('hidden');
         activeOrderEmptyContent.classList.add('hidden');
         recentTransactionsTableWrapper.classList.remove('hidden');
@@ -1167,7 +1182,10 @@
         document.getElementById('statSedangDiproses').textContent = '0';
         document.getElementById('statPesananSelesai').textContent = '0';
         document.getElementById('statTotalPengeluaran').textContent = 'Rp0';
-        sidebarActiveBadge.textContent = '0';
+        if (sidebarActiveBadge) {
+          sidebarActiveBadge.textContent = '';
+          sidebarActiveBadge.classList.add('hidden');
+        }
         activeOrderReadyContent.classList.add('hidden');
         activeOrderEmptyContent.classList.remove('hidden');
         recentTransactionsTableWrapper.classList.add('hidden');
@@ -1224,17 +1242,14 @@
       const stats = typeof getCustomerStats === 'function' ? getCustomerStats(allTrx) : null;
       if (stats) {
         const totalEl = document.getElementById('statTotalTransaksi');
-        if (totalEl) totalEl.textContent = stats.total;
+        if (totalEl && totalEl.textContent !== String(stats.total)) totalEl.textContent = stats.total;
         const procEl = document.getElementById('statSedangDiproses');
-        if (procEl) procEl.textContent = stats.processing;
+        if (procEl && procEl.textContent !== String(stats.processing)) procEl.textContent = stats.processing;
         const doneEl = document.getElementById('statPesananSelesai');
-        if (doneEl) doneEl.textContent = stats.completed;
+        if (doneEl && doneEl.textContent !== String(stats.completed)) doneEl.textContent = stats.completed;
         const expEl = document.getElementById('statTotalPengeluaran');
-        if (expEl) expEl.textContent = stats.totalExpenseFormatted;
-        const procSub = document.getElementById('statSedangDiprosesSub');
-        if (procSub) procSub.textContent = `${stats.processing} pesanan berjalan`;
-        const expSub = document.getElementById('statTotalPengeluaranSub');
-        if (expSub) expSub.textContent = 'Akumulasi pengeluaran';
+        if (expEl && expEl.textContent !== stats.totalExpenseFormatted) expEl.textContent = stats.totalExpenseFormatted;
+        
       }
 
       const readyContent = document.getElementById('activeOrderReadyContent');
@@ -1244,6 +1259,7 @@
       if (!order) {
         if (readyContent) readyContent.classList.add('hidden');
         if (emptyContent) emptyContent.classList.remove('hidden');
+        
         return;
       }
 
@@ -1277,25 +1293,27 @@
       }
       order.estDone = estRealtimeText;
 
-      // Update Tampilan DOM secara instan tanpa menunggu panggilan API
+      // Update Tampilan DOM secara instan tanpa menunggu panggilan API (hanya jika ada perubahan)
       const headingEl = document.getElementById('pesananAktifHeading');
-      if (headingEl) headingEl.textContent = order.service || order.layanan || 'Cuci Kilat Express (4 Jam)';
+      const targetHeading = order.service || order.layanan || 'Cuci Komplit (Cuci + Setrika)';
+      if (headingEl && headingEl.textContent !== targetHeading) headingEl.textContent = targetHeading;
 
       const trxCodeEl = document.getElementById('activeOrderTrxCode');
-      if (trxCodeEl) trxCodeEl.textContent = orderCode;
+      if (trxCodeEl && trxCodeEl.textContent !== orderCode) trxCodeEl.textContent = orderCode;
 
       const weightEl = document.getElementById('activeOrderWeight');
-      if (weightEl) weightEl.textContent = order.weight || (order.weightKg ? `${order.weightKg},0 kg` : '5,0 kg');
+      const targetWeight = order.weight || (order.weightKg ? `${order.weightKg},0 kg` : '3,0 kg');
+      if (weightEl && weightEl.textContent !== targetWeight) weightEl.textContent = targetWeight;
 
       const estDoneEl = document.getElementById('activeOrderEstDone');
-      if (estDoneEl) estDoneEl.textContent = estRealtimeText;
+      const targetEst = estRealtimeText || order.estDone || '2 hari lagi';
+      if (estDoneEl && estDoneEl.textContent !== targetEst) estDoneEl.textContent = targetEst;
 
       // 4. Update Footer Waktu Pembaruan Real-Time
       const updatedEl = document.getElementById('activeOrderUpdatedAt');
-      if (updatedEl) {
-        const now = new Date();
-        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
-        updatedEl.textContent = `Diperbarui pukul ${timeStr} (Real-time)`;
+      if (updatedEl && !updatedEl.getAttribute('data-initialized')) {
+        updatedEl.setAttribute('data-initialized', 'true');
+        updatedEl.textContent = 'Diperbarui baru saja';
       }
 
       // Cek status terbaru ke server backend MySQL jika aktif
@@ -1344,15 +1362,9 @@
         }
       } catch (_) {}
 
-      // 1. Tampilkan Judul Layanan & Kode
-      if (headingEl) headingEl.textContent = order.service || order.layanan || 'Cuci Kilat Express (4 Jam)';
-      if (trxCodeEl) trxCodeEl.textContent = orderCode;
-      if (weightEl) weightEl.textContent = order.weight || (order.weightKg ? `${order.weightKg},0 kg` : '4,0 kg');
-
       // 3. Evaluasi Status & Estimasi Pengerjaan
       const badgeEl = document.getElementById('activeOrderBadge');
       const stepperEl = document.getElementById('activeOrderStepper');
-      const subProcessEl = document.getElementById('statSedangDiprosesSub');
 
       const rawStatus = String(order.status || '').toUpperCase().trim();
       let step = 1;
@@ -1363,48 +1375,42 @@
         step = 1;
         estText = order.estDone || 'Menunggu cek pegawai';
         badgeHtml = `
-          <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
-            <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+            <span class="size-1.5 bg-amber-500 rounded-full" aria-hidden="true"></span>
             <span class="text-amber-800 text-[10px] font-semibold">Menunggu konfirmasi pegawai</span>
           </span>
         `;
-        if (subProcessEl) subProcessEl.textContent = 'Menunggu cek pegawai';
+        
       } else if (rawStatus === 'DIPROSES' || rawStatus.includes('TERKONFIRMASI')) {
         step = 2;
         estText = order.estDone || 'Siap dicuci';
         badgeHtml = `
-          <span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
-            <span class="size-1.5 bg-emerald-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+            <span class="size-1.5 bg-emerald-500 rounded-full" aria-hidden="true"></span>
             <span class="text-teal-700 text-[10px] font-bold">Terkonfirmasi &bull; Siap dicuci</span>
           </span>
         `;
-        if (subProcessEl) subProcessEl.textContent = 'Terkonfirmasi pegawai';
+        
       } else if (rawStatus === 'DICUCI' || rawStatus.includes('CUCI')) {
         step = 3;
         estText = order.estDone || 'Estimasi selesai 2 hari lagi';
         badgeHtml = `
-          <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
-            <span class="size-1.5 bg-yellow-600 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="px-2.5 py-1 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+            <span class="size-1.5 bg-yellow-600 rounded-full" aria-hidden="true"></span>
             <span class="text-yellow-800 text-[10px] font-semibold">Sedang dicuci</span>
           </span>
         `;
-        if (subProcessEl) {
-          if (String(order.estDone || '').toLowerCase().includes('jam') || String(order.service || '').toLowerCase().includes('express')) {
-            subProcessEl.textContent = 'Proses kilat (4 Jam)';
-          } else {
-            subProcessEl.textContent = 'Estimasi selesai besok';
-          }
-        }
+        
       } else if (rawStatus === 'DISETRIKA' || rawStatus.includes('SETRIKA')) {
         step = 4;
         estText = order.estDone || 'Estimasi selesai hari ini';
         badgeHtml = `
-          <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0 shadow-2xs">
-            <span class="size-1.5 bg-indigo-600 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0">
+            <span class="size-1.5 bg-indigo-600 rounded-full" aria-hidden="true"></span>
             <span class="text-indigo-800 text-[10px] font-semibold">Sedang disetrika</span>
           </span>
         `;
-        if (subProcessEl) subProcessEl.textContent = 'Tahap penyetrikaan';
+        
       } else if (rawStatus === 'SELESAI' || rawStatus.includes('SIAP')) {
         step = 5;
         estText = 'Pesanan siap / selesai';
@@ -1414,14 +1420,19 @@
             <span class="text-teal-700 text-[10px] font-semibold">Selesai</span>
           </span>
         `;
-        if (subProcessEl) subProcessEl.textContent = 'Pesanan telah selesai';
+        
       }
 
-      if (estDoneEl) estDoneEl.textContent = estRealtimeText || estText;
-      if (badgeEl) badgeEl.innerHTML = badgeHtml;
+      const finalEstText = estRealtimeText || estText;
+      if (estDoneEl && estDoneEl.textContent !== finalEstText) estDoneEl.textContent = finalEstText;
+      if (badgeEl && badgeEl.getAttribute('data-status-badge') !== rawStatus) {
+        badgeEl.setAttribute('data-status-badge', rawStatus);
+        badgeEl.innerHTML = badgeHtml;
+      }
 
-      // 4. Render Stepper 4 Tahap Secara Dinamis
-      if (stepperEl) {
+      // 4. Render Stepper 4 Tahap Secara Dinamis (Hanya update DOM jika step berubah agar tidak kedip)
+      if (stepperEl && stepperEl.getAttribute('data-current-step') !== String(step)) {
+        stepperEl.setAttribute('data-current-step', String(step));
         const isStep1Done = step >= 2;
         const isStep1Active = step === 1;
 
@@ -1437,7 +1448,7 @@
           <!-- Tahap 1: Dikonfirmasi -->
           <li class="relative flex flex-col items-center text-center">
             <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep1Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
-            <div class="size-6 relative z-10 ${isStep1Done ? 'bg-blue-500 text-white shadow-2xs' : (isStep1Active ? 'bg-amber-400 text-white animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+            <div class="size-6 relative z-10 ${isStep1Done ? 'bg-blue-500 text-white' : (isStep1Active ? 'bg-amber-400 text-white' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
               ${isStep1Done ? `
                 <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -1454,7 +1465,7 @@
           <!-- Tahap 2: Dicuci -->
           <li class="relative flex flex-col items-center text-center">
             <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep2Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
-            <div class="size-6 relative z-10 ${isStep2Done ? 'bg-blue-500 text-white' : (isStep2Active ? 'bg-blue-500 text-white shadow-sm ring-2 ring-blue-300 animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+            <div class="size-6 relative z-10 ${isStep2Done ? 'bg-blue-500 text-white' : (isStep2Active ? 'bg-blue-500 text-white' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
               ${isStep2Done ? `
                 <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -1471,7 +1482,7 @@
           <!-- Tahap 3: Disetrika -->
           <li class="relative flex flex-col items-center text-center">
             <div class="w-full h-0.5 left-1/2 top-3 absolute ${isStep3Done ? 'bg-blue-400' : 'bg-slate-200'}" aria-hidden="true"></div>
-            <div class="size-6 relative z-10 ${isStep3Done ? 'bg-blue-500 text-white' : (isStep3Active ? 'bg-indigo-600 text-white shadow-sm ring-2 ring-indigo-300 animate-pulse' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
+            <div class="size-6 relative z-10 ${isStep3Done ? 'bg-blue-500 text-white' : (isStep3Active ? 'bg-indigo-600 text-white' : 'bg-white border-2 border-slate-300')} rounded-xl inline-flex justify-center items-center">
               ${isStep3Done ? `
                 <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -1487,7 +1498,7 @@
 
           <!-- Tahap 4: Selesai -->
           <li class="relative flex flex-col items-center text-center">
-            <div class="size-6 relative z-10 ${isStep4Done ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border-2 border-slate-300'} rounded-xl inline-flex justify-center items-center">
+            <div class="size-6 relative z-10 ${isStep4Done ? 'bg-emerald-600 text-white' : 'bg-white border-2 border-slate-300'} rounded-xl inline-flex justify-center items-center">
               ${isStep4Done ? `
                 <svg class="size-3.5" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                   <path d="M3 7.2L5.8 10L11 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -1511,41 +1522,45 @@
         };
       }
 
-      // Render ulang 4 transaksi terbaru di dashboard murni dari database
+      // Render ulang 4 transaksi terbaru di dashboard murni dari database (Hanya render jika ada perubahan data)
       const recentBody = document.getElementById('recentTransactionsBody');
       const recentEmpty = document.getElementById('recentTransactionsEmpty');
       const recentTableWrapper = document.getElementById('recentTransactionsTableWrapper');
       if (recentBody && allTrx) {
         const recentList = allTrx.slice(0, 4);
-        if (recentList.length === 0) {
-          if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
-          if (recentEmpty) recentEmpty.classList.remove('hidden');
-          recentBody.innerHTML = '';
-        } else {
-          if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
-          if (recentEmpty) recentEmpty.classList.add('hidden');
-          recentBody.innerHTML = recentList.map(trx => `
-            <tr class="hover:bg-slate-50/80 transition">
-              <td class="px-3 py-3 font-bold text-slate-800">
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
-              </td>
-              <td class="px-3 py-3 text-slate-600">${trx.date}</td>
-              <td class="px-3 py-3 text-slate-600">${trx.service}</td>
-              <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
-              <td class="px-3 py-3">
-                ${typeof getStatusBadgeHtml === 'function' ? getStatusBadgeHtml(trx.status) : `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px]">${trx.status}</span>`}
-              </td>
-              <td class="px-3 py-1.5 text-right">
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                  aria-label="Lihat detail transaksi ${trx.code}"
-                  class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
-                  <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </a>
-              </td>
-            </tr>
-          `).join('');
+        const recentKey = recentList.map(t => `${t.code}_${t.status}_${t.total}`).join('|');
+        if (recentBody.getAttribute('data-recent-key') !== recentKey) {
+          recentBody.setAttribute('data-recent-key', recentKey);
+          if (recentList.length === 0) {
+            if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
+            if (recentEmpty) recentEmpty.classList.remove('hidden');
+            recentBody.innerHTML = '';
+          } else {
+            if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
+            if (recentEmpty) recentEmpty.classList.add('hidden');
+            recentBody.innerHTML = recentList.map(trx => `
+              <tr class="hover:bg-slate-50/80">
+                <td class="px-3 py-3 font-bold text-slate-800">
+                  <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700">${trx.code}</a>
+                </td>
+                <td class="px-3 py-3 text-slate-600">${trx.date}</td>
+                <td class="px-3 py-3 text-slate-600">${trx.service}</td>
+                <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
+                <td class="px-3 py-3">
+                  ${typeof getStatusBadgeHtml === 'function' ? getStatusBadgeHtml(trx.status) : `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px]">${trx.status}</span>`}
+                </td>
+                <td class="px-3 py-1.5 text-right">
+                  <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                    aria-label="Lihat invoice transaksi ${trx.code}"
+                    class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 active:bg-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                </td>
+              </tr>
+            `).join('');
+          }
         }
       }
 

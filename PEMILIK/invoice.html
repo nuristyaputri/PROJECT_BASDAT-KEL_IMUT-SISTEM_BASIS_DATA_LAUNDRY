@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemeriksaan Invoice & Verifikasi Transaksi - Bersihin Owner Console</title>
+    <title>Pemeriksaan Invoice & Verifikasi Pembayaran - Bersihin Laundry</title>
+  <!-- Favicon Logo Bersihin -->
+  <link rel="icon" type="image/svg+xml" href="../assets/logo-bersihin-sidebar.svg">
+  <link rel="alternate icon" href="../assets/logo-bersihin-sidebar.svg">
     <!-- Google Fonts Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,6 +49,7 @@
         }
 
         @media print {
+
             aside,
             header,
             #ownerTopBar,
@@ -53,14 +58,17 @@
             .no-print {
                 display: none !important;
             }
+
             body {
                 background: #ffffff !important;
             }
+
             main {
                 padding: 0 !important;
                 margin: 0 !important;
                 max-width: 100% !important;
             }
+
             .invoice-card {
                 border: 1px solid #cbd5e1 !important;
                 box-shadow: none !important;
@@ -72,105 +80,196 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
 
     <!-- MOBILE TOPBAR & TOGGLE -->
-    <header class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
+    <header
+        class="md:hidden flex items-center justify-between bg-white border-b border-slate-200 px-5 py-3 sticky top-0 z-30 no-print">
         <div class="flex items-center gap-2.5">
-            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36" class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
+            <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="36" height="36"
+                class="w-9 h-9 rounded-xl shadow-sm shadow-sky-200/80 shrink-0 select-none" />
             <div>
-                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span class="text-lg font-bold text-sky-500">in</span>
-                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner Console</span>
+                <span class="text-lg font-bold text-slate-900 tracking-tight">Bersih</span><span
+                    class="text-lg font-bold text-sky-500">in</span>
+                <span class="block text-[9px] font-semibold tracking-wider text-slate-400 -mt-1 uppercase">Owner
+                    Console</span>
             </div>
         </div>
-        <button id="sidebarToggle" class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none" aria-label="Toggle Menu">
+        <button id="sidebarToggle"
+            class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+            aria-label="Toggle Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
     </header>
 
+    <!-- SIDEBAR OVERLAY MOBILE -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden md:hidden"></div>
+
     <!-- SIDEBAR NAVIGASI OWNER -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out shrink-0">
-        <div>
-            <!-- Logo Sidebar Desktop -->
-            <div class="p-6 hidden md:flex items-center gap-3 border-b border-slate-100">
-                <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40" class="w-10 h-10 rounded-2xl shadow-sm shadow-sky-200 shrink-0 select-none" />
-                <div>
-                    <span class="text-xl font-bold text-slate-900 tracking-tight">Bersih</span><span class="text-xl font-bold text-sky-500">in</span>
-                    <span class="block text-[9px] font-bold tracking-[2.5px] text-slate-400 uppercase">Owner Console</span>
-                </div>
+    <aside id="sidebar" aria-label="Menu Samping Pemilik"
+        class="w-60 min-h-screen px-5 pt-7 pb-5 fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 flex flex-col justify-between items-start transform -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out shrink-0 select-none">
+
+        <!-- Bagian Atas: Logo & Daftar Menu -->
+        <div class="w-full flex flex-col justify-start items-start">
+
+            <!-- Logo Brand Bersihin Laundry -->
+            <div class="w-full px-2 pb-8 flex justify-between items-center gap-2.5">
+                <a href="dashboard.html"
+                    class="inline-flex items-center gap-2.5 rounded-xl min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo Bersihin Laundry" width="40" height="40"
+                        class="size-10 rounded-xl shadow-[0px_8px_22px_0px_rgba(121,199,232,0.30)] shrink-0 select-none" />
+                    <div class="inline-flex flex-col justify-start items-start">
+                        <div class="leading-5">
+                            <span class="text-blue-950 text-xl font-bold font-['Poppins'] leading-5">Bersih</span><span
+                                class="text-sky-600 text-xl font-bold font-['Poppins'] leading-5">in</span>
+                        </div>
+                        <div class="pt-1 flex flex-col justify-start items-start">
+                            <span
+                                class="text-slate-500 text-[8px] font-semibold font-['Poppins'] leading-3 tracking-[3px]">OWNER CONSOLE</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Tombol Tutup Sidebar di Mobile -->
+                <button type="button" id="closeSidebarBtn"
+                    onclick="if(typeof closeSidebar==='function'){closeSidebar();}else{const sb=document.getElementById('sidebar');const ov=document.getElementById('sidebarOverlay');if(sb)sb.classList.add('-translate-x-full');if(ov)ov.classList.add('hidden');}"
+                    aria-label="Tutup menu navigasi"
+                    class="md:hidden min-w-[44px] min-h-[44px] -mr-2 inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                    <svg class="size-5" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
             </div>
 
-            <!-- Navigation Links -->
-            <div class="px-4 py-6">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 mb-2">MENU UTAMA</p>
-                <nav class="space-y-1">
-                    <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="transaksi.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>Transaksi</span>
-                    </a>
-                    <!-- Menu Aktif: Pemeriksaan Invoice Owner -->
-                    <a href="invoice.html" aria-current="page" class="flex items-center gap-3 px-3 py-2.5 text-xs font-bold bg-sky-50 text-sky-800 border-r-4 border-sky-600 rounded-xl transition">
-                        <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span>Pemeriksaan Invoice</span>
-                    </a>
-                    <a href="laporan.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <span>Laporan Keuangan</span>
-                    </a>
-                    <a href="datapegawai.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span>Data Pegawai</span>
-                    </a>
-                    <a href="datapelanggan.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>Data Pelanggan</span>
-                    </a>
-                    <a href="layananpegawai.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                        <span>Layanan & Tarif</span>
-                    </a>
-                    <a href="profil.html" class="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition">
-                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>Profil Pemilik</span>
-                    </a>
-                </nav>
-            </div>
+            <!-- Navigasi Utama -->
+            <nav aria-label="Navigasi Utama" class="w-full flex flex-col justify-start items-start">
+
+                <!-- Kelompok: MENU UTAMA -->
+                <div class="w-full px-2.5 pt-2 pb-2">
+                    <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+                        MENU UTAMA
+                    </span>
+                </div>
+
+                <ul class="w-full space-y-1">
+                    <!-- Item 1: Dashboard -->
+                    <li>
+                        <a href="dashboard.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <rect x="2.5" y="2.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                                <rect x="11.3" y="2.5" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                                <rect x="2.5" y="10" width="6.2" height="7.5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                                <rect x="11.3" y="12.5" width="6.2" height="5" rx="1.2" stroke="currentColor" stroke-width="1.5" />
+                            </svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 2: Data Pelanggan -->
+                    <li>
+                        <a href="datapelanggan.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <span>Data Pelanggan</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 3: Data Pegawai -->
+                    <li>
+                        <a href="datapegawai.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>Data Pegawai</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 4: Layanan -->
+                    <li>
+                        <a href="layananpegawai.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <rect x="3" y="2.5" width="14" height="15" rx="2" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M6.5 7H13.5M6.5 10.5H13.5M6.5 14H10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <span>Layanan</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 5: Transaksi -->
+                    <li>
+                        <a href="transaksi.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <span>Transaksi</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 6: Pemeriksaan Invoice (Aktif) -->
+                    <li>
+                        <a href="invoice.html" aria-current="page"
+                            class="w-full min-h-[44px] px-3 py-2.5 relative bg-blue-50 rounded-lg inline-flex justify-start items-center gap-3 text-cyan-700 text-xs font-semibold font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <span class="w-[3px] h-6 left-[-20px] top-1/2 -translate-y-1/2 absolute bg-blue-400 rounded-r-sm"
+                                aria-hidden="true"></span>
+                            <svg class="size-5 text-cyan-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span>Pemeriksaan Invoice</span>
+                        </a>
+                    </li>
+
+                    <!-- Item 7: Laporan -->
+                    <li>
+                        <a href="laporan.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span>Laporan</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Kelompok: AKUN -->
+                <div class="w-full px-2.5 pt-6 pb-2">
+                    <span class="text-slate-500 text-[9px] font-bold font-['Poppins'] leading-3 tracking-widest uppercase">
+                        AKUN
+                    </span>
+                </div>
+
+                <ul class="w-full space-y-1">
+                    <!-- Item 8: Profil Saya -->
+                    <li>
+                        <a href="profil.html"
+                            class="w-full min-h-[44px] px-3 py-2.5 rounded-lg inline-flex justify-start items-center gap-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 text-xs font-normal font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                            <svg class="size-5 text-slate-500 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M4 16.5C4 13.7 6.69 11.5 10 11.5C13.31 11.5 16 13.7 16 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <span>Profil Saya</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
-        <!-- Profil Pemilik Singkat -->
-        <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-xs shadow-xs">
-                    PO
-                </div>
-                <div>
-                    <span class="block text-xs font-bold text-slate-800">Pak Rangga</span>
-                    <span class="block text-[10px] text-slate-400">Owner Bersihin</span>
-                </div>
-            </div>
-            <a href="../login.html" onclick="if(window.logoutOwner){logoutOwner(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}" class="text-slate-400 hover:text-rose-600 transition" title="Keluar">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        <!-- Bagian Bawah Sidebar: Tombol Keluar -->
+        <div class="w-full pt-6 flex flex-col justify-end items-start gap-2">
+            <a href="../login.html"
+                onclick="if(window.logoutOwner){logoutOwner(event);}else{localStorage.removeItem('bersihin_token');localStorage.removeItem('bersihin_staff_token');localStorage.removeItem('bersihin_user');localStorage.removeItem('bersihin_active_role');}"
+                class="w-full min-h-[44px] px-2.5 py-2 rounded-lg inline-flex justify-start items-center gap-3 text-stone-600 hover:text-red-700 hover:bg-red-50 active:bg-red-100 text-xs font-medium font-['Poppins'] leading-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 transition">
+                <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M7.5 17.5H4.5C3.67 17.5 3 16.83 3 16V4C3 3.17 3.67 2.5 4.5 2.5H7.5" stroke="currentColor"
+                        stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M13 14L17 10L13 6M17 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
+                <span>Keluar</span>
             </a>
         </div>
     </aside>
@@ -179,55 +278,75 @@
     <div class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
 
         <!-- Topbar Desktop -->
-        <div id="ownerTopBar" class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <header id="ownerTopBar"
+            class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 md:px-9 flex items-center justify-between sticky top-0 z-20 no-print">
             <div>
-                <nav class="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
-                    <a href="dashboard.html" class="hover:text-sky-600">Owner Console</a>
-                    <span>/</span>
-                    <a href="transaksi.html" class="hover:text-sky-600">Transaksi</a>
-                    <span>/</span>
-                    <span class="text-slate-800 font-semibold">Pemeriksaan Invoice &amp; Audit Keuangan</span>
-                </nav>
-                <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                    <span>Pemeriksaan Invoice &amp; Verifikasi Transaksi</span>
-                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">Owner Audit</span>
-                </h1>
-                <p class="text-xs text-slate-500 mt-0.5">Peninjauan detail invoice pembukuan, rekonsiliasi kas kasir, serta verifikasi kelayakan transaksi.</p>
+                <h1 class="text-lg md:text-xl font-semibold text-slate-800 leading-tight">Pemeriksaan Invoice</h1>
+                <p class="text-xs text-slate-400">Rincian invoice dan status pembayaran transaksi laundry</p>
             </div>
 
-            <div class="flex items-center gap-2.5 shrink-0">
-                <a href="transaksi.html" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    <span>Daftar Transaksi</span>
-                </a>
-                <button type="button" onclick="window.print()" class="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl shadow-xs flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    <span>Cetak Pembukuan</span>
-                </button>
+            <div class="flex items-center gap-4 md:gap-5">
+                <!-- Tanggal Real-Time -->
+                <div class="hidden sm:flex items-center gap-2.5 pr-4 border-r border-slate-200">
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold text-slate-700" data-realtime-full-date>Jumat, 13 November 2026</span>
+                    </div>
+                </div>
+
+                <!-- Profil Saya -->
+                <div class="relative">
+                    <button type="button" id="profileMenuBtn" aria-expanded="false" aria-haspopup="true"
+                        aria-label="Profil Pengguna"
+                        class="w-9 h-9 bg-sky-100 hover:bg-sky-200/80 active:scale-95 rounded-lg flex items-center justify-center text-cyan-600 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                        RS
+                    </button>
+
+                    <div id="profileDropdown" role="menu" aria-label="Menu Akun Pemilik"
+                        class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-slate-200 shadow-lg py-2 z-40">
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p id="dropdownOwnerName" class="text-xs font-bold text-slate-800">Rangga Saputra</p>
+                            <p id="dropdownOwnerEmail" class="text-[11px] text-slate-500 truncate">rangga@bersihin.id</p>
+                        </div>
+                        <a href="profil.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs text-slate-700 hover:bg-slate-50">
+                            <span>Profil Saya</span>
+                        </a>
+                        <a href="../login.html" role="menuitem"
+                            class="w-full min-h-[44px] px-4 py-2 flex items-center gap-2.5 text-xs font-semibold text-red-700 hover:bg-red-50">
+                            <span>Keluar Akun</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
+        </header>
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full space-y-6">
 
             <!-- Pemilih Transaksi untuk Pemilik -->
-            <div id="ownerSwitcherCard" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div id="ownerSwitcherCard"
+                class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center shrink-0">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                     </div>
                     <div>
-                        <span class="text-xs font-bold text-slate-800 block">Pilih Invoice Transaksi untuk Audit:</span>
-                        <span class="text-[11px] text-slate-400">Pilih dari rekaman pesanan yang tersimpan di sistem.</span>
+                        <span class="text-xs font-bold text-slate-800 block">Pilih Invoice Lain untuk Diperiksa:</span>
+                        <span class="text-[11px] text-slate-500">Semua pesanan tersimpan otomatis dan bisa ditinjau ulang tanpa batas.</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <select id="ownerOrderSelector" onchange="switchOwnerInvoice(this.value)" class="bg-slate-50 border border-slate-300 text-xs font-semibold rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                    <select id="ownerOrderSelector" onchange="switchOwnerInvoice(this.value)"
+                        class="bg-slate-50 border border-slate-300 text-xs font-semibold rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500">
                         <!-- Diisi dinamis -->
                     </select>
                 </div>
@@ -235,35 +354,42 @@
 
             <!-- KARTU UTAMA INVOICE PEMBUKUAN OWNER -->
             <div class="invoice-card bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
-                
+
                 <!-- Header Kartu -->
-                <div class="p-6 bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div
+                    class="p-6 bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
-                        <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo" class="w-12 h-12 rounded-xl bg-white/10 p-2 border border-white/20">
+                        <img src="../assets/logo-bersihin-sidebar.svg" alt="Logo"
+                            class="w-12 h-12 rounded-xl bg-white/10 p-2 border border-white/20">
                         <div>
-                            <div class="text-base font-bold tracking-tight">BERSIHIN LAUNDRY - FINANCIAL AUDIT</div>
-                            <p class="text-xs text-sky-200">Arsip Faktur &amp; Bukti Transaksi Resmi Pemilik Bisnis</p>
+                            <div class="text-base font-bold tracking-tight">BERSIHIN LAUNDRY OFFICIAL</div>
+                            <p class="text-xs text-sky-200">Sistem Informasi Manajemen Laundry Bersih &amp; Higienis</p>
                         </div>
                     </div>
                     <div class="sm:text-right">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">KODE AUDIT TRANSAKSI:</span>
-                        <span id="ownerInvCode" class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
-                        <span id="ownerInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30 WIB</span>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 block">NO. INVOICE TRANSAKSI</span>
+                        <span id="ownerInvCode"
+                            class="text-xl font-extrabold font-mono tracking-tight text-white block">TRX-0000</span>
+                        <span id="ownerInvDate" class="text-xs text-slate-300 block mt-0.5">10 November 2026, 14:30
+                            WIB</span>
                     </div>
                 </div>
 
                 <!-- Strip Status & Validasi -->
-                <div class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div
+                    class="px-6 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div class="flex items-center gap-2">
                         <span class="text-slate-500 font-semibold">Status Pembayaran Kasir:</span>
-                        <span id="ownerPaymentBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
+                        <span id="ownerPaymentBadge"
+                            class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                             <span id="ownerPaymentText">Lunas</span>
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-slate-500 font-semibold">Tahap Operasional:</span>
-                        <span id="ownerStageBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                        <span id="ownerStageBadge"
+                            class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
                             Sedang Dicuci
                         </span>
                     </div>
@@ -274,18 +400,24 @@
                     <!-- Ringkasan Finansial Audit -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">NILAI TRANSAKSI KOTOR</span>
-                            <span id="ownerGrossTotal" class="text-lg font-extrabold text-slate-900 block mt-0.5">Rp40.000</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">NILAI
+                                TRANSAKSI KOTOR</span>
+                            <span id="ownerGrossTotal"
+                                class="text-lg font-extrabold text-slate-900 block mt-0.5">Rp40.000</span>
                             <span class="text-[10px] text-emerald-700 font-medium">Tercatat di Omzet Harian</span>
                         </div>
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">KANAL PEMBAYARAN</span>
-                            <span id="ownerPaymentMethod" class="text-lg font-bold text-sky-800 block mt-0.5">QRIS Dinamis</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">KANAL
+                                PEMBAYARAN</span>
+                            <span id="ownerPaymentMethod" class="text-lg font-bold text-sky-800 block mt-0.5">QRIS
+                                Dinamis</span>
                             <span class="text-[10px] text-slate-500">Settlement via Bank Merchant</span>
                         </div>
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">PETUGAS KASIR</span>
-                            <span id="ownerStaffName" class="text-sm font-bold text-slate-900 block mt-1">Dina Nurhaliza</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">PETUGAS
+                                KASIR</span>
+                            <span id="ownerStaffName" class="text-sm font-bold text-slate-900 block mt-1">Dina
+                                Nurhaliza</span>
                             <span class="text-[10px] text-slate-500">Kasir Utama Shift Pagi</span>
                         </div>
                     </div>
@@ -294,17 +426,23 @@
                     <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PROFIL PELANGGAN:</span>
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">PROFIL
+                                    PELANGGAN:</span>
                                 <h4 id="ownerCustName" class="text-sm font-bold text-slate-900">Andi Pratama</h4>
                                 <p id="ownerCustPhone" class="text-slate-600 mt-0.5">0812-3456-7821</p>
-                                <p id="ownerCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji, Depok</p>
+                                <p id="ownerCustAddress" class="text-slate-600 mt-1">Jl. Margonda Raya No. 45, Beji,
+                                    Depok</p>
                             </div>
                             <div class="sm:text-right">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">METODE PENGIRIMAN:</span>
+                                <span
+                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">METODE
+                                    PENGIRIMAN:</span>
                                 <p class="text-slate-700 font-semibold">Antar Sendiri ke Outlet</p>
                                 <div class="mt-2 text-slate-500 italic">
                                     <span>Catatan Cucian: </span>
-                                    <span id="ownerNotes" class="text-slate-700 font-medium">Pisahkan pakaian putih</span>
+                                    <span id="ownerNotes" class="text-slate-700 font-medium">Pisahkan pakaian
+                                        putih</span>
                                 </div>
                             </div>
                         </div>
@@ -321,41 +459,88 @@
                                     <th class="py-3 px-4 text-right">Jumlah Pendapatan</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
+                            <tbody id="ownerItemsBody" class="divide-y divide-slate-100">
                                 <tr>
                                     <td class="py-3.5 px-4">
-                                        <span id="ownerServiceName" class="font-bold text-slate-900 block">Cuci + Setrika Reguler</span>
-                                        <span class="text-[10px] text-slate-400">Paket Reguler 2 Hari Kerja</span>
+                                        <span id="ownerServiceName" class="font-bold text-slate-900 block">Cuci Komplit (Cuci + Setrika)</span>
+                                        <span class="text-[10px] text-slate-400">Paket KILOAN • 2 Hari</span>
                                     </td>
-                                    <td id="ownerWeight" class="py-3.5 px-4 text-center font-medium text-slate-700">4.0 kg</td>
-                                    <td id="ownerUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">Rp10.000 / kg</td>
-                                    <td id="ownerSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">Rp40.000</td>
+                                    <td id="ownerWeight" class="py-3.5 px-4 text-center font-medium text-slate-700">4,5 kg</td>
+                                    <td id="ownerUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">
+                                        Rp9.000 / kg</td>
+                                    <td id="ownerSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">
+                                        Rp40.500</td>
                                 </tr>
                             </tbody>
                             <tfoot class="border-t-2 border-slate-200 bg-sky-50/70">
                                 <tr>
-                                    <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">TOTAL PENDAPATAN TRANSAKSI:</td>
-                                    <td id="ownerGrandTotal" class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">Rp40.000</td>
+                                    <td colspan="3" class="py-3.5 px-4 text-right font-bold text-slate-900 text-xs">
+                                        TOTAL PENDAPATAN TRANSAKSI:</td>
+                                    <td id="ownerGrandTotal"
+                                        class="py-3.5 px-4 text-right font-extrabold text-blue-950 text-base">Rp40.000
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
 
+                    <!-- BUKTI TRANSFER PELANGGAN (AUDIT OWNER) -->
+                    <div id="ownerBuktiTransferBox" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-sky-50 text-cyan-700 flex items-center justify-center shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800">Bukti Transfer Pembayaran Pelanggan</h4>
+                                    <span class="text-[10px] text-slate-400">Lampiran struk digital tersimpan di audit trail</span>
+                                </div>
+                            </div>
+                            <span id="ownerBuktiBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                Struk Terlampir
+                            </span>
+                        </div>
+
+                        <div id="ownerBuktiHasImage" class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <img id="ownerBuktiImg" src="" alt="Bukti Transfer" class="w-16 h-16 object-cover rounded-xl border border-slate-200 shadow-xs shrink-0 cursor-pointer hover:opacity-90 transition" onclick="zoomOwnerBukti(this.src)">
+                                <div class="min-w-0">
+                                    <span class="font-bold text-xs text-slate-800 block">Struk / Bukti Transfer Pelanggan</span>
+                                    <span class="text-[11px] text-slate-500 block mt-0.5">Dapat diverifikasi ulang untuk rekonsiliasi kasir</span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="zoomOwnerBukti(document.getElementById('ownerBuktiImg').src)" class="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition self-start sm:self-center">
+                                Periksa Ukuran Penuh
+                            </button>
+                        </div>
+
+                        <div id="ownerBuktiNoImage" class="hidden p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-500 italic">
+                            Tidak ada lampiran bukti transfer untuk transaksi ini (metode Bayar Tunai / COD).
+                        </div>
+                    </div>
+
                     <!-- Kotak Validasi & Rekonsiliasi Owner -->
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs no-print">
+                    <div
+                        class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs no-print">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div>
                                 <span class="font-bold text-slate-800 block">Validasi Pembukuan Pemilik Bisnis</span>
-                                <span class="text-[11px] text-slate-500">Data telah terintegrasi dengan modul Laporan Laba Rugi dan Rekap Kas Harian.</span>
+                                <span class="text-[11px] text-slate-500">Data telah terintegrasi dengan modul Laporan
+                                    Laba Rugi dan Rekap Kas Harian.</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="validateOwnerAudit()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
+                            <button type="button" onclick="validateOwnerAudit()"
+                                class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-lg text-xs shadow-xs transition">
                                 Verifikasi Sah
                             </button>
                         </div>
@@ -363,20 +548,18 @@
 
                 </div>
 
-                <!-- Footer Pembukuan -->
-                <div class="p-4 bg-slate-100 text-center text-xs text-slate-500 border-t border-slate-200">
-                    <span>Dokumen Audit Resmi Bersihin Laundry • Hanya untuk Kepentingan Pemilik &amp; Akuntansi Bisnis</span>
-                </div>
+                
             </div>
 
             <!-- Navigasi Bawah -->
-            <div id="ownerBottomNav" class="flex items-center justify-between gap-3 no-print">
-                <a href="transaksi.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                    &larr; Kembali ke Ringkasan Transaksi
-                </a>
-                <a href="laporan.html" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
-                    Lihat Laporan Keuangan &rarr;
-                </a>
+            <div id="ownerBottomNav" class="flex flex-wrap items-center justify-end gap-3 no-print">
+                <button type="button" onclick="window.print()"
+                    class="px-5 py-2.5 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-xl text-xs shadow-xs flex items-center gap-2 transition">
+                    <svg class="w-4 h-4 text-slate-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    <span>Cetak / Unduh PDF</span>
+                </button>
             </div>
 
         </main>
@@ -389,49 +572,178 @@
             return 'Rp' + Number(num).toLocaleString('id-ID');
         }
 
-        // Toggle mobile sidebar
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebar = document.getElementById('sidebar');
-        if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-            });
+        function getApiBaseUrl() {
+            const origin = window.location.origin;
+            if (origin && origin !== 'null' && !origin.startsWith('file:')) {
+                if (window.location.port === '5000') return origin;
+            }
+            return 'http://localhost:5000';
         }
 
-        function getOwnerOrders() {
-            let list = [];
-            try {
-                const u = JSON.parse(localStorage.getItem('bersihin_unified_orders') || '[]');
-                if (Array.isArray(u)) list.push(...u);
-            } catch (e) {}
-            try {
-                const s = JSON.parse(localStorage.getItem('bersihin_orders') || '[]');
-                if (Array.isArray(s)) {
-                    s.forEach(so => {
-                        if (!list.some(lo => lo.code === so.code || lo.id === so.id)) list.push(so);
-                    });
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function mapStageFromDb(rawStatus) {
+            const s = String(rawStatus || '').toUpperCase();
+            if (s === 'MENUNGGU') return 'Menunggu konfirmasi';
+            if (s === 'ANTRIAN') return 'Dalam Antrian';
+            if (s === 'DICUCI') return 'Sedang Dicuci';
+            if (s === 'DISETRIKA') return 'Sedang Disetrika';
+            if (s === 'SIAP_DIAMBIL') return 'Siap Diambil';
+            if (s === 'SELESAI') return 'Selesai';
+            if (s === 'DIBATALKAN') return 'Dibatalkan';
+            return rawStatus || 'Menunggu konfirmasi';
+        }
+
+        function normalizeOwnerOrder(row) {
+            if (!row) return null;
+            const totalNum = Number(row.total_harga != null ? row.total_harga : row.total) || 0;
+            const wNum = parseFloat(row.total_berat || row.weightKg || row.berat || 0) || 0;
+            const dateRaw = row.tanggal_masuk || row.tanggal_pesanan || row.created_at || row.date;
+            let dateText = row.date || 'Hari ini';
+            if (dateRaw && !isNaN(new Date(dateRaw).getTime())) {
+                dateText = new Date(dateRaw).toLocaleString('id-ID', {
+                    day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                }) + ' WIB';
+            }
+            const payRaw = String(row.status_pembayaran || row.status_bayar || row.paymentStatus || 'MENUNGGU').toUpperCase();
+            const payStatus = (payRaw.includes('BERHASIL') || payRaw.includes('LUNAS'))
+                ? 'Lunas'
+                : (payRaw.includes('GAGAL') || payRaw.includes('TOLAK') ? 'Ditolak' : 'Menunggu Verifikasi');
+
+            return {
+                id: row.kode_pesanan || row.code || row.id,
+                code: row.kode_pesanan || row.code || row.id,
+                id_pesanan: row.id_pesanan || null,
+                customerName: row.nama_pelanggan || row.customerName || 'Pelanggan',
+                customerPhone: row.telepon_pelanggan || row.telepon || row.customerPhone || '0812-3456-7890',
+                customerAddress: row.alamat_pelanggan || row.alamat || row.customerAddress || 'Jakarta Selatan',
+                service: row.daftar_layanan || row.layanan_nama || row.layanan || row.service || 'Cuci Komplit (Cuci + Setrika)',
+                weightKg: wNum,
+                weight: row.weight || (wNum ? `${wNum.toString().replace('.', ',')} kg` : '1,0 kg'),
+                total: totalNum,
+                totalFormatted: row.totalFormatted || formatRupiah(totalNum),
+                status: mapStageFromDb(row.status),
+                paymentStatus: payStatus,
+                paymentMethod: row.metode_pembayaran || row.metode_bayar || row.paymentMethod || '-',
+                bukti_transfer: row.bukti_bayar || row.bukti_transfer || null,
+                bukti_bayar: row.bukti_bayar || row.bukti_transfer || null,
+                date: dateText,
+                notes: row.catatan || row.notes || 'Tidak ada catatan khusus',
+                details: Array.isArray(row.detail) ? row.detail : null
+            };
+        }
+
+        let cachedOwnerOrders = [];
+
+        async function loadOwnerOrders() {
+            const list = [];
+            const seen = new Set();
+            const add = (r) => {
+                if (!r) return;
+                const norm = normalizeOwnerOrder(r);
+                if (norm && norm.code && !seen.has(norm.code)) {
+                    seen.add(norm.code);
+                    list.push(norm);
                 }
-            } catch (e) {}
+            };
+
+            // 1. Ambil dari API Pemilik (MySQL XAMPP)
+            try {
+                const token = (typeof ensurePemilikToken === 'function' ? await ensurePemilikToken() : null) ||
+                              sessionStorage.getItem('bersihin_owner_token') ||
+                              localStorage.getItem('bersihin_owner_token') ||
+                              sessionStorage.getItem('bersihin_token') ||
+                              localStorage.getItem('bersihin_token');
+                const headers = token ? { Authorization: 'Bearer ' + token } : {};
+                const res = await fetch(`${getApiBaseUrl()}/api/pemilik/pesanan`, { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && Array.isArray(json.data)) {
+                        json.data.forEach(add);
+                    }
+                }
+                const resTrx = await fetch(`${getApiBaseUrl()}/api/pemilik/transaksi`, { headers });
+                if (resTrx.ok) {
+                    const jsonTrx = await resTrx.json();
+                    if (jsonTrx && jsonTrx.success && Array.isArray(jsonTrx.data)) {
+                        jsonTrx.data.forEach(add);
+                    }
+                }
+            } catch (_) {}
+
+            // 2. Ambil dari transaksi lokal dan pesanan aktif Pelanggan & Pegawai
+            try {
+                const act = JSON.parse(localStorage.getItem('bersihin_active_order') || 'null');
+                if (act) add(act);
+            } catch (_) {}
+            try {
+                const trxList = JSON.parse(localStorage.getItem('bersihin_transactions') || '[]');
+                if (Array.isArray(trxList)) trxList.forEach(add);
+            } catch (_) {}
+            try {
+                const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+                if (Array.isArray(invList)) invList.forEach(add);
+            } catch (_) {}
+            try {
+                const u = JSON.parse(localStorage.getItem('bersihin_unified_orders') || localStorage.getItem('bersihin_orders') || '[]');
+                if (Array.isArray(u)) u.forEach(add);
+            } catch (_) {}
 
             if (list.length === 0) {
-                list.push({
-                    id: 'TRX-2026-0042',
-                    code: 'TRX-2026-0042',
-                    customerName: 'Andi Pratama',
-                    customerPhone: '0812-3456-7821',
-                    customerAddress: 'Jl. Margonda Raya No. 45, Beji, Depok',
-                    service: 'Cuci + Setrika Reguler',
-                    weight: '4.0 kg',
-                    total: 40000,
-                    totalFormatted: 'Rp40.000',
-                    status: 'Sedang Dicuci',
-                    paymentStatus: 'Lunas',
-                    paymentMethod: 'QRIS Dinamis',
-                    date: '10 November 2026, 14:30 WIB',
-                    notes: 'Pisahkan pakaian putih'
-                });
+                list.push(normalizeOwnerOrder({
+                    id_pesanan: 1,
+                    kode_pesanan: 'TRX-240518-01',
+                    nama_pelanggan: 'Andi Pratama',
+                    telepon_pelanggan: '081290123456',
+                    alamat_pelanggan: 'Jl. Tebet Barat Dalam No. 18, Jakarta Selatan',
+                    layanan: 'Cuci Komplit (Cuci + Setrika)',
+                    total_berat: 4.5,
+                    total_harga: 40500,
+                    status: 'SELESAI',
+                    status_pembayaran: 'BERHASIL',
+                    metode_pembayaran: 'QRIS',
+                    catatan: 'Tolong lipat rapi kemeja kerja.'
+                }));
             }
+
+            cachedOwnerOrders = list;
             return list;
+        }
+
+        async function enrichOwnerOrderDetail(order) {
+            if (!order || !order.id_pesanan) return order;
+            try {
+                const token = (typeof ensurePemilikToken === 'function' ? await ensurePemilikToken() : null) ||
+                              sessionStorage.getItem('bersihin_owner_token') ||
+                              localStorage.getItem('bersihin_owner_token') ||
+                              sessionStorage.getItem('bersihin_token') ||
+                              localStorage.getItem('bersihin_token');
+                const headers = token ? { Authorization: 'Bearer ' + token } : {};
+                const res = await fetch(`${getApiBaseUrl()}/api/pemilik/pesanan/${encodeURIComponent(order.id_pesanan)}`, { headers });
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json && json.success && json.data) {
+                        const d = json.data;
+                        if (Array.isArray(d.detail)) order.details = d.detail;
+                        if (d.pesanan) {
+                            order.customerPhone = d.pesanan.telepon_pelanggan || order.customerPhone;
+                            order.customerName = d.pesanan.nama_pelanggan || order.customerName;
+                            order.notes = d.pesanan.catatan != null ? (d.pesanan.catatan || 'Tidak ada catatan khusus') : order.notes;
+                            if (d.pesanan.bukti_bayar || d.bukti_bayar) {
+                                order.bukti_bayar = d.pesanan.bukti_bayar || d.bukti_bayar;
+                                order.bukti_transfer = order.bukti_bayar;
+                            }
+                        }
+                    }
+                }
+            } catch (_) {}
+            return order;
         }
 
         let currentActiveAuditOrder = null;
@@ -441,26 +753,60 @@
             currentActiveAuditOrder = order;
 
             const code = order.code || order.id || 'TRX-0000';
-            const date = order.date || '10 November 2026';
+            const date = order.date || 'Hari ini';
             const custName = order.customerName || 'Pelanggan';
             const custPhone = order.customerPhone || '0812-3456-7890';
-            const custAddress = order.customerAddress || 'Jl. Margonda Raya, Depok';
-            const service = order.service || 'Cuci + Setrika Reguler';
-            const weight = order.weight || '4.0 kg';
-            const totalFormatted = order.totalFormatted || formatRupiah(order.total || 40000);
+            const custAddress = order.customerAddress || 'Jakarta Selatan';
+            const service = order.service || 'Cuci Komplit (Cuci + Setrika)';
+            const weight = order.weight || '1,0 kg';
+            const totalNum = Number(order.total) || 0;
+            const totalFormatted = order.totalFormatted || formatRupiah(totalNum);
             const notes = order.notes || 'Tidak ada catatan';
             const stage = order.status || 'Sedang Dicuci';
             const payStatus = order.paymentStatus || 'Lunas';
-            const payMethod = order.paymentMethod || 'QRIS Dinamis';
+            const payMethod = order.paymentMethod || '-';
 
             document.getElementById('ownerInvCode').textContent = code;
             document.getElementById('ownerInvDate').textContent = date;
             document.getElementById('ownerCustName').textContent = custName;
             document.getElementById('ownerCustPhone').textContent = custPhone;
             document.getElementById('ownerCustAddress').textContent = custAddress;
-            document.getElementById('ownerServiceName').textContent = service;
-            document.getElementById('ownerWeight').textContent = weight;
-            document.getElementById('ownerSubtotal').textContent = totalFormatted;
+
+            const itemsBody = document.getElementById('ownerItemsBody');
+            const details = Array.isArray(order.details) && order.details.length > 0 ? order.details : null;
+            if (itemsBody && details) {
+                itemsBody.innerHTML = details.map(item => {
+                    const unit = item.satuan || 'kg';
+                    const qty = parseFloat(item.jumlah || 0);
+                    const qtyFormatted = Number.isInteger(qty) ? `${qty} ${unit}` : `${qty.toString().replace('.', ',')} ${unit}`;
+                    return `
+                        <tr>
+                            <td class="py-3.5 px-4">
+                                <span class="font-bold text-slate-900 block">${escapeHtml(item.nama_layanan || 'Layanan Laundry')}</span>
+                                <span class="text-[10px] text-slate-400">Satuan: ${escapeHtml(unit)}</span>
+                            </td>
+                            <td class="py-3.5 px-4 text-center font-medium text-slate-700">${escapeHtml(qtyFormatted)}</td>
+                            <td class="py-3.5 px-4 text-right font-medium text-slate-600">${formatRupiah(item.harga_satuan || 0)} / ${escapeHtml(unit)}</td>
+                            <td class="py-3.5 px-4 text-right font-bold text-slate-900">${formatRupiah(item.subtotal || 0)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else if (itemsBody) {
+                const wNum = parseFloat(order.weightKg || 0);
+                const unitPrice = wNum > 0 ? Math.round(totalNum / wNum) : 9000;
+                itemsBody.innerHTML = `
+                    <tr>
+                        <td class="py-3.5 px-4">
+                            <span id="ownerServiceName" class="font-bold text-slate-900 block">${escapeHtml(service)}</span>
+                            <span class="text-[10px] text-slate-400">Layanan Bersihin Laundry</span>
+                        </td>
+                        <td id="ownerWeight" class="py-3.5 px-4 text-center font-medium text-slate-700">${escapeHtml(weight)}</td>
+                        <td id="ownerUnitPrice" class="py-3.5 px-4 text-right font-medium text-slate-600">${formatRupiah(unitPrice)} / kg</td>
+                        <td id="ownerSubtotal" class="py-3.5 px-4 text-right font-bold text-slate-900">${totalFormatted}</td>
+                    </tr>
+                `;
+            }
+
             document.getElementById('ownerGrossTotal').textContent = totalFormatted;
             document.getElementById('ownerGrandTotal').textContent = totalFormatted;
             document.getElementById('ownerNotes').textContent = notes;
@@ -468,7 +814,6 @@
             document.getElementById('ownerStageBadge').textContent = stage;
 
             const payBadge = document.getElementById('ownerPaymentBadge');
-            const payText = document.getElementById('ownerPaymentText');
             if (payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil')) {
                 payBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5';
                 payBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Lunas Terverifikasi Kasir</span>';
@@ -476,10 +821,73 @@
                 payBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5';
                 payBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>Menunggu Verifikasi</span>';
             }
+
+            // Render Bukti Transfer Pelanggan (Audit Owner)
+            const bSrc = order.bukti_transfer || order.bukti_bayar;
+            const bImg = document.getElementById('ownerBuktiImg');
+            const bHas = document.getElementById('ownerBuktiHasImage');
+            const bNo = document.getElementById('ownerBuktiNoImage');
+            const bBadge = document.getElementById('ownerBuktiBadge');
+
+            if (bSrc && String(payMethod || '').toUpperCase() !== 'TUNAI') {
+                if (bImg) bImg.src = bSrc;
+                if (bHas) bHas.classList.remove('hidden');
+                if (bNo) bNo.classList.add('hidden');
+                if (bBadge) {
+                    if (payStatus.toLowerCase().includes('lunas') || payStatus.toLowerCase().includes('berhasil')) {
+                        bBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
+                        bBadge.textContent = 'Struk Sah & Lunas';
+                    } else {
+                        bBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
+                        bBadge.textContent = 'Menunggu Verifikasi Kasir';
+                    }
+                }
+            } else {
+                if (bHas) bHas.classList.add('hidden');
+                if (bNo) {
+                    bNo.classList.remove('hidden');
+                    bNo.textContent = String(payMethod || '').toUpperCase() === 'TUNAI'
+                        ? 'Transaksi menggunakan metode Tunai (COD). Tidak ada lampiran transfer.'
+                        : 'Belum ada bukti transfer digital yang terlampir.';
+                }
+                if (bBadge) {
+                    bBadge.className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200';
+                    bBadge.textContent = String(payMethod || '').toUpperCase() === 'TUNAI' ? 'Tunai (COD)' : 'Tanpa Bukti';
+                }
+            }
         }
 
-        function initOwnerInvoice() {
-            const orders = getOwnerOrders();
+        // Modal Zoom Bukti Transfer untuk Owner
+        window.zoomOwnerBukti = function(src) {
+            if (!src) return;
+            let modal = document.getElementById('ownerBuktiAuditModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'ownerBuktiAuditModal';
+                modal.className = 'fixed inset-0 z-[10000] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4';
+                modal.innerHTML = `
+                    <div class="relative max-w-2xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                        <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                            <span class="text-xs font-bold tracking-wide">Audit Bukti Transfer Pelanggan</span>
+                            <button type="button" onclick="document.getElementById('ownerBuktiAuditModal').classList.add('hidden')" class="size-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition">✕</button>
+                        </div>
+                        <div class="p-4 flex items-center justify-center bg-slate-100 max-h-[75vh] overflow-auto">
+                            <img id="ownerBuktiAuditModalImg" src="" alt="Bukti Transfer Penuh" class="max-w-full max-h-[70vh] rounded-lg shadow-md object-contain">
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                modal.addEventListener('click', (ev) => {
+                    if (ev.target === modal) modal.classList.add('hidden');
+                });
+            }
+            const img = document.getElementById('ownerBuktiAuditModalImg');
+            if (img) img.src = src;
+            modal.classList.remove('hidden');
+        };
+
+        async function initOwnerInvoice() {
+            const orders = await loadOwnerOrders();
             const params = new URLSearchParams(window.location.search);
             const paramId = params.get('id') || params.get('code');
 
@@ -489,14 +897,14 @@
                 orders.forEach(o => {
                     const opt = document.createElement('option');
                     opt.value = o.code || o.id;
-                    opt.textContent = `${o.code || o.id} - ${o.customerName || 'Pelanggan'} (${formatRupiah(o.total || 40000)})`;
+                    opt.textContent = `${o.code || o.id} - ${o.customerName || 'Pelanggan'} (${formatRupiah(o.total || 0)})`;
                     selector.appendChild(opt);
                 });
             }
 
             let found = null;
             if (paramId) {
-                found = orders.find(o => o.code === paramId || o.id === paramId);
+                found = orders.find(o => o.code === paramId || o.id === paramId || String(o.id_pesanan) === String(paramId));
             }
             if (!found && orders.length > 0) {
                 found = orders[0];
@@ -504,21 +912,34 @@
 
             if (found) {
                 if (selector) selector.value = found.code || found.id;
+                await enrichOwnerOrderDetail(found);
                 renderOwnerInvoice(found);
+            }
+
+            if (!window.hasOwnerInvoiceStorageListener) {
+                window.hasOwnerInvoiceStorageListener = true;
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'bersihin_order_updated' || e.key === 'bersihin_transactions' || e.key === 'bersihin_active_order') {
+                        initOwnerInvoice();
+                    }
+                });
             }
         }
 
-        function switchOwnerInvoice(code) {
+        async function switchOwnerInvoice(code) {
             if (!code) return;
             window.history.replaceState(null, '', `invoice.html?id=${encodeURIComponent(code)}`);
-            const orders = getOwnerOrders();
+            const orders = cachedOwnerOrders.length ? cachedOwnerOrders : await loadOwnerOrders();
             const match = orders.find(o => o.code === code || o.id === code);
-            if (match) renderOwnerInvoice(match);
+            if (match) {
+                await enrichOwnerOrderDetail(match);
+                renderOwnerInvoice(match);
+            }
         }
 
         function validateOwnerAudit() {
             if (!currentActiveAuditOrder) return;
-            alert(`Transaksi ${currentActiveAuditOrder.code || currentActiveAuditOrder.id} telah divalidasi dan disetujui dalam pembukuan resmi.`);
+            alert(`Transaksi ${currentActiveAuditOrder.code || currentActiveAuditOrder.id} telah diperiksa dalam pembukuan pemilik (konfirmasi pembayaran dilakukan oleh Pegawai).`);
         }
 
         document.addEventListener('DOMContentLoaded', initOwnerInvoice);
@@ -527,4 +948,3 @@
 </body>
 
 </html>
-

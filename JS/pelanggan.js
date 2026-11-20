@@ -39,12 +39,18 @@
       services: '/api/pelanggan/services'
     },
     defaultProfile: {
+      id_pelanggan: 1,
+      id_user: 4,
+      username: 'andipratama',
       fullName: 'Andi Pratama',
       email: 'andi.pratama@email.com',
-      phone: '0812 3456 7890',
-      address: 'Jl. Cempaka Indah No. 12, Coblong, Bandung, Jawa Barat 40132',
+      phone: '081234567821',
+      address: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
       memberTier: 'Silver Member',
-      joinDate: 'November 2026'
+      member_tier: 'SILVER',
+      kode_pelanggan: 'PLG-08129',
+      created_at: '2024-03-01 09:00:00',
+      joinDate: 'Maret 2024'
     }
   };
 
@@ -159,23 +165,32 @@
 
       // Jika userObj aktif login, pastikan profil 100% selaras dengan akun tersebut!
       if (userObj) {
-        const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Pelanggan';
-        const activeEmail = userObj.email || (storedProfile && storedProfile.email) || '';
-        const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '';
-        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Margonda Raya No. 45, Beji, Kota Depok';
-        const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || null;
-        const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || null;
+        const activeName = userObj.nama || userObj.username || (storedProfile && storedProfile.fullName) || 'Andi Pratama';
+        const activeEmail = userObj.email || (storedProfile && storedProfile.email) || 'andi.pratama@email.com';
+        const activePhone = userObj.telepon || userObj.no_telp || (storedProfile && storedProfile.phone) || '081234567821';
+        const activeAddress = userObj.alamat || (storedProfile && storedProfile.address) || 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan';
+        const activeIdUser = userObj.id_user || (storedProfile && storedProfile.id_user) || 4;
+        const activeIdCust = userObj.id_pelanggan || (storedProfile && storedProfile.id_pelanggan) || 1;
+        const activeKode = userObj.kode_pelanggan || (storedProfile && storedProfile.kode_pelanggan) || 'PLG-08129';
+        const rawTier = String(userObj.member_tier || (storedProfile && (storedProfile.member_tier || storedProfile.memberTier)) || 'REGULER').toUpperCase();
+        const activeTierLabel = rawTier.includes('GOLD')
+          ? 'Gold Member'
+          : rawTier.includes('SILVER')
+            ? 'Silver Member'
+            : 'Reguler Member';
         const activeJoined = userObj.created_at || userObj.createdAt || (storedProfile && (storedProfile.created_at || storedProfile.createdAt)) || new Date().toISOString();
 
         return {
           id_user: activeIdUser,
           id_pelanggan: activeIdCust,
+          kode_pelanggan: activeKode,
           username: userObj.username || '',
           fullName: activeName,
           email: activeEmail,
           phone: activePhone,
           address: activeAddress,
-          memberTier: (storedProfile && storedProfile.memberTier) || 'Silver Member',
+          member_tier: rawTier.includes('GOLD') ? 'GOLD' : (rawTier.includes('SILVER') ? 'SILVER' : 'REGULER'),
+          memberTier: activeTierLabel,
           created_at: activeJoined,
           createdAt: activeJoined
         };
@@ -228,7 +243,33 @@
   // ===========================================================================
   // 3. INISIALISASI KOMPONEN BERSAMA (SHARED) PADA SELURUH HALAMAN
   // ===========================================================================
+  
+  // 3.2b Sinkronisasi Badge Status Pesanan pada Sidebar Navigasi
+  function updateSidebarActiveBadge() {
+    const sidebarActiveBadge = document.getElementById('sidebarActiveBadge');
+    if (!sidebarActiveBadge) return;
+    try {
+      const allTrx = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+      const stats = typeof getCustomerStats === 'function' ? getCustomerStats(allTrx) : null;
+      const procCount = stats ? (stats.processing || 0) : 0;
+      if (procCount > 0) {
+        sidebarActiveBadge.textContent = String(procCount);
+        sidebarActiveBadge.classList.remove('hidden');
+        sidebarActiveBadge.style.display = '';
+      } else {
+        sidebarActiveBadge.textContent = '';
+        sidebarActiveBadge.classList.add('hidden');
+        sidebarActiveBadge.style.display = 'none';
+      }
+    } catch (_) {
+      sidebarActiveBadge.classList.add('hidden');
+      sidebarActiveBadge.style.display = 'none';
+    }
+  }
+  window.updateSidebarActiveBadge = updateSidebarActiveBadge;
+
   function initSharedComponents() {
+    updateSidebarActiveBadge();
     const profile = getCustomerProfile();
     const initials = getInitials(profile.fullName || profile.username || 'Pelanggan');
 
@@ -267,7 +308,7 @@
       year: 'numeric'
     });
     const isoDateStr = nowRealtime.toISOString().slice(0, 10);
-    document.querySelectorAll('header time, [data-realtime-date], time#topbarDateDisplay').forEach(el => {
+    document.querySelectorAll('header time, [data-realtime-date], [data-realtime-full-date], time#topbarDateDisplay').forEach(el => {
       el.textContent = dateFormatted;
       el.setAttribute('datetime', isoDateStr);
     });
@@ -296,20 +337,51 @@
       if (el) el.textContent = memberSinceStr;
     });
 
-    const expSub = document.getElementById('statTotalPengeluaranSub');
-    if (expSub) {
-      const d = (profile.created_at || profile.createdAt) ? new Date(profile.created_at || profile.createdAt) : new Date();
-      const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      const mShort = !isNaN(d.getTime()) ? shortMonths[d.getMonth()] : 'Nov';
-      const y = !isNaN(d.getTime()) ? d.getFullYear() : new Date().getFullYear();
-      expSub.textContent = `Sejak ${mShort} ${y}`;
+    
+
+    // 3.3b Sinkronisasi Real-Time Kartu Bersihin Member Berdasarkan Jumlah Pesanan Akun Pelanggan
+    const memberTierLabel = document.getElementById('memberTierLabel');
+    const memberTierBadge = document.getElementById('memberTierBadge');
+    const memberProgressSubtitle = document.getElementById('memberProgressSubtitle');
+    const memberProgressBar = document.getElementById('memberProgressBar');
+    const memberProgressPercent = document.getElementById('memberProgressPercent');
+    const memberProgressRemaining = document.getElementById('memberProgressRemaining');
+
+    if (memberTierLabel || memberProgressSubtitle) {
+      const rawT = String(profile.member_tier || profile.memberTier || 'SILVER').toUpperCase();
+      const tLabel = rawT.includes('GOLD') ? 'Gold Member' : (rawT.includes('SILVER') ? 'Silver Member' : 'Reguler Member');
+      const tBadge = rawT.includes('GOLD') ? 'Tier 3' : (rawT.includes('SILVER') ? 'Tier 2' : 'Tier 1');
+      if (memberTierLabel) memberTierLabel.textContent = tLabel;
+      if (memberTierBadge) memberTierBadge.textContent = tBadge;
+
+      const allOrders = typeof getAllCustomerTransactions === 'function' ? getAllCustomerTransactions() : [];
+      const orderCount = Array.isArray(allOrders) ? allOrders.length : 0;
+      const targetOrders = 10;
+      const pct = Math.min(100, Math.round((orderCount / targetOrders) * 100));
+      const rem = Math.max(0, targetOrders - orderCount);
+
+      if (memberProgressSubtitle) {
+        memberProgressSubtitle.textContent = `${orderCount} dari ${targetOrders} transaksi menuju Gold`;
+      }
+      if (memberProgressBar) {
+        memberProgressBar.style.width = `${pct}%`;
+      }
+      if (memberProgressPercent) {
+        memberProgressPercent.textContent = `${pct}% Tercapai`;
+      }
+      if (memberProgressRemaining) {
+        memberProgressRemaining.textContent = rem > 0 ? `${rem} transaksi lagi` : 'Target tercapai!';
+      }
     }
 
-    // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna
+    // 3.4 Ucapan Selamat Datang / Greeting Mengikuti Nama Pengguna (Stabil & Tidak Berkedip)
     const greetingHeading = document.getElementById('greetingHeading');
     if (greetingHeading) {
       const firstName = (profile.fullName || profile.username || 'Pelanggan').trim().split(/\s+/)[0];
-      greetingHeading.textContent = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      const targetGreeting = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      if (greetingHeading.textContent !== targetGreeting) {
+        greetingHeading.textContent = targetGreeting;
+      }
     }
 
     // 3.2 Sidebar Drawer Mobile
@@ -330,9 +402,34 @@
       if (openSidebarBtn) openSidebarBtn.setAttribute('aria-expanded', 'false');
     }
 
-    if (openSidebarBtn) openSidebarBtn.addEventListener('click', openSidebar);
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    if (openSidebarBtn && !openSidebarBtn.dataset.hasSidebarListener) {
+      openSidebarBtn.dataset.hasSidebarListener = 'true';
+      openSidebarBtn.addEventListener('click', openSidebar);
+    }
+    if (closeSidebarBtn && !closeSidebarBtn.dataset.hasSidebarListener) {
+      closeSidebarBtn.dataset.hasSidebarListener = 'true';
+      closeSidebarBtn.addEventListener('click', closeSidebar);
+    }
+    if (sidebarOverlay && !sidebarOverlay.dataset.hasSidebarListener) {
+      sidebarOverlay.dataset.hasSidebarListener = 'true';
+      sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+    if (sidebar && !sidebar.dataset.hasSidebarLinkClose) {
+      sidebar.dataset.hasSidebarLinkClose = 'true';
+      sidebar.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 1024) closeSidebar();
+        });
+      });
+    }
+    if (sidebar && !document.body.dataset.hasCustomerEscSidebar) {
+      document.body.dataset.hasCustomerEscSidebar = 'true';
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !sidebar.classList.contains('-translate-x-full')) {
+          closeSidebar();
+        }
+      });
+    }
 
     // 3.3 Dropdown Notifikasi & Profil Topbar
     const notifToggleBtn = document.getElementById('notifToggleBtn');
@@ -376,7 +473,7 @@
 
       const orderCode = latestOrder.code || latestOrder.id || latestOrder.orderId || latestOrder.kode_pesanan || 'TRX-BARU';
       const rawStatus = String(latestOrder.status || 'MENUNGGU').toUpperCase();
-      const serviceName = latestOrder.service || latestOrder.layanan || 'Cuci + Setrika';
+      const serviceName = latestOrder.service || latestOrder.layanan || 'Cuci Komplit (Cuci + Setrika)';
       const weight = latestOrder.weight || (latestOrder.weightKg ? `${latestOrder.weightKg},0 kg` : '3,0 kg');
 
       let title = `Pesanan ${orderCode} Menunggu Konfirmasi`;
@@ -424,13 +521,21 @@
         </div>
       `;
 
-      if (dot) dot.classList.remove('hidden');
+      const isCustRead = localStorage.getItem('bersihin_notif_read_pelanggan') === 'true';
+      if (dot) {
+        if (isCustRead) dot.classList.add('hidden');
+        else dot.classList.remove('hidden');
+      }
 
       const markBtn = document.getElementById('markNotifReadBtn');
       if (markBtn) {
+        if (isCustRead) markBtn.textContent = 'Semua dibaca';
+        else markBtn.textContent = 'Tandai dibaca';
+
         markBtn.onclick = (e) => {
           e.stopPropagation();
           if (dot) dot.classList.add('hidden');
+          localStorage.setItem('bersihin_notif_read_pelanggan', 'true');
           markBtn.textContent = 'Semua dibaca';
           showToast('Notifikasi ditandai telah dibaca.');
         };
@@ -661,13 +766,23 @@
         } else {
           localStorage.removeItem('bersihin_remember_identifier');
         }
-        localStorage.setItem('bersihin_customer_profile', JSON.stringify({
+        const profObj = {
+          id_pelanggan: 1,
+          id_user: 4,
+          username: 'andipratama',
+          kode_pelanggan: 'PLG-08129',
           nama: 'Andi Pratama',
+          fullName: 'Andi Pratama',
           email: identifier.includes('@') ? identifier : 'andi.pratama@email.com',
-          telepon: '0812 3456 7821',
-          alamat: 'Jl. Kemang Raya No. 45, Jakarta Selatan',
-          member_tier: 'Silver Member'
-        }));
+          telepon: '081234567821',
+          phone: '081234567821',
+          alamat: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
+          address: 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
+          member_tier: 'SILVER',
+          memberTier: 'Silver Member'
+        };
+        localStorage.setItem('bersihin_customer_profile', JSON.stringify(profObj));
+        sessionStorage.setItem('bersihin_customer_profile', JSON.stringify(profObj));
       } catch (err) {
         // Storage restricted
       }
@@ -837,24 +952,41 @@
 
     return {
       code: code,
+      kode_pesanan: code,
       id: code,
       id_pesanan: dbRow.id_pesanan,
-      id_pelanggan: dbRow.id_pelanggan,
+      id_pelanggan: dbRow.id_pelanggan || 1,
+      nama_pelanggan: dbRow.nama_pelanggan || 'Andi Pratama',
+      telepon: dbRow.telepon || dbRow.telepon_pelanggan || '081234567821',
+      alamat: dbRow.alamat || dbRow.alamat_pelanggan || 'Jl. Kemang Raya No. 45, RT 02 / RW 05, Mampang Prapatan, Jakarta Selatan',
       orderSeq: idx,
       date: dateStr,
       timestamp: timeIso,
-      service: dbRow.layanan || 'Cuci + Setrika',
+      tanggal_pesanan: dbRow.tanggal_pesanan || timeIso,
+      tanggal_selesai: dbRow.tanggal_selesai || null,
+      service: dbRow.layanan || 'Cuci Komplit (Cuci + Setrika)',
+      layanan: dbRow.layanan || 'Cuci Komplit (Cuci + Setrika)',
       weight: `${beratVal.toLocaleString('id-ID')} kg`,
       weightKg: beratVal,
+      total_berat: beratVal,
       amount: amountNum,
+      total_harga: amountNum,
       total: `Rp${amountNum.toLocaleString('id-ID')}`,
       totalFormatted: `Rp${amountNum.toLocaleString('id-ID')}`,
       status: statusText,
       statusCode: st,
+      status_pembayaran: dbRow.status_pembayaran || 'MENUNGGU',
+      metode_pembayaran: dbRow.metode_pembayaran || 'QRIS',
+      paymentMethod: dbRow.metode_pembayaran || 'QRIS',
+      referensi_bayar: dbRow.referensi_bayar || null,
+      bukti_bayar: dbRow.bukti_bayar || dbRow.bukti_transfer || null,
+      bukti_transfer: dbRow.bukti_bayar || dbRow.bukti_transfer || null,
+      details: Array.isArray(dbRow.details) ? dbRow.details : null,
       dateIn: dateStr,
       dateOut: estStr,
       estDone: estStr,
       notes: dbRow.catatan || 'Pakaian reguler',
+      catatan: dbRow.catatan || 'Pakaian reguler',
       calcSub: `${beratVal.toLocaleString('id-ID')} kg (Estimasi)`,
       paidDate: dbRow.status_pembayaran === 'BERHASIL' ? 'Lunas' : 'Belum dibayar',
       created: `Dibuat pada ${dateStr}`
@@ -889,20 +1021,21 @@
         }
       } catch (_) {}
 
-      // Fallback ID pelanggan jika username diketahui di database
+      // Fallback ID pelanggan sesuai database_laundry.sql XAMPP
       if (!activeCustId) {
-        if (activeUsername === 'nuristya' || activeUserId === 7) {
-          activeCustId = 5;
-          activeUserId = 7;
-        } else if (activeUsername === 'andipratama' || activeUserId === 4) {
-          activeCustId = 1;
-          activeUserId = 4;
-        } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
+        if (activeUsername === 'rinamarlina' || activeUserId === 5) {
           activeCustId = 2;
           activeUserId = 5;
         } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
           activeCustId = 3;
           activeUserId = 6;
+        } else if (activeUsername === 'mayaanggraini' || activeUsername === 'maya' || activeUserId === 7) {
+          activeCustId = 4;
+          activeUserId = 7;
+        } else {
+          activeCustId = 1;
+          activeUserId = 4;
+          if (!activeUsername) activeUsername = 'andipratama';
         }
       }
 
@@ -918,13 +1051,18 @@
           const profJson = await profRes.json();
           if (profJson.success && profJson.data) {
             const d = profJson.data;
+            const tierRaw = String(d.member_tier || 'REGULER').toUpperCase();
             saveCustomerProfile({
               id_user: d.id_user || activeUserId,
               id_pelanggan: d.id_pelanggan || activeCustId,
+              kode_pelanggan: d.kode_pelanggan || '',
+              username: d.username || activeUsername,
               fullName: d.nama || d.fullName,
               phone: d.telepon || d.phone,
               email: d.email,
               address: d.alamat || d.address,
+              member_tier: tierRaw,
+              memberTier: tierRaw === 'GOLD' ? 'Gold Member' : (tierRaw === 'SILVER' ? 'Silver Member' : 'Reguler Member'),
               created_at: d.created_at
             });
             initSharedComponents();
@@ -944,8 +1082,28 @@
       const json = await res.json();
       if (!json.success || !Array.isArray(json.data)) return null;
 
+      // Pertahankan bukti_transfer yang baru diunggah di localStorage bila kode pesanan cocok dengan XAMPP
+      const localProofByCode = {};
+      try {
+        const prevInv = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+        if (Array.isArray(prevInv)) {
+          prevInv.forEach(it => {
+            const c = it && (it.kode_pesanan || it.code || it.orderId || it.id);
+            const b = it && (it.bukti_bayar || it.bukti_transfer);
+            if (c && b) localProofByCode[c] = b;
+          });
+        }
+      } catch (_) {}
+
       const dbRows = json.data;
-      const mappedList = dbRows.map((r, idx) => mapDbOrderToFrontend(r, idx));
+      const mappedList = dbRows.map((r, idx) => {
+        const mapped = mapDbOrderToFrontend(r, idx);
+        if (!mapped.bukti_transfer && localProofByCode[mapped.code]) {
+          mapped.bukti_transfer = localProofByCode[mapped.code];
+          mapped.bukti_bayar = localProofByCode[mapped.code];
+        }
+        return mapped;
+      });
 
       // Urutkan pesanan dari yang paling baru ke yang lama (id_pesanan DESC atau timestamp DESC)
       mappedList.sort((a, b) => {
@@ -955,9 +1113,15 @@
         return (new Date(b.timestamp).getTime() || 0) - (new Date(a.timestamp).getTime() || 0);
       });
 
-      // 1. Simpan daftar pesanan murni dari database MySQL XAMPP (ke sessionStorage & localStorage)
+      // 1. Simpan daftar pesanan murni dari database MySQL XAMPP (bersihkan transaksi dummy lama)
       sessionStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
       localStorage.setItem('bersihin_transactions', JSON.stringify(mappedList));
+      localStorage.setItem('bersihin_invoices', JSON.stringify(mappedList));
+      if (mappedList.length > 0) {
+        localStorage.setItem('last_active_invoice', JSON.stringify(mappedList[0]));
+      } else {
+        localStorage.removeItem('last_active_invoice');
+      }
 
       // 2. Selaraskan pesanan aktif teratas yang belum selesai (prioritaskan Express atau pesanan terbaru)
       let activeFromDb = mappedList.find(x => {
@@ -1111,10 +1275,7 @@
     } catch (_) {}
 
     if (!activeCustId) {
-      if (activeUsername === 'nuristya' || activeUserId === 7) {
-        activeCustId = 5;
-        activeUserId = 7;
-      } else if (activeUsername === 'andipratama' || activeUserId === 4) {
+      if (activeUsername === 'andipratama' || activeUserId === 4) {
         activeCustId = 1;
         activeUserId = 4;
       } else if (activeUsername === 'rinamarlina' || activeUserId === 5) {
@@ -1123,6 +1284,9 @@
       } else if (activeUsername === 'dedikurniawan' || activeUserId === 6) {
         activeCustId = 3;
         activeUserId = 6;
+      } else if (activeUsername === 'mayaanggraini' || activeUsername === 'maya' || activeUserId === 7) {
+        activeCustId = 4;
+        activeUserId = 7;
       }
     }
 
@@ -1155,7 +1319,7 @@
           orderSeq: idx,
           date: raw.date || raw.dateIn || 'Hari ini',
           timestamp: raw.createdAt || raw.timestamp || fallbackTime,
-          service: raw.service || raw.layanan || 'Cuci + Setrika',
+          service: raw.service || raw.layanan || 'Cuci Komplit (Cuci + Setrika)',
           weight: raw.weight || (raw.weightKg ? `${raw.weightKg},0 kg` : '4,0 kg'),
           weightKg: parseFloat(raw.weightKg) || 4.0,
           amount: amountNum,
@@ -1285,14 +1449,14 @@
     if (s.includes('MENUNGGU')) {
       return `
         <span class="px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5">
-          <span class="size-1.5 bg-amber-500 rounded-full animate-pulse" aria-hidden="true"></span>
+          <span class="size-1.5 bg-amber-500 rounded-full" aria-hidden="true"></span>
           <span class="text-amber-800 text-[10px] font-semibold leading-3">Menunggu konfirmasi</span>
         </span>
       `;
     }
     return `
       <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-[20px] inline-flex items-center gap-1.5 shadow-2xs">
-        <span class="size-1.5 bg-blue-600 rounded-full animate-pulse" aria-hidden="true"></span>
+        <span class="size-1.5 bg-blue-600 rounded-full" aria-hidden="true"></span>
         <span class="text-blue-800 text-[10px] font-semibold leading-3">Terkonfirmasi &bull; Diproses</span>
       </span>
     `;
@@ -1359,19 +1523,15 @@
     // Pastikan berada di dashboard dengan memeriksa elemen unik
     if (!document.getElementById('pesananAktifSection') && !document.getElementById('orderDetailModal')) return;
 
-    // 5.1 Ucapan Waktu Dinamis & Profil Pengguna
+    // 5.1 Ucapan Waktu Dinamis & Profil Pengguna (Stabil & Tidak Berkedip)
     const profile = getCustomerProfile();
-    const hour = new Date().getHours();
-    let greeting = 'Selamat Datang';
-    if (hour >= 4 && hour < 11) greeting = 'Selamat Pagi';
-    else if (hour >= 11 && hour < 15) greeting = 'Selamat Siang';
-    else if (hour >= 15 && hour < 18) greeting = 'Selamat Sore';
-    else greeting = 'Selamat Malam';
-
     const greetingHeading = document.getElementById('greetingHeading') || document.querySelector('h2.font-normal');
-    if (greetingHeading && greetingHeading.textContent.includes('Halo,')) {
-      const firstName = profile.fullName ? profile.fullName.split(' ')[0] : 'Andi';
-      greetingHeading.textContent = `${greeting}, ${firstName}! Semoga harimu menyenangkan.`;
+    if (greetingHeading) {
+      const firstName = profile.fullName ? profile.fullName.trim().split(/\s+/)[0] : 'Andi';
+      const targetGreeting = `Halo, ${firstName}! Semoga harimu menyenangkan.`;
+      if (greetingHeading.textContent !== targetGreeting) {
+        greetingHeading.textContent = targetGreeting;
+      }
     }
 
     const loggedAsEl = document.getElementById('loggedAsName');
@@ -1385,22 +1545,20 @@
     const stats = getCustomerStats(allTrx);
 
     const statTotalEl = document.getElementById('statTotalTransaksi');
-    if (statTotalEl) statTotalEl.textContent = stats.total;
+    if (statTotalEl && statTotalEl.textContent !== String(stats.total)) statTotalEl.textContent = stats.total;
 
     const statSedangEl = document.getElementById('statSedangDiproses');
-    if (statSedangEl) statSedangEl.textContent = stats.processing;
+    if (statSedangEl && statSedangEl.textContent !== String(stats.processing)) statSedangEl.textContent = stats.processing;
 
-    const statProcessSub = document.getElementById('statSedangDiprosesSub');
-    if (statProcessSub) statProcessSub.textContent = `${stats.processing} pesanan berjalan`;
+    
 
     const statSelesaiEl = document.getElementById('statPesananSelesai');
-    if (statSelesaiEl) statSelesaiEl.textContent = stats.completed;
+    if (statSelesaiEl && statSelesaiEl.textContent !== String(stats.completed)) statSelesaiEl.textContent = stats.completed;
 
     const statExpenseEl = document.getElementById('statTotalPengeluaran');
-    if (statExpenseEl) statExpenseEl.textContent = stats.totalExpenseFormatted;
+    if (statExpenseEl && statExpenseEl.textContent !== stats.totalExpenseFormatted) statExpenseEl.textContent = stats.totalExpenseFormatted;
 
-    const statExpenseSub = document.getElementById('statTotalPengeluaranSub');
-    if (statExpenseSub) statExpenseSub.textContent = 'Akumulasi pengeluaran';
+    
 
     // 5.3 Render Tabel Riwayat Transaksi Terbaru (Dinamis dari Storage)
     const recentBody = document.getElementById('recentTransactionsBody');
@@ -1409,42 +1567,44 @@
 
     if (recentBody) {
       const recentList = allTrx.slice(0, 4); // Ambil 4 transaksi terbaru
-      if (recentList.length === 0) {
-        if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
-        if (recentEmpty) recentEmpty.classList.remove('hidden');
-      } else {
-        if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
-        if (recentEmpty) recentEmpty.classList.add('hidden');
+      const recentKey = recentList.map(t => `${t.code}_${t.status}_${t.total}`).join('|');
+      if (recentBody.getAttribute('data-recent-key') !== recentKey) {
+        recentBody.setAttribute('data-recent-key', recentKey);
+        if (recentList.length === 0) {
+          if (recentTableWrapper) recentTableWrapper.classList.add('hidden');
+          if (recentEmpty) recentEmpty.classList.remove('hidden');
+          recentBody.innerHTML = '';
+        } else {
+          if (recentTableWrapper) recentTableWrapper.classList.remove('hidden');
+          if (recentEmpty) recentEmpty.classList.add('hidden');
 
-        recentBody.innerHTML = recentList.map(trx => `
-          <tr class="hover:bg-slate-50/80 transition">
-            <td class="px-3 py-3 font-bold text-slate-800">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
-            </td>
-            <td class="px-3 py-3 text-slate-600">${trx.date}</td>
-            <td class="px-3 py-3 text-slate-600">${trx.service}</td>
-            <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
-            <td class="px-3 py-3">
-              ${getStatusBadgeHtml(trx.status)}
-            </td>
-            <td class="px-3 py-1.5 text-right">
-              <div class="flex items-center justify-end gap-1">
-                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
-                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
-                  class="px-2 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-semibold inline-flex items-center gap-1 transition">
-                  <span>Invoice</span>
+          recentBody.innerHTML = recentList.map(trx => `
+            <tr class="hover:bg-slate-50/80">
+              <td class="px-3 py-3 font-bold text-slate-800">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700">${trx.code}</a>
+              </td>
+              <td class="px-3 py-3 text-slate-600">${trx.date}</td>
+              <td class="px-3 py-3 text-slate-600">${trx.service}</td>
+              <td class="px-3 py-3 font-bold text-slate-800">${trx.total}</td>
+              <td class="px-3 py-3">
+                <a href="status.html?id=${encodeURIComponent(trx.code)}"
+                  title="Klik untuk melacak perjalanan pesanan ${trx.code}"
+                  class="inline-block transition hover:opacity-85 hover:scale-[1.02] active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
+                  ${getStatusBadgeHtml(trx.status)}
                 </a>
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                  aria-label="Lihat detail transaksi ${trx.code}"
-                  class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50 transition">
+              </td>
+              <td class="px-3 py-1.5 text-right">
+                <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
+                  aria-label="Lihat invoice transaksi ${trx.code}"
+                  class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-slate-500 hover:text-cyan-700 hover:bg-cyan-50">
                   <svg class="size-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </a>
-              </div>
-            </td>
-          </tr>
-        `).join('');
+              </td>
+            </tr>
+          `).join('');
+        }
       }
     }
 
@@ -1484,8 +1644,38 @@
     const closeServiceModalBtn = document.getElementById('closeServiceModalBtn');
     const cancelServiceModalBtn = document.getElementById('cancelServiceModalBtn');
 
-    let currentPricePerKg = 10000;
-    let currentServiceName = 'Cuci + Setrika';
+    let currentPricePerKg = 9000;
+    let currentServiceName = 'Cuci Komplit (Cuci + Setrika)';
+    let currentServiceId = 2;
+
+    // Sinkronisasi katalog layanan aktif pelanggan langsung dari MySQL (GET /api/pelanggan/layanan)
+    (async function hydrateCustomerServiceCards() {
+      try {
+        const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/layanan`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        if (rows.length === 0) return;
+
+        rows.forEach((svc) => {
+          const card = document.querySelector(`[data-layanan-id="${svc.id_layanan}"]`);
+          if (!card) return;
+          card.setAttribute('data-service-name', svc.nama_layanan);
+          card.setAttribute('data-service-price', String(Number(svc.harga) || 0));
+          card.setAttribute('data-service-est', svc.estimasi_waktu || '');
+          const titleEl = card.querySelector('[data-service-title]');
+          const descEl = card.querySelector('[data-service-desc]');
+          const priceEl = card.querySelector('[data-service-price]') || card.querySelector('[data-service-price-label]');
+          const unitEl = card.querySelector('[data-service-unit]');
+          const estEl = card.querySelector('[data-service-est]') || card.querySelector('[data-service-est-label]');
+          if (titleEl) titleEl.textContent = svc.nama_layanan;
+          if (descEl && svc.deskripsi) descEl.textContent = svc.deskripsi;
+          if (priceEl) priceEl.textContent = formatRupiah(svc.harga);
+          if (unitEl && svc.satuan) unitEl.textContent = `/${svc.satuan}`;
+          if (estEl && svc.estimasi_waktu) estEl.textContent = svc.estimasi_waktu;
+        });
+      } catch (_) {}
+    })();
 
     function updateEstimatedTotal() {
       if (!orderWeightInput || !serviceModalTotalCost) return;
@@ -1499,16 +1689,17 @@
     }
 
     // Expose openServiceOrderModal ke global window untuk kompatibilitas onclick di HTML
-    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description) {
-      currentServiceName = name || 'Cuci + Setrika';
-      currentPricePerKg = Number(pricePerKg) || 10000;
+    window.openServiceOrderModal = function (name, pricePerKg, duration, minWeight, description, idLayanan) {
+      currentServiceName = name || 'Cuci Komplit (Cuci + Setrika)';
+      currentPricePerKg = Number(pricePerKg) || 9000;
+      currentServiceId = Number(idLayanan) || 2;
 
       // Navigasi langsung ke pesanan.html dengan parameter layanan terpilih
       try {
         sessionStorage.setItem(BersihinConfig.storageKeys.cartService, currentServiceName);
       } catch (e) { }
 
-      window.location.href = 'pesanan.html?service=' + encodeURIComponent(currentServiceName);
+      window.location.href = `pesanan.html?id_layanan=${encodeURIComponent(currentServiceId)}&service=${encodeURIComponent(currentServiceName)}`;
     };
 
     if (closeServiceModalBtn && serviceOrderModal) {
@@ -1575,10 +1766,10 @@
     const createOrderForm = document.getElementById('createOrderForm');
     if (!createOrderForm) return;
 
-    let selectedService = 'Cuci + Setrika';
-    let selectedPricePerKg = 10000;
-    let selectedEst = 'Estimasi 2-3 hari';
-    let currentWeightKg = 4; // Default Figma: 4 kg
+    let selectedService = 'Cuci Komplit (Cuci + Setrika)';
+    let selectedPricePerKg = 9000;
+    let selectedEst = 'Estimasi 2 Hari';
+    let currentWeightKg = 4; // Default: 4 kg
     let selectedDeliveryMethod = 'Antar sendiri';
     let selectedDeliveryFee = 0;
 
@@ -1616,9 +1807,9 @@
 
     function selectServiceOption(btn) {
       if (!btn) return;
-      selectedService = btn.getAttribute('data-service-option') || 'Cuci + Setrika';
-      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 10000;
-      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2-3 hari';
+      selectedService = btn.getAttribute('data-service-option') || 'Cuci Komplit (Cuci + Setrika)';
+      selectedPricePerKg = parseInt(btn.getAttribute('data-price'), 10) || 9000;
+      selectedEst = btn.getAttribute('data-est') || 'Estimasi 2 Hari';
 
       serviceOptionBtns.forEach((b) => {
         const checkBox = b.querySelector('.service-check-box');
@@ -1702,6 +1893,34 @@
 
     // Inisialisasi awal kalkulasi (submit form dikelola secara komprehensif bersama modal invoice di pesanan.html)
     updateOrderSummary();
+
+    // Sinkronisasi 4 pilihan layanan pelanggan dari MySQL (GET /api/pelanggan/layanan)
+    (async function hydrateOrderServiceOptions() {
+      try {
+        const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/layanan`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const rows = Array.isArray(json.data) ? json.data : [];
+        if (rows.length === 0) return;
+
+        rows.forEach((svc) => {
+          const btn = document.querySelector(`.service-option-btn[data-layanan-id="${svc.id_layanan}"]`);
+          if (!btn) return;
+          const priceNum = Number(svc.harga) || 0;
+          const estText = svc.estimasi_waktu ? `Estimasi ${svc.estimasi_waktu}` : 'Estimasi 2 Hari';
+          btn.setAttribute('data-service-option', svc.nama_layanan);
+          btn.setAttribute('data-price', String(priceNum));
+          btn.setAttribute('data-est', estText);
+          btn.setAttribute('data-unit', svc.satuan || 'kg');
+          const nameEl = btn.querySelector('[data-opt-name]') || btn.querySelector('.font-semibold') || btn.querySelector('.font-bold');
+          const priceEl = btn.querySelector('[data-opt-price]') || btn.querySelector('.text-\\[11px\\]');
+          if (nameEl) nameEl.textContent = svc.nama_layanan;
+          if (priceEl) priceEl.textContent = `${formatRupiah(priceNum)}/${svc.satuan || 'kg'}`;
+        });
+        const activeBtn = document.querySelector('.service-option-btn[aria-checked="true"]');
+        if (activeBtn) selectServiceOption(activeBtn);
+      } catch (_) {}
+    })();
   }
 
   // ===========================================================================
@@ -1752,6 +1971,14 @@
   // ===========================================================================
   // 9. MODUL RIWAYAT TRANSAKSI (PELANGGAN/riwayat.html)
   // ===========================================================================
+  // State persisten untuk Riwayat Transaksi agar filter tidak ter-reset saat auto-refresh polling
+  let riwayatCurrentFilter = 'all';
+  let riwayatCurrentSearch = '';
+  let riwayatCurrentSort = 'newest';
+  let riwayatCurrentPage = 1;
+  const RIWAYAT_ITEMS_PER_PAGE = 8;
+  let riwayatListenersBound = false;
+
   function initRiwayatPage() {
     const tableBody = document.getElementById('historyTableBody');
     const filterTabs = document.querySelectorAll('.filter-tab');
@@ -1798,9 +2025,19 @@
     const totalCountEl = document.getElementById('totalItemsCount');
     if (totalCountEl) totalCountEl.textContent = stats.total;
 
-    let currentFilter = 'all';
-    let currentSearch = '';
-    let currentSort = 'newest';
+    // Sinkronisasi styling visual tab dengan riwayatCurrentFilter yang aktif
+    filterTabs.forEach(t => {
+      const tabFilter = t.getAttribute('data-filter') || 'all';
+      if (tabFilter === riwayatCurrentFilter) {
+        t.setAttribute('aria-selected', 'true');
+        t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+        t.classList.remove('text-slate-600');
+      } else {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+        t.classList.add('text-slate-600');
+      }
+    });
 
     // Sinkronisasi pesanan langsung dari database MySQL XAMPP secara real-time
     (async function syncWithDatabase() {
@@ -1826,19 +2063,19 @@
     function renderRows() {
       if (!tableBody) return;
 
-      // 1. Filter data
+      // 1. Filter data menggunakan state filter persisten
       let filtered = allTrx.filter(trx => {
         let matchFilter = true;
         const cat = normalizeStatusCategory(trx.status);
-        if (currentFilter === 'Diproses') {
+        if (riwayatCurrentFilter === 'Diproses') {
           matchFilter = (cat === 'Diproses');
-        } else if (currentFilter === 'Selesai') {
+        } else if (riwayatCurrentFilter === 'Selesai') {
           matchFilter = (cat === 'Selesai');
-        } else if (currentFilter === 'Dibatalkan') {
+        } else if (riwayatCurrentFilter === 'Dibatalkan') {
           matchFilter = (cat === 'Dibatalkan');
         }
 
-        const q = currentSearch.toLowerCase();
+        const q = riwayatCurrentSearch.toLowerCase();
         const matchSearch = !q ||
           trx.code.toLowerCase().includes(q) ||
           trx.service.toLowerCase().includes(q) ||
@@ -1876,7 +2113,7 @@
         const amtA = a.amount || 0;
         const amtB = b.amount || 0;
 
-        if (currentSort === 'newest') {
+        if (riwayatCurrentSort === 'newest') {
           const idA = Number(a.id_pesanan) || 0;
           const idB = Number(b.id_pesanan) || 0;
           if (idA && idB && idA !== idB) return idB - idA;
@@ -1886,7 +2123,7 @@
           }
           return 0;
         }
-        if (currentSort === 'oldest') {
+        if (riwayatCurrentSort === 'oldest') {
           const idA = Number(a.id_pesanan) || 0;
           const idB = Number(b.id_pesanan) || 0;
           if (idA && idB && idA !== idB) return idA - idB;
@@ -1896,12 +2133,21 @@
           }
           return 0;
         }
-        if (currentSort === 'highest') return amtB - amtA;
-        if (currentSort === 'lowest') return amtA - amtB;
+        if (riwayatCurrentSort === 'highest') return amtB - amtA;
+        if (riwayatCurrentSort === 'lowest') return amtA - amtB;
         return 0;
       });
 
-      // 3. Render ke tabel
+      // 3. Hitung pagination dinamis
+      const totalPages = Math.max(1, Math.ceil(filtered.length / RIWAYAT_ITEMS_PER_PAGE));
+      if (riwayatCurrentPage > totalPages) riwayatCurrentPage = totalPages;
+      if (riwayatCurrentPage < 1) riwayatCurrentPage = 1;
+
+      const startIndex = (riwayatCurrentPage - 1) * RIWAYAT_ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + RIWAYAT_ITEMS_PER_PAGE, filtered.length);
+      const pageItems = filtered.slice(startIndex, endIndex);
+
+      // 4. Render ke tabel
       if (filtered.length === 0) {
         tableBody.innerHTML = '';
         if (tableBody.parentElement) tableBody.parentElement.classList.add('hidden');
@@ -1910,34 +2156,32 @@
         if (tableBody.parentElement) tableBody.parentElement.classList.remove('hidden');
         if (emptySearchState) emptySearchState.classList.add('hidden');
 
-        tableBody.innerHTML = filtered.map(trx => `
-          <tr class="trx-row hover:bg-slate-50/80 transition"
+        tableBody.innerHTML = pageItems.map(trx => `
+          <tr class="trx-row hover:bg-slate-50/80"
             data-code="${trx.code}"
             data-service="${trx.service}"
             data-status="${trx.status}"
             data-amount="${trx.amount}"
             data-timestamp="${trx.timestamp}">
             <td class="px-4 py-3.5 font-bold text-slate-800">
-              <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700 transition">${trx.code}</a>
+              <a href="invoice.html?id=${encodeURIComponent(trx.code)}" class="hover:text-cyan-700">${trx.code}</a>
             </td>
             <td class="px-4 py-3.5 text-slate-600">${trx.date}</td>
             <td class="px-4 py-3.5 text-slate-700 font-medium">${trx.service}</td>
             <td class="px-4 py-3.5 text-slate-600">${trx.weight}</td>
             <td class="px-4 py-3.5 font-bold text-slate-800">${trx.total}</td>
             <td class="px-4 py-3.5">
-              ${getStatusBadgeHtml(trx.status)}
+              <a href="status.html?id=${encodeURIComponent(trx.code)}"
+                title="Klik untuk melacak perjalanan pesanan ${trx.code}"
+                class="inline-block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-600 rounded-full cursor-pointer">
+                ${getStatusBadgeHtml(trx.status)}
+              </a>
             </td>
             <td class="px-4 py-2 text-right">
-              <div class="flex items-center justify-end gap-1.5">
+              <div class="flex items-center justify-end">
                 <a href="invoice.html?id=${encodeURIComponent(trx.code)}"
-                  title="Pemeriksaan Invoice & Verifikasi Pembayaran"
-                  class="min-h-[36px] px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold inline-flex items-center gap-1 transition">
-                  <svg class="size-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  <span>Invoice</span>
-                </a>
-                <a href="dtltransaksi.html?id=${encodeURIComponent(trx.code)}"
-                  aria-label="Lihat rincian transaksi ${trx.code}"
-                  class="min-h-[36px] px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
+                  aria-label="Lihat invoice & bukti pembayaran transaksi ${trx.code}"
+                  class="min-h-[36px] px-3.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-xs font-semibold inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700">
                   <span>Detail</span>
                   <svg class="size-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
@@ -1949,69 +2193,147 @@
         `).join('');
       }
 
-      // 4. Update Info Text
+      // 5. Update Info Text secara akurat
       if (tableInfoText) {
-        tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">1 - ${filtered.length}</span> dari <span class="font-semibold text-slate-700">${allTrx.length}</span> transaksi`;
+        if (filtered.length === 0) {
+          tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">0</span> dari <span class="font-semibold text-slate-700">${allTrx.length}</span> transaksi`;
+        } else {
+          tableInfoText.innerHTML = `Menampilkan <span class="font-semibold text-slate-700">${startIndex + 1} - ${endIndex}</span> dari <span class="font-semibold text-slate-700">${filtered.length}</span> transaksi`;
+        }
+      }
+
+      // 6. Render Tombol Angka Halaman Dinamis (Sesuai Jumlah Riwayat Pesanan)
+      renderPaginationControls(totalPages);
+    }
+
+    // Fungsi Render Tombol Pagination 1, 2, 3 Sesuai Data Riwayat Pesanan
+    function renderPaginationControls(totalPages) {
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
+      const pageContainer = document.getElementById('pageNumbersContainer');
+
+      if (prevBtn) {
+        prevBtn.disabled = false;
+        prevBtn.removeAttribute('disabled');
+        prevBtn.onclick = () => {
+          if (riwayatCurrentPage > 1) {
+            riwayatCurrentPage--;
+            renderRows();
+          } else if (totalPages > 1) {
+            riwayatCurrentPage = totalPages;
+            renderRows();
+          }
+        };
+      }
+
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.removeAttribute('disabled');
+        nextBtn.onclick = () => {
+          if (riwayatCurrentPage < totalPages) {
+            riwayatCurrentPage++;
+            renderRows();
+          } else if (totalPages > 1) {
+            riwayatCurrentPage = 1;
+            renderRows();
+          }
+        };
+      }
+
+      if (pageContainer) {
+        let pagesHtml = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const isActive = (i === riwayatCurrentPage);
+          pagesHtml += `
+            <button type="button" data-page="${i}"
+              class="page-num-btn min-w-[36px] min-h-[36px] w-9 h-9 inline-flex items-center justify-center rounded-lg text-xs font-semibold ${isActive ? 'bg-slate-900 text-white shadow-xs' : 'border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 shadow-2xs'}">
+              ${i}
+            </button>
+          `;
+        }
+        pageContainer.innerHTML = pagesHtml;
+
+        pageContainer.querySelectorAll('.page-num-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const p = parseInt(btn.getAttribute('data-page'), 10);
+            if (p && p !== riwayatCurrentPage) {
+              riwayatCurrentPage = p;
+              renderRows();
+            }
+          });
+        });
       }
     }
 
     renderRows();
 
-    // Event Klik Tab Filter
-    filterTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        filterTabs.forEach(t => {
-          t.setAttribute('aria-selected', 'false');
-          t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-          t.classList.add('text-slate-600');
+    // Event listener dipasang hanya SATU KALI agar tidak tertumpuk/reset saat auto-refresh polling
+    if (!riwayatListenersBound) {
+      riwayatListenersBound = true;
+
+      // Event Klik Tab Filter
+      filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          riwayatCurrentFilter = tab.getAttribute('data-filter') || 'all';
+          riwayatCurrentPage = 1;
+
+          filterTabs.forEach(t => {
+            const isTarget = (t.getAttribute('data-filter') || 'all') === riwayatCurrentFilter;
+            t.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+            if (isTarget) {
+              t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.remove('text-slate-600');
+            } else {
+              t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.add('text-slate-600');
+            }
+          });
+
+          renderRows();
         });
-
-        tab.setAttribute('aria-selected', 'true');
-        tab.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-        tab.classList.remove('text-slate-600');
-
-        currentFilter = tab.getAttribute('data-filter') || 'all';
-        renderRows();
       });
-    });
 
-    // Real-time Search Input
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        currentSearch = e.target.value.trim().toLowerCase();
-        renderRows();
-      });
-    }
-
-    // Reset Filter Button
-    if (resetFilterBtn) {
-      resetFilterBtn.addEventListener('click', () => {
-        currentFilter = 'all';
-        currentSearch = '';
-        if (searchInput) searchInput.value = '';
-
-        filterTabs.forEach((t, idx) => {
-          if (idx === 0) {
-            t.setAttribute('aria-selected', 'true');
-            t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.remove('text-slate-600');
-          } else {
-            t.setAttribute('aria-selected', 'false');
-            t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
-            t.classList.add('text-slate-600');
-          }
+      // Real-time Search Input
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          riwayatCurrentSearch = e.target.value.trim().toLowerCase();
+          riwayatCurrentPage = 1;
+          renderRows();
         });
+      }
 
-        renderRows();
-      });
-    }
+      // Reset Filter Button
+      if (resetFilterBtn) {
+        resetFilterBtn.addEventListener('click', () => {
+          riwayatCurrentFilter = 'all';
+          riwayatCurrentSearch = '';
+          riwayatCurrentPage = 1;
+          if (searchInput) searchInput.value = '';
 
-    // Sort Dropdown
-    if (sortSelect) {
-      sortSelect.addEventListener('change', (e) => {
-        currentSort = e.target.value;
-        renderRows();
-      });
+          filterTabs.forEach((t, idx) => {
+            if (idx === 0) {
+              t.setAttribute('aria-selected', 'true');
+              t.classList.add('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.remove('text-slate-600');
+            } else {
+              t.setAttribute('aria-selected', 'false');
+              t.classList.remove('bg-white', 'text-slate-800', 'shadow-xs');
+              t.classList.add('text-slate-600');
+            }
+          });
+
+          renderRows();
+        });
+      }
+
+      // Sort Dropdown
+      if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+          riwayatCurrentSort = e.target.value;
+          riwayatCurrentPage = 1;
+          renderRows();
+        });
+      }
     }
   }
 
@@ -2103,12 +2425,43 @@
         statusText.className = 'text-slate-600 text-[11px] font-semibold font-["Poppins"] leading-3';
       } else if (data.status === 'Menunggu konfirmasi') {
         statusPill.className = 'px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
-        statusDot.className = 'size-1.5 bg-amber-500 rounded-full animate-pulse';
+        statusDot.className = 'size-1.5 bg-amber-500 rounded-full';
         statusText.className = 'text-amber-800 text-[11px] font-semibold font-["Poppins"] leading-3';
       } else {
         statusPill.className = 'px-3 py-1.5 bg-orange-100 rounded-[20px] inline-flex items-center gap-1.5 shrink-0';
         statusDot.className = 'size-1.5 bg-yellow-600 rounded-full';
         statusText.className = 'text-yellow-700 text-[11px] font-semibold font-["Poppins"] leading-3';
+      }
+    }
+
+    // Hubungkan Bukti Transaksi dan Tombol Invoice langsung ke Pemeriksaan Invoice (Bukan Pop Up)
+    const dtlBuktiLink = document.getElementById('dtlBuktiLink');
+    if (dtlBuktiLink) {
+      dtlBuktiLink.href = `invoice.html?id=${encodeURIComponent(data.code)}`;
+    }
+
+    const viewFullInvoiceBtn = document.getElementById('viewFullInvoiceBtn');
+    if (viewFullInvoiceBtn) {
+      viewFullInvoiceBtn.href = `invoice.html?id=${encodeURIComponent(data.code)}`;
+    }
+
+    // Tampilkan Bukti Transfer Riil jika tersimpan
+    let proofImgSrc = data.bukti_transfer || data.bukti_bayar || null;
+    try {
+      const invList = JSON.parse(localStorage.getItem('bersihin_invoices') || '[]');
+      const found = invList.find(x => (x.kode_pesanan === data.code || x.orderId === data.code || x.id === data.code));
+      if (found && (found.bukti_transfer || found.bukti_bayar)) {
+        proofImgSrc = found.bukti_transfer || found.bukti_bayar;
+      }
+    } catch(_) {}
+
+    const dtlBuktiImg = document.getElementById('dtlBuktiImg');
+    const dtlBuktiBadge = document.getElementById('dtlBuktiBadge');
+    if (proofImgSrc && dtlBuktiImg) {
+      dtlBuktiImg.src = proofImgSrc;
+      if (dtlBuktiBadge) {
+        dtlBuktiBadge.textContent = 'Terlampir';
+        dtlBuktiBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700';
       }
     }
 
@@ -2157,11 +2510,15 @@
       const headers = {};
       if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil?id_pelanggan=${encodeURIComponent(profile.id_pelanggan || 1)}&id_user=${encodeURIComponent(profile.id_user || 4)}`, { credentials: 'same-origin', headers });
       const result = await res.json();
       if (result && result.success && result.data) {
         const d = result.data;
         profile = saveCustomerProfile({
+          id_pelanggan: d.id_pelanggan || profile.id_pelanggan || 1,
+          id_user: d.id_user || profile.id_user || 4,
+          username: d.username || profile.username || 'andipratama',
+          kode_pelanggan: d.kode_pelanggan || profile.kode_pelanggan || 'PLG-08129',
           fullName: d.nama || profile.fullName,
           phone: d.telepon || profile.phone,
           email: d.email || profile.email,
@@ -2239,7 +2596,7 @@
       const headers = {};
       if (token) headers['Authorization'] = 'Bearer ' + token;
 
-      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil`, { credentials: 'same-origin', headers });
+      const res = await fetch(`${getBackendBaseUrl()}/api/pelanggan/profil?id_pelanggan=${encodeURIComponent(profile.id_pelanggan || 1)}&id_user=${encodeURIComponent(profile.id_user || 4)}`, { credentials: 'same-origin', headers });
       const result = await res.json();
       if (result && result.success && result.data) {
         const d = result.data;
@@ -2597,6 +2954,7 @@
 
   function bootstrap() {
     initSharedComponents();
+    updateSidebarActiveBadge();
     initLoginPage();
     initDashboardPage();
     initLayananPage();
@@ -2644,6 +3002,7 @@
       if (typeof syncAllCustomerDataWithBackend === 'function') {
         syncAllCustomerDataWithBackend().then(() => {
           const path = (window.location.pathname || '').toLowerCase();
+          updateSidebarActiveBadge();
           if (path.includes('dashboard.html') || path.endsWith('/pelanggan/') || path.endsWith('/pelanggan')) {
             initDashboardPage();
           } else if (path.includes('status.html')) {
