@@ -721,7 +721,7 @@
 
         // Sinkronisasi data live dari database backend MySQL jika terhubung
         if (orderId) {
-            const apiBase = window.location.origin.includes(':5000') ? '' : 'http://localhost:5000';
+            const apiBase = window.location.origin.includes(':3000') ? '' : 'http://localhost:3000';
             fetch(`${apiBase}/api/pelanggan/status/${encodeURIComponent(orderId)}`)
                 .then(r => r.json())
                 .then(res => {

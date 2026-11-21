@@ -736,7 +736,7 @@
       // Cek langsung ke database backend MySQL untuk data teraktual
       if (trxId) {
         try {
-          const apiBase = window.location.origin.includes(':5000') ? '' : 'http://localhost:5000';
+          const apiBase = window.location.origin.includes(':3000') ? '' : 'http://localhost:3000';
           const res = await fetch(`${apiBase}/api/pelanggan/status/${encodeURIComponent(trxId)}`);
           if (res.ok) {
             const json = await res.json();
