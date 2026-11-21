@@ -2001,7 +2001,7 @@
     if (statProcessEl) statProcessEl.textContent = stats.processing;
 
     const statProcessSub = document.getElementById('statProcessOrdersSub');
-    if (statProcessSub) statProcessSub.textContent = `${stats.processing} pesanan berjalan`;
+    if (statProcessSub) statProcessSub.remove();
 
     const statDoneEl = document.getElementById('statDoneOrders');
     if (statDoneEl) statDoneEl.textContent = stats.completed;

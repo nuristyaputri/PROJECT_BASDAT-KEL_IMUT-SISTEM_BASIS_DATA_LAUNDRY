@@ -610,6 +610,10 @@
                 sessionStorage.setItem('bersihin_staff_token', result.data.token);
                 localStorage.setItem('bersihin_staff_token', result.data.token);
               }
+              if (verifiedUser.role === 'PEMILIK') {
+                sessionStorage.setItem('bersihin_owner_token', result.data.token);
+                localStorage.setItem('bersihin_owner_token', result.data.token);
+              }
             }
           } else if (response.status === 401 || response.status === 403 || (result && !result.success)) {
             // Periksa apakah akun tersimpan di storage lokal (misal pengguna baru mendaftar atau override kata sandi)
