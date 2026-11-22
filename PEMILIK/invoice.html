@@ -575,9 +575,9 @@
         function getApiBaseUrl() {
             const origin = window.location.origin;
             if (origin && origin !== 'null' && !origin.startsWith('file:')) {
-                if (window.location.port === '5000') return origin;
+                if (window.location.port === '3000') return origin;
             }
-            return 'http://localhost:5000';
+            return 'http://localhost:3000';
         }
 
         function escapeHtml(str) {

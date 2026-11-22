@@ -16,7 +16,7 @@ npm start
 npm run dev
 ```
 Secara default, server Express akan berjalan pada:
-- **Base URL**: `http://localhost:5000`
+- **Base URL**: `http://localhost:3000`
 - **Prefix API**: `/api`
 
 ### 1.2 Konfigurasi Environment Variable di Postman / Thunder Client
@@ -24,7 +24,7 @@ Buat environment baru bernama `CloudLaundry Local` dan tambahkan variabel beriku
 
 | Nama Variabel | Nilai Awal (Initial Value) | Deskripsi |
 | :--- | :--- | :--- |
-| `base_url` | `http://localhost:5000/api` | Alamat basis API backend |
+| `base_url` | `http://localhost:3000/api` | Alamat basis API backend |
 | `token_pelanggan` | *(kosong, diisi otomatis saat login)* | Token JWT hak akses Pelanggan |
 | `token_pegawai` | *(kosong, diisi otomatis saat login)* | Token JWT hak akses Pegawai |
 | `token_pemilik` | *(kosong, diisi otomatis saat login)* | Token JWT hak akses Pemilik |
@@ -68,7 +68,7 @@ Memastikan server dan koneksi database MySQL aktif dan siap menerima request.
 - **Headers**: *(None)*
 - **cURL Command**:
   ```bash
-  curl -X GET http://localhost:5000/api/health
+  curl -X GET http://localhost:3000/api/health
   ```
 - **Expected Response (HTTP 200 OK)**:
   ```json
@@ -100,7 +100,7 @@ Mendaftarkan pelanggan baru ke sistem.
   ```
 - **cURL Command**:
   ```bash
-  curl -X POST http://localhost:5000/api/auth/register \
+  curl -X POST http://localhost:3000/api/auth/register \
     -H "Content-Type: application/json" \
     -d "{\"nama_lengkap\":\"Siti Aminah\",\"email\":\"siti.aminah@example.com\",\"password\":\"Password123!\",\"no_hp\":\"081298765432\",\"alamat\":\"Jl. Melati No. 45\"}"
   ```
@@ -350,7 +350,7 @@ Pengujian API harus mencakup verifikasi respon galat yang tepat pada saat terjad
 
 ## 5. Ringkasan Checklist Kesiapan Uji API
 
-- [x] Server Backend berjalan di port 5000 tanpa crash.
+- [x] Server Backend berjalan di port 3000 tanpa crash.
 - [x] Endpoint `GET /api/health` mengembalikan status database terkoneksi.
 - [x] Registrasi pengguna baru berhasil menyisipkan rekod ke tabel `users` dan `pelanggan`.
 - [x] Password dienkripsi dengan algoritma bcrypt (tidak plain-text).

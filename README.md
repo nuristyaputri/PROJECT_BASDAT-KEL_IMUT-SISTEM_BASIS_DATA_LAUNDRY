@@ -449,7 +449,7 @@ Seluruh rancangan arsitektur dan pemodelan sistem disimpan dalam format **Draw.i
    npm install
    npm start
    ```
-   Buka aplikasi di browser melalui `http://localhost:5000`.
+   Buka aplikasi di browser melalui `http://localhost:3000`.
 3. **Daftar Akun Login Demo (Password seluruh akun: `password123`):**
    - **Pemilik Usaha (`PEMILIK`):** Username `pemilik` | Email `rangga@bersihin.id`
    - **Pegawai Kasir (`PEGAWAI`):** Username `dina.staff` | Email `dina.nurhaliza@bersihin.id`

@@ -10,8 +10,8 @@ Dokumen ini menyajikan spesifikasi teknis lengkap seluruh antarmuka pemrograman 
 * **Lingkungan Runtime**: Node.js (v18+)
 * **Framework Web**: Express.js (v4.19+)
 * **Protokol**: HTTP / HTTPS
-* **Default Port**: `5000` (dapat dikonfigurasi melalui variabel lingkungan `PORT`)
-* **Base URL**: `http://localhost:5000`
+* **Default Port**: `3000` (dapat dikonfigurasi melalui variabel lingkungan `PORT`)
+* **Base URL**: `http://localhost:3000`
 * **Prefix API Utama**: `/api`
 * **Alias Rute Kompatibilitas**: `/auth` dialiaskan ke `/api/auth` untuk mendukung pemanggilan langsung dari frontend.
 
@@ -69,7 +69,7 @@ Seluruh respons API mengembalikan format JSON konsisten:
 ### GET /api/health
 * **Nama Endpoint**: Pemeriksaan Status Backend API
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/health`
+* **URL**: `http://localhost:3000/api/health`
 * **Deskripsi**: Memeriksa ketersediaan dan status server backend secara realtime.
 * **Role Akses**: Publik (Semua role tanpa autentikasi)
 * **Status Autentikasi**: Publik (Tidak memerlukan token)
@@ -96,7 +96,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.1 POST /api/auth/login
 * **Nama Endpoint**: Autentikasi Akun Terpadu (Unified Login)
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/auth/login`
+* **URL**: `http://localhost:3000/api/auth/login`
 * **Deskripsi**: Mengautentikasi pengguna untuk ketiga aktor (Pelanggan, Pegawai, atau Pemilik) menggunakan username, email, atau nomor telepon, kemudian mengembalikan JWT token dan URL pengalihan dashboard yang sesuai.
 * **Role Akses**: Publik
 * **Status Autentikasi**: Publik
@@ -167,7 +167,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.2 POST /api/auth/register
 * **Nama Endpoint**: Pendaftaran Akun Pelanggan Baru
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/auth/register`
+* **URL**: `http://localhost:3000/api/auth/register`
 * **Deskripsi**: Mendaftarkan akun pelanggan baru ke tabel `users` dan membuat data profil relasional pada tabel `pelanggan`.
 * **Role Akses**: Publik
 * **Status Autentikasi**: Publik
@@ -220,7 +220,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.3 POST /api/auth/reset-password
 * **Nama Endpoint**: Reset Kata Sandi Pengguna
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/auth/reset-password`
+* **URL**: `http://localhost:3000/api/auth/reset-password`
 * **Deskripsi**: Mengatur ulang kata sandi pengguna berdasarkan email terdaftar menggunakan hash bcrypt baru.
 * **Role Akses**: Publik
 * **Status Autentikasi**: Publik
@@ -252,7 +252,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.4 POST /api/auth/logout
 * **Nama Endpoint**: Pengakhiran Sesi Pengguna (Logout)
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/auth/logout`
+* **URL**: `http://localhost:3000/api/auth/logout`
 * **Deskripsi**: Menghancurkan sesi server Express dan menghapus cookie sesi klien.
 * **Role Akses**: Semua Peran
 * **Status Autentikasi**: Publik / Terotentikasi
@@ -275,7 +275,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.5 GET /api/auth/me
 * **Nama Endpoint**: Profil Akun Pengguna Aktif
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/auth/me`
+* **URL**: `http://localhost:3000/api/auth/me`
 * **Deskripsi**: Mengambil profil lengkap akun yang sedang login dari gabungan tabel `users` dan tabel profil perannya (`pemilik`, `pegawai`, atau `pelanggan`).
 * **Role Akses**: Semua Peran
 * **Status Autentikasi**: Terotentikasi
@@ -308,7 +308,7 @@ Rute ini dipasang pada prefix `/api/auth` (dan alias `/auth`).
 ### 3.6 PUT /api/auth/password
 * **Nama Endpoint**: Pembaruan Kata Sandi Mandiri
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/auth/password`
+* **URL**: `http://localhost:3000/api/auth/password`
 * **Deskripsi**: Mengubah kata sandi pengguna aktif setelah memverifikasi kecocokan kata sandi lama.
 * **Role Akses**: Semua Peran
 * **Status Autentikasi**: Terotentikasi
@@ -347,7 +347,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.1 GET /api/pegawai/dashboard
 * **Nama Endpoint**: Statistik Operasional Kasir & Pegawai
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/dashboard`
+* **URL**: `http://localhost:3000/api/pegawai/dashboard`
 * **Deskripsi**: Mengambil ringkasan data operasional harian kasir: antrean pesanan, pesanan diproses, pesanan siap diambil, serta pendapatan hari ini.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Headers**: `Authorization: Bearer <token>`
@@ -373,7 +373,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.2 GET /api/pegawai/profil
 * **Nama Endpoint**: Detail Profil Pegawai Aktif
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/profil`
+* **URL**: `http://localhost:3000/api/pegawai/profil`
 * **Deskripsi**: Menampilkan rincian data pegawai dari tabel `pegawai` dan akun `users`.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Headers**: `Authorization: Bearer <token>`
@@ -400,7 +400,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.3 PUT /api/pegawai/profil
 * **Nama Endpoint**: Perbarui Profil Pegawai
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/pegawai/profil`
+* **URL**: `http://localhost:3000/api/pegawai/profil`
 * **Deskripsi**: Mengubah nama, nomor telepon, dan alamat pegawai.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Body**:
@@ -428,7 +428,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.4 GET /api/pegawai/pelanggan
 * **Nama Endpoint**: Daftar Pelanggan (Kasir View)
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/pelanggan`
+* **URL**: `http://localhost:3000/api/pegawai/pelanggan`
 * **Deskripsi**: Mengambil seluruh daftar pelanggan terdaftar beserta total akumulasi pesanan untuk keperluan POS kasir.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Headers**: `Authorization: Bearer <token>`
@@ -457,7 +457,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.5 GET /api/pegawai/pelanggan/:id
 * **Nama Endpoint**: Detail Pelanggan & Riwayat Pesanan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/pelanggan/:id`
+* **URL**: `http://localhost:3000/api/pegawai/pelanggan/:id`
 * **Deskripsi**: Mengambil rincian profil pelanggan tertentu beserta riwayat pesanan cucian yang pernah dilakukan.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pelanggan).
@@ -494,7 +494,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.6 POST /api/pegawai/pelanggan
 * **Nama Endpoint**: Tambah Pelanggan Baru via Kasir
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pegawai/pelanggan`
+* **URL**: `http://localhost:3000/api/pegawai/pelanggan`
 * **Deskripsi**: Mendaftarkan pelanggan baru langsung di meja kasir. Otomatis membuatkan akun `users` dengan kata sandi bawaan `password123`.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Body**:
@@ -536,7 +536,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.7 PUT /api/pegawai/pelanggan/:id
 * **Nama Endpoint**: Perbarui Data Pelanggan
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/pegawai/pelanggan/:id`
+* **URL**: `http://localhost:3000/api/pegawai/pelanggan/:id`
 * **Deskripsi**: Memperbarui informasi nama, telepon, email, alamat, atau tier member pelanggan.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pelanggan).
@@ -558,7 +558,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.8 GET /api/pegawai/pesanan
 * **Nama Endpoint**: Daftar Seluruh Pesanan Cucian (Kasir POS)
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan`
 * **Deskripsi**: Mengambil seluruh antrean pesanan laundry lengkap dengan nama pelanggan, rincian status pengerjaan, dan status verifikasi pembayaran mutasi rekening.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Headers**: `Authorization: Bearer <token>`
@@ -592,7 +592,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.9 GET /api/pegawai/pesanan/:id
 * **Nama Endpoint**: Detail Lengkap Pesanan Cucian
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan/:id`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan/:id`
 * **Deskripsi**: Mengambil rincian invoice lengkap: data pelanggan, item layanan yang dipesan (`detail_pesanan`), riwayat status, dan transaksi pembayaran.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -643,7 +643,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.10 POST /api/pegawai/pesanan
 * **Nama Endpoint**: Buat Pesanan Baru di Meja Kasir (POS)
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan`
 * **Deskripsi**: Membuat transaksi cucian baru di kasir, menghitung subtotal per item layanan, dan membuat baris pembayaran awal.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Request Body**:
@@ -686,7 +686,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.11 PATCH /api/pegawai/pesanan/:id/status
 * **Nama Endpoint**: Perbarui Tahapan Status Cucian
 * **Method**: `PATCH`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan/:id/status`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan/:id/status`
 * **Deskripsi**: Memperbarui progres cucian (`MENUNGGU` -> `DIPROSES` -> `DICUCI` -> `DISETRIKA` -> `SIAP_DIAMBIL` -> `SELESAI` -> `DIBATALKAN`) dan otomatis mencatat ke tabel `riwayat_status`.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -719,7 +719,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.12 POST /api/pegawai/pesanan/:id/konfirmasi-pembayaran
 * **Nama Endpoint**: Konfirmasi Pembayaran Lunas (Kasir Verification)
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan/:id/konfirmasi-pembayaran`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan/:id/konfirmasi-pembayaran`
 * **Deskripsi**: Kasir memverifikasi bahwa uang tunai fisik telah diterima atau mutasi QRIS/Transfer bank telah valid. Mengubah status pembayaran menjadi `BERHASIL`.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -746,7 +746,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.13 POST /api/pegawai/pesanan/:id/tolak
 * **Nama Endpoint**: Tolak Bukti Pembayaran / Batalkan Pesanan
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pegawai/pesanan/:id/tolak`
+* **URL**: `http://localhost:3000/api/pegawai/pesanan/:id/tolak`
 * **Deskripsi**: Menolak bukti pembayaran yang tidak valid atau membatalkan pesanan.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -772,7 +772,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.14 GET /api/pegawai/transaksi
 * **Nama Endpoint**: Daftar Riwayat Transaksi & Pembayaran
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/transaksi`
+* **URL**: `http://localhost:3000/api/pegawai/transaksi`
 * **Deskripsi**: Menampilkan tabel log transaksi pembayaran seluruh pesanan laundry.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Contoh Response Sukses (200 OK)**:
@@ -800,7 +800,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.15 GET /api/pegawai/transaksi/:id
 * **Nama Endpoint**: Rincian Transaksi Pembayaran Tertentu
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pegawai/transaksi/:id`
+* **URL**: `http://localhost:3000/api/pegawai/transaksi/:id`
 * **Deskripsi**: Mengambil riwayat detail pembayaran untuk pesanan tertentu.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -810,7 +810,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.16 POST /api/pegawai/transaksi/:id/pembayaran
 * **Nama Endpoint**: Tambah Catatan Pembayaran Baru
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pegawai/transaksi/:id/pembayaran`
+* **URL**: `http://localhost:3000/api/pegawai/transaksi/:id/pembayaran`
 * **Deskripsi**: Menambahkan baris pembayaran baru untuk pesanan yang belum lunas.
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -840,7 +840,7 @@ Rute ini dipasang pada prefix `/api/pegawai` dan dilindungi middleware:
 ### 4.17 PATCH /api/pegawai/transaksi/:id/pembayaran/:id_pembayaran/status
 * **Nama Endpoint**: Ubah Status Pembayaran Spesifik
 * **Method**: `PATCH`
-* **URL**: `http://localhost:5000/api/pegawai/transaksi/:id/pembayaran/:id_pembayaran/status`
+* **URL**: `http://localhost:3000/api/pegawai/transaksi/:id/pembayaran/:id_pembayaran/status`
 * **Deskripsi**: Mengubah status pembayaran tertentu (`MENUNGGU`, `BERHASIL`, `GAGAL`).
 * **Role Akses**: `PEGAWAI`, `PEMILIK`
 * **Path Parameters**:
@@ -857,7 +857,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.1 GET /api/pelanggan/profil (Alias: /api/pelanggan/profile)
 * **Nama Endpoint**: Profil Akun Pelanggan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pelanggan/profil`
+* **URL**: `http://localhost:3000/api/pelanggan/profil`
 * **Deskripsi**: Menampilkan data profil pelanggan: nama, telepon, email, alamat, dan tier loyalitas (`member_tier`).
 * **Role Akses**: `PELANGGAN`
 * **Query Parameters (Opsional)**: `?id_pelanggan=1&id_user=4`
@@ -884,7 +884,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.2 PUT & POST /api/pelanggan/profil (Alias: /api/pelanggan/profile)
 * **Nama Endpoint**: Perbarui Profil Pelanggan
 * **Method**: `PUT` / `POST`
-* **URL**: `http://localhost:5000/api/pelanggan/profil`
+* **URL**: `http://localhost:3000/api/pelanggan/profil`
 * **Deskripsi**: Memperbarui nama, telepon, email, atau alamat tempat tinggal pelanggan.
 * **Role Akses**: `PELANGGAN`
 * **Request Body**:
@@ -913,7 +913,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.3 PUT & POST /api/pelanggan/password
 * **Nama Endpoint**: Ganti Kata Sandi Pelanggan
 * **Method**: `PUT` / `POST`
-* **URL**: `http://localhost:5000/api/pelanggan/password`
+* **URL**: `http://localhost:3000/api/pelanggan/password`
 * **Deskripsi**: Memperbarui kata sandi akun pelanggan.
 * **Role Akses**: `PELANGGAN`
 * **Request Body**:
@@ -935,7 +935,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.4 GET /api/pelanggan/pesanan (Alias: /api/pelanggan/orders)
 * **Nama Endpoint**: Riwayat Pesanan Saya
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pelanggan/pesanan`
+* **URL**: `http://localhost:3000/api/pelanggan/pesanan`
 * **Deskripsi**: Mengambil seluruh riwayat pesanan cucian milik pelanggan yang sedang aktif.
 * **Role Akses**: `PELANGGAN`
 * **Query Parameters (Opsional)**:
@@ -967,7 +967,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.5 POST /api/pelanggan/pesanan (Alias: /api/pelanggan/orders)
 * **Nama Endpoint**: Buat Pesanan Laundry Online (Checkout Pelanggan)
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pelanggan/pesanan`
+* **URL**: `http://localhost:3000/api/pelanggan/pesanan`
 * **Deskripsi**: Pelanggan memesan layanan laundry secara online, memilih metode pembayaran (`TUNAI`, `QRIS`, `TRANSFER`), mengunggah bukti bayar digital (Base64 atau file), dan menyertakan catatan khusus pakaian.
 * **Role Akses**: `PELANGGAN` / Publik (Didukung Fallback)
 * **Request Body**:
@@ -1010,7 +1010,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.6 GET /api/pelanggan/pesanan/:idOrCode (Alias: /api/pelanggan/status/:idOrCode)
 * **Nama Endpoint**: Tracking Status & Pemeriksaan Invoice Pelanggan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pelanggan/pesanan/:idOrCode`
+* **URL**: `http://localhost:3000/api/pelanggan/pesanan/:idOrCode`
 * **Deskripsi**: Melacak tahapan cucian secara real-time berdasarkan kode pesanan (`TRX-...`) atau ID numerik. Digunakan pada halaman tracking status dan invoice pelanggan.
 * **Role Akses**: Publik / Pelanggan
 * **Path Parameters**: `idOrCode` (Kode Pesanan seperti `TRX-240518-01` atau ID numerik `1`).
@@ -1051,7 +1051,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.7 GET /api/pelanggan/layanan (Alias: /api/pelanggan/services)
 * **Nama Endpoint**: Katalog Layanan Laundry Aktif
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pelanggan/layanan`
+* **URL**: `http://localhost:3000/api/pelanggan/layanan`
 * **Deskripsi**: Mengambil seluruh paket layanan laundry yang sedang aktif untuk ditampilkan pada katalog harga dan formulir pemesanan.
 * **Role Akses**: Publik / Pelanggan
 * **Contoh Response Sukses (200 OK)**:
@@ -1089,7 +1089,7 @@ Rute ini dipasang pada prefix `/api/pelanggan` dan menggunakan middleware adapti
 ### 5.8 GET /api/pelanggan/dashboard-summary
 * **Nama Endpoint**: Ringkasan Dashboard Pelanggan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pelanggan/dashboard-summary`
+* **URL**: `http://localhost:3000/api/pelanggan/dashboard-summary`
 * **Deskripsi**: Mengambil statistik ringkas pelanggan: pesanan aktif, cucian selesai, dan tier loyalitas.
 * **Role Akses**: `PELANGGAN`
 * **Contoh Response Sukses (200 OK)**:
@@ -1116,7 +1116,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.1 GET /api/pemilik/dashboard
 * **Nama Endpoint**: Ringkasan Eksekutif Pemilik (Executive Summary)
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/dashboard`
+* **URL**: `http://localhost:3000/api/pemilik/dashboard`
 * **Deskripsi**: Menghitung omzet total, omzet bulan ini, total pesanan, pesanan diproses, pesanan selesai, total staf aktif, total pelanggan, dan 5 aktivitas transaksi terbaru.
 * **Role Akses**: `PEMILIK`
 * **Request Headers**: `Authorization: Bearer <token>`
@@ -1155,7 +1155,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.2 GET /api/pemilik/profil
 * **Nama Endpoint**: Profil Pemilik Laundry
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/profil`
+* **URL**: `http://localhost:3000/api/pemilik/profil`
 * **Deskripsi**: Menampilkan data profil pemilik dari tabel `pemilik` dan akun `users`.
 * **Role Akses**: `PEMILIK`
 * **Contoh Response Sukses (200 OK)**:
@@ -1180,7 +1180,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.3 PUT /api/pemilik/profil
 * **Nama Endpoint**: Perbarui Profil Pemilik
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/pemilik/profil`
+* **URL**: `http://localhost:3000/api/pemilik/profil`
 * **Deskripsi**: Memperbarui nama, telepon, dan alamat pemilik bisnis.
 * **Role Akses**: `PEMILIK`
 * **Request Body**: `nama`, `telepon`, `alamat`.
@@ -1190,7 +1190,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.4 GET /api/pemilik/pegawai
 * **Nama Endpoint**: Daftar Seluruh Staf Pegawai
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pegawai`
+* **URL**: `http://localhost:3000/api/pemilik/pegawai`
 * **Deskripsi**: Menampilkan seluruh data pegawai, posisi jabatan, kontak, dan status keaktifan akun.
 * **Role Akses**: `PEMILIK`
 * **Contoh Response Sukses (200 OK)**:
@@ -1219,7 +1219,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.5 GET /api/pemilik/pegawai/:id
 * **Nama Endpoint**: Detail Data Pegawai
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pegawai/:id`
+* **URL**: `http://localhost:3000/api/pemilik/pegawai/:id`
 * **Deskripsi**: Mengambil data spesifik pegawai beserta statistik cucian yang ditangani.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pegawai).
@@ -1229,7 +1229,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.6 POST /api/pemilik/pegawai
 * **Nama Endpoint**: Tambah Pegawai Baru
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pemilik/pegawai`
+* **URL**: `http://localhost:3000/api/pemilik/pegawai`
 * **Deskripsi**: Pemilik menambahkan akun staf pegawai baru ke tabel `users` (role `PEGAWAI`) dan membuat baris profil di tabel `pegawai`.
 * **Role Akses**: `PEMILIK`
 * **Request Body**:
@@ -1274,7 +1274,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.7 PUT /api/pemilik/pegawai/:id
 * **Nama Endpoint**: Perbarui Data Pegawai
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/pemilik/pegawai/:id`
+* **URL**: `http://localhost:3000/api/pemilik/pegawai/:id`
 * **Deskripsi**: Mengubah profil staf, jabatan, kontak, atau kata sandi oleh pemilik.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pegawai).
@@ -1284,7 +1284,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.8 PATCH /api/pemilik/pegawai/:id/status
 * **Nama Endpoint**: Aktifkan / Nonaktifkan Akun Pegawai
 * **Method**: `PATCH`
-* **URL**: `http://localhost:5000/api/pemilik/pegawai/:id/status`
+* **URL**: `http://localhost:3000/api/pemilik/pegawai/:id/status`
 * **Deskripsi**: Mengubah status keaktifan staf (`AKTIF` atau `NONAKTIF`).
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pegawai).
@@ -1300,7 +1300,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.9 GET /api/pemilik/layanan
 * **Nama Endpoint**: Manajemen Master Katalog Layanan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/layanan`
+* **URL**: `http://localhost:3000/api/pemilik/layanan`
 * **Deskripsi**: Mengambil seluruh daftar layanan laundry (baik aktif maupun nonaktif) untuk kebutuhan manajemen tarif pemilik.
 * **Role Akses**: `PEMILIK`
 * **Contoh Response Sukses (200 OK)**:
@@ -1328,7 +1328,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.10 GET /api/pemilik/layanan/:id
 * **Nama Endpoint**: Detail Spesifik Layanan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/layanan/:id`
+* **URL**: `http://localhost:3000/api/pemilik/layanan/:id`
 * **Deskripsi**: Mengambil rincian tarif dan deskripsi layanan berdasarkan ID.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Layanan).
@@ -1338,7 +1338,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.11 POST /api/pemilik/layanan
 * **Nama Endpoint**: Tambah Layanan Laundry Baru
 * **Method**: `POST`
-* **URL**: `http://localhost:5000/api/pemilik/layanan`
+* **URL**: `http://localhost:3000/api/pemilik/layanan`
 * **Deskripsi**: Menambahkan paket layanan laundry baru ke database.
 * **Role Akses**: `PEMILIK`
 * **Request Body**:
@@ -1380,7 +1380,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.12 PUT /api/pemilik/layanan/:id
 * **Nama Endpoint**: Perbarui Tarif & Rincian Layanan
 * **Method**: `PUT`
-* **URL**: `http://localhost:5000/api/pemilik/layanan/:id`
+* **URL**: `http://localhost:3000/api/pemilik/layanan/:id`
 * **Deskripsi**: Mengubah nama, harga, satuan, estimasi waktu, atau deskripsi layanan.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Layanan).
@@ -1390,7 +1390,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.13 PATCH /api/pemilik/layanan/:id/status
 * **Nama Endpoint**: Ubah Status Aktif Layanan
 * **Method**: `PATCH`
-* **URL**: `http://localhost:5000/api/pemilik/layanan/:id/status`
+* **URL**: `http://localhost:3000/api/pemilik/layanan/:id/status`
 * **Deskripsi**: Mengaktifkan atau menonaktifkan ketersediaan paket layanan laundry (`AKTIF` atau `NONAKTIF`).
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Layanan).
@@ -1406,7 +1406,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.14 GET /api/pemilik/pelanggan
 * **Nama Endpoint**: Monitoring Pelanggan (Owner View)
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pelanggan`
+* **URL**: `http://localhost:3000/api/pemilik/pelanggan`
 * **Deskripsi**: Menampilkan data pelanggan beserta riwayat total transaksi dan nilai belanja (*customer lifetime value*).
 * **Role Akses**: `PEMILIK`
 
@@ -1415,7 +1415,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.15 GET /api/pemilik/pelanggan/:id
 * **Nama Endpoint**: Detail Pelanggan & Analisis Belanja
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pelanggan/:id`
+* **URL**: `http://localhost:3000/api/pemilik/pelanggan/:id`
 * **Deskripsi**: Rincian riwayat seluruh pesanan pelanggan tertentu.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pelanggan).
@@ -1425,7 +1425,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.16 GET /api/pemilik/pesanan
 * **Nama Endpoint**: Monitoring Seluruh Pesanan Laundry
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pesanan`
+* **URL**: `http://localhost:3000/api/pemilik/pesanan`
 * **Deskripsi**: Memantau daftar seluruh cucian pelanggan yang masuk, sedang dikerjakan, maupun selesai.
 * **Role Akses**: `PEMILIK`
 
@@ -1434,7 +1434,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.17 GET /api/pemilik/pesanan/:id
 * **Nama Endpoint**: Detail Pesanan Cucian (Owner View)
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/pesanan/:id`
+* **URL**: `http://localhost:3000/api/pemilik/pesanan/:id`
 * **Deskripsi**: Melihat lembar rincian pesanan tertentu secara utuh.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -1444,7 +1444,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.18 GET /api/pemilik/transaksi
 * **Nama Endpoint**: Monitoring Seluruh Mutasi Transaksi
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/transaksi`
+* **URL**: `http://localhost:3000/api/pemilik/transaksi`
 * **Deskripsi**: Menampilkan rekap transaksi pembayaran laundry untuk audit finansial pemilik.
 * **Role Akses**: `PEMILIK`
 
@@ -1453,7 +1453,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.19 GET /api/pemilik/transaksi/:id
 * **Nama Endpoint**: Detail Mutasi Transaksi Pembayaran
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/transaksi/:id`
+* **URL**: `http://localhost:3000/api/pemilik/transaksi/:id`
 * **Deskripsi**: Memeriksa rincian bukti bayar dan metode transaksi pada pesanan tertentu.
 * **Role Akses**: `PEMILIK`
 * **Path Parameters**: `id` (*integer* - ID Pesanan).
@@ -1463,7 +1463,7 @@ Rute ini dipasang pada prefix `/api/pemilik` dan dilindungi middleware:
 ### 6.20 GET /api/pemilik/laporan/pendapatan
 * **Nama Endpoint**: Laporan Finansial & Rekapitulasi Pendapatan
 * **Method**: `GET`
-* **URL**: `http://localhost:5000/api/pemilik/laporan/pendapatan`
+* **URL**: `http://localhost:3000/api/pemilik/laporan/pendapatan`
 * **Deskripsi**: Mengagregasi data finansial bisnis dari database MySQL: omzet total, rincian per metode bayar (`TUNAI`, `QRIS`, `TRANSFER`), rekap harian, rekapitulasi bulanan (transaksi, pendapatan, estimasi pengeluaran, laba bersih), serta total pelanggan.
 * **Role Akses**: `PEMILIK`
 * **Query Parameters (Opsional)**:

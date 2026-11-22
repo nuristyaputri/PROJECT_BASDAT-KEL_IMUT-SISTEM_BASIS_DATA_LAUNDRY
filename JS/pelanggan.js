@@ -2489,10 +2489,10 @@
   }
 
   function getBackendBaseUrl() {
-    if (typeof window !== 'undefined' && window.location.origin && window.location.origin.includes(':5000')) {
+    if (typeof window !== 'undefined' && window.location.origin && window.location.origin.includes(':3000')) {
       return '';
     }
-    return 'http://localhost:5000';
+    return 'http://localhost:3000';
   }
 
   // ===========================================================================

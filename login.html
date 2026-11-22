@@ -519,10 +519,10 @@
       }
 
       function getApiBaseUrl() {
-        if (window.location.protocol.startsWith('http') && window.location.port === '5000') {
+        if (window.location.protocol.startsWith('http') && window.location.port === '3000') {
           return '';
         }
-        return 'http://localhost:5000';
+        return 'http://localhost:3000';
       }
 
       // Toggle Show/Hide Password
@@ -943,7 +943,7 @@
               serverMessage = resData.message;
             }
           } catch (netErr) {
-            console.warn('Backend server port 5000 tidak terhubung:', netErr);
+            console.warn('Backend server port 3000 tidak terhubung:', netErr);
             serverMessage = 'Server backend belum aktif';
           }
 

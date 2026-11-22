@@ -44,7 +44,7 @@ npm install
 ### 2. Konfigurasi Database (.env)
 Buka file `.env` dan sesuaikan kredensial MySQL phpMyAdmin Anda:
 ```env
-PORT=5000
+PORT=3000
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_USER=root
@@ -61,8 +61,8 @@ npm start
 npm run dev
 ```
 
-Server akan aktif pada: `http://localhost:5000`
-Akses login langsung di browser: `http://localhost:5000/login.html`
+Server akan aktif pada: `http://localhost:3000`
+Akses login langsung di browser: `http://localhost:3000/login.html`
 
 ---
 
