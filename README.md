@@ -7,19 +7,11 @@ Proyek ini membahas rancangan sistem basis data untuk usaha laundry. Sistem ini 
 
 ## 2. Anggota Kelompok
 
-1. Nazwa Aulia Hanifa — 4525210053
-2. Nevilla Ghilar Apryanti — 4525210054
-3. Nuristya Putri Agustina — 4525210055
-4. Ratu Annisaa Nabila Meysun — 4525210063
-5. Tazkia Putri Arsyad — 4525210073
-6. Septia Fitri Rahmadhani — 4525210097
-
-
-## Link Pengumpulan Tugas
-
-Semua file dan hasil pengerjaan tugas Sistem Basis Data Laundry dapat diakses melalui link Google Drive berikut.
-
-**Folder Google Drive:** [Klik di sini untuk melihat semua file tugas](https://drive.google.com/drive/folders/1P9mAvXEskiaN0fCUKwG26f0a9xHlJnWL?usp=sharing)
+1. Nevilla Ghilar Apryanti — 4525210054
+2. Nuristya Putri Agustina — 4525210055
+3. Ratu Annisaa Nabila Meysun — 4525210063
+4. Tazkia Putri Arsyad — 4525210073
+5. Septia Fitri Rahmadhani — 4525210097
 
 ## 4. Product Requirements Document (PRD)
 
